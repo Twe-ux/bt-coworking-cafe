@@ -5,7 +5,6 @@
 }
 
 .projects {
-
   @include breakpoint(lg) {
     padding-top: 220px;
   }
@@ -51,7 +50,7 @@
 
     &_card {
       overflow: hidden;
-      margin-bottom: 80px;
+      margin-bottom: 40px;
 
       @include breakpoint(md) {
         margin-bottom: 40px;
@@ -59,7 +58,7 @@
 
       &:last-child {
         @include breakpoint(lg) {
-          margin-bottom: 40px;
+          margin-bottom: 30px;
         }
 
         @include breakpoint(sm) {
@@ -298,10 +297,8 @@
         }
       }
     }
-
   }
 }
-
 
 .all__project {
   margin-bottom: 181px;

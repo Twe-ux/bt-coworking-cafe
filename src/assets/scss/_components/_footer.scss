@@ -38,10 +38,10 @@
       background-color: var(--main-clr);
       outline: none;
       border: 1px solid var(--main-clr);
-      @include breakpoint(lg){
+      @include breakpoint(lg) {
         padding: 20px;
       }
-      @include breakpoint(sm){
+      @include breakpoint(sm) {
         padding: 17px;
       }
     }
@@ -55,21 +55,21 @@
       margin-top: 20px;
       padding: 23px;
       justify-content: center;
-      @include breakpoint(lg){
+      @include breakpoint(lg) {
         padding: 20px;
       }
-      @include breakpoint(sm){
+      @include breakpoint(sm) {
         padding: 17px;
       }
     }
   }
 
   &__lo_co {
-    margin-top: -49px;
-    @include breakpoint(lg){
+    margin-top: -10rem;
+    @include breakpoint(lg) {
       margin-top: -60px;
     }
-    @include breakpoint(md){
+    @include breakpoint(md) {
       margin-top: -100px;
     }
   }

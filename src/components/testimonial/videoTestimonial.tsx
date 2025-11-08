@@ -1,15 +1,23 @@
-'use client'
-import React, { useState } from 'react'
+"use client";
+import { useState } from "react";
 // @ts-ignore - react-modal-video types not available
-import ModalVideo from 'react-modal-video';
+import ModalVideo from "react-modal-video";
 const VideoTestimonial = () => {
   const [isOpen, setOpen] = useState(false);
 
   return (
     <>
       <div className="video">
+        <h1 className="title text-center mb-5">
+          Pourquoi venir à Anticafé Strasbourg ? Pour ça!
+        </h1>
+
         <div className="position-relative">
-          <img src="/images/testimonail/Rectangle2.png" alt="img" className="video_thumb" />
+          <img
+            src="/images/testimonail/Rectangle2.png"
+            alt="img"
+            className="video_thumb"
+          />
           <div onClick={() => setOpen(true)} className="video_icon video-play">
             <img src="/images/testimonail/Frame_20.svg" alt="img" />
           </div>
@@ -19,11 +27,11 @@ const VideoTestimonial = () => {
         channel="youtube"
         youtube={{ mute: 0, autoplay: 0 }}
         isOpen={isOpen}
-        videoId="oGoXhif0fNM"
+        videoId="cHfYLa7XE_0"
         onClose={() => setOpen(false)}
       />
     </>
-  )
-}
+  );
+};
 
-export default VideoTestimonial
+export default VideoTestimonial;
