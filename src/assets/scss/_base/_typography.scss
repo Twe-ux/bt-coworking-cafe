@@ -37,6 +37,10 @@ p {
   margin-bottom: 0;
 }
 
+.bold {
+  font-weight: 600;
+}
+
 .t__54 {
   font-size: 54px;
   color: var(--secondary-clr);
@@ -309,7 +313,6 @@ p {
 }
 
 @media (min-width: 1200px) {
-
   .banner2 .container,
   .header .container,
   .page__header .container {
