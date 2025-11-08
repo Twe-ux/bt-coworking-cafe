@@ -99,13 +99,10 @@
       }
     }
   }
-
-
 }
 
 // ------------- About_2 for second home page and it's extend code from main home about style
 .about__2 {
-
   &_title {
     color: var(--secondary-clr);
   }
@@ -134,7 +131,6 @@
   }
 }
 
-
 // ------------- about_page for main about and it's extend code from main home about style
 .about__page {
   .title {
@@ -145,7 +141,7 @@
     &__wapper {
       &_left {
         p {
-          color: #6E6F75;
+          color: #6e6f75;
         }
 
         .circle {
@@ -167,14 +163,8 @@
           i {
             color: var(--main-clr);
           }
-
         }
-
       }
     }
   }
-
-
-
-
 }
