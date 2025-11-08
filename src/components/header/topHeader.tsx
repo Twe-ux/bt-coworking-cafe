@@ -8,7 +8,7 @@ const TopHeader = () => {
           <div className="d-flex align-items-center header__top_left">
             <p className="d-flex align-items-center time">
               <i className="bi bi-clock" />
-              <span> &nbsp; Horraires :</span>
+              <span> &nbsp; Horaires :</span>
             </p>
             <p className="gap-2 d-flex align-items-center">
               <span>Lun-Ven :</span>
@@ -21,7 +21,7 @@ const TopHeader = () => {
             </p>
           </div>
           <div className="d-flex align-items-center header__top_contact">
-            <p className="email">starsbourg@coworkingcafe.fr</p>
+            <p className="email">strasbourg@coworkingcafe.fr</p>
             <span className="line" />
             <ul className="d-flex align-items-center icons">
               <li>
