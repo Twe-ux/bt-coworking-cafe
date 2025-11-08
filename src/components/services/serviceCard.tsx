@@ -1,7 +1,14 @@
 import Link from 'next/link'
 import React from 'react'
 
-const ServiceCard = ({ imgSrc, title, description, className }) => {
+interface ServiceCardProps {
+    imgSrc: string;
+    title: string;
+    description: string;
+    className?: string;
+}
+
+const ServiceCard = ({ imgSrc, title, description, className = '' }: ServiceCardProps) => {
     return (
         <div className={`service__card services__2_card ${className}`}>
             <img src={imgSrc} alt={title} />

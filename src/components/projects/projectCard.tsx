@@ -1,7 +1,14 @@
 import Link from 'next/link'
 import React from 'react'
 
-const ProjectCard = ({className, imgSrc, title, categories}) => {
+interface ProjectCardProps {
+    imgSrc: string;
+    title: string;
+    categories: string[];
+    className?: string;
+}
+
+const ProjectCard = ({className = '', imgSrc, title, categories}: ProjectCardProps) => {
     return (
         <div className={`projects__2_card ${className}`}>
             <Link href="/project-details">

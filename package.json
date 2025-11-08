@@ -19,5 +19,11 @@
     "sass": "^1.83.4",
     "scss": "^0.2.4",
     "swiper": "^11.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "typescript": "^5.9.3"
   }
 }

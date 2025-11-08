@@ -1,13 +1,19 @@
 'use client'
 import { useState, useEffect, useRef } from "react";
 
-const CustomDropdown = ({ options, onSelect, placeholder = "Select an option" }) => {
+interface CustomDropdownProps {
+  options: string[];
+  onSelect: (option: string) => void;
+  placeholder?: string;
+}
+
+const CustomDropdown = ({ options, onSelect, placeholder = "Select an option" }: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const dropdownRef = useRef(null);
+  const [selected, setSelected] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Handle option selection
-  const handleSelect = (option) => {
+  const handleSelect = (option: string) => {
     setSelected(option);
     onSelect(option);
     setIsOpen(false);
@@ -15,8 +21,8 @@ const CustomDropdown = ({ options, onSelect, placeholder = "Select an option" })
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };

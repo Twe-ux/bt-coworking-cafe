@@ -4,7 +4,7 @@ import React from 'react'
 import CustomDropdown from './customDropdown'
 
 const ContactInfo = () => {
-    const handleSelect = (option) => {
+    const handleSelect = (option: string) => {
         console.log("Selected:", option);
     };
     return (

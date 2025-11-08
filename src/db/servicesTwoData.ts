@@ -1,4 +1,12 @@
-export const servicesTwoData = [
+export interface ServiceTwo {
+  id: number;
+  title: string;
+  description: string;
+  imgSrc: string;
+  delay: number;
+}
+
+export const servicesTwoData: ServiceTwo[] = [
   {
     id: 1,
     title: 'Website Optimization',

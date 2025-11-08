@@ -1,7 +1,11 @@
 import React from 'react';
 
+interface PartnerProps {
+    data: string[];
+    className?: string;
+}
 
-const Partner = ({data, className}) => {
+const Partner = ({data, className = ''}: PartnerProps) => {
     return (
         <div className={`partner ${className}`}>
             <div className="partner__wapper">

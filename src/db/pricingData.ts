@@ -1,4 +1,10 @@
-export const pricingData = [
+export interface PricingPlan {
+  title: string;
+  price: string;
+  features: string[];
+}
+
+export const pricingData: PricingPlan[] = [
   {
     title: 'Basic plan',
     price: '$242',

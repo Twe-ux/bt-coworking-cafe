@@ -5,7 +5,11 @@ import SlideDown from '@/utils/animations/slideDown'
 import SlideUp from '@/utils/animations/slideUp'
 import Link from 'next/link'
 
-const ProjectsOne = ({ isProjectUseCaseShow }) => {
+interface ProjectsOneProps {
+  isProjectUseCaseShow?: boolean;
+}
+
+const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
     return (
         <section className="projects py__130">
             <div className="container">

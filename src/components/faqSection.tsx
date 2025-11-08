@@ -15,7 +15,7 @@ const FaqSection = () => {
                             <SlideUp
                                 key={item.id}
                                 className="accordion-item"
-                                delay={item.id}
+                                delay={item.delay}
                             >
                                 <h2 className="accordion-header" id={item.id}>
                                     <button

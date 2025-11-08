@@ -2,7 +2,12 @@ import SlideUp from '@/utils/animations/slideUp'
 import Link from 'next/link'
 import React from 'react'
 
-const PageTitle = ({ title, currentPage }) => {
+interface PageTitleProps {
+    title: string;
+    currentPage: string;
+}
+
+const PageTitle = ({ title, currentPage }: PageTitleProps) => {
     return (
         <section className="page__header position-relative">
             <div className="container">

@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+// @ts-ignore - react-modal-video types not available
 import ModalVideo from 'react-modal-video';
 const VideoTestimonial = () => {
   const [isOpen, setOpen] = useState(false);

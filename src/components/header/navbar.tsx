@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { menuData } from "@/db/menuData";
+import { menuData, MenuItem } from "@/db/menuData";
 import Link from "next/link";
 
-const Navbar = ({ activeNavbar }) => {
-    const [activeDropDownId, setActiveDropdownId] = useState(null);
-    const handeDropDown = (index, isDropdown) => {
+interface NavbarProps {
+    activeNavbar: boolean;
+}
+
+const Navbar = ({ activeNavbar }: NavbarProps) => {
+    const [activeDropDownId, setActiveDropdownId] = useState<number | null>(null);
+    const handeDropDown = (index: number, isDropdown?: MenuItem['submenu']) => {
         if (isDropdown?.length) {
             setActiveDropdownId(activeDropDownId === index ? null : index)
         }

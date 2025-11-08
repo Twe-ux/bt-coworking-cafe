@@ -4,7 +4,11 @@ import BlogCard from './blogCard'
 import SlideDown from '@/utils/animations/slideDown'
 import SlideUp from '@/utils/animations/slideUp'
 
-const HomeBlog = ({ className }) => {
+interface HomeBlogProps {
+  className?: string;
+}
+
+const HomeBlog: React.FC<HomeBlogProps> = ({ className = '' }) => {
     return (
         <section className={`blogs ${className}`}>
             <div className="container">

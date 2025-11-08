@@ -1,7 +1,15 @@
 import Link from 'next/link'
 import React from 'react'
 
-const BlogCard = ({author, comments, imgSrc, title}) => {
+interface BlogCardProps {
+    author: string;
+    comments: number;
+    imgSrc: string;
+    title: string;
+    id?: number;
+}
+
+const BlogCard = ({author, comments, imgSrc, title}: BlogCardProps) => {
     return (
         <div className="blogs__wapper_card">
             <Link href="/blog-details">

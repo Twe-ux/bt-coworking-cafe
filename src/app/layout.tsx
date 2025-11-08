@@ -6,13 +6,14 @@ import Header from "@/components/header/header";
 import Footer from "@/components/footer";
 import PathNameLoad from "@/utils/pathNameLoad";
 import Bootstrap from "@/components/Bootstrap";
+import { ReactNode } from "react";
 
 export const metadata = {
   title: "Digiv",
   description: "Digiv Creative Digital Agency next.js templet",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
