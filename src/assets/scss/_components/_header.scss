@@ -1,0 +1,156 @@
+.header {
+  &__top {
+    background-color: var(--main-clr);
+    color: var(--primary-clr);
+    padding: 18px 0;
+    p {
+      margin-bottom: 0;
+      color: var(--primary-clr);
+    }
+    &_left {
+      gap: 13px;
+      .time {
+        font-weight: 600;
+      }
+    }
+    &_contact {
+      gap: 18px;
+      p {
+        font-weight: 600;
+        font-size: 18px;
+      }
+      .line {
+        width: 1px;
+        height: 18px;
+        background-color: var(--primary-clr);
+        // font-weight: 400;
+      }
+      .icons {
+        gap: 16px;
+        a {
+          transition: all 0.5s;
+          &:hover {
+            color: var(--btn-clr);
+          }
+        }
+      }
+    }
+  }
+
+  //   ------------ Bottom Header Start
+  &__bottom {
+    background-color: var(--btn-clr);
+    padding: 24px 0;
+    position: relative;
+    z-index: 1000;
+    &_logo {
+      h5 {
+        font-size: 34px;
+        color: var(--secondary-clr);
+      }
+    }
+    &_navbar {
+      @include breakpoint(xl) {
+        position: absolute;
+        top: 100%;
+        left: -100%;
+        min-height: 100vh;
+        min-width: 300px;
+        background-color: var(--btn-clr);
+        transition: all 0.5s ease-in-out;
+      }
+
+      .menu__list {
+        gap: 38px;
+        padding: 0 20px;
+        li {
+          @include breakpoint(xl) {
+            padding-bottom: 15px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e2c26b;
+          }
+          &:last-child {
+            @include breakpoint(xl) {
+              border-bottom: none;
+            }
+          }
+        }
+        a {
+          color: var(--secondary-clr);
+          font-weight: 600;
+          padding: 20px 0;
+          @include breakpoint(xl) {
+            padding: 0px 0;
+          }
+        }
+        i {
+          cursor: pointer;
+        }
+      }
+      .dropdown__container {
+        position: relative;
+        &_menu {
+          position: absolute;
+          left: -9px;
+          background-color: var(--btn-clr);
+          min-width: 150px;
+          width: fit-content;
+          padding: 10px 10px;
+          transform: translateY(70px);
+          visibility: hidden;
+          opacity: 0;
+          transition: all 0.5s ease-in-out;
+          @include breakpoint(xl) {
+            position: static;
+            max-height: 0px;
+            transform: translateY(0px);
+            padding: 0;
+          }
+          li {
+            margin-bottom: 10px;
+            border-bottom: none;
+            padding-bottom: 0px;
+            &:last-child {
+              margin-bottom: 0;
+            }
+            a {
+              padding: 0px 0;
+            }
+          }
+        }
+        @include breakpoint(xl) {
+          &_menu-active {
+            max-height: 200px;
+            visibility: visible;
+            opacity: 1;
+            margin-top: 10px;
+            margin-left: 15px;
+          }
+        }
+
+        @media (min-width: 1200px) {
+          &:hover .dropdown__container_menu {
+            transform: translateY(0px);
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    &_navbar-active {
+      left: 0;
+    }
+
+    .common__btn {
+      background-color: var(--main-clr);
+      gap: 2px;
+    }
+    .menu__icon {
+      i {
+        font-size: 32px;
+        cursor: pointer;
+      }
+    }
+  }
+}

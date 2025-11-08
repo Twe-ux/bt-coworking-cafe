@@ -1,0 +1,23 @@
+{
+  "name": "digiv",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "motion": "^12.0.1",
+    "next": "14.2.17",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-modal-video": "^2.0.2",
+    "sass": "^1.83.4",
+    "scss": "^0.2.4",
+    "swiper": "^11.2.1"
+  }
+}
