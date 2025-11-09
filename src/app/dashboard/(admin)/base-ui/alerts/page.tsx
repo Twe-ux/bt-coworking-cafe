@@ -5,7 +5,7 @@ import ComponentContainerCard from '@/components/ComponentContainerCard'
 import UIExamplesList from '@/components/UIExamplesList'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Alerts' }
 
@@ -209,7 +209,7 @@ const AdditionalContentAlerts = () => {
 const Alerts = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Alerts" />
+      <DashboardPageTitle subName="UI" title="Alerts" />
       <Row>
         <Col xl={9}>
           <BasicAlerts />

@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllTreemapCharts from './components/AllTreemapCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Treemap Charts' }
 
 const TreemapCharts = () => {
   return (
     <>
-      <PageTitle title="Treemap" subName="Charts" />
+      <DashboardPageTitle title="Treemap" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllTreemapCharts />

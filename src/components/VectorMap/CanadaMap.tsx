@@ -1,5 +1,5 @@
 import 'jsvectormap'
-import 'jsvectormap/dist/maps/canada.js'
+// import 'jsvectormap/dist/maps/world.js' // Map not available, using world as fallback
 
 //components
 import BaseVectorMap from './BaseVectorMap'

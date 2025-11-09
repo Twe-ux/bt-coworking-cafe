@@ -1,14 +1,14 @@
 import { Button, Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import AllEditors from './components/AllEditors'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Editors' }
 
 const Editors = () => {
   return (
     <>
-      <PageTitle title="Editors" subName="Form" />
+      <DashboardPageTitle title="Editors" subName="Form" />
       <Row>
         <Col xl={12}>
           <Card>

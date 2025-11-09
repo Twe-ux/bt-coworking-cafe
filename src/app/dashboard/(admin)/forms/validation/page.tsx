@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllFormValidation from './components/AllFormValidation'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Validation' }
 
 const Validation = () => {
   return (
     <>
-      <PageTitle title="Form Validation" subName="Form" />
+      <DashboardPageTitle title="Form Validation" subName="Form" />
       <Row>
         <Col xl={9}>
           <AllFormValidation />

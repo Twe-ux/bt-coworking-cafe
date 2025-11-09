@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { Col, Row } from 'react-bootstrap'
 import CollectionRent from './components/CollectionRent'
 import Goals from './components/Goals'
@@ -16,7 +16,7 @@ export const metadata: Metadata = { title: 'Agent' }
 const AgentPage = () => {
   return (
     <>
-      <PageTitle title="Agent" subName="Dashboards" />
+      <DashboardPageTitle title="Agent" subName="Dashboards" />
       <Row>
         <Statistics />
       </Row>

@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { Card, CardHeader, Col, Row } from 'react-bootstrap'
 import AgentList from './components/AgentList'
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Agent List' }
 const ListViewPage = () => {
   return (
     <>
-      <PageTitle subName="Real Estate" title="Agent List" />
+      <DashboardPageTitle subName="Real Estate" title="Agent List" />
       <Row>
         <Col lg={12}>
           <Card>

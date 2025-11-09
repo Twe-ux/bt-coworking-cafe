@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { Row } from 'react-bootstrap'
 import PropertiesData from './components/PropertiesData'
 import PropertiesFilter from './components/PropertiesFilter'
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Listing Grid' }
 const PropertyGridPage = () => {
   return (
     <>
-      <PageTitle title="Listing Grid" subName="Real Estate" />
+      <DashboardPageTitle title="Listing Grid" subName="Real Estate" />
       <Row>
         <PropertiesFilter />
         <PropertiesData />

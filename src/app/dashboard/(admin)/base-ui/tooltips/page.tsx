@@ -1,5 +1,5 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 import UIExamplesList from '@/components/UIExamplesList'
 import { colorVariants } from '@/context/constants'
@@ -59,7 +59,7 @@ const ColorTooltip = () => {
 const Tooltips = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Tooltips" />
+      <DashboardPageTitle subName="UI" title="Tooltips" />
       <Row>
         <Col xl={9}>
           <TooltipDirections />

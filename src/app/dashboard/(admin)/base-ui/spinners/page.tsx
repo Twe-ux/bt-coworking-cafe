@@ -1,5 +1,5 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 import Spinner from '@/components/Spinner'
 import UIExamplesList from '@/components/UIExamplesList'
@@ -136,7 +136,7 @@ const ButtonSpinners = () => {
 const Spinners = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Spinners" />
+      <DashboardPageTitle subName="UI" title="Spinners" />
       <Row>
         <Col xl={9}>
           <BorderedSpinners />

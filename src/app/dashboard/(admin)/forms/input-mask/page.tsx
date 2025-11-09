@@ -1,14 +1,14 @@
 import { Button, Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import AllInputMasks from './components/AllInputMasks'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Input Mask' }
 
 const InputMasks = () => {
   return (
     <>
-      <PageTitle title="Input Mask" subName="Form" />
+      <DashboardPageTitle title="Input Mask" subName="Form" />
       <Row>
         <Col xl={12}>
           <Card>

@@ -1,6 +1,6 @@
 import blogImg from '@/assets/images/blog/blog.jpg'
 import avatarImg from '@/assets/images/users/avatar-6.jpg'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: 'Blog Details' }
 const PostDetailsPage = () => {
   return (
     <>
-      <PageTitle title="Blog Details" subName="Blog" />
+      <DashboardPageTitle title="Blog Details" subName="Blog" />
       <Row>
         <Col lg={8}>
           <Card>

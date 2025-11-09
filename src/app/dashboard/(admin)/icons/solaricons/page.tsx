@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Solar Icons' }
 const IconMoon = () => {
   return (
     <>
-      <PageTitle title="Solar Icons" subName="Icons" />
+      <DashboardPageTitle title="Solar Icons" subName="Icons" />
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <Card className="icon-box">
           <CardBody className="d-flex flex-column align-items-center justify-content-center">

@@ -1,5 +1,5 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
@@ -402,7 +402,7 @@ const CheckboxesAndRadiosListGroup = () => {
 const ListGroup = () => {
   return (
     <>
-      <PageTitle subName="UI" title="List Group" />
+      <DashboardPageTitle subName="UI" title="List Group" />
       <Row>
         <Col xl={9}>
           <Basic />

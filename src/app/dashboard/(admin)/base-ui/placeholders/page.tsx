@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 import AllPlaceholders from './components/AllPlaceholders'
 import UIExamplesList from '@/components/UIExamplesList'
 import { Col, Row } from 'react-bootstrap'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Placeholder' }
 
 const PLaceholders = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Placeholders" />
+      <DashboardPageTitle subName="UI" title="Placeholders" />
       <Row>
         <Col xl={9}>
           <AllPlaceholders />

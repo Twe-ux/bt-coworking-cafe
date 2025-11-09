@@ -2,14 +2,14 @@ import UIExamplesList from '@/components/UIExamplesList'
 import { Col, Row } from 'react-bootstrap'
 import AllVectorMaps from './components/AllVectorMaps'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Vector Maps' }
 
 const VectorMaps = () => {
   return (
     <>
-      <PageTitle title="Vector Maps" subName="Maps" />
+      <DashboardPageTitle title="Vector Maps" subName="Maps" />
       <Row>
         <Col xl={9}>
           <AllVectorMaps />

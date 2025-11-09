@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { getAllCustomer } from '@/helpers/data'
 import { CustomerType } from '@/types/data'
@@ -123,7 +123,7 @@ const CustomerGridPage = async () => {
   const customerGridData = await getAllCustomer()
   return (
     <>
-      <PageTitle subName="Customers" title="Customer Grid" />
+      <DashboardPageTitle subName="Customers" title="Customer Grid" />
       <Row>
         {customerGridData.slice(0, 6).map((item, idx) => (
           <Col md={6} xl={4} key={idx}>

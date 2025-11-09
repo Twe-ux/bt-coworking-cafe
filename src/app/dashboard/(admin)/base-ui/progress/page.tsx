@@ -1,5 +1,5 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
@@ -86,7 +86,7 @@ const HeightProgressBar = () => {
 const Progress = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Progress" />
+      <DashboardPageTitle subName="UI" title="Progress" />
       <Row>
         <Col xl={9}>
           <ProgressBarWorks />

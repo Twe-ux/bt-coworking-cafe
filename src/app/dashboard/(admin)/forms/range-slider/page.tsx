@@ -2,14 +2,14 @@ import { Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import type { Metadata } from 'next'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllSliders from './components/AllSliders'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Range Slider' }
 
 const Slider = () => {
   return (
     <>
-      <PageTitle title="Range Slider" subName="Form" />
+      <DashboardPageTitle title="Range Slider" subName="Form" />
       <Row>
         <Col xl={9}>
           <Card>

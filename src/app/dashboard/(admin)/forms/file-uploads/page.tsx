@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import ComponentContainerCard from '@/components/ComponentContainerCard'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import DropzoneFormInput from '@/components/from/DropzoneFormInput'
 
 export const metadata: Metadata = { title: 'File Uploads' }
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'File Uploads' }
 const FileUploads = () => {
   return (
     <>
-      <PageTitle title="File Uploads" subName="Form" />
+      <DashboardPageTitle title="File Uploads" subName="Form" />
       <Row>
         <Col xl={12}>
           <Card>

@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllLineCharts from './components/AllLineCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Line Charts' }
 
 const LineCharts = () => {
   return (
     <>
-      <PageTitle title="Line" subName="Charts" />
+      <DashboardPageTitle title="Line" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllLineCharts />

@@ -1,5 +1,5 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
 import { Col, FormControl, FormLabel, FormSelect, Row } from 'react-bootstrap'
@@ -171,7 +171,7 @@ const SelectInputs = () => {
 const BasicElements = () => {
   return (
     <>
-      <PageTitle title="Basic Form" subName="Form" />
+      <DashboardPageTitle title="Basic Form" subName="Form" />
       <Row>
         <Col xl={9}>
           <BasicExamples />

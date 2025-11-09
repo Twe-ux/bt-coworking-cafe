@@ -1,5 +1,5 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
@@ -103,7 +103,7 @@ export const metadata: Metadata = { title: 'Accordions' }
 const Accordions = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Accordion" />
+      <DashboardPageTitle subName="UI" title="Accordion" />
       <Row>
         <Col xl={9}>
           <BasicAccordion />

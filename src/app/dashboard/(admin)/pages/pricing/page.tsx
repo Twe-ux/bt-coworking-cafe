@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { getAllPricingPlans } from '@/helpers/data'
 import { PricingType } from '@/types/data'
@@ -45,7 +45,7 @@ const PricingPage = async () => {
   const pricingPlans = await getAllPricingPlans()
   return (
     <>
-      <PageTitle title="Pricing" subName="Pages" />
+      <DashboardPageTitle title="Pricing" subName="Pages" />
       <Row className="justify-content-center">
         <Col xxl={11}>
           <div className="text-center my-4">

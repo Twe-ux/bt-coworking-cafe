@@ -1,7 +1,7 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
 import { Button, Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import ChoicesFormInput from '@/components/from/ChoicesFormInput'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
 
@@ -298,7 +298,7 @@ const DisabledInput = () => {
 const Select = () => {
   return (
     <>
-      <PageTitle title="Form Select" subName="Form" />
+      <DashboardPageTitle title="Form Select" subName="Form" />
       <Row>
         <Col xl={9}>
           <Card>

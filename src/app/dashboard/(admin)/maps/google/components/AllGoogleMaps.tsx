@@ -98,7 +98,7 @@ const MapWithMarkers = ({ google }: MapContainerProps) => {
 }
 
 const StreetViewMap = ({ google }: MapContainerProps) => {
-  let mapRef: any = useRef()
+  let mapRef: any = useRef(null)
 
   /**
    * Activate the street view

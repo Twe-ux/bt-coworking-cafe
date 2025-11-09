@@ -1,5 +1,5 @@
 import FileUpload from '@/components/FileUpload'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { Col, Row } from 'react-bootstrap'
 import AgentAdd from './components/AgentAdd'
 import AgentAddCard from './components/AgentAddCard'
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: 'Add Agent' }
 const AgentAddPage = () => {
   return (
     <>
-      <PageTitle subName="Real Estate" title="Add Agent" />
+      <DashboardPageTitle subName="Real Estate" title="Add Agent" />
       <Row>
         <AgentAddCard />
         <Col xl={9} lg={8}>

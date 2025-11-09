@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { getAllProperty } from '@/helpers/data'
 import CustomerCard from './components/CustomerCard'
 import CustomersDetails from './components/CustomersDetails'
@@ -17,7 +17,7 @@ const CustomerDetailsPage = async () => {
   const propertyData = await getAllProperty()
   return (
     <>
-      <PageTitle subName="Customers" title="Customer Overview" />
+      <DashboardPageTitle subName="Customers" title="Customer Overview" />
       <Row>
         <Col xl={8} lg={12}>
           <CustomersDetails />

@@ -1,6 +1,6 @@
 import logoDark from '@/assets/images/logo-dark.png'
 import logoLight from '@/assets/images/logo-light.png'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { currency } from '@/context/constants'
 import { Metadata } from 'next'
 import Image from 'next/image'
@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: 'Invoice' }
 const InvoicePage = () => {
   return (
     <>
-      <PageTitle title="Invoice" subName="Pages" />
+      <DashboardPageTitle title="Invoice" subName="Pages" />
       <Row>
         <Col xs={12}>
           <Card>

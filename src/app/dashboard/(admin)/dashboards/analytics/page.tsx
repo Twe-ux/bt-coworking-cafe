@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { Row } from 'react-bootstrap'
 import BalanceCard from './components/BalanceCard'
 import SalesChart from './components/SalesChart'
@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: 'Analytics' }
 const AnalyticsPage = () => {
   return (
     <>
-      <PageTitle title="Analytics" subName="Dashboard" />
+      <DashboardPageTitle title="Analytics" subName="Dashboard" />
       <Statistics />
       <Row>
         <SalesChart />

@@ -2,14 +2,14 @@ import { Button, Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllSwiper from './AllSwiper'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Swiper' }
 
 const Swiper = () => {
   return (
     <>
-      <PageTitle subName="Extended" title="Swipper Slider" />
+      <DashboardPageTitle subName="Extended" title="Swipper Slider" />
       <Row>
         <Col xl={9}>
           <Card>

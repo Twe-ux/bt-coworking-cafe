@@ -3,7 +3,7 @@ import ComponentContainerCard from '@/components/ComponentContainerCard'
 import UIExamplesList from '@/components/UIExamplesList'
 import SimplebarReactClient from '@/components/wrappers/SimplebarReactClient'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Scrollbar' }
 
@@ -172,7 +172,7 @@ const ScrollColor = () => {
 const ScrollBars = () => {
   return (
     <>
-      <PageTitle subName="Extended" title="Scrollbar" />
+      <DashboardPageTitle subName="Extended" title="Scrollbar" />
       <Row>
         <Col xl={9}>
           <DefaultScrollbar />

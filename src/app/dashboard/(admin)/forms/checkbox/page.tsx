@@ -4,7 +4,7 @@ import UIExamplesList from '@/components/UIExamplesList'
 import { colorVariants } from '@/context/constants'
 import { toSentenceCase } from '@/utils/change-casing'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Checkboxes' }
 
@@ -133,7 +133,7 @@ const Switches = () => {
 const CheckboxAndRadio = () => {
   return (
     <>
-      <PageTitle title="Checkbox & Radio" subName="Form" />
+      <DashboardPageTitle title="Checkbox & Radio" subName="Form" />
       <Row>
         <Col xl={9}>
           <Checkbox />

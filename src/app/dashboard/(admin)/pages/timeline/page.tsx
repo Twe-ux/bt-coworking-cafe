@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { getAllTimeline } from '@/helpers/data'
 import type { TimelineType } from '@/types/data'
 import type { Metadata } from 'next'
@@ -70,7 +70,7 @@ const Timeline = async () => {
   const timelineData = await getAllTimeline()
   return (
     <>
-      <PageTitle title="Timeline" subName="Pages" />
+      <DashboardPageTitle title="Timeline" subName="Pages" />
       <Row>
         <Col lg={12}>
           {' '}

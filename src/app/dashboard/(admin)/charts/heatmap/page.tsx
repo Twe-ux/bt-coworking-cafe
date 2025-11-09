@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllHeatmapCharts from './components/AllHeatmapCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Heatmap Alert' }
 
 const HeatmapCharts = () => {
   return (
     <>
-      <PageTitle title="Heatmap" subName="Charts" />
+      <DashboardPageTitle title="Heatmap" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllHeatmapCharts />

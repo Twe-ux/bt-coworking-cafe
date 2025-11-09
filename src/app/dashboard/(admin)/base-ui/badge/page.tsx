@@ -4,7 +4,7 @@ import ComponentContainerCard from '@/components/ComponentContainerCard'
 
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 const HeadingBadge = () => {
   return (
@@ -258,7 +258,7 @@ export const metadata: Metadata = { title: 'Badges' }
 const Badges = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Badge" />
+      <DashboardPageTitle subName="UI" title="Badge" />
       <Row>
         <Col xl={9}>
           <HeadingBadge />

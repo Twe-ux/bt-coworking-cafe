@@ -3,7 +3,7 @@ import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardTitle, Col, Row } from 
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'Breadcrumbs' }
@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: 'Breadcrumbs' }
 const page = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Breadcrumb" />
+      <DashboardPageTitle subName="UI" title="Breadcrumb" />
       <Row>
         <Col xl={9}>
           <Card>

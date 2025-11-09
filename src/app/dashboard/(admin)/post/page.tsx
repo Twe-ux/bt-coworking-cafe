@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { Row } from 'react-bootstrap'
 import Articles from './components/Articles'
 import FreshArticles from './components/FreshArticles'
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: 'Blog Grid' }
 const PostPage = () => {
   return (
     <>
-      <PageTitle title="Blog Grid" subName="Blog" />
+      <DashboardPageTitle title="Blog Grid" subName="Blog" />
       <Row>
         <FreshArticles />
         <Articles />

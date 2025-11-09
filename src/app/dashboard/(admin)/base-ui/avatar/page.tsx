@@ -14,7 +14,7 @@ import avatar7 from '@/assets/images/users/avatar-7.jpg'
 import avatar8 from '@/assets/images/users/avatar-8.jpg'
 import avatar9 from '@/assets/images/users/avatar-9.jpg'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 const BasicExample = () => {
   return (
@@ -145,7 +145,7 @@ export const metadata: Metadata = { title: 'Avatars' }
 const page = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Avatar" />
+      <DashboardPageTitle subName="UI" title="Avatar" />
       <Row>
         <Col xl={9}>
           <BasicExample />

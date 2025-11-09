@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
 import { Button, Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Sweet Alert' }
 const SweetAlerts = () => {
   return (
     <>
-      <PageTitle subName="Extended" title="Sweet Alerts" />
+      <DashboardPageTitle subName="Extended" title="Sweet Alerts" />
       <Row>
         <Col xl={9}>
           <Card>

@@ -2,7 +2,7 @@ import { Col, Row } from 'react-bootstrap'
 import IconifyIcon from './wrappers/IconifyIcon'
 import Link from 'next/link'
 
-const PageTitle = ({ title, subName }: { title: string; subName: string }) => {
+const DashboardPageTitle = ({ title, subName }: { title: string; subName: string }) => {
   return (
     <Row>
       <Col xs={12}>
@@ -23,4 +23,4 @@ const PageTitle = ({ title, subName }: { title: string; subName: string }) => {
   )
 }
 
-export default PageTitle
+export default DashboardPageTitle

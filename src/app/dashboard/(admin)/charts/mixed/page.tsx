@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllMixedCharts from './components/AllMixedCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Mixed Charts' }
 
 const MixedCharts = () => {
   return (
     <>
-      <PageTitle title="Mixed" subName="Charts" />
+      <DashboardPageTitle title="Mixed" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllMixedCharts />

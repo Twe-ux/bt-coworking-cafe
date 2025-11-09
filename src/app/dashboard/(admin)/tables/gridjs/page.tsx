@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { Col, Row } from 'react-bootstrap'
 import AllDataTables from './components/AllDataTables'
 import { getAllDataTableRecords } from '@/helpers/data'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'GridJs Tables' }
 
@@ -12,7 +12,7 @@ const GridJS = async () => {
   const dataTableRecords = await getAllDataTableRecords()
   return (
     <>
-      <PageTitle title="Grid JS" subName="Table" />
+      <DashboardPageTitle title="Grid JS" subName="Table" />
       <Row>
         <Col xl={10}>
           {' '}

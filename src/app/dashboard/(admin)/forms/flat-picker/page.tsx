@@ -3,14 +3,14 @@ import ComponentContainerCard from '@/components/ComponentContainerCard'
 import CustomFlatpickr from '@/components/CustomFlatpickr'
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Flatpicker' }
 
 const FlatPicker = () => {
   return (
     <>
-      <PageTitle title="Flatpicker" subName="Form" />
+      <DashboardPageTitle title="Flatpicker" subName="Form" />
       <Row>
         <Col xl={9}>
           <Card>

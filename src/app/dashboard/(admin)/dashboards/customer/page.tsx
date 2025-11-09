@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import CustomerByCountry from './components/CustomerByCountry'
 import CustomerCountry from './components/CustomerCountry'
 import CustomersInvest from './components/CustomersInvest'
@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: 'Customers' }
 const CustomerPage = () => {
   return (
     <>
-      <PageTitle title="Customers" subName="Dashboards" />
+      <DashboardPageTitle title="Customers" subName="Dashboards" />
       <Row>
         <Col xl={8} lg={12}>
           <CustomerCountry />

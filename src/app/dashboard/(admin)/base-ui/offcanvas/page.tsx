@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 import AllOffcanvas from './components/AllOffcanvas'
 import UIExamplesList from '@/components/UIExamplesList'
 import { Col, Row } from 'react-bootstrap'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Offcanvas' }
 
 const Offcanvas = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Offcanvas" />
+      <DashboardPageTitle subName="UI" title="Offcanvas" />
       <Row>
         <Col xl={9}>
           <AllOffcanvas />

@@ -2,14 +2,14 @@ import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
 import AllModals from './components/AllModals'
 import { Col, Row } from 'react-bootstrap'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Modals' }
 
 const Modals = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Modals" />
+      <DashboardPageTitle subName="UI" title="Modals" />
       <Row>
         <Col xl={9}>
           <AllModals />

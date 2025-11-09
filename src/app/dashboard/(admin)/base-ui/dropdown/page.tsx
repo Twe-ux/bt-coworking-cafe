@@ -1,5 +1,5 @@
 import ComponentContainerCard from '@/components/ComponentContainerCard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 import UIExamplesList from '@/components/UIExamplesList'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
@@ -459,7 +459,7 @@ const DropdownMenuContent = () => {
 const Dropdowns = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Dropdowns" />
+      <DashboardPageTitle subName="UI" title="Dropdowns" />
       <Row>
         <Col xl={9}>
           <SingleButtonDropdown />

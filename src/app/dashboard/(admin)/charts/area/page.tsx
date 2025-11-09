@@ -2,14 +2,14 @@ import { Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllAreaCharts from './components/AllAreaCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Area Charts' }
 
 const AreaCharts = () => {
   return (
     <>
-      <PageTitle title="Area" subName="Charts" />
+      <DashboardPageTitle title="Area" subName="Charts" />
       <Row>
         <Col xl={9}>
           <Card>

@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import AllWizard from './components/AllWizard'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Wizard' }
 
 const Wizard = () => {
   return (
     <>
-      <PageTitle title="Wizard" subName="Form" />
+      <DashboardPageTitle title="Wizard" subName="Form" />
       <AllWizard />
     </>
   )

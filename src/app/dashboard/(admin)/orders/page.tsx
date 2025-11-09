@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { getAllTransaction } from '@/helpers/data'
 import { Metadata } from 'next'
@@ -25,7 +25,7 @@ const OrdersPage = async () => {
   const orderData = await getAllTransaction()
   return (
     <>
-      <PageTitle title="Orders" subName="Real Estate" />
+      <DashboardPageTitle title="Orders" subName="Real Estate" />
       <Row>
         <Col xl={12}>
           <Card>

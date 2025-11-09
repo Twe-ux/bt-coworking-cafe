@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllClipboards from './components/AllClipboards'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Clipboard' }
 
 const Clipboard = () => {
   return (
     <>
-      <PageTitle title="Clipboard" subName="Form" />
+      <DashboardPageTitle title="Clipboard" subName="Form" />
       <Row>
         <Col xl={9}>
           <AllClipboards />

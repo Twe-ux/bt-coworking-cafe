@@ -15,7 +15,7 @@ import avatar7 from '@/assets/images/users/avatar-7.jpg'
 import avatar8 from '@/assets/images/users/avatar-8.jpg'
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Basic Tables' }
 
@@ -1324,7 +1324,7 @@ const NestingTable2 = () => {
 const BasicTables = () => {
   return (
     <>
-      <PageTitle title="Basic Tables" subName="Table" />
+      <DashboardPageTitle title="Basic Tables" subName="Table" />
       <Row>
         <Col xl={9}>
           <BasicExample />

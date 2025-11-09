@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import React from 'react'
 import EmailView from './components/EmailView'
 import { Card, Row } from 'react-bootstrap'
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Inbox' }
 const InboxPage = () => {
   return (
     <>
-      <PageTitle title="Inbox" subName="Real Estate" />
+      <DashboardPageTitle title="Inbox" subName="Real Estate" />
       <Card>
         <Row className="g-0">
           <EmailView />

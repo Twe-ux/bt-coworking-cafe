@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
 import { Col, Row } from 'react-bootstrap'
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Pie Charts' }
 const PieCharts = () => {
   return (
     <>
-      <PageTitle title="Pie" subName="Charts" />
+      <DashboardPageTitle title="Pie" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllPieCharts />

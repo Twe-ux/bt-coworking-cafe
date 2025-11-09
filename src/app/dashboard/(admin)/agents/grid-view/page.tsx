@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import Link from 'next/link'
 import { Card, CardHeader, Col, Row } from 'react-bootstrap'
@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: 'Agent Grid' }
 const GridViewPage = () => {
   return (
     <>
-      <PageTitle subName="Real Estate" title="Agent Grid" />
+      <DashboardPageTitle subName="Real Estate" title="Agent Grid" />
       <AgentGridCard />
       <Row>
         <Col lg={12}>

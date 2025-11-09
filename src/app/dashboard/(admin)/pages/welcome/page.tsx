@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Welcome' }
@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: 'Welcome' }
 const WelcomePage = () => {
   return (
     <>
-      <PageTitle title="Welcome" subName="Pages" />
+      <DashboardPageTitle title="Welcome" subName="Pages" />
     </>
   )
 }

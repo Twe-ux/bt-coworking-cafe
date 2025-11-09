@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { getAllCustomer } from '@/helpers/data'
 import Image from 'next/image'
@@ -22,7 +22,7 @@ const CustomersListPage = async () => {
   const customerData = await getAllCustomer()
   return (
     <>
-      <PageTitle subName="Customers" title="Customer List" />
+      <DashboardPageTitle subName="Customers" title="Customer List" />
       <Row>
         <Col xl={12}>
           <Card>

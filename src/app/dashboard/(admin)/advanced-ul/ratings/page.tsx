@@ -2,14 +2,14 @@ import { Card, CardBody, CardTitle, Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllRatings from './components/AllRatings'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Ratings' }
 
 const Ratings = () => {
   return (
     <>
-      <PageTitle subName="Extended" title="Ratings" />
+      <DashboardPageTitle subName="Extended" title="Ratings" />
       <Row>
         <Col xl={9}>
           <Card>

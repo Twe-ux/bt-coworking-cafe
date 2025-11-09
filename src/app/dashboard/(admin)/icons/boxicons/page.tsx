@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: 'Box Icons' }
 const BoxIcons = () => {
   return (
     <>
-      <PageTitle title="Boxicons" subName="Icons" />
+      <DashboardPageTitle title="Boxicons" subName="Icons" />
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <Card className="icon-box">
           <CardBody className="d-flex flex-column align-items-center justify-content-center">

@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllRadialBarCharts from './components/AllRadialBarCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'RadialBar Charts' }
 
 const RadialBarCharts = () => {
   return (
     <>
-      <PageTitle title="RadialBar" subName="Charts" />
+      <DashboardPageTitle title="RadialBar" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllRadialBarCharts />

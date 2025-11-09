@@ -1,4 +1,4 @@
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { getAllReview } from '@/helpers/data'
 import { Metadata } from 'next'
@@ -25,7 +25,7 @@ const ReviewsPage = async () => {
   const reviewData = await getAllReview()
   return (
     <>
-      <PageTitle title="Reviews" subName="Real Estate" />
+      <DashboardPageTitle title="Reviews" subName="Real Estate" />
       <Row>
         <Col xl={12}>
           <Card>

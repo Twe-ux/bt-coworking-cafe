@@ -2,14 +2,14 @@ import UIExamplesList from '@/components/UIExamplesList'
 import type { Metadata } from 'next'
 import AllPagination from './components/AllPagination'
 import { Col, Row } from 'react-bootstrap'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Pagination' }
 
 const Pagination = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Pagination" />
+      <DashboardPageTitle subName="UI" title="Pagination" />
       <Row>
         <Col xl={9}>
           <AllPagination />

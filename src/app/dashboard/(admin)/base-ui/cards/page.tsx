@@ -10,7 +10,7 @@ import cardImg2 from '@/assets/images/small/img-2.jpg'
 import cardImg3 from '@/assets/images/small/img-3.jpg'
 import cardImg4 from '@/assets/images/small/img-4.jpg'
 import cardImg5 from '@/assets/images/small/img-5.jpg'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Cards' }
 
@@ -403,7 +403,7 @@ const Cards = () => {
   ]
   return (
     <>
-      <PageTitle subName="UI" title="Cards" />
+      <DashboardPageTitle subName="UI" title="Cards" />
       <Row>
         <Col xl={3} md={6}>
           <CardWithImage />

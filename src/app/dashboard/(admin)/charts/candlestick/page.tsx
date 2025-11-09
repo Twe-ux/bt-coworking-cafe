@@ -2,14 +2,14 @@ import UIExamplesList from '@/components/UIExamplesList'
 import { Col, Row } from 'react-bootstrap'
 import AllCandlestickCharts from './components/AllCandlestickCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Candlestick Alert' }
 
 const CandlestickCharts = () => {
   return (
     <>
-      <PageTitle title="Candlestick" subName="Charts" />
+      <DashboardPageTitle title="Candlestick" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllCandlestickCharts />

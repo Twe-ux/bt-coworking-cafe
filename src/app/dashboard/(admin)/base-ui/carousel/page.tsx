@@ -14,7 +14,7 @@ import Img7 from '@/assets/images/small/img-7.jpg'
 import Img8 from '@/assets/images/small/img-8.jpg'
 import Img9 from '@/assets/images/small/img-9.jpg'
 import Img10 from '@/assets/images/small/img-10.jpg'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Carousel' }
 
@@ -274,7 +274,7 @@ const DarkVariant = () => {
 const Carousel = () => {
   return (
     <>
-      <PageTitle subName="UI" title="Carousel" />
+      <DashboardPageTitle subName="UI" title="Carousel" />
       <Row>
         <Col xl={9}>
           <SlidesOnly />

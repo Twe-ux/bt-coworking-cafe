@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllBubbleCharts from './components/AllBubbleCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'Bubble Charts' }
 
 const BubbleCharts = () => {
   return (
     <>
-      <PageTitle title="Bubble" subName="Charts" />
+      <DashboardPageTitle title="Bubble" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllBubbleCharts />

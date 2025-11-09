@@ -2,14 +2,14 @@ import { Col, Row } from 'react-bootstrap'
 import UIExamplesList from '@/components/UIExamplesList'
 import AllBoxPlotCharts from './components/AllBoxPlotCharts'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 const metadata: Metadata = { title: 'Boxplot Alert' }
 
 const BoxPlotCharts = () => {
   return (
     <>
-      <PageTitle title="Boxplot" subName="Charts" />
+      <DashboardPageTitle title="Boxplot" subName="Charts" />
       <Row>
         <Col xl={9}>
           <AllBoxPlotCharts />

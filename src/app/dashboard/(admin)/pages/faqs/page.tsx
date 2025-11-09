@@ -2,7 +2,7 @@ import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, Card,
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { faqData } from './data'
 import type { Metadata } from 'next'
-import PageTitle from '@/components/PageTitle'
+import DashboardPageTitle from '@/components/DashboardPageTitle'
 
 export const metadata: Metadata = { title: 'FAQs' }
 
@@ -81,7 +81,7 @@ const SupportFaqs = () => {
 const FAQs = () => {
   return (
     <>
-      <PageTitle title="FAQs" subName="Pages" />
+      <DashboardPageTitle title="FAQs" subName="Pages" />
       <Row>
         <Col>
           <Row className="g-xl-4">
