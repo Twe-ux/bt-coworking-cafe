@@ -10,8 +10,8 @@ import PathNameLoad from "@/utils/pathNameLoad";
 import { ReactNode } from "react";
 
 export const metadata = {
-  title: "Digiv",
-  description: "Digiv Creative Digital Agency next.js templet",
+  title: "Cow-or-King Café by Anticafé",
+  description: "Le meilleur café coworking pour travailler à Strasbourg",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
