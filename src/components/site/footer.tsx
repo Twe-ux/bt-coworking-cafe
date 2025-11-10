@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ProtectedEmail from "@/components/common/ProtectedEmail";
 
 const Footer = () => {
   return (
@@ -73,7 +74,12 @@ const Footer = () => {
               <ul className="footer__info_contact">
                 <li>
                   <img src="/icons/Frame5.svg" alt="img" />
-                  <p>strasbourg@coworkingcafe.fr</p>
+                  <p>
+                    <ProtectedEmail
+                      user="strasbourg"
+                      domain="coworkingcafe.fr"
+                    />
+                  </p>
                 </li>
                 <li>
                   <img src="/icons/Frame6.svg" alt="img" />

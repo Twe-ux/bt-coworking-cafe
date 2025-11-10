@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ProtectedEmail from "@/components/common/ProtectedEmail";
 
 const TopHeader = () => {
   return (
@@ -21,7 +22,11 @@ const TopHeader = () => {
             </p>
           </div>
           <div className="d-flex align-items-center header__top_contact">
-            <p className="email">strasbourg@coworkingcafe.fr</p>
+            <ProtectedEmail
+              user="strasbourg"
+              domain="coworkingcafe.fr"
+              className="email"
+            />
             <span className="line" />
             <ul className="d-flex align-items-center icons">
               <li>
