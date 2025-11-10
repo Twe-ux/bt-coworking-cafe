@@ -45,10 +45,18 @@ export default function LoginPage() {
       }
 
       if (result?.ok) {
-        console.log('🔐 Login successful, redirecting to:', redirectTo);
-        // Redirect to the target page (default: /id for client dashboard)
-        // Middleware will intercept if user has a different role
-        window.location.href = redirectTo;
+        console.log('🔐 Login successful');
+
+        // If there's a specific callbackUrl, use it
+        if (callbackUrl) {
+          console.log('🔐 Redirecting to callbackUrl:', callbackUrl);
+          window.location.href = window.location.origin + callbackUrl;
+        } else {
+          // Otherwise, redirect back to /auth/login
+          // Middleware will intercept and redirect to the appropriate dashboard based on role
+          console.log('🔐 Redirecting to /auth/login (middleware will handle role-based redirect)');
+          window.location.href = window.location.origin + '/auth/login';
+        }
       }
     } catch (error) {
       console.error('🔐 Login exception:', error);
