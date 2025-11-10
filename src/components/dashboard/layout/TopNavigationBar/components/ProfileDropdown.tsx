@@ -1,7 +1,10 @@
+'use client';
+
 import avatar1 from "@/assets/dashboard/images/users/avatar-1.jpg";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import Image from "next/image";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import {
   Dropdown,
   DropdownHeader,
@@ -56,18 +59,11 @@ const ProfileDropdown = () => {
           />
           <span className="align-middle">Help</span>
         </DropdownItem>
-        <DropdownItem as={Link} href="/dashboard/auth/lock-screen">
-          <IconifyIcon
-            icon="solar:lock-keyhole-broken"
-            className="align-middle me-2 fs-18"
-          />
-          <span className="align-middle">Lock screen</span>
-        </DropdownItem>
         <div className="dropdown-divider my-1" />
         <DropdownItem
-          as={Link}
-          className=" text-danger"
-          href="/dashboard/auth/sign-in"
+          className="text-danger"
+          onClick={() => signOut({ callbackUrl: '/auth/login' })}
+          style={{ cursor: 'pointer' }}
         >
           <IconifyIcon
             icon="solar:logout-3-broken"

@@ -259,25 +259,19 @@ export const MENU_ITEMS: MenuItemType[] = [
       {
         key: 'sign-in',
         label: 'Sign In',
-        url: '/dashboard/auth/sign-in',
+        url: '/auth/login',
         parentKey: 'auth',
       },
       {
         key: 'sign-up',
         label: 'Sign Up',
-        url: '/dashboard/auth/sign-up',
+        url: '/auth/register',
         parentKey: 'auth',
       },
       {
         key: 'reset-password',
         label: 'Reset Password',
-        url: '/dashboard/auth/reset-password',
-        parentKey: 'auth',
-      },
-      {
-        key: 'lock-screen',
-        label: 'Lock Screen',
-        url: '/dashboard/auth/lock-screen',
+        url: '/auth/forgot-password',
         parentKey: 'auth',
       },
     ],

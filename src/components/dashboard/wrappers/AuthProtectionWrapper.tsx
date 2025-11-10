@@ -12,7 +12,7 @@ const AuthProtectionWrapper = ({ children }: ChildrenType) => {
   const pathname = usePathname();
 
   if (status == "unauthenticated") {
-    push(`/dashboard/auth/sign-in?redirectTo=${pathname}`);
+    push(`/auth/login?callbackUrl=${pathname}`);
     return <FallbackLoading />;
   }
 
