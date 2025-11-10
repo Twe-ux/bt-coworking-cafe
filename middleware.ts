@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 console.log('🔧 Middleware module loaded');
+console.log('🔧 NEXTAUTH_SECRET available:', !!process.env.NEXTAUTH_SECRET);
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -10,6 +11,7 @@ export async function middleware(req: NextRequest) {
   console.log('🔒 Middleware executing for:', pathname);
 
   // Get token from JWT
+  console.log('🔒 Getting token with secret:', process.env.NEXTAUTH_SECRET ? 'SECRET_PRESENT' : 'SECRET_MISSING');
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   // Get user role from token
