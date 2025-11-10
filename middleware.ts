@@ -12,9 +12,17 @@ export default withAuth(
       level: number;
     } | undefined;
 
+    console.log('🔒 Middleware:', {
+      pathname,
+      hasToken: !!token,
+      role: userRole?.slug,
+      level: userRole?.level,
+    });
+
     // Redirect authenticated users trying to access auth pages
     if (pathname.startsWith('/auth/') && token) {
       const redirectPath = getRedirectPathByRole(userRole?.slug || 'client');
+      console.log('🔒 Redirecting authenticated user from /auth/ to:', redirectPath);
       return NextResponse.redirect(new URL(redirectPath, req.url));
     }
 
