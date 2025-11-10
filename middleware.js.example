@@ -1,0 +1,42 @@
+// JavaScript version of middleware (for testing)
+// To test: rename this file to middleware.js and remove/rename middleware.ts
+
+import { NextResponse } from 'next/server';
+
+// Module-level log - should appear when server starts
+console.log('========================================');
+console.log('🔧 MIDDLEWARE MODULE LOADED (JavaScript version)');
+console.log('🔧 Time:', new Date().toISOString());
+console.log('========================================');
+
+export function middleware(req) {
+  const { pathname } = req.nextUrl;
+
+  // This should log for EVERY request
+  console.log('========================================');
+  console.log('🔒 MIDDLEWARE EXECUTING (JavaScript version)');
+  console.log('🔒 Path:', pathname);
+  console.log('🔒 Method:', req.method);
+  console.log('========================================');
+
+  // Add custom headers to prove middleware ran
+  const response = NextResponse.next();
+  response.headers.set('X-Middleware-Executed', 'true');
+  response.headers.set('X-Middleware-Path', pathname);
+  response.headers.set('X-Middleware-Time', new Date().toISOString());
+
+  return response;
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+};

@@ -93,7 +93,20 @@ Vous devriez voir :
 1. Vérifier que `middleware.ts` est bien à la racine du projet
 2. Vérifier qu'il n'y a pas de fichier `middleware.js` qui serait prioritaire
 3. Vérifier la configuration TypeScript (`tsconfig.json`)
-4. Essayer de renommer `middleware.ts` en `middleware.js` temporairement pour tester
+4. **Tester avec JavaScript** : Essayer la version JavaScript pour voir si c'est un problème TypeScript
+   ```bash
+   # Sauvegarder la version TypeScript
+   mv middleware.ts middleware.ts.disabled
+
+   # Renommer la version JavaScript
+   mv middleware.js.example middleware.js
+
+   # Redémarrer le serveur
+   rm -rf .next && npm run dev
+
+   # Si ça fonctionne, c'est un problème de compilation TypeScript
+   # Sinon, c'est un problème plus profond avec Next.js
+   ```
 
 ### Scénario B : Module chargé mais fonction jamais exécutée
 
