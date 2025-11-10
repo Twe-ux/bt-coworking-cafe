@@ -8,7 +8,7 @@
     &_title {
       h1 {
         color: var(--primary-clr);
-        font-size: 80px;
+        font-size: 60px;
         line-height: 80px;
         font-weight: 600;
         @include breakpoint(xl) {
@@ -117,6 +117,8 @@
 
     .bg__img {
       position: absolute;
+      height: 50%;
+      object-fit: cover;
       right: 0;
       bottom: -50px;
       border-radius: 10px;
@@ -142,9 +144,9 @@
         display: none;
       }
     }
-    .bg__video {
+    .logo__circle {
       position: absolute;
-      // height: 175px;
+      height: 200px;
       right: 0;
       top: 40px;
       z-index: 1;

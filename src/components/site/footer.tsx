@@ -33,7 +33,11 @@ const Footer = () => {
                 href={"#"}
                 className="d-flex align-items-center footer__logo"
               >
-                <img src="/images/logo-circle.webp" alt="img" />
+                <img
+                  src="/images/logo-circle-white.png"
+                  alt="img"
+                  className="logo"
+                />
               </Link>
             </div>
             <ul className="d-flex justify-content-center gap-3 footer__socal">

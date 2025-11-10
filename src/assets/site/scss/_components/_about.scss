@@ -69,18 +69,18 @@
       li {
         @include flex();
         gap: 12px;
-        margin-bottom: 60px;
+        margin-bottom: 25px;
 
         &:last-child {
           margin-bottom: 0;
         }
 
         @include breakpoint(xl) {
-          margin-bottom: 40px;
+          margin-bottom: 25px;
         }
 
         @include breakpoint(lg) {
-          margin-bottom: 30px;
+          margin-bottom: 25px;
         }
 
         @include breakpoint(md) {

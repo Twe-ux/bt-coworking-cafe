@@ -6,19 +6,21 @@ const HeroOne = () => {
     <section className="banner overflow-hidden">
       <div className="container position-relative">
         <div className="row">
-          <div className="col-lg-8">
+          <div className="col-lg-10">
             <div className="banner__content">
               <div className="banner__content_title ">
                 <SlideUp>
                   <h1 className="title">
-                    Le refuge des nomades et coworkers sans bureau fixe
+                    Tu cherches un espace ou un café pour travailler en plein
+                    centre de Strasbourg ?
                   </h1>
                 </SlideUp>
                 <SlideUp delay={2}>
                   <p>
-                    Le meilleur café pour travailler ! Boissons, wifi,
-                    imprimante ...
-                    <br /> Tout est inclus; seul le temps est facturé.
+                    Tu l'as trouvé ! Bienvenue dans notre coworking café où tu
+                    ne paies que le temps passé sur place. À ta disposition, un
+                    énorme choix de boissons à volontées, des snacks et pleins
+                    d'autres services.
                   </p>
                 </SlideUp>
               </div>
@@ -57,21 +59,16 @@ const HeroOne = () => {
               </SlideUp>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-2">
             <div className="banner__right">
               <img
-                src="/images/banner/Shape.svg"
+                src="/images/banner/logo-circle-white.png"
                 alt="img"
-                className="bg__shap"
-              />
-              <img
-                src="/images/logo-circle.webp"
-                alt="img"
-                className="bg__video"
+                className="logo__circle"
               />
               <div>
                 <img
-                  src="/images/banner/Rectangle96.png"
+                  src="/images/banner/ANOFF.jpg"
                   alt="img"
                   className="bg__img"
                 />

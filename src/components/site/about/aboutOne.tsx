@@ -17,15 +17,6 @@ const AboutOne = () => {
                 communauté.
               </h1>
             </div>
-            <div className="col-lg-2">
-              <div className="about__title_shap position-relative">
-                <img
-                  src="/images/banner/Shape.svg"
-                  alt="img"
-                  className="w-100"
-                />
-              </div>
-            </div>
           </SlideDown>
         </div>
         <div className="row justify-content-between align-items-center about__wapper">
@@ -62,9 +53,9 @@ const AboutOne = () => {
             <SlideUp delay={3}>
               <ul className="about__wapper_right">
                 <li>
-                  <i className="fa-solid fa-check"></i>
-                  <span className="d-flex text-center flex-column">
-                    <p className="bold">☕️ Tout compris </p>
+                  {/* <i className="fa-solid fa-check"></i> */}
+                  <span className="">
+                    <p className="bold">☕️ Tout compris :</p>
                     <p>
                       cafés, thés et autres boissons à volonté, wifi très haut
                       débit, snack inclus...
@@ -72,23 +63,23 @@ const AboutOne = () => {
                   </span>
                 </li>
                 <li>
-                  <i className="fa-solid fa-check"></i>
-                  <span className="d-flex text-center flex-column">
-                    <p className="bold">⏱️ Payer le temps</p>
+                  {/* <i className="fa-solid fa-check"></i> */}
+                  <span className="">
+                    <p className="bold">⏱️ Payer le temps :</p>
                     <p>6€/heure, 29€/jour ou abonnements semaine et mois</p>
                   </span>
                 </li>
                 <li>
-                  <i className="fa-solid fa-check"></i>
-                  <span className="d-flex text-center flex-column">
-                    <p className="bold">🌼 Ambiance feel good</p>
+                  {/* <i className="fa-solid fa-check"></i> */}
+                  <span className="">
+                    <p className="bold">🌼 Ambiance feel good : </p>
                     <p>design chaleureux, calme et échanges naturels</p>
                   </span>
                 </li>
                 <li>
-                  <i className="fa-solid fa-check"></i>
-                  <span className="d-flex text-center flex-column">
-                    <p className="bold">🎉 Ouvert & flexible</p>
+                  {/* <i className="fa-solid fa-check"></i> */}
+                  <span className="">
+                    <p className="bold">🎉 Ouvert & flexible :</p>
                     <p>
                       ouvert 7J/7, avec ou sans réservation (jusqu'à 5 pers.)
                     </p>
