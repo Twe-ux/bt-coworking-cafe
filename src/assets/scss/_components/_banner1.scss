@@ -8,8 +8,8 @@
     &_title {
       h1 {
         color: var(--primary-clr);
-        font-size: 100px;
-        line-height: 100px;
+        font-size: 80px;
+        line-height: 80px;
         font-weight: 600;
         @include breakpoint(xl) {
           font-size: 80px;
@@ -104,7 +104,7 @@
         @include breakpoint(sm) {
           font-size: 14px;
         }
-        @include breakpoint(xs){
+        @include breakpoint(xs) {
           line-height: 20px;
         }
       }
@@ -144,6 +144,7 @@
     }
     .bg__video {
       position: absolute;
+      // height: 175px;
       right: 0;
       top: 40px;
       z-index: 1;
@@ -201,4 +202,3 @@
     // z-index: 0;
   }
 }
-

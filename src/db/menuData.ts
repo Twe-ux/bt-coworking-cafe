@@ -6,45 +6,61 @@ export interface MenuItem {
 
 export const menuData: MenuItem[] = [
   {
-    title: 'Home',
-    link: '#',
-    submenu: [
-      { title: 'Home 1', link: '/' },
-      { title: 'Home 2', link: 'home-2' },
-    ],
+    title: "Accueil",
+    link: "/",
   },
   {
-    title: 'About Us',
-    link: '/about',
+    title: "Concept",
+    link: "/concept",
   },
   {
-    title: 'Services',
-    link: '#',
-    submenu: [
-      { title: 'Services', link: '/services' },
-      { title: 'Service Details', link: '/service-details' },
-    ],
+    title: "Espaces",
+    link: "/espaces",
   },
   {
-    title: 'Pages',
-    link: '#',
-    submenu: [
-      { title: "Faq's", link: '/faq' },
-      { title: 'Pricing', link: '/pricing' },
-      { title: 'Projects', link: '/projects' },
-      { title: 'Project Details', link: '/project-details' },
-    ],
+    title: "Tarifs",
+    link: "/tarifs",
   },
   {
-    title: 'Blog',
-    link: '#',
-    submenu: [
-      { title: 'Blog', link: '/blog' },
-      { title: 'Blog Details', link: '/blog-details' },
-    ],
+    title: "Menu",
+    link: "/menu",
   },
   {
-    title: 'Contact Us',
-    link: '/contact',
+    title: "Professionnels",
+    link: "/professionnels",
   },
+  {
+    title: "Le Mag'",
+    link: "/mag",
+  },
+  // {
+  //   title: "Services",
+  //   link: "#",
+  //   submenu: [
+  //     { title: "Services", link: "/services" },
+  //     { title: "Service Details", link: "/service-details" },
+  //   ],
+  // },
+  // {
+  //   title: "Pages",
+  //   link: "#",
+  //   submenu: [
+  //     { title: "Faq's", link: "/faq" },
+  //     { title: "Pricing", link: "/pricing" },
+  //     { title: "Projects", link: "/projects" },
+  //     { title: "Project Details", link: "/project-details" },
+  //   ],
+  // },
+  // {
+  //   title: "Blog",
+  //   link: "#",
+  //   submenu: [
+  //     { title: "Blog", link: "/blog" },
+  //     { title: "Blog Details", link: "/blog-details" },
+  //   ],
+  // },
+  // {
+  //   title: "Contact Us",
+  //   link: "/contact",
+  // },
 ];

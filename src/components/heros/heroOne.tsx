@@ -1,6 +1,5 @@
-import SlideUp from '@/utils/animations/slideUp'
-import Link from 'next/link'
-import React from 'react'
+import SlideUp from "@/utils/animations/slideUp";
+import Link from "next/link";
 
 const HeroOne = () => {
   return (
@@ -9,49 +8,73 @@ const HeroOne = () => {
         <div className="row">
           <div className="col-lg-8">
             <div className="banner__content">
-              <div className="banner__content_title">
+              <div className="banner__content_title ">
                 <SlideUp>
-                  <h1> We Are A Creative Digital Agency</h1>
+                  <h1 className="title">
+                    Le refuge des nomades et coworkers sans bureau fixe
+                  </h1>
                 </SlideUp>
                 <SlideUp delay={2}>
                   <p>
-                    High-quality, relevant content is essential for engaging &amp;
-                    retaining online audiences.
+                    Le meilleur café pour travailler ! Boissons, wifi,
+                    imprimante ...
+                    <br /> Tout est inclus; seul le temps est facturé.
                   </p>
                 </SlideUp>
               </div>
-              <SlideUp delay={3} className="buttons d-sm-flex align-items-center">
-                <Link href={"/services"} className="common__btn buttons_file">
-                  <span>View Our Service</span>
+              <SlideUp
+                delay={3}
+                className="buttons d-sm-flex align-items-center"
+              >
+                <Link href={"/espaces"} className="common__btn buttons_file">
+                  <span>Voir les espaces</span>
                   <i className="fa-solid fa-arrow-right"></i>
                 </Link>
-                <Link href={"/about"} className="common__btn buttons_outline mt-4 mt-sm-0">
-                  <span>More About Us</span>
+                <Link
+                  href={"/actualites"}
+                  className="common__btn buttons_outline mt-4 mt-sm-0"
+                >
+                  <span>Nos actualités</span>
                   <i className="fa-solid fa-arrow-right"></i>
                 </Link>
               </SlideUp>
-              <SlideUp delay={4} className="banner__content_number d-flex justify-content-between" >
+              <SlideUp
+                delay={4}
+                className="banner__content_number d-flex justify-content-between"
+              >
                 <div>
-                  <h4>45+</h4>
-                  <p>Years Experience</p>
+                  <h4>60</h4>
+                  <p>places</p>
                 </div>
                 <div>
-                  <h4>99%</h4>
-                  <p>Satisfaction Rate</p>
+                  <h4>+ 40</h4>
+                  <p>choix de boissons</p>
                 </div>
                 <div>
-                  <h4>393k</h4>
-                  <p>Our Global Clients</p>
+                  <h4>+ 700</h4>
+                  <p>clients membres</p>
                 </div>
               </SlideUp>
             </div>
           </div>
           <div className="col-lg-4">
             <div className="banner__right">
-              <img src="/images/banner/Shape.svg" alt="img" className="bg__shap" />
-              <img src="/images/banner/Video.svg" alt="img" className="bg__video" />
+              <img
+                src="/images/banner/Shape.svg"
+                alt="img"
+                className="bg__shap"
+              />
+              <img
+                src="/images/logo-circle.webp"
+                alt="img"
+                className="bg__video"
+              />
               <div>
-                <img src="/images/banner/Rectangle96.png" alt="img" className="bg__img" />
+                <img
+                  src="/images/banner/Rectangle96.png"
+                  alt="img"
+                  className="bg__img"
+                />
               </div>
             </div>
           </div>
@@ -66,8 +89,7 @@ const HeroOne = () => {
         {/* </div> */}
       </div>
     </section>
+  );
+};
 
-  )
-}
-
-export default HeroOne
+export default HeroOne;

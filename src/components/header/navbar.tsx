@@ -1,48 +1,56 @@
-import React, { useState } from "react";
 import { menuData, MenuItem } from "@/db/menuData";
 import Link from "next/link";
+import { useState } from "react";
 
 interface NavbarProps {
-    activeNavbar: boolean;
+  activeNavbar: boolean;
 }
 
 const Navbar = ({ activeNavbar }: NavbarProps) => {
-    const [activeDropDownId, setActiveDropdownId] = useState<number | null>(null);
-    const handeDropDown = (index: number, isDropdown?: MenuItem['submenu']) => {
-        if (isDropdown?.length) {
-            setActiveDropdownId(activeDropDownId === index ? null : index)
-        }
+  const [activeDropDownId, setActiveDropdownId] = useState<number | null>(null);
+  const handeDropDown = (index: number, isDropdown?: MenuItem["submenu"]) => {
+    if (isDropdown?.length) {
+      setActiveDropdownId(activeDropDownId === index ? null : index);
     }
-    return (
-        <nav
-            className={`header__bottom_navbar ${activeNavbar ? "header__bottom_navbar-active" : ""} `}
-        >
-            <ul className="d-xl-flex menu__list">
-                {menuData?.map((item, index) => (
-                    <li key={index} className="dropdown__container">
-                        <span
-                            className="d-flex justify-content-between align-items-center gap-1"
-                            onClick={() => handeDropDown(index, item.submenu)}
-                        >
-                            <Link href={item.link}>{item.title}</Link>
-                            {item?.submenu && <i className="bi bi-chevron-down" />}
-                        </span>
-                        {item?.submenu && (
-                            <ul
-                                className={`dropdown__container_menu ${activeDropDownId === index ? "dropdown__container_menu-active" : ""} `}
-                            >
-                                {item?.submenu?.map((subItem, subIndex) => (
-                                    <li key={subIndex}>
-                                        <Link href={subItem.link}>{subItem.title}</Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </li>
+  };
+  return (
+    <nav
+      className={`header__bottom_navbar ${
+        activeNavbar
+          ? "header__bottom_navbar-active"
+          : "position-absolute px-4 mx-5"
+      } `}
+    >
+      <ul className="d-xl-flex menu__list">
+        {menuData?.map((item, index) => (
+          <li key={index} className="dropdown__container">
+            <span
+              className="d-flex justify-content-between align-items-center gap-1"
+              onClick={() => handeDropDown(index, item.submenu)}
+            >
+              <Link href={item.link}>{item.title}</Link>
+              {item?.submenu && <i className="bi bi-chevron-down" />}
+            </span>
+            {item?.submenu && (
+              <ul
+                className={`dropdown__container_menu ${
+                  activeDropDownId === index
+                    ? "dropdown__container_menu-active"
+                    : ""
+                } `}
+              >
+                {item?.submenu?.map((subItem, subIndex) => (
+                  <li key={subIndex}>
+                    <Link href={subItem.link}>{subItem.title}</Link>
+                  </li>
                 ))}
-            </ul>
-        </nav>
-    );
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
 };
 
 export default Navbar;

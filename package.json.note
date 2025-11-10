@@ -1,0 +1,2 @@
+IMPORTANT: Le dashboard requiert tous les packages installés.
+Pour installer toutes les dépendances: npm install --legacy-peer-deps
