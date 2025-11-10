@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import './auth.scss';
@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const callbackUrl = searchParams.get('callbackUrl') || null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,10 +24,15 @@ export default function LoginPage() {
     try {
       console.log('🔐 Attempting login with email:', email);
 
+      // Use redirect: true and let NextAuth + middleware handle the redirect
+      // If no callbackUrl, default to a protected route that middleware will redirect
+      const redirectTo = callbackUrl || '/id';
+
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
+        callbackUrl: redirectTo,
       });
 
       console.log('🔐 Login result:', result);
@@ -40,10 +45,10 @@ export default function LoginPage() {
       }
 
       if (result?.ok) {
-        console.log('🔐 Login successful, redirecting to:', callbackUrl);
-        // Redirect will be handled by middleware based on role
-        router.push(callbackUrl);
-        router.refresh();
+        console.log('🔐 Login successful, redirecting to:', redirectTo);
+        // Redirect to the target page (default: /id for client dashboard)
+        // Middleware will intercept if user has a different role
+        window.location.href = redirectTo;
       }
     } catch (error) {
       console.error('🔐 Login exception:', error);
