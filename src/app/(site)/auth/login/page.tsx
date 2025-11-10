@@ -22,25 +22,31 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      console.log('🔐 Attempting login with email:', email);
+
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
       });
 
+      console.log('🔐 Login result:', result);
+
       if (result?.error) {
+        console.error('🔐 Login failed:', result.error);
         setError(result.error);
         setIsLoading(false);
         return;
       }
 
       if (result?.ok) {
+        console.log('🔐 Login successful, redirecting to:', callbackUrl);
         // Redirect will be handled by middleware based on role
         router.push(callbackUrl);
         router.refresh();
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('🔐 Login exception:', error);
       setError('Une erreur est survenue lors de la connexion');
       setIsLoading(false);
     }
