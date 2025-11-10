@@ -18,28 +18,28 @@ async function seedUsers() {
     // Create test users for each role
     const testUsers = [
       {
-        email: 'dev@coworking.com',
+        email: 'dev@coworkingcafe.fr',
         password: 'dev123456',
         givenName: 'Dev User',
         username: 'dev_user',
         roleSlug: 'dev' as const,
       },
       {
-        email: 'admin@coworking.com',
+        email: 'admin@coworkingcafe.fr',
         password: 'admin123456',
         givenName: 'Admin User',
         username: 'admin_user',
         roleSlug: 'admin' as const,
       },
       {
-        email: 'staff@coworking.com',
+        email: 'staff@coworkingcafe.fr',
         password: 'staff123456',
         givenName: 'Staff User',
         username: 'staff_user',
         roleSlug: 'staff' as const,
       },
       {
-        email: 'client@coworking.com',
+        email: 'client@coworkingcafe.fr',
         password: 'client123456',
         givenName: 'Client User',
         username: 'client_user',
