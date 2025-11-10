@@ -17,14 +17,26 @@ export function middleware(req: NextRequest) {
   console.log('🔒 Method:', req.method);
   console.log('========================================');
 
-  return NextResponse.next();
+  // Add custom headers to prove middleware ran
+  // User can check these in browser DevTools > Network tab
+  const response = NextResponse.next();
+  response.headers.set('X-Middleware-Executed', 'true');
+  response.headers.set('X-Middleware-Path', pathname);
+  response.headers.set('X-Middleware-Time', new Date().toISOString());
+
+  return response;
 }
 
-// Match ALL routes (very permissive for testing)
+// Match ALL routes except static files (testing)
 export const config = {
   matcher: [
-    '/auth/:path*',
-    '/id/:path*',
-    '/dashboard/:path*',
+    /*
+     * Match all request paths except:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
