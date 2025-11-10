@@ -24,15 +24,10 @@ export default function LoginPage() {
     try {
       console.log('🔐 Attempting login with email:', email);
 
-      // Use redirect: true and let NextAuth + middleware handle the redirect
-      // If no callbackUrl, default to a protected route that middleware will redirect
-      const redirectTo = callbackUrl || '/id';
-
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
-        callbackUrl: redirectTo,
       });
 
       console.log('🔐 Login result:', result);
