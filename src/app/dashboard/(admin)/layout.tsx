@@ -1,15 +1,15 @@
-import Footer from "@/components/layout/Footer";
-import AuthProtectionWrapper from "@/components/wrappers/AuthProtectionWrapper";
+import Footer from "@/components/dashboard/layout/footer";
+import AuthProtectionWrapper from "@/components/dashboard/wrappers/AuthProtectionWrapper";
 import { ChildrenType } from "@/types/component-props";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Container } from "react-bootstrap";
 
 const TopNavigationBar = dynamic(
-  () => import("@/components/layout/TopNavigationBar/page")
+  () => import("@/components/dashboard/layout/TopNavigationBar/page")
 );
 const VerticalNavigationBar = dynamic(
-  () => import("@/components/layout/VerticalNavigationBar/page")
+  () => import("@/components/dashboard/layout/VerticalNavigationBar/page")
 );
 
 const AdminLayout = ({ children }: ChildrenType) => {

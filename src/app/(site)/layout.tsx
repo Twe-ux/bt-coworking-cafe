@@ -1,11 +1,11 @@
-import "@/assets/font/bootstrap-font/bootstrap-icons.min.css";
-import "@/assets/font/font-awsome/css-js/all.min.css";
-import "@/assets/font/font-awsome/css-js/all.min.js";
-import "@/assets/scss/main.scss";
-import AhrefsAnalytics from "@/components/AhrefsWebAnalytics";
-import Bootstrap from "@/components/Bootstrap";
-import Footer from "@/components/footer";
-import Header from "@/components/header/header";
+import "@/assets/site/font/bootstrap-font/bootstrap-icons.min.css";
+import "@/assets/site/font/font-awsome/css-js/all.min.css";
+import "@/assets/site/font/font-awsome/css-js/all.min.js";
+import "@/assets/site/scss/main.scss";
+import AhrefsAnalytics from "@/components/site/AhrefsWebAnalytics";
+import Bootstrap from "@/components/site/Bootstrap";
+import Footer from "@/components/site/footer";
+import Header from "@/components/site/header/header";
 import PathNameLoad from "@/utils/pathNameLoad";
 import { ReactNode } from "react";
 

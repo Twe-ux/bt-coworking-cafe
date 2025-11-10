@@ -1,20 +1,27 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { getAllProperty } from '@/helpers/data'
-import CustomerCard from './components/CustomerCard'
-import CustomersDetails from './components/CustomersDetails'
-import { customerData } from './data'
-import PropertyCard from './components/PropertyCard'
-import WeeklyInquiry from './components/WeeklyInquiry'
-import Transactions from './components/Transactions'
-import OwnProperty from './components/OwnProperty'
-import TransactionHistory from './components/TransactionHistory'
-import { Card, CardBody, CardHeader, CardTitle, Col, Row } from 'react-bootstrap'
-import { Metadata } from 'next'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { getAllProperty } from "@/helpers/data";
+import { Metadata } from "next";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Row,
+} from "react-bootstrap";
+import CustomerCard from "./components/CustomerCard";
+import CustomersDetails from "./components/CustomersDetails";
+import OwnProperty from "./components/OwnProperty";
+import PropertyCard from "./components/PropertyCard";
+import TransactionHistory from "./components/TransactionHistory";
+import Transactions from "./components/Transactions";
+import WeeklyInquiry from "./components/WeeklyInquiry";
+import { customerData } from "./data";
 
-export const metadata: Metadata = { title: 'Customer Overview' }
+export const metadata: Metadata = { title: "Customer Overview" };
 
 const CustomerDetailsPage = async () => {
-  const propertyData = await getAllProperty()
+  const propertyData = await getAllProperty();
   return (
     <>
       <DashboardPageTitle subName="Customers" title="Customer Overview" />
@@ -34,7 +41,7 @@ const CustomerDetailsPage = async () => {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle as={'h4'}>Interested Properties (3)</CardTitle>
+              <CardTitle as={"h4"}>Interested Properties (3)</CardTitle>
             </CardHeader>
           </Card>
           <Row className="mt-3">
@@ -53,7 +60,7 @@ const CustomerDetailsPage = async () => {
       </Row>
       <TransactionHistory />
     </>
-  )
-}
+  );
+};
 
-export default CustomerDetailsPage
+export default CustomerDetailsPage;

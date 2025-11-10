@@ -1,9 +1,9 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { Metadata } from 'next'
-import AgentDetails from './components/AgentDetails'
-import AgentsDetailsBanner from './components/AgentsDetailsBannner'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { Metadata } from "next";
+import AgentDetails from "./components/AgentDetails";
+import AgentsDetailsBanner from "./components/AgentsDetailsBannner";
 
-export const metadata: Metadata = { title: 'Agent Overview' }
+export const metadata: Metadata = { title: "Agent Overview" };
 
 const AgentsDetailsPage = () => {
   return (
@@ -12,7 +12,7 @@ const AgentsDetailsPage = () => {
       <AgentsDetailsBanner />
       <AgentDetails />
     </>
-  )
-}
+  );
+};
 
-export default AgentsDetailsPage
+export default AgentsDetailsPage;

@@ -1,11 +1,11 @@
-import FileUpload from '@/components/FileUpload'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import CustomerAddCard from './components/CustomerAddCard'
-import AddCustomer from './components/AddCustomer'
-import { Col, Row } from 'react-bootstrap'
-import { Metadata } from 'next'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import FileUpload from "@/components/dashboard/FileUpload";
+import { Metadata } from "next";
+import { Col, Row } from "react-bootstrap";
+import AddCustomer from "./components/AddCustomer";
+import CustomerAddCard from "./components/CustomerAddCard";
 
-export const metadata: Metadata = { title: 'Customers Add' }
+export const metadata: Metadata = { title: "Customers Add" };
 
 const CustomerAddPage = () => {
   return (
@@ -19,7 +19,7 @@ const CustomerAddPage = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default CustomerAddPage
+export default CustomerAddPage;

@@ -1,8 +1,8 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { getAllCustomer } from '@/helpers/data'
-import Image from 'next/image'
-import Link from 'next/link'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { getAllCustomer } from "@/helpers/data";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Button,
   Card,
@@ -16,10 +16,10 @@ import {
   DropdownMenu,
   DropdownToggle,
   Row,
-} from 'react-bootstrap'
+} from "react-bootstrap";
 
 const CustomersListPage = async () => {
-  const customerData = await getAllCustomer()
+  const customerData = await getAllCustomer();
   return (
     <>
       <DashboardPageTitle subName="Customers" title="Customer List" />
@@ -28,15 +28,22 @@ const CustomersListPage = async () => {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
               <div>
-                <CardTitle as={'h4'}>All Customer List</CardTitle>
+                <CardTitle as={"h4"}>All Customer List</CardTitle>
               </div>
               <Dropdown>
                 <DropdownToggle
-                  as={'a'}
+                  as={"a"}
                   className=" btn btn-sm btn-outline-light rounded content-none icons-center"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  This Month <IconifyIcon className="ms-1" width={16} height={16} icon="ri:arrow-down-s-line" />
+                  aria-expanded="false"
+                >
+                  This Month{" "}
+                  <IconifyIcon
+                    className="ms-1"
+                    width={16}
+                    height={16}
+                    icon="ri:arrow-down-s-line"
+                  />
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu-end">
                   <DropdownItem>Download</DropdownItem>
@@ -52,8 +59,15 @@ const CustomersListPage = async () => {
                     <tr>
                       <th style={{ width: 20 }}>
                         <div className="form-check">
-                          <input type="checkbox" className="form-check-input" id="customCheck1" />
-                          <label className="form-check-label" htmlFor="customCheck1" />
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customCheck1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
                         </div>
                       </th>
                       <th>Customer Photo &amp; Name</th>
@@ -71,17 +85,35 @@ const CustomersListPage = async () => {
                       <tr key={idx}>
                         <td>
                           <div className="form-check">
-                            <input type="checkbox" className="form-check-input" id="customCheck2" />
-                            <label className="form-check-label" htmlFor="customCheck2">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              id="customCheck2"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="customCheck2"
+                            >
                               &nbsp;
                             </label>
                           </div>
                         </td>
                         <td>
                           <div className="d-flex align-items-center gap-2">
-                            <div>{item.user?.avatar && <Image src={item.user.avatar} alt="avatar" className="avatar-sm rounded-circle" />}</div>
                             <div>
-                              <Link href="" className="text-dark fw-medium fs-15">
+                              {item.user?.avatar && (
+                                <Image
+                                  src={item.user.avatar}
+                                  alt="avatar"
+                                  className="avatar-sm rounded-circle"
+                                />
+                              )}
+                            </div>
+                            <div>
+                              <Link
+                                href=""
+                                className="text-dark fw-medium fs-15"
+                              >
                                 {item.user?.name}
                               </Link>
                             </div>
@@ -92,17 +124,32 @@ const CustomersListPage = async () => {
                         <td>{item.propertyType}</td>
                         <td>{item.interestedProperties}</td>
                         <td>{item.customerStatus}</td>
-                        <td>{item.date.toLocaleString('en-us', { day: 'numeric', month: 'numeric', year: 'numeric' })}</td>
+                        <td>
+                          {item.date.toLocaleString("en-us", {
+                            day: "numeric",
+                            month: "numeric",
+                            year: "numeric",
+                          })}
+                        </td>
                         <td>
                           <div className="d-flex gap-2">
                             <Button variant="light" size="sm">
-                              <IconifyIcon icon="solar:eye-broken" className="align-middle fs-18" />
+                              <IconifyIcon
+                                icon="solar:eye-broken"
+                                className="align-middle fs-18"
+                              />
                             </Button>
                             <Button variant="soft-primary" size="sm">
-                              <IconifyIcon icon="solar:pen-2-broken" className="align-middle fs-18" />
+                              <IconifyIcon
+                                icon="solar:pen-2-broken"
+                                className="align-middle fs-18"
+                              />
                             </Button>
                             <Button variant="soft-danger" size="sm">
-                              <IconifyIcon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                              <IconifyIcon
+                                icon="solar:trash-bin-minimalistic-2-broken"
+                                className="align-middle fs-18"
+                              />
                             </Button>
                           </div>
                         </td>
@@ -147,7 +194,7 @@ const CustomersListPage = async () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default CustomersListPage
+export default CustomersListPage;

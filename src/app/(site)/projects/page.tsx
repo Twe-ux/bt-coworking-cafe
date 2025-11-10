@@ -1,14 +1,13 @@
-import PageTitle from '@/components/pageTitle'
-import ProjectsThree from '@/components/projects/projectsThree'
-import React from 'react'
+import PageTitle from "@/components/site/pageTitle";
+import ProjectsThree from "@/components/site/projects/projectsThree";
 
 const Projects = () => {
-    return (
-        <>
-            <PageTitle title={"Our Project"} currentPage={"Our Project"} />
-            <ProjectsThree />
-        </>
-    )
-}
+  return (
+    <>
+      <PageTitle title={"Our Project"} currentPage={"Our Project"} />
+      <ProjectsThree />
+    </>
+  );
+};
 
-export default Projects
+export default Projects;

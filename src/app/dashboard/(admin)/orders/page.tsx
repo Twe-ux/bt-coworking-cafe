@@ -1,9 +1,9 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { getAllTransaction } from '@/helpers/data'
-import { Metadata } from 'next'
-import Image from 'next/image'
-import Link from 'next/link'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { getAllTransaction } from "@/helpers/data";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Button,
   Card,
@@ -17,12 +17,12 @@ import {
   DropdownMenu,
   DropdownToggle,
   Row,
-} from 'react-bootstrap'
+} from "react-bootstrap";
 
-export const metadata: Metadata = { title: 'Orders' }
+export const metadata: Metadata = { title: "Orders" };
 
 const OrdersPage = async () => {
-  const orderData = await getAllTransaction()
+  const orderData = await getAllTransaction();
   return (
     <>
       <DashboardPageTitle title="Orders" subName="Real Estate" />
@@ -31,15 +31,22 @@ const OrdersPage = async () => {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
               <div>
-                <CardTitle as={'h4'}>All Order List</CardTitle>
+                <CardTitle as={"h4"}>All Order List</CardTitle>
               </div>
               <Dropdown>
                 <DropdownToggle
-                  as={'a'}
+                  as={"a"}
                   className=" btn btn-sm btn-outline-light rounded content-none icons-center"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  This Month <IconifyIcon className="ms-1" width={16} height={16} icon="ri:arrow-down-s-line" />
+                  aria-expanded="false"
+                >
+                  This Month{" "}
+                  <IconifyIcon
+                    className="ms-1"
+                    width={16}
+                    height={16}
+                    icon="ri:arrow-down-s-line"
+                  />
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu-end">
                   <DropdownItem>Download</DropdownItem>
@@ -55,8 +62,15 @@ const OrdersPage = async () => {
                     <tr>
                       <th style={{ width: 20 }}>
                         <div className="form-check">
-                          <input type="checkbox" className="form-check-input" id="customCheck1" />
-                          <label className="form-check-label" htmlFor="customCheck1" />
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="customCheck1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="customCheck1"
+                          />
                         </div>
                       </th>
                       <th>Customer Photo &amp; Name</th>
@@ -75,48 +89,88 @@ const OrdersPage = async () => {
                         <tr key={idx}>
                           <td>
                             <div className="form-check">
-                              <input type="checkbox" className="form-check-input" id="customCheck2" />
-                              <label className="form-check-label" htmlFor="customCheck2">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="customCheck2"
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="customCheck2"
+                              >
                                 &nbsp;
                               </label>
                             </div>
                           </td>
                           <td>
                             <div className="d-flex align-items-center gap-2">
-                              <div>{item.user?.avatar && <Image src={item.user?.avatar} alt="avatar" className="avatar-sm rounded-circle" />}</div>
                               <div>
-                                <Link href="" className="text-dark fw-medium fs-15">
+                                {item.user?.avatar && (
+                                  <Image
+                                    src={item.user?.avatar}
+                                    alt="avatar"
+                                    className="avatar-sm rounded-circle"
+                                  />
+                                )}
+                              </div>
+                              <div>
+                                <Link
+                                  href=""
+                                  className="text-dark fw-medium fs-15"
+                                >
                                   {item.user?.name}
                                 </Link>
                               </div>
                             </div>
                           </td>
-                          <td>{item.purchaseDate.toLocaleString('en-us', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                          <td>
+                            {item.purchaseDate.toLocaleString("en-us", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })}
+                          </td>
                           <td>{item.user?.contact}</td>
                           <td>{item.property?.propertyType}</td>
                           <td>${item.amount}</td>
                           <td>{item.property?.location}</td>
                           <td>
                             <span
-                              className={`badge bg-${item.amountStatus == 'Pending' ? 'warning' : item.amountStatus == 'Unpaid' ? 'danger' : 'success'} text-white fs-11`}>
+                              className={`badge bg-${
+                                item.amountStatus == "Pending"
+                                  ? "warning"
+                                  : item.amountStatus == "Unpaid"
+                                  ? "danger"
+                                  : "success"
+                              } text-white fs-11`}
+                            >
                               {item.amountStatus}
                             </span>
                           </td>
                           <td>
                             <div className="d-flex gap-2">
                               <Button variant="light" size="sm">
-                                <IconifyIcon icon="solar:eye-broken" className="align-middle fs-18" />
+                                <IconifyIcon
+                                  icon="solar:eye-broken"
+                                  className="align-middle fs-18"
+                                />
                               </Button>
                               <Button variant="soft-primary" size="sm">
-                                <IconifyIcon icon="solar:pen-2-broken" className="align-middle fs-18" />
+                                <IconifyIcon
+                                  icon="solar:pen-2-broken"
+                                  className="align-middle fs-18"
+                                />
                               </Button>
                               <Button variant="soft-danger" size="sm">
-                                <IconifyIcon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
+                                <IconifyIcon
+                                  icon="solar:trash-bin-minimalistic-2-broken"
+                                  className="align-middle fs-18"
+                                />
                               </Button>
                             </div>
                           </td>
                         </tr>
-                      )
+                      );
                     })}
                   </tbody>
                 </table>
@@ -157,7 +211,7 @@ const OrdersPage = async () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default OrdersPage
+export default OrdersPage;

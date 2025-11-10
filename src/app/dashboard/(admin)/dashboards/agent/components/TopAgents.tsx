@@ -1,14 +1,14 @@
-import agent1Img from '@/assets/images/agent-1.png'
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Card, CardBody, CardHeader, CardTitle } from 'react-bootstrap'
+import agent1Img from "@/assets/dashboard/images/agent-1.png";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import Image from "next/image";
+import Link from "next/link";
+import { Card, CardBody, CardHeader, CardTitle } from "react-bootstrap";
 
 const TopAgents = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle as={'h4'}>Top Agents</CardTitle>
+        <CardTitle as={"h4"}>Top Agents</CardTitle>
       </CardHeader>
       <CardBody>
         <div className="bg-primary position-relative rounded p-2 overflow-hidden z-1 text-center">
@@ -53,7 +53,7 @@ const TopAgents = () => {
         </div>
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default TopAgents
+export default TopAgents;

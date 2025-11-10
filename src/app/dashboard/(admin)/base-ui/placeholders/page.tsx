@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
-import AllPlaceholders from './components/AllPlaceholders'
-import UIExamplesList from '@/components/UIExamplesList'
-import { Col, Row } from 'react-bootstrap'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import type { Metadata } from "next";
+import { Col, Row } from "react-bootstrap";
+import AllPlaceholders from "./components/AllPlaceholders";
 
-export const metadata: Metadata = { title: 'Placeholder' }
+export const metadata: Metadata = { title: "Placeholder" };
 
 const PLaceholders = () => {
   return (
@@ -17,16 +17,16 @@ const PLaceholders = () => {
         <Col xl={3}>
           <UIExamplesList
             examples={[
-              { link: '#default', label: 'Overview' },
-              { link: '#how-works', label: 'How it works' },
-              { link: '#width', label: 'Width' },
-              { link: '#color', label: 'Color' },
+              { link: "#default", label: "Overview" },
+              { link: "#how-works", label: "How it works" },
+              { link: "#width", label: "Width" },
+              { link: "#color", label: "Color" },
             ]}
           />
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default PLaceholders
+export default PLaceholders;

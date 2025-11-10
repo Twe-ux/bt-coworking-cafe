@@ -1,17 +1,17 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { Col, Row } from 'react-bootstrap'
-import CollectionRent from './components/CollectionRent'
-import Goals from './components/Goals'
-import JoinAgent from './components/JoinAgent'
-import RecentAgent from './components/RecentAgent'
-import SalesFunnel from './components/SalesFunnel'
-import SessionsCountry from './components/SessionsCountry'
-import Statistics from './components/Statistics'
-import TopAgents from './components/TopAgents'
-import TotalRevenue from './components/TotalRevenue'
-import { Metadata } from 'next'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { Metadata } from "next";
+import { Col, Row } from "react-bootstrap";
+import CollectionRent from "./components/CollectionRent";
+import Goals from "./components/Goals";
+import JoinAgent from "./components/JoinAgent";
+import RecentAgent from "./components/RecentAgent";
+import SalesFunnel from "./components/SalesFunnel";
+import SessionsCountry from "./components/SessionsCountry";
+import Statistics from "./components/Statistics";
+import TopAgents from "./components/TopAgents";
+import TotalRevenue from "./components/TotalRevenue";
 
-export const metadata: Metadata = { title: 'Agent' }
+export const metadata: Metadata = { title: "Agent" };
 
 const AgentPage = () => {
   return (
@@ -41,7 +41,7 @@ const AgentPage = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default AgentPage
+export default AgentPage;

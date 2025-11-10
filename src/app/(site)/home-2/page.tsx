@@ -1,24 +1,23 @@
-import React from 'react'
-import AboutTwo from '@/components/about/aboutTwo'
-import HomeBlog from '@/components/blogs/homeBlog'
-import HeroTwo from '@/components/heros/heroTwo'
-import ProjectsTwo from '@/components/projects/projectsTwo'
-import ServicesTwo from '@/components/services/servicesTwo'
-import SiteOverview from '@/components/siteOverview'
-import TestimonialTwo from '@/components/testimonial/testimonialTwo'
+import AboutTwo from "@/components/site/about/aboutTwo";
+import HomeBlog from "@/components/site/blogs/homeBlog";
+import HeroTwo from "@/components/site/heros/heroTwo";
+import ProjectsTwo from "@/components/site/projects/projectsTwo";
+import ServicesTwo from "@/components/site/services/servicesTwo";
+import SiteOverview from "@/components/site/siteOverview";
+import TestimonialTwo from "@/components/site/testimonial/testimonialTwo";
 
 const HomeTwo = () => {
-    return (
-        <>
-            <HeroTwo />
-            <AboutTwo />
-            <ServicesTwo />
-            <ProjectsTwo />
-            <SiteOverview />
-            <TestimonialTwo />
-            <HomeBlog />
-        </>
-    )
-}
+  return (
+    <>
+      <HeroTwo />
+      <AboutTwo />
+      <ServicesTwo />
+      <ProjectsTwo />
+      <SiteOverview />
+      <TestimonialTwo />
+      <HomeBlog />
+    </>
+  );
+};
 
-export default HomeTwo
+export default HomeTwo;

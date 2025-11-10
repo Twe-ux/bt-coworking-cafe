@@ -1,9 +1,9 @@
-'use client'
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { Icon } from '@iconify/react/dist/iconify.js'
-import { Card, CardBody, Col } from 'react-bootstrap'
-import { postData, PostType } from '../data'
-import Link from 'next/link'
+"use client";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Link from "next/link";
+import { Card, CardBody, Col } from "react-bootstrap";
+import { postData, PostType } from "../data";
 
 const PostCard = ({ date, description, link, name, tags, title }: PostType) => {
   return (
@@ -19,8 +19,25 @@ const PostCard = ({ date, description, link, name, tags, title }: PostType) => {
           &nbsp;
           {tags.map((item, idx) => (
             <span
-              className={`badge px-2 py-1 bg-${item == 'Tutorials' ? 'success' : item == 'News' ? 'warning' : item == 'Homes' ? 'primary' : 'danger'}-subtle text-${item == 'Tutorials' ? 'success' : item == 'News' ? 'warning' : item == 'Homes' ? 'primary' : 'danger'} ms-1 `}
-              key={idx}>
+              className={`badge px-2 py-1 bg-${
+                item == "Tutorials"
+                  ? "success"
+                  : item == "News"
+                  ? "warning"
+                  : item == "Homes"
+                  ? "primary"
+                  : "danger"
+              }-subtle text-${
+                item == "Tutorials"
+                  ? "success"
+                  : item == "News"
+                  ? "warning"
+                  : item == "Homes"
+                  ? "primary"
+                  : "danger"
+              } ms-1 `}
+              key={idx}
+            >
               {item}
             </span>
           ))}
@@ -35,16 +52,21 @@ const PostCard = ({ date, description, link, name, tags, title }: PostType) => {
             </span>
             <p className="text-muted mb-0">
               <Icon icon="ti:calendar-due" />
-              {date.toLocaleString('en-us', { month: 'short', day: '2-digit', year: 'numeric' })}
+              {date.toLocaleString("en-us", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              })}
             </p>
           </div>
           <div className="ms-auto">
             <span>
               <button
                 type="button"
-                className="btn btn-soft-danger avatar-sm d-inline-flex align-items-center justify-content-center fs-20 rounded-circle">
+                className="btn btn-soft-danger avatar-sm d-inline-flex align-items-center justify-content-center fs-20 rounded-circle"
+              >
                 <span>
-                  {' '}
+                  {" "}
                   <IconifyIcon icon="solar:heart-broken" />
                 </span>
               </button>
@@ -53,8 +75,8 @@ const PostCard = ({ date, description, link, name, tags, title }: PostType) => {
         </div>
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
 const Posts = () => {
   return (
@@ -65,7 +87,7 @@ const Posts = () => {
         </Col>
       ))}
     </>
-  )
-}
+  );
+};
 
-export default Posts
+export default Posts;

@@ -1,10 +1,9 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import React from 'react'
-import EmailView from './components/EmailView'
-import { Card, Row } from 'react-bootstrap'
-import { Metadata } from 'next'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { Metadata } from "next";
+import { Card, Row } from "react-bootstrap";
+import EmailView from "./components/EmailView";
 
-export const metadata: Metadata = { title: 'Inbox' }
+export const metadata: Metadata = { title: "Inbox" };
 
 const InboxPage = () => {
   return (
@@ -16,7 +15,7 @@ const InboxPage = () => {
         </Row>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default InboxPage
+export default InboxPage;

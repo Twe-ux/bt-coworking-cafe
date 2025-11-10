@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
-import AllWizard from './components/AllWizard'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import type { Metadata } from "next";
+import AllWizard from "./components/AllWizard";
 
-export const metadata: Metadata = { title: 'Wizard' }
+export const metadata: Metadata = { title: "Wizard" };
 
 const Wizard = () => {
   return (
@@ -10,7 +10,7 @@ const Wizard = () => {
       <DashboardPageTitle title="Wizard" subName="Form" />
       <AllWizard />
     </>
-  )
-}
+  );
+};
 
-export default Wizard
+export default Wizard;

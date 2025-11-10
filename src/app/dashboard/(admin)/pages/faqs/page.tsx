@@ -1,16 +1,24 @@
-import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, Card, CardBody, Col, Row } from 'react-bootstrap'
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { faqData } from './data'
-import type { Metadata } from 'next'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import type { Metadata } from "next";
+import {
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  Button,
+  Col,
+  Row,
+} from "react-bootstrap";
+import { faqData } from "./data";
 
-export const metadata: Metadata = { title: 'FAQs' }
+export const metadata: Metadata = { title: "FAQs" };
 
 const GeneralFaq = () => {
   return (
     <>
       <h4 className="mb-3 fw-semibold fs-16">General</h4>
-      <Accordion alwaysOpen defaultActiveKey={'0'}>
+      <Accordion alwaysOpen defaultActiveKey={"0"}>
         {faqData.General.map((faq, idx) => (
           <AccordionItem eventKey={`${idx}`} key={idx}>
             <AccordionHeader>
@@ -21,14 +29,14 @@ const GeneralFaq = () => {
         ))}
       </Accordion>
     </>
-  )
-}
+  );
+};
 
 const RefundFaqs = () => {
   return (
     <>
       <h4 className="mb-3 mt-4 fw-semibold fs-16">Refunds</h4>
-      <Accordion alwaysOpen defaultActiveKey={'0'}>
+      <Accordion alwaysOpen defaultActiveKey={"0"}>
         {faqData.Refunds.map((faq, idx) => (
           <AccordionItem eventKey={`${idx}`} key={idx}>
             <AccordionHeader>
@@ -39,14 +47,14 @@ const RefundFaqs = () => {
         ))}
       </Accordion>
     </>
-  )
-}
+  );
+};
 
 const PaymentsFaqs = () => {
   return (
     <>
       <h4 className="mb-3 fw-semibold fs-16">Payments</h4>
-      <Accordion alwaysOpen defaultActiveKey={'0'}>
+      <Accordion alwaysOpen defaultActiveKey={"0"}>
         {faqData.Payments.map((faq, idx) => (
           <AccordionItem eventKey={`${idx}`} key={idx}>
             <AccordionHeader>
@@ -57,14 +65,14 @@ const PaymentsFaqs = () => {
         ))}
       </Accordion>
     </>
-  )
-}
+  );
+};
 
 const SupportFaqs = () => {
   return (
     <>
       <h4 className="mb-3 mt-4 fw-semibold fs-16">Support</h4>
-      <Accordion alwaysOpen defaultActiveKey={'0'}>
+      <Accordion alwaysOpen defaultActiveKey={"0"}>
         {faqData.Support.map((faq, idx) => (
           <AccordionItem eventKey={`${idx}`} key={idx}>
             <AccordionHeader>
@@ -75,8 +83,8 @@ const SupportFaqs = () => {
         ))}
       </Accordion>
     </>
-  )
-}
+  );
+};
 
 const FAQs = () => {
   return (
@@ -112,7 +120,7 @@ const FAQs = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default FAQs
+export default FAQs;

@@ -1,10 +1,10 @@
-import { Col, Row } from 'react-bootstrap'
-import UIExamplesList from '@/components/UIExamplesList'
-import AllRadarCharts from './components/AllRadarCharts'
-import type { Metadata } from 'next'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import type { Metadata } from "next";
+import { Col, Row } from "react-bootstrap";
+import AllRadarCharts from "./components/AllRadarCharts";
 
-export const metadata: Metadata = { title: 'Radar Chart' }
+export const metadata: Metadata = { title: "Radar Chart" };
 
 const RadarCharts = () => {
   return (
@@ -17,15 +17,15 @@ const RadarCharts = () => {
         <Col xl={3}>
           <UIExamplesList
             examples={[
-              { label: 'Basic Radar Chart', link: '#basic' },
-              { label: 'Radar with Polygon-fill', link: '#polygon' },
-              { label: 'Radar – Multiple Series', link: '#multiple-series' },
+              { label: "Basic Radar Chart", link: "#basic" },
+              { label: "Radar with Polygon-fill", link: "#polygon" },
+              { label: "Radar – Multiple Series", link: "#multiple-series" },
             ]}
           />
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default RadarCharts
+export default RadarCharts;

@@ -1,11 +1,11 @@
-import FileUpload from '@/components/FileUpload'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { Metadata } from 'next'
-import { Col, Row } from 'react-bootstrap'
-import PropertyAdd from './components/PropertyAdd'
-import PropertyAddCard from './components/PropertyAddCard'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import FileUpload from "@/components/dashboard/FileUpload";
+import { Metadata } from "next";
+import { Col, Row } from "react-bootstrap";
+import PropertyAdd from "./components/PropertyAdd";
+import PropertyAddCard from "./components/PropertyAddCard";
 
-export const metadata: Metadata = { title: 'Add Property' }
+export const metadata: Metadata = { title: "Add Property" };
 
 const PropertyAddPage = () => {
   return (
@@ -19,7 +19,7 @@ const PropertyAddPage = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default PropertyAddPage
+export default PropertyAddPage;

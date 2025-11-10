@@ -1,10 +1,10 @@
-import { Row } from 'react-bootstrap'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { ChatProvider } from '@/context/useChatContext'
-import type { Metadata } from 'next'
-import ChatApp from './components/ChatApp'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { ChatProvider } from "@/context/useChatContext";
+import type { Metadata } from "next";
+import { Row } from "react-bootstrap";
+import ChatApp from "./components/ChatApp";
 
-export const metadata: Metadata = { title: 'Messages' }
+export const metadata: Metadata = { title: "Messages" };
 
 const ChatPage = () => {
   return (
@@ -16,7 +16,7 @@ const ChatPage = () => {
         </ChatProvider>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default ChatPage
+export default ChatPage;

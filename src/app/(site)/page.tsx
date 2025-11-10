@@ -1,10 +1,8 @@
-import AboutOne from "@/components/about/aboutOne";
-import HomeBlog from "@/components/blogs/homeBlog";
-import HeroOne from "@/components/heros/heroOne";
-import PricingTable from "@/components/pricing/pricingTable";
-import ProjectsOne from "@/components/projects/projectsOne";
-import TestimonialOne from "@/components/testimonial/testimonialOne";
-import SlideUp from "@/utils/animations/slideUp";
+import AboutOne from "@/components/site/about/aboutOne";
+import HomeBlog from "@/components/site/blogs/homeBlog";
+import HeroOne from "@/components/site/heros/heroOne";
+import ProjectsOne from "@/components/site/projects/projectsOne";
+import TestimonialOne from "@/components/site/testimonial/testimonialOne";
 
 const Home = () => {
   return (

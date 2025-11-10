@@ -1,11 +1,11 @@
-import { lazy, Suspense } from 'react'
-import { Card, CardBody, Col, Row } from 'react-bootstrap'
-import type { Metadata } from 'next'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import type { Metadata } from "next";
+import { lazy, Suspense } from "react";
+import { Card, CardBody, Col, Row } from "react-bootstrap";
 
-const CalendarPage = lazy(() => import('./components/CalendarPage'))
+const CalendarPage = lazy(() => import("./components/CalendarPage"));
 
-export const metadata: Metadata = { title: 'Schedule' }
+export const metadata: Metadata = { title: "Schedule" };
 const Schedule = () => {
   return (
     <>
@@ -24,7 +24,7 @@ const Schedule = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default Schedule
+export default Schedule;

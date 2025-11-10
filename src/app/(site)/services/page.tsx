@@ -1,14 +1,13 @@
-import PageTitle from '@/components/pageTitle'
-import ServiceThree from '@/components/services/serviceThree'
-import React from 'react'
+import PageTitle from "@/components/site/pageTitle";
+import ServiceThree from "@/components/site/services/serviceThree";
 
 const Services = () => {
-    return (
-        <>
-            <PageTitle title={"Services"} currentPage={"Services"} />
-            <ServiceThree />
-        </>
-    )
-}
+  return (
+    <>
+      <PageTitle title={"Services"} currentPage={"Services"} />
+      <ServiceThree />
+    </>
+  );
+};
 
-export default Services
+export default Services;

@@ -1,11 +1,11 @@
-import FileUpload from '@/components/FileUpload'
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { Col, Row } from 'react-bootstrap'
-import CreatePost from './components/CreatePost'
-import CreatePostCard from './components/CreatePostCard'
-import { Metadata } from 'next'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import FileUpload from "@/components/dashboard/FileUpload";
+import { Metadata } from "next";
+import { Col, Row } from "react-bootstrap";
+import CreatePost from "./components/CreatePost";
+import CreatePostCard from "./components/CreatePostCard";
 
-export const metadata: Metadata = { title: 'Blog Create' }
+export const metadata: Metadata = { title: "Blog Create" };
 
 const PostCreatePage = () => {
   return (
@@ -21,7 +21,7 @@ const PostCreatePage = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default PostCreatePage
+export default PostCreatePage;

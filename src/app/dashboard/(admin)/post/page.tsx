@@ -1,11 +1,11 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { Row } from 'react-bootstrap'
-import Articles from './components/Articles'
-import FreshArticles from './components/FreshArticles'
-import Posts from './components/Posts'
-import { Metadata } from 'next'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { Metadata } from "next";
+import { Row } from "react-bootstrap";
+import Articles from "./components/Articles";
+import FreshArticles from "./components/FreshArticles";
+import Posts from "./components/Posts";
 
-export const metadata: Metadata = { title: 'Blog Grid' }
+export const metadata: Metadata = { title: "Blog Grid" };
 
 const PostPage = () => {
   return (
@@ -19,7 +19,7 @@ const PostPage = () => {
         <Posts />
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default PostPage
+export default PostPage;

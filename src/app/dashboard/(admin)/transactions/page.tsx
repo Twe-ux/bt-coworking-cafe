@@ -1,8 +1,8 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import { Metadata } from 'next'
-import TransactionData from './components/TransactionData'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { Metadata } from "next";
+import TransactionData from "./components/TransactionData";
 
-export const metadata: Metadata = { title: 'Transactions' }
+export const metadata: Metadata = { title: "Transactions" };
 
 const TransactionsPage = () => {
   return (
@@ -10,7 +10,7 @@ const TransactionsPage = () => {
       <DashboardPageTitle title="Transactions" subName="Real Estate" />
       <TransactionData />
     </>
-  )
-}
+  );
+};
 
-export default TransactionsPage
+export default TransactionsPage;

@@ -1,10 +1,10 @@
-import DashboardPageTitle from '@/components/DashboardPageTitle'
-import OwnerDetails from './components/OwnerDetails'
-import PropertyDetails from './components/PropertyDetails'
-import { Col, Row } from 'react-bootstrap'
-import { Metadata } from 'next'
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { Metadata } from "next";
+import { Col, Row } from "react-bootstrap";
+import OwnerDetails from "./components/OwnerDetails";
+import PropertyDetails from "./components/PropertyDetails";
 
-export const metadata: Metadata = { title: 'Property Overview' }
+export const metadata: Metadata = { title: "Property Overview" };
 
 const PropertyDetailsPage = () => {
   return (
@@ -33,7 +33,7 @@ const PropertyDetailsPage = () => {
         </Col>
       </Row>
     </>
-  )
-}
+  );
+};
 
-export default PropertyDetailsPage
+export default PropertyDetailsPage;
