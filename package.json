@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:users": "tsx src/lib/seed-users.ts"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
@@ -69,6 +70,8 @@
     "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
 }

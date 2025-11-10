@@ -1,4 +1,11 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load .env.local if MONGODB_URI is not already set (useful for ts-node scripts)
+if (!process.env.MONGODB_URI) {
+  dotenv.config({ path: path.join(__dirname, '../../.env.local') });
+}
 
 if (!process.env.MONGODB_URI) {
   throw new Error('Please add your MONGODB_URI to .env.local');

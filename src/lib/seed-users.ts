@@ -1,7 +1,14 @@
 /**
  * Script to seed test users for each role
- * Run with: npx ts-node --compiler-options '{"module":"CommonJS"}' src/lib/seed-users.ts
+ * Run with: npm run seed:users
+ * Or directly: npx tsx src/lib/seed-users.ts
  */
+
+// Load environment variables from .env.local
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.join(__dirname, '../../.env.local') });
 
 import connectDB from './mongodb';
 import { createUser, initializeRoles } from './auth-helpers';
