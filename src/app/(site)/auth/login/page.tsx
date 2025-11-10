@@ -24,13 +24,9 @@ export default function LoginPage() {
     try {
       console.log('🔐 Attempting login with email:', email);
 
-      // Set the callback URL - default to /auth/login which middleware will redirect
-      const targetUrl = callbackUrl || '/auth/login';
-
       const result = await signIn('credentials', {
         email,
         password,
-        callbackUrl: targetUrl,
         redirect: false,
       });
 
@@ -47,10 +43,13 @@ export default function LoginPage() {
         console.log('🔐 Login successful');
 
         // Force navigation with full page reload to ensure session is properly set
-        // Middleware will intercept /auth/login and redirect to role-based dashboard
+        // Middleware will intercept and redirect to role-based dashboard
+        const targetUrl = callbackUrl || '/auth/login';
+        console.log('🔐 Redirecting to:', targetUrl);
+
         setTimeout(() => {
           window.location.href = targetUrl;
-        }, 100);
+        }, 200);
       }
     } catch (error) {
       console.error('🔐 Login exception:', error);
