@@ -8,16 +8,18 @@ interface ProtectedEmailProps {
   className?: string;
   showIcon?: boolean;
   subject?: string;
+  displayText?: string; // Optional custom display text instead of email
 }
 
 /**
  * Protected Email Component
  *
  * Protects email addresses from spam bots by:
- * 1. Encoding email parts separately
+ * 1. Storing email parts as base64-encoded data attributes
  * 2. Rendering only on client-side (not in HTML source)
- * 3. Using JavaScript to construct mailto link
- * 4. No direct email in HTML markup
+ * 3. Using JavaScript to construct mailto link on click
+ * 4. Displaying email character by character to avoid string scraping
+ * 5. No complete email text in DOM attributes or content
  */
 export default function ProtectedEmail({
   user,
@@ -25,21 +27,21 @@ export default function ProtectedEmail({
   className = '',
   showIcon = false,
   subject,
+  displayText,
 }: ProtectedEmailProps) {
-  const [email, setEmail] = useState<string>('');
+  const [emailChars, setEmailChars] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     // Only render on client-side
     setMounted(true);
 
-    // Decode and construct email
-    const decodedUser = atob(btoa(user)); // Simple obfuscation
-    const decodedDomain = atob(btoa(domain));
-    const constructedEmail = `${decodedUser}@${decodedDomain}`;
-
-    setEmail(constructedEmail);
-  }, [user, domain]);
+    if (!displayText) {
+      // Split email into individual characters to make scraping harder
+      const fullEmail = `${user}@${domain}`;
+      setEmailChars(fullEmail.split(''));
+    }
+  }, [user, domain, displayText]);
 
   // Don't render anything during SSR
   if (!mounted) {
@@ -54,7 +56,10 @@ export default function ProtectedEmail({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
 
-    // Construct mailto link dynamically
+    // Construct email dynamically on click (never stored as complete string)
+    const email = `${user}@${domain}`;
+
+    // Construct mailto link
     const mailtoLink = subject
       ? `mailto:${email}?subject=${encodeURIComponent(subject)}`
       : `mailto:${email}`;
@@ -68,11 +73,23 @@ export default function ProtectedEmail({
       href="#"
       onClick={handleClick}
       className={className}
-      aria-label={`Envoyer un email à ${email}`}
-      title={`Contacter par email : ${email}`}
+      aria-label="Envoyer un email"
+      title="Cliquez pour envoyer un email"
+      data-u={btoa(user)}
+      data-d={btoa(domain)}
     >
       {showIcon && <i className="bi bi-envelope me-2" />}
-      {email}
+      {displayText ? (
+        displayText
+      ) : (
+        <>
+          {emailChars.map((char, index) => (
+            <span key={index} data-c={btoa(char)}>
+              {char}
+            </span>
+          ))}
+        </>
+      )}
     </a>
   );
 }

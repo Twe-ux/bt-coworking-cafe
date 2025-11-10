@@ -7,8 +7,8 @@ import {
   initializeRoles,
 } from '@/lib/auth-helpers';
 
-// Initialize roles on server start
-initializeRoles().catch(console.error);
+// Track if roles have been initialized
+let rolesInitialized = false;
 
 export const options: NextAuthOptions = {
   providers: [
@@ -32,6 +32,17 @@ export const options: NextAuthOptions = {
         }
 
         try {
+          // Initialize roles on first authentication attempt
+          if (!rolesInitialized) {
+            try {
+              await initializeRoles();
+              rolesInitialized = true;
+            } catch (error) {
+              console.error('Failed to initialize roles:', error);
+              // Don't throw here - roles might already exist
+            }
+          }
+
           // Find user with populated role
           const user = await findUserByEmail(credentials.email);
 
@@ -75,9 +86,16 @@ export const options: NextAuthOptions = {
           };
         } catch (error) {
           console.error('Auth error:', error);
-          throw new Error(
-            error instanceof Error ? error.message : 'Authentication failed'
-          );
+
+          // Better error messages for debugging
+          if (error instanceof Error) {
+            if (error.message.includes('ECONNREFUSED') || error.message.includes('querySrv')) {
+              throw new Error('Database connection failed. Please try again later.');
+            }
+            throw new Error(error.message);
+          }
+
+          throw new Error('Authentication failed');
         }
       },
     }),
