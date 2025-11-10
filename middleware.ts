@@ -1,31 +1,32 @@
-import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
-import type { NextRequestWithAuth } from 'next-auth/middleware';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export default withAuth(
-  function middleware(req: NextRequestWithAuth) {
-    const token = req.nextauth.token;
-    const { pathname } = req.nextUrl;
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-    // Get user role from token
-    const userRole = token?.role as {
-      slug: 'dev' | 'admin' | 'staff' | 'client';
-      level: number;
-    } | undefined;
+  // Get token from JWT
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-    console.log('🔒 Middleware:', {
-      pathname,
-      hasToken: !!token,
-      role: userRole?.slug,
-      level: userRole?.level,
-    });
+  // Get user role from token
+  const userRole = token?.role as {
+    slug: 'dev' | 'admin' | 'staff' | 'client';
+    level: number;
+  } | undefined;
 
-    // Redirect authenticated users trying to access auth pages
-    if (pathname.startsWith('/auth/') && token) {
-      const redirectPath = getRedirectPathByRole(userRole?.slug || 'client');
-      console.log('🔒 Redirecting authenticated user from /auth/ to:', redirectPath);
-      return NextResponse.redirect(new URL(redirectPath, req.url));
-    }
+  console.log('🔒 Middleware:', {
+    pathname,
+    hasToken: !!token,
+    role: userRole?.slug,
+    level: userRole?.level,
+  });
+
+  // Redirect authenticated users trying to access auth pages
+  if (pathname.startsWith('/auth/') && token) {
+    const redirectPath = getRedirectPathByRole(userRole?.slug || 'client');
+    console.log('🔒 Redirecting authenticated user from /auth/ to:', redirectPath);
+    return NextResponse.redirect(new URL(redirectPath, req.url));
+  }
 
     // Protect client dashboard (/id)
     if (pathname.startsWith('/id')) {
@@ -104,34 +105,7 @@ export default withAuth(
     }
 
     return NextResponse.next();
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const { pathname } = req.nextUrl;
-
-        // Allow access to auth pages without token
-        if (pathname.startsWith('/auth/')) {
-          return true;
-        }
-
-        // Allow access to public site pages
-        if (
-          !pathname.startsWith('/id') &&
-          !pathname.startsWith('/dashboard')
-        ) {
-          return true;
-        }
-
-        // Require token for protected routes
-        return !!token;
-      },
-    },
-    pages: {
-      signIn: '/auth/login',
-    },
-  }
-);
+}
 
 function getRedirectPathByRole(
   roleSlug: 'dev' | 'admin' | 'staff' | 'client'
