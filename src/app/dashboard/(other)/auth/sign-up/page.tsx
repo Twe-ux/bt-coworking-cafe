@@ -1,10 +1,11 @@
+import { redirect } from 'next/navigation'
 import { Metadata } from 'next'
-import SignUp from './components/SignUp'
 
-export const metadata: Metadata = { title: 'Sign Up' }
+export const metadata: Metadata = { title: 'Sign Up - Redirecting...' }
 
+// Redirect to the new registration page
 const SignUpPage = () => {
-  return <SignUp />
+  redirect('/auth/register')
 }
 
 export default SignUpPage

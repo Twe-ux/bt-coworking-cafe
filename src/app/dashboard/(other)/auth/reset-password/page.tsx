@@ -1,10 +1,11 @@
+import { redirect } from 'next/navigation'
 import { Metadata } from 'next'
-import ResetPassword from './components/ResetPassword'
 
-export const metadata: Metadata = { title: 'Reset Password' }
+export const metadata: Metadata = { title: 'Reset Password - Redirecting...' }
 
+// Redirect to the new forgot password page
 const ResetPasswordPage = () => {
-  return <ResetPassword />
+  redirect('/auth/forgot-password')
 }
 
 export default ResetPasswordPage
