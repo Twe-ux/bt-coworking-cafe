@@ -47,6 +47,7 @@ export async function findUserById(userId: string) {
 
 /**
  * Create a new user with a specific role
+ * Note: Password will be automatically hashed by the User model's pre-save hook
  */
 export async function createUser(data: {
   email: string;
@@ -57,9 +58,6 @@ export async function createUser(data: {
 }) {
   await connectDB();
 
-  // Hash password
-  const hashedPassword = await hashPassword(data.password);
-
   // Find role by slug (default to 'client')
   const roleSlug = data.roleSlug || 'client';
   const role = await Role.findOne({ slug: roleSlug });
@@ -68,10 +66,10 @@ export async function createUser(data: {
     throw new Error(`Role "${roleSlug}" not found. Please seed roles first.`);
   }
 
-  // Create user
+  // Create user with plain password - the pre-save hook will hash it
   const user = await User.create({
     email: data.email,
-    password: hashedPassword,
+    password: data.password, // Plain password, will be hashed by pre-save hook
     username: data.username,
     givenName: data.givenName,
     role: role._id,
