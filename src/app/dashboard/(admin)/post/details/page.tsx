@@ -6,9 +6,6 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-import Blogs from './components/Blogs';
-import Comments from './components/Comments';
-import PhotoCard from './components/PhotoCard';
   Button,
   Card,
   CardBody,
@@ -20,6 +17,9 @@ import PhotoCard from './components/PhotoCard';
   DropdownToggle,
   Row,
 } from "react-bootstrap";
+import Blogs from './components/Blogs';
+import Comments from './components/Comments';
+import PhotoCard from './components/PhotoCard';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
