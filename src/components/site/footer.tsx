@@ -1,12 +1,22 @@
+'use client';
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import ProtectedEmail from "@/components/common/ProtectedEmail";
 
 const Footer = () => {
+  const pathname = usePathname();
+
+  // Check if we're on a client dashboard page (/{username}/...)
+  const isClientDashboard = pathname && /^\/[^\/]+(?:\/(?:profile|reservations|settings))?(?:\/.*)?$/.test(pathname) &&
+    !['/', '/about', '/blog', '/blog-details', '/contact', '/faq', '/home-2', '/pricing', '/projects', '/project-details', '/services', '/service-details', '/concept', '/espaces', '/tarifs', '/menu', '/professionnels', '/mag'].includes(pathname);
+
   return (
     <footer className="footer">
       <div className="container">
-        {/* Subscribe Form */}
-        <div className="subscribe">
+        {/* Subscribe Form - Hidden on client dashboard pages */}
+        {!isClientDashboard && (
+          <div className="subscribe">
           <div className="row">
             <div className="col-lg-8">
               <h2>
@@ -25,6 +35,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
+        )}
         {/* Subscribe Form */}
         {/* -------Logo and socal icon */}
         <div className="row footer__lo_co ">
