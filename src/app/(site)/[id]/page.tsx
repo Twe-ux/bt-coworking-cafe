@@ -4,6 +4,9 @@ import { options } from '@/app/api/auth/[...nextauth]/options';
 import Link from 'next/link';
 import './client-dashboard.scss';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 interface ClientDashboardProps {
   params: { id: string };
 }

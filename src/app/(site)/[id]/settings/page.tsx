@@ -3,6 +3,9 @@ import { redirect } from 'next/navigation';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import Link from 'next/link';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 interface SettingsPageProps {
   params: { id: string };
 }
