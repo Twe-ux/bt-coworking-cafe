@@ -1,15 +1,33 @@
 import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import Link from 'next/link';
 import './client-dashboard.scss';
 
-export default async function ClientDashboard() {
+interface ClientDashboardProps {
+  params: { id: string };
+}
+
+export default async function ClientDashboard({ params }: ClientDashboardProps) {
   const session = await getServerSession(options);
 
+  // Check if user is authenticated
   if (!session) {
-    redirect('/auth/login?callbackUrl=/id');
+    redirect(`/auth/login?callbackUrl=/${params.id}`);
   }
+
+  // Check if user has a username
+  if (!session.user.username) {
+    redirect('/auth/login');
+  }
+
+  // Security check: verify the URL username matches the logged-in user
+  if (params.id !== session.user.username) {
+    // Redirect to their own dashboard
+    redirect(`/${session.user.username}`);
+  }
+
+  const username = session.user.username;
 
   return (
     <section className="client-dashboard py__130">
@@ -31,7 +49,7 @@ export default async function ClientDashboard() {
           </div>
 
           <div className="col-md-4 mb-4">
-            <Link href="/id/reservations" className="action-card">
+            <Link href={`/${username}/reservations`} className="action-card">
               <div className="action-icon">
                 <i className="bi bi-calendar-check"></i>
               </div>
@@ -43,7 +61,7 @@ export default async function ClientDashboard() {
           </div>
 
           <div className="col-md-4 mb-4">
-            <Link href="/id/reservations/new" className="action-card">
+            <Link href={`/${username}/reservations/new`} className="action-card">
               <div className="action-icon">
                 <i className="bi bi-plus-circle"></i>
               </div>
@@ -55,7 +73,7 @@ export default async function ClientDashboard() {
           </div>
 
           <div className="col-md-4 mb-4">
-            <Link href="/id/profile" className="action-card">
+            <Link href={`/${username}/profile`} className="action-card">
               <div className="action-icon">
                 <i className="bi bi-person"></i>
               </div>
