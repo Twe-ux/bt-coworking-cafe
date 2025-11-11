@@ -6,7 +6,7 @@ const HeroOne = () => {
     <section className="banner overflow-hidden">
       <div className="container position-relative">
         <div className="row">
-          <div className="col-lg-10">
+          <div className="col-lg-9">
             <div className="banner__content">
               <div className="banner__content_title ">
                 <SlideUp>
@@ -59,7 +59,7 @@ const HeroOne = () => {
               </SlideUp>
             </div>
           </div>
-          <div className="col-lg-2">
+          <div className="col-lg-3">
             <div className="banner__right">
               <img
                 src="/images/banner/logo-circle-white.png"
