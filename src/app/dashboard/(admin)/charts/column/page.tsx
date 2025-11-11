@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllColumnCharts from "./components/AllColumnCharts";
+import AllColumnCharts from './components/AllColumnCharts';
 
-export const metadata: Metadata = { title: "Column Charts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const ColumnCharts = () => {
   return (

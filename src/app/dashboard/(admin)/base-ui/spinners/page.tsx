@@ -52,7 +52,7 @@ const GrowingSpinners = () => {
         </>
       }
     >
-      <Spinner type="grow" />
+      <Spinner animation="grow" />
     </ComponentContainerCard>
   );
 };
@@ -70,7 +70,7 @@ const ColorGrowingSpinners = () => {
       }
     >
       {colorVariants.slice(0, 6).map((color, idx) => (
-        <Spinner key={idx} className="m-2" type="grow" color={color} />
+        <Spinner key={idx} className="m-2" animation="grow" color={color} />
       ))}
     </ComponentContainerCard>
   );
@@ -110,9 +110,9 @@ const SpinnersSize = () => {
       }
     >
       <Spinner className="spinner-border-sm me-3"></Spinner>
-      <Spinner type="grow" className="spinner-grow-sm me-3" />
+      <Spinner animation="grow" className="spinner-grow-sm me-3" />
       <Spinner className="text-primary me-3" color="primary" size="sm" />
-      <Spinner className="me-3" type="grow" size="sm" color="primary" />
+      <Spinner className="me-3" animation="grow" size="sm" color="primary" />
     </ComponentContainerCard>
   );
 };
@@ -158,9 +158,9 @@ const ButtonSpinners = () => {
       <Button variant="primary" disabled>
         <Spinner
           className="spinner-grow-sm me-1"
-          tag="span"
+          as="span"
           color="white"
-          type="grow"
+          animation="grow"
         />
         Loading...
       </Button>

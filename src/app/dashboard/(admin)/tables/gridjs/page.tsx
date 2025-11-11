@@ -4,9 +4,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { getAllDataTableRecords } from "@/helpers/data";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllDataTables from "./components/AllDataTables";
+import AllDataTables from './components/AllDataTables';
 
-export const metadata: Metadata = { title: "GridJs Tables" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const GridJS = async () => {
   const dataTableRecords = await getAllDataTableRecords();

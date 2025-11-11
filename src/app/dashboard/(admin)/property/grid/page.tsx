@@ -1,10 +1,11 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
 import { Row } from "react-bootstrap";
-import PropertiesData from "./components/PropertiesData";
-import PropertiesFilter from "./components/PropertiesFilter";
+import PropertiesData from './components/PropertiesData';
+import PropertiesFilter from './components/PropertiesFilter';
 
-export const metadata: Metadata = { title: "Listing Grid" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const PropertyGridPage = () => {
   return (

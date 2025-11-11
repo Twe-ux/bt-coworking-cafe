@@ -1,10 +1,11 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllSweetAlerts from "./Components/AllSweetAlerts";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import AllSweetAlerts from './Components/AllSweetAlerts';
 
-export const metadata: Metadata = { title: "Sweet Alert" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const SweetAlerts = () => {
   return (

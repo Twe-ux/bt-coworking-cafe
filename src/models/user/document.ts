@@ -1,5 +1,4 @@
-import { ObjectId, Schema, Types } from "mongoose";
-import type { User } from "./index";
+import { ObjectId, Schema, Types, Document } from "mongoose";
 
 /** Document of a {@link User}, as stored in the databse. */
 export interface UserDocument extends Document {
@@ -17,7 +16,7 @@ export interface UserDocument extends Document {
 }
 
 /** Schema used to validate User objects for the database. */
-export const UserSchema = new Schema<UserDocument, User>(
+export const UserSchema = new Schema<UserDocument>(
   {
     email: {
       type: String,

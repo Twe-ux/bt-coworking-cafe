@@ -1,8 +1,9 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
-import AllWizard from "./components/AllWizard";
+import AllWizard from './components/AllWizard';
 
-export const metadata: Metadata = { title: "Wizard" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Wizard = () => {
   return (

@@ -9,16 +9,17 @@ import {
   Col,
   Row,
 } from "react-bootstrap";
-import CustomerCard from "./components/CustomerCard";
-import CustomersDetails from "./components/CustomersDetails";
-import OwnProperty from "./components/OwnProperty";
-import PropertyCard from "./components/PropertyCard";
-import TransactionHistory from "./components/TransactionHistory";
-import Transactions from "./components/Transactions";
-import WeeklyInquiry from "./components/WeeklyInquiry";
 import { customerData } from "./data";
+import CustomerCard from './components/CustomerCard';
+import CustomersDetails from './components/CustomersDetails';
+import OwnProperty from './components/OwnProperty';
+import PropertyCard from './components/PropertyCard';
+import TransactionHistory from './components/TransactionHistory';
+import Transactions from './components/Transactions';
+import WeeklyInquiry from './components/WeeklyInquiry';
 
-export const metadata: Metadata = { title: "Customer Overview" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const CustomerDetailsPage = async () => {
   const propertyData = await getAllProperty();

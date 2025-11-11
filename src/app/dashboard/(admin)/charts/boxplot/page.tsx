@@ -2,7 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllBoxPlotCharts from "./components/AllBoxPlotCharts";
+import AllBoxPlotCharts from './components/AllBoxPlotCharts';
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const metadata: Metadata = { title: "Boxplot Alert" };
 

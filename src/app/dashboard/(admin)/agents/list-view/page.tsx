@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import { Metadata } from "next";
 import { Card, CardHeader, Col, Row } from "react-bootstrap";
-import AgentList from "./components/AgentList";
+import AgentList from './components/AgentList';
 
-export const metadata: Metadata = { title: "Agent List" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const ListViewPage = () => {
   return (

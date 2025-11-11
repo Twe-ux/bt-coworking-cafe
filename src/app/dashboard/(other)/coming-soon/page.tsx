@@ -1,7 +1,8 @@
 import { Metadata } from 'next'
 import ComingSoon from './components/ComingSoon'
 
-export const metadata: Metadata = { title: 'Coming Soon' }
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const ComingSoonPage = () => {
   return <ComingSoon />

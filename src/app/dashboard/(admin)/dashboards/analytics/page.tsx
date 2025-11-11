@@ -1,13 +1,14 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
 import { Row } from "react-bootstrap";
-import BalanceCard from "./components/BalanceCard";
-import SalesChart from "./components/SalesChart";
-import SocialSource from "./components/SocialSource";
-import Statistics from "./components/Statistics";
-import Transaction from "./components/Transaction";
+import BalanceCard from './components/BalanceCard';
+import SalesChart from './components/SalesChart';
+import SocialSource from './components/SocialSource';
+import Statistics from './components/Statistics';
+import Transaction from './components/Transaction';
 
-export const metadata: Metadata = { title: "Analytics" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const AnalyticsPage = () => {
   return (

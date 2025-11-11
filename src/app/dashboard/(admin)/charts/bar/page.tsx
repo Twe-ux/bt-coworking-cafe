@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllBarCharts from "./components/AllBarCharts";
+import AllBarCharts from './components/AllBarCharts';
 
-export const metadata: Metadata = { title: "Bar Charts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const BarCharts = () => {
   return (

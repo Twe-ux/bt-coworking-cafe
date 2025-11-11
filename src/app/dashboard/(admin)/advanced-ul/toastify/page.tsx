@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllToastify from "./AllToastify";
+import AllToastify from './AllToastify';
 
-export const metadata: Metadata = { title: "Toastify" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Toastify = () => {
   return (

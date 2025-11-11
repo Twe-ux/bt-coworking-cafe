@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllPlaceholders from "./components/AllPlaceholders";
+import AllPlaceholders from './components/AllPlaceholders';
 
-export const metadata: Metadata = { title: "Placeholder" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const PLaceholders = () => {
   return (

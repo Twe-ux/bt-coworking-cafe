@@ -17,11 +17,12 @@ import {
   DropdownToggle,
   Row,
 } from "react-bootstrap";
-import Blogs from "./components/Blogs";
-import Comments from "./components/Comments";
-import PhotoCard from "./components/PhotoCard";
+import Blogs from './components/Blogs';
+import Comments from './components/Comments';
+import PhotoCard from './components/PhotoCard';
 
-export const metadata: Metadata = { title: "Blog Details" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const PostDetailsPage = () => {
   return (

@@ -3,15 +3,18 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Load .env.local if MONGODB_URI is not already set (useful for ts-node scripts)
-if (!process.env.MONGODB_URI) {
-  dotenv.config({ path: path.join(__dirname, '../../.env.local') });
-}
+// This is done lazily in connectDB() to avoid build-time errors
+function ensureMongoDBUri(): string {
+  if (!process.env.MONGODB_URI) {
+    dotenv.config({ path: path.join(__dirname, '../../.env.local') });
+  }
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Please add your MONGODB_URI to .env.local');
-}
+  if (!process.env.MONGODB_URI) {
+    throw new Error('Please add your MONGODB_URI to .env.local');
+  }
 
-const MONGODB_URI: string = process.env.MONGODB_URI;
+  return process.env.MONGODB_URI;
+}
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -40,6 +43,9 @@ async function connectDB(): Promise<typeof mongoose> {
   }
 
   if (!cached.promise) {
+    // Get MongoDB URI only when actually connecting (not at import time)
+    const MONGODB_URI = ensureMongoDBUri();
+
     const opts = {
       bufferCommands: false,
     };

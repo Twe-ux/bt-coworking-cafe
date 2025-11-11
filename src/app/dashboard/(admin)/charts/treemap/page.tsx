@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllTreemapCharts from "./components/AllTreemapCharts";
+import AllTreemapCharts from './components/AllTreemapCharts';
 
-export const metadata: Metadata = { title: "Treemap Charts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const TreemapCharts = () => {
   return (

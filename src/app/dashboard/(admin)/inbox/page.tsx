@@ -1,9 +1,10 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
 import { Card, Row } from "react-bootstrap";
-import EmailView from "./components/EmailView";
+import EmailView from './components/EmailView';
 
-export const metadata: Metadata = { title: "Inbox" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const InboxPage = () => {
   return (

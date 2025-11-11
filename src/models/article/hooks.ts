@@ -1,10 +1,10 @@
-import { ArticleSchema } from "./document";
+import { ArticleSchema, ArticleDocument } from "./document";
 import slugify from "slugify";
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 export function attachHooks() {
   // Auto-generate slug from title
-  ArticleSchema.pre("save", async function (next) {
+  ArticleSchema.pre("save", async function (this: ArticleDocument, next) {
     if (this.isModified("title") && !this.slug) {
       this.slug = slugify(this.title, {
         lower: true,
@@ -43,20 +43,23 @@ export function attachHooks() {
   });
 
   // Update counters when article is deleted
-  ArticleSchema.pre("remove", async function (next) {
-    // Decrement articleCount in category
-    if (this.category) {
-      await mongoose.models.Category.findByIdAndUpdate(this.category, {
-        $inc: { articleCount: -1 },
-      });
-    }
+  ArticleSchema.pre("deleteOne", async function (this: Query<any, ArticleDocument>, next) {
+    const doc = await this.model.findOne(this.getFilter());
+    if (doc) {
+      // Decrement articleCount in category
+      if (doc.category) {
+        await mongoose.models.Category.findByIdAndUpdate(doc.category, {
+          $inc: { articleCount: -1 },
+        });
+      }
 
-    // Decrement articleCount in tags
-    if (this.tags && this.tags.length > 0) {
-      await mongoose.models.Tag.updateMany(
-        { _id: { $in: this.tags } },
-        { $inc: { articleCount: -1 } }
-      );
+      // Decrement articleCount in tags
+      if (doc.tags && doc.tags.length > 0) {
+        await mongoose.models.Tag.updateMany(
+          { _id: { $in: doc.tags } },
+          { $inc: { articleCount: -1 } }
+        );
+      }
     }
 
     next();

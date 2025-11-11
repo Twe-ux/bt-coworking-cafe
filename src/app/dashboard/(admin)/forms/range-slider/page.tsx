@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllSliders from "./components/AllSliders";
+import AllSliders from './components/AllSliders';
 
-export const metadata: Metadata = { title: "Range Slider" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Slider = () => {
   return (

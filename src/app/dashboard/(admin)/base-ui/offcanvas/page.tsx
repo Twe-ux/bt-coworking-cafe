@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllOffcanvas from "./components/AllOffcanvas";
+import AllOffcanvas from './components/AllOffcanvas';
 
-export const metadata: Metadata = { title: "Offcanvas" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Offcanvas = () => {
   return (

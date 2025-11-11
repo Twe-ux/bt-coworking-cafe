@@ -14,7 +14,7 @@ export interface RoleDocument extends Document {
 }
 
 /** Schema used to validate Role objects for the database. */
-export const RoleSchema = new Schema<RoleDocument, Role>(
+export const RoleSchema = new Schema<RoleDocument>(
   {
     name: {
       type: String,

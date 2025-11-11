@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllPagination from "./components/AllPagination";
+import AllPagination from './components/AllPagination';
 
-export const metadata: Metadata = { title: "Pagination" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Pagination = () => {
   return (

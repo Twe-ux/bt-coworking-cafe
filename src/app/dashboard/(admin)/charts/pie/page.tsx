@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllPieCharts from "./components/AllPieCharts";
+import AllPieCharts from './components/AllPieCharts';
 
-export const metadata: Metadata = { title: "Pie Charts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const PieCharts = () => {
   return (

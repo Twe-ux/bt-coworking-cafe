@@ -1,18 +1,18 @@
 import { Model, model, models } from "mongoose";
-import { UserSchema } from "./document";
+import { UserDocument, UserSchema } from "./document";
 import { attachHooks } from "./hooks";
 import { UserMethods } from "./methods";
 import { VirtualUser } from "./virtuals";
 
 export type User = VirtualUser & UserMethods;
 
-let UserModel: Model<User>;
+let UserModel: Model<UserDocument>;
 
 if (models.User) {
-  UserModel = models.User as Model<User>;
+  UserModel = models.User as Model<UserDocument>;
 } else {
   attachHooks();
-  UserModel = model<User>("User", UserSchema);
+  UserModel = model<UserDocument>("User", UserSchema);
 }
 
 if (!UserModel) {

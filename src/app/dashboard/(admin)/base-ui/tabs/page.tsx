@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllNavTabs from "./components/AllNavTabs";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import AllNavTabs from './components/AllNavTabs';
 
-export const metadata: Metadata = { title: "Nav Tabs" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const Tabs = () => {
   return (
     <>

@@ -1,11 +1,19 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { Types } from 'mongoose';
 import {
   findUserByEmail,
   verifyPassword,
   getRedirectPathByRole,
   initializeRoles,
 } from '@/lib/auth-helpers';
+
+interface PopulatedRole {
+  _id: Types.ObjectId;
+  slug: 'dev' | 'admin' | 'staff' | 'client';
+  name: string;
+  level: number;
+}
 
 // Track if roles have been initialized
 let rolesInitialized = false;
@@ -28,37 +36,54 @@ export const options: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.error('🔒 Auth failed: Missing email or password');
           throw new Error('Email and password are required');
         }
+
+        console.log('🔒 Auth attempt for email:', credentials.email);
 
         try {
           // Initialize roles on first authentication attempt
           if (!rolesInitialized) {
+            console.log('🔒 Initializing roles...');
             try {
               await initializeRoles();
               rolesInitialized = true;
+              console.log('🔒 Roles initialized successfully');
             } catch (error) {
-              console.error('Failed to initialize roles:', error);
+              console.error('🔒 Failed to initialize roles:', error);
               // Don't throw here - roles might already exist
             }
           }
 
           // Find user with populated role
+          console.log('🔒 Looking up user:', credentials.email);
           const user = await findUserByEmail(credentials.email);
 
           if (!user) {
+            console.error('🔒 User not found:', credentials.email);
             throw new Error('Invalid email or password');
           }
 
+          console.log('🔒 User found:', {
+            email: user.email,
+            hasPassword: !!user.password,
+            role: (user.role as any)?.slug || 'no role'
+          });
+
           // Verify password
+          console.log('🔒 Verifying password...');
           const isValidPassword = await verifyPassword(
             credentials.password,
             user.password
           );
 
           if (!isValidPassword) {
+            console.error('🔒 Invalid password for:', credentials.email);
             throw new Error('Invalid email or password');
           }
+
+          console.log('🔒 Password verified successfully');
 
           // Check if email is verified (optional)
           // if (!user.emailVerifiedAt) {
@@ -69,11 +94,11 @@ export const options: NextAuthOptions = {
           user.lastLoginAt = new Date();
           await user.save();
 
-          const role = user.role as any;
+          const role = user.role as unknown as PopulatedRole;
 
           // Return user data for session
           return {
-            id: user._id.toString(),
+            id: (user._id as Types.ObjectId).toString(),
             email: user.email,
             name: user.givenName || user.username || user.email,
             username: user.username,

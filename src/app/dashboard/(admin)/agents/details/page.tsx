@@ -1,9 +1,10 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
-import AgentDetails from "./components/AgentDetails";
-import AgentsDetailsBanner from "./components/AgentsDetailsBannner";
+import AgentDetails from './components/AgentDetails';
+import AgentsDetailsBanner from './components/AgentsDetailsBannner';
 
-export const metadata: Metadata = { title: "Agent Overview" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const AgentsDetailsPage = () => {
   return (

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import AllGoogleMaps from "./components/AllGoogleMaps";
+import AllGoogleMaps from './components/AllGoogleMaps';
 
-export const metadata: Metadata = { title: "Google Maps" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const GoogleMaps = () => {
   return <AllGoogleMaps />;

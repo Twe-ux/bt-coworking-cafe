@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllCandlestickCharts from "./components/AllCandlestickCharts";
+import AllCandlestickCharts from './components/AllCandlestickCharts';
 
-export const metadata: Metadata = { title: "Candlestick Alert" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const CandlestickCharts = () => {
   return (

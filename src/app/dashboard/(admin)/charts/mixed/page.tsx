@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllMixedCharts from "./components/AllMixedCharts";
+import AllMixedCharts from './components/AllMixedCharts';
 
-export const metadata: Metadata = { title: "Mixed Charts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const MixedCharts = () => {
   return (

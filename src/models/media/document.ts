@@ -1,5 +1,4 @@
 import { ObjectId, Schema, Types, Document } from "mongoose";
-import type { Media } from "./index";
 
 /** Document of a {@link Media}, as stored in the database. */
 export interface MediaDocument extends Document {
@@ -21,7 +20,7 @@ export interface MediaDocument extends Document {
 }
 
 /** Schema used to validate Media objects for the database. */
-export const MediaSchema = new Schema<MediaDocument, Media>(
+export const MediaSchema = new Schema<MediaDocument>(
   {
     filename: {
       type: String,

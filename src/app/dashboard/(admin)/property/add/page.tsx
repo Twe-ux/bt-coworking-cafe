@@ -2,10 +2,11 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import FileUpload from "@/components/dashboard/FileUpload";
 import { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import PropertyAdd from "./components/PropertyAdd";
-import PropertyAddCard from "./components/PropertyAddCard";
+import PropertyAdd from './components/PropertyAdd';
+import PropertyAddCard from './components/PropertyAddCard';
 
-export const metadata: Metadata = { title: "Add Property" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const PropertyAddPage = () => {
   return (

@@ -1,18 +1,18 @@
 import { Model, model, models } from "mongoose";
-import { RoleSchema } from "./document";
+import { RoleDocument, RoleSchema } from "./document";
 import { attachHooks } from "./hooks";
 import { RoleMethods } from "./methods";
 import { VirtualRole } from "./virtuals";
 
 export type Role = VirtualRole & RoleMethods;
 
-let RoleModel: Model<Role>;
+let RoleModel: Model<RoleDocument>;
 
 if (models.Role) {
-  RoleModel = models.Role as Model<Role>;
+  RoleModel = models.Role as Model<RoleDocument>;
 } else {
   attachHooks();
-  RoleModel = model<Role>("Role", RoleSchema);
+  RoleModel = model<RoleDocument>("Role", RoleSchema);
 }
 
 if (!RoleModel) {

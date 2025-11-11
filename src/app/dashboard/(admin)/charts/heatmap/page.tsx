@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllHeatmapCharts from "./components/AllHeatmapCharts";
+import AllHeatmapCharts from './components/AllHeatmapCharts';
 
-export const metadata: Metadata = { title: "Heatmap Alert" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const HeatmapCharts = () => {
   return (

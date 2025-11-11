@@ -1,15 +1,16 @@
 import { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import CustomerByCountry from "./components/CustomerByCountry";
-import CustomerCountry from "./components/CustomerCountry";
-import CustomersInvest from "./components/CustomersInvest";
-import CustomerVisit from "./components/CustomerVisit";
-import PropertyInvestor from "./components/PropertyInvestor";
-import PurchaseProperty from "./components/PurchaseProperty";
-import TopCustomer from "./components/TopCustomer";
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import CustomerByCountry from './components/CustomerByCountry';
+import CustomerCountry from './components/CustomerCountry';
+import CustomersInvest from './components/CustomersInvest';
+import CustomerVisit from './components/CustomerVisit';
+import PropertyInvestor from './components/PropertyInvestor';
+import PurchaseProperty from './components/PurchaseProperty';
+import TopCustomer from './components/TopCustomer';
 
-export const metadata: Metadata = { title: "Customers" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const CustomerPage = () => {
   return (

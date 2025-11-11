@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllRadarCharts from "./components/AllRadarCharts";
+import AllRadarCharts from './components/AllRadarCharts';
 
-export const metadata: Metadata = { title: "Radar Chart" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const RadarCharts = () => {
   return (

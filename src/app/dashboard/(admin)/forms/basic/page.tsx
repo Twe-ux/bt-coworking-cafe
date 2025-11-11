@@ -3,9 +3,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, FormControl, FormLabel, FormSelect, Row } from "react-bootstrap";
-import BasicExamples from "./components/BasicExamples";
+import BasicExamples from './components/BasicExamples';
 
-export const metadata: Metadata = { title: "Form Basics" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const InputSizing = () => {
   return (

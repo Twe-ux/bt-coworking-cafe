@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { ChatProvider } from "@/context/useChatContext";
 import type { Metadata } from "next";
 import { Row } from "react-bootstrap";
-import ChatApp from "./components/ChatApp";
+import ChatApp from './components/ChatApp';
 
-export const metadata: Metadata = { title: "Messages" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const ChatPage = () => {
   return (

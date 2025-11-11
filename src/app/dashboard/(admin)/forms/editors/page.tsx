@@ -1,9 +1,10 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllEditors from "./components/AllEditors";
+import AllEditors from './components/AllEditors';
 
-export const metadata: Metadata = { title: "Editors" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Editors = () => {
   return (

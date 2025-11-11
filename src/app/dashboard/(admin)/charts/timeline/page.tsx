@@ -1,9 +1,10 @@
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllTimelineCharts from "./components/AllTimelineCharts";
+import AllTimelineCharts from './components/AllTimelineCharts';
 
-export const metadata: Metadata = { title: "Timeline Charts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const TimelineCharts = () => {
   return (

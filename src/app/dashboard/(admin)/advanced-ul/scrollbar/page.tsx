@@ -1,11 +1,12 @@
 import ComponentContainerCard from "@/components/dashboard/ComponentContainerCard";
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
-import SimplebarReactClient from "@/components/dashboard/wrappers/SimplebarReactClient";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
+import SimplebarReactClient from '@/components/dashboard/wrappers/SimplebarReactClient';
 
-export const metadata: Metadata = { title: "Scrollbar" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const DefaultScrollbar = () => {
   return (

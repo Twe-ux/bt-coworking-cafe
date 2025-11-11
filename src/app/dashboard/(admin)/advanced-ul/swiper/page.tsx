@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllSwiper from "./AllSwiper";
+import AllSwiper from './AllSwiper';
 
-export const metadata: Metadata = { title: "Swiper" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Swiper = () => {
   return (

@@ -2,7 +2,7 @@ import { partnerTwoLogos } from "@/db/partnerOneLogos";
 import SlideDown from "@/utils/animations/slideDown";
 import SlideUp from "@/utils/animations/slideUp";
 import Link from "next/link";
-import Partner from "../site/partner";
+import Partner from "../partner";
 
 const AboutTwo = () => {
   return (

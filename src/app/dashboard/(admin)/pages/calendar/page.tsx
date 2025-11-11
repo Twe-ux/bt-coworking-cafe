@@ -1,11 +1,11 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
-import { lazy, Suspense } from "react";
 import { Card, CardBody, Col, Row } from "react-bootstrap";
+import CalendarPage from './components/CalendarPage';
 
-const CalendarPage = lazy(() => import("./components/CalendarPage"));
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = { title: "Schedule" };
 const Schedule = () => {
   return (
     <>
@@ -15,9 +15,7 @@ const Schedule = () => {
           <Card>
             <CardBody>
               <Row>
-                <Suspense>
-                  <CalendarPage />
-                </Suspense>
+                <CalendarPage />
               </Row>
             </CardBody>
           </Card>

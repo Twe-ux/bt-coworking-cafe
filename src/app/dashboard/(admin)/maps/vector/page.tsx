@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllVectorMaps from "./components/AllVectorMaps";
+import AllVectorMaps from './components/AllVectorMaps';
 
-export const metadata: Metadata = { title: "Vector Maps" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const VectorMaps = () => {
   return (

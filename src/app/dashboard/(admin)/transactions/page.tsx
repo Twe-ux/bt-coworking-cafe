@@ -1,8 +1,9 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
-import TransactionData from "./components/TransactionData";
+import TransactionData from './components/TransactionData';
 
-export const metadata: Metadata = { title: "Transactions" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const TransactionsPage = () => {
   return (

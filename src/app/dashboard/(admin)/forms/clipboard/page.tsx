@@ -2,9 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllClipboards from "./components/AllClipboards";
+import AllClipboards from './components/AllClipboards';
 
-export const metadata: Metadata = { title: "Clipboard" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Clipboard = () => {
   return (

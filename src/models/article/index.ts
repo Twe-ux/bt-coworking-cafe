@@ -1,18 +1,18 @@
 import { Model, model, models } from "mongoose";
-import { ArticleSchema } from "./document";
+import { ArticleDocument, ArticleSchema } from "./document";
 import { attachHooks } from "./hooks";
 import { ArticleMethods } from "./methods";
 import { VirtualArticle } from "./virtuals";
 
 export type Article = VirtualArticle & ArticleMethods;
 
-let ArticleModel: Model<Article>;
+let ArticleModel: Model<ArticleDocument>;
 
 if (models.Article) {
-  ArticleModel = models.Article as Model<Article>;
+  ArticleModel = models.Article as Model<ArticleDocument>;
 } else {
   attachHooks();
-  ArticleModel = model<Article>("Article", ArticleSchema);
+  ArticleModel = model<ArticleDocument>("Article", ArticleSchema);
 }
 
 if (!ArticleModel) {

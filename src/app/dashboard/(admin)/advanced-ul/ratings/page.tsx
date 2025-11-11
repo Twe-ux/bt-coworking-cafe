@@ -1,10 +1,11 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
 import { Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllRatings from "./components/AllRatings";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import AllRatings from './components/AllRatings';
 
-export const metadata: Metadata = { title: "Ratings" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const Ratings = () => {
   return (

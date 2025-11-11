@@ -1,18 +1,18 @@
 import { Model, model, models } from "mongoose";
-import { TagSchema } from "./document";
+import { TagDocument, TagSchema } from "./document";
 import { attachHooks } from "./hooks";
 import { TagMethods } from "./methods";
 import { VirtualTag } from "./virtuals";
 
 export type Tag = VirtualTag & TagMethods;
 
-let TagModel: Model<Tag>;
+let TagModel: Model<TagDocument>;
 
 if (models.Tag) {
-  TagModel = models.Tag as Model<Tag>;
+  TagModel = models.Tag as Model<TagDocument>;
 } else {
   attachHooks();
-  TagModel = model<Tag>("Tag", TagSchema);
+  TagModel = model<TagDocument>("Tag", TagSchema);
 }
 
 if (!TagModel) {

@@ -2,10 +2,11 @@ import React from 'react'
 import Error404 from './components/Error404'
 import { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Page Not Found' }
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
-const page = () => {
+const Error404Page = () => {
   return <Error404 />
 }
 
-export default page
+export default Error404Page

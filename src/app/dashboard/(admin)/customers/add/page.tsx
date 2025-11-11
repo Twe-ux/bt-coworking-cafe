@@ -2,10 +2,11 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import FileUpload from "@/components/dashboard/FileUpload";
 import { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AddCustomer from "./components/AddCustomer";
-import CustomerAddCard from "./components/CustomerAddCard";
+import AddCustomer from './components/AddCustomer';
+import CustomerAddCard from './components/CustomerAddCard';
 
-export const metadata: Metadata = { title: "Customers Add" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const CustomerAddPage = () => {
   return (

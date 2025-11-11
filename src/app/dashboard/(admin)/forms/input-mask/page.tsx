@@ -1,9 +1,10 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllInputMasks from "./components/AllInputMasks";
+import AllInputMasks from './components/AllInputMasks';
 
-export const metadata: Metadata = { title: "Input Mask" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 const InputMasks = () => {
   return (
