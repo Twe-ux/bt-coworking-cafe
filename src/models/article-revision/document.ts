@@ -1,7 +1,6 @@
 import { ObjectId, Schema, Types, Document } from "mongoose";
-import type { ArticleRevision } from "./index";
 
-/** Document of an {@link ArticleRevision}, as stored in the database. */
+/** Document of an ArticleRevision, as stored in the database. */
 export interface ArticleRevisionDocument extends Document {
   article: ObjectId;
   user: ObjectId;
@@ -13,10 +12,7 @@ export interface ArticleRevisionDocument extends Document {
 }
 
 /** Schema used to validate ArticleRevision objects for the database. */
-export const ArticleRevisionSchema = new Schema<
-  ArticleRevisionDocument,
-  ArticleRevision
->(
+export const ArticleRevisionSchema = new Schema<ArticleRevisionDocument>(
   {
     article: {
       type: Types.ObjectId,
