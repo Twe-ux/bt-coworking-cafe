@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { options } from '@/app/api/auth/[...nextauth]/options';
+import { options } from '@/lib/auth-options';
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = 'force-dynamic';
