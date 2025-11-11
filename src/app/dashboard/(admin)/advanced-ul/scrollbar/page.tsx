@@ -1,4 +1,7 @@
 import ComponentContainerCard from "@/components/dashboard/ComponentContainerCard";
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import SimplebarReactClient from "@/components/dashboard/wrappers/SimplebarReactClient";

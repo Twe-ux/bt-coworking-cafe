@@ -1,4 +1,7 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 import type { Metadata } from "next";
 import { Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
 import AllRatings from "./components/AllRatings";
