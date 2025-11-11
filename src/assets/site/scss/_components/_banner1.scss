@@ -118,6 +118,7 @@
     .bg__img {
       position: absolute;
       height: 50%;
+      width: 650px;
       object-fit: cover;
       right: 0;
       bottom: -50px;
@@ -125,10 +126,10 @@
       border-top-left-radius: 150px;
       z-index: 1;
       @include breakpoint(xxl) {
-        width: 780px;
+        width: 580px;
       }
       @include breakpoint(xl) {
-        width: 700px;
+        width: 500px;
       }
       @include breakpoint(lg) {
         width: 450px;
