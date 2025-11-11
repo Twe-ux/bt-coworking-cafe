@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Types } from 'mongoose';
 import { createUser } from '@/lib/auth-helpers';
+
+interface MongoError extends Error {
+  code?: number;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,7 +52,7 @@ export async function POST(request: NextRequest) {
       {
         message: 'Utilisateur créé avec succès',
         user: {
-          id: (user._id as any).toString(),
+          id: (user._id as Types.ObjectId).toString(),
           email: user.email,
           username: user.username,
           givenName: user.givenName,
@@ -59,7 +64,7 @@ export async function POST(request: NextRequest) {
     console.error('Registration error:', error);
 
     // Handle duplicate email error
-    if ((error as any).code === 11000) {
+    if ((error as MongoError).code === 11000) {
       return NextResponse.json(
         { error: 'Cet email est déjà utilisé' },
         { status: 409 }

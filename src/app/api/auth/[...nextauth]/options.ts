@@ -1,11 +1,19 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { Types } from 'mongoose';
 import {
   findUserByEmail,
   verifyPassword,
   getRedirectPathByRole,
   initializeRoles,
 } from '@/lib/auth-helpers';
+
+interface PopulatedRole {
+  _id: Types.ObjectId;
+  slug: 'dev' | 'admin' | 'staff' | 'client';
+  name: string;
+  level: number;
+}
 
 // Track if roles have been initialized
 let rolesInitialized = false;
@@ -86,11 +94,11 @@ export const options: NextAuthOptions = {
           user.lastLoginAt = new Date();
           await user.save();
 
-          const role = user.role as any;
+          const role = user.role as unknown as PopulatedRole;
 
           // Return user data for session
           return {
-            id: (user._id as any).toString(),
+            id: (user._id as Types.ObjectId).toString(),
             email: user.email,
             name: user.givenName || user.username || user.email,
             username: user.username,

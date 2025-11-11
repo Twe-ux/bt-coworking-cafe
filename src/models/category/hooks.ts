@@ -1,6 +1,6 @@
 import { CategorySchema, CategoryDocument } from "./document";
 import slugify from "slugify";
-import mongoose from "mongoose";
+import mongoose, { Query, HydratedDocument } from "mongoose";
 
 export function attachHooks() {
   // Auto-generate slug from name if not provided
@@ -16,15 +16,15 @@ export function attachHooks() {
   });
 
   // Validate that parent is not self
-  CategorySchema.pre("save", async function (this: CategoryDocument, next) {
-    if (this.parent && this.parent.toString() === (this._id as any).toString()) {
+  CategorySchema.pre("save", async function (this: HydratedDocument<CategoryDocument>, next) {
+    if (this.parent && this._id && this.parent.toString() === this._id.toString()) {
       throw new Error("Category cannot be its own parent");
     }
     next();
   });
 
   // Prevent deletion if category has articles
-  CategorySchema.pre("deleteOne", async function (this: any, next) {
+  CategorySchema.pre("deleteOne", async function (this: Query<any, CategoryDocument>, next) {
     const doc = await this.model.findOne(this.getFilter());
     if (doc) {
       if (doc.articleCount > 0) {

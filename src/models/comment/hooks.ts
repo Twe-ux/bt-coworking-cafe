@@ -1,5 +1,5 @@
 import { CommentSchema, CommentDocument } from "./document";
-import mongoose from "mongoose";
+import mongoose, { Query, HydratedDocument } from "mongoose";
 
 export function attachHooks() {
   // Increment article comment count when comment is approved
@@ -12,7 +12,7 @@ export function attachHooks() {
   });
 
   // Decrement article comment count when approved comment is deleted
-  CommentSchema.pre("deleteOne", async function (this: any, next) {
+  CommentSchema.pre("deleteOne", async function (this: Query<any, CommentDocument>, next) {
     const doc = await this.model.findOne(this.getFilter());
     if (doc && doc.status === "approved") {
       await mongoose.models.Article.findByIdAndUpdate(doc.article, {
@@ -23,8 +23,8 @@ export function attachHooks() {
   });
 
   // Prevent self-referencing parent
-  CommentSchema.pre("save", async function (this: CommentDocument, next) {
-    if (this.parent && this.parent.toString() === (this._id as any).toString()) {
+  CommentSchema.pre("save", async function (this: HydratedDocument<CommentDocument>, next) {
+    if (this.parent && this._id && this.parent.toString() === this._id.toString()) {
       throw new Error("Comment cannot be its own parent");
     }
     next();

@@ -1,6 +1,6 @@
 import { ArticleSchema, ArticleDocument } from "./document";
 import slugify from "slugify";
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 export function attachHooks() {
   // Auto-generate slug from title
@@ -43,7 +43,7 @@ export function attachHooks() {
   });
 
   // Update counters when article is deleted
-  ArticleSchema.pre("deleteOne", async function (this: any, next) {
+  ArticleSchema.pre("deleteOne", async function (this: Query<any, ArticleDocument>, next) {
     const doc = await this.model.findOne(this.getFilter());
     if (doc) {
       // Decrement articleCount in category
