@@ -1,5 +1,4 @@
 import { ObjectId, Schema, Types, Document } from "mongoose";
-import type { Category } from "./index";
 
 /** Document of a {@link Category}, as stored in the database. */
 export interface CategoryDocument extends Document {
@@ -20,7 +19,7 @@ export interface CategoryDocument extends Document {
 }
 
 /** Schema used to validate Category objects for the database. */
-export const CategorySchema = new Schema<CategoryDocument, Category>(
+export const CategorySchema = new Schema<CategoryDocument>(
   {
     name: {
       type: String,

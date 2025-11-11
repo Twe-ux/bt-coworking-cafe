@@ -48,23 +48,23 @@ export function attachHooks(): void {
   };
 
   // Add virtuals
-  ReservationSchema.virtual("duration").get(function () {
+  ReservationSchema.virtual("duration").get(function (this: any) {
     return this.calculateDuration();
   });
 
-  ReservationSchema.virtual("isUpcoming").get(function () {
+  ReservationSchema.virtual("isUpcoming").get(function (this: any) {
     const now = new Date();
     const reservationDate = new Date(this.date);
     return reservationDate > now && this.status !== "cancelled" && this.status !== "completed";
   });
 
-  ReservationSchema.virtual("isPast").get(function () {
+  ReservationSchema.virtual("isPast").get(function (this: any) {
     const now = new Date();
     const reservationDate = new Date(this.date);
     return reservationDate < now;
   });
 
-  ReservationSchema.virtual("canBeCancelled").get(function () {
+  ReservationSchema.virtual("canBeCancelled").get(function (this: any) {
     return this.canCancel();
   });
 

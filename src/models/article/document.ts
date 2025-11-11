@@ -1,5 +1,4 @@
 import { ObjectId, Schema, Types, Document } from "mongoose";
-import type { Article } from "./index";
 
 /** Document of an {@link Article}, as stored in the database. */
 export interface ArticleDocument extends Document {
@@ -29,7 +28,7 @@ export interface ArticleDocument extends Document {
 }
 
 /** Schema used to validate Article objects for the database. */
-export const ArticleSchema = new Schema<ArticleDocument, Article>(
+export const ArticleSchema = new Schema<ArticleDocument>(
   {
     title: {
       type: String,

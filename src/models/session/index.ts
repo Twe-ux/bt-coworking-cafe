@@ -1,18 +1,18 @@
 import { Model, model, models } from "mongoose";
-import { SessionSchema } from "./document";
+import { SessionDocument, SessionSchema } from "./document";
 import { attachHooks } from "./hooks";
 import { SessionMethods } from "./methods";
 import { VirtualSession } from "./virtuals";
 
 export type Session = VirtualSession & SessionMethods;
 
-let SessionModel: Model<Session>;
+let SessionModel: Model<SessionDocument>;
 
 if (models.Session) {
-  SessionModel = models.Session as Model<Session>;
+  SessionModel = models.Session as Model<SessionDocument>;
 } else {
   attachHooks();
-  SessionModel = model<Session>("Session", SessionSchema);
+  SessionModel = model<SessionDocument>("Session", SessionSchema);
 }
 
 if (!SessionModel) {

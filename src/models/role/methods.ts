@@ -7,7 +7,7 @@ export interface RoleMethods extends RoleDocument {
 
 /** Check if role has a specific permission */
 RoleSchema.methods.hasPermission = async function (
-  this: RoleDocument,
+  this: any,
   permissionSlug: string
 ): Promise<boolean> {
   await this.populate("permissions");

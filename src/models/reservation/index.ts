@@ -1,18 +1,18 @@
 import { Model, model, models } from "mongoose";
-import { ReservationSchema } from "./document";
+import { ReservationDocument, ReservationSchema } from "./document";
 import { attachHooks } from "./hooks";
 import { ReservationMethods } from "./methods";
 import { VirtualReservation } from "./virtuals";
 
 export type Reservation = VirtualReservation & ReservationMethods;
 
-let ReservationModel: Model<Reservation>;
+let ReservationModel: Model<ReservationDocument>;
 
 if (models.Reservation) {
-  ReservationModel = models.Reservation as Model<Reservation>;
+  ReservationModel = models.Reservation as Model<ReservationDocument>;
 } else {
   attachHooks();
-  ReservationModel = model<Reservation>("Reservation", ReservationSchema);
+  ReservationModel = model<ReservationDocument>("Reservation", ReservationSchema);
 }
 
 if (!ReservationModel) {

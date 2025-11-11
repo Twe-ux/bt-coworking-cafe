@@ -35,7 +35,7 @@ export interface PermissionDocument extends Document {
 }
 
 /** Schema used to validate Permission objects for the database. */
-export const PermissionSchema = new Schema<PermissionDocument, Permission>(
+export const PermissionSchema = new Schema<PermissionDocument>(
   {
     name: {
       type: String,

@@ -1,5 +1,4 @@
 import { ObjectId, Schema, Types, Document } from "mongoose";
-import type { Comment } from "./index";
 
 /** Document of a {@link Comment}, as stored in the database. */
 export interface CommentDocument extends Document {
@@ -15,7 +14,7 @@ export interface CommentDocument extends Document {
 }
 
 /** Schema used to validate Comment objects for the database. */
-export const CommentSchema = new Schema<CommentDocument, Comment>(
+export const CommentSchema = new Schema<CommentDocument>(
   {
     content: {
       type: String,

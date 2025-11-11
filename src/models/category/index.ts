@@ -1,18 +1,18 @@
 import { Model, model, models } from "mongoose";
-import { CategorySchema } from "./document";
+import { CategoryDocument, CategorySchema } from "./document";
 import { attachHooks } from "./hooks";
 import { CategoryMethods } from "./methods";
 import { VirtualCategory } from "./virtuals";
 
 export type Category = VirtualCategory & CategoryMethods;
 
-let CategoryModel: Model<Category>;
+let CategoryModel: Model<CategoryDocument>;
 
 if (models.Category) {
-  CategoryModel = models.Category as Model<Category>;
+  CategoryModel = models.Category as Model<CategoryDocument>;
 } else {
   attachHooks();
-  CategoryModel = model<Category>("Category", CategorySchema);
+  CategoryModel = model<CategoryDocument>("Category", CategorySchema);
 }
 
 if (!CategoryModel) {

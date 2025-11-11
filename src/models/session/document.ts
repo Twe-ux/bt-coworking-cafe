@@ -18,7 +18,7 @@ export interface SessionDocument extends Document {
 }
 
 /** Schema used to validate Session objects for the database. */
-export const SessionSchema = new Schema<SessionDocument, Session>(
+export const SessionSchema = new Schema<SessionDocument>(
   {
     userId: {
       type: Types.ObjectId,

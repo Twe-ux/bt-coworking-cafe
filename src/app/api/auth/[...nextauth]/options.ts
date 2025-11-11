@@ -90,7 +90,7 @@ export const options: NextAuthOptions = {
 
           // Return user data for session
           return {
-            id: user._id.toString(),
+            id: (user._id as any).toString(),
             email: user.email,
             name: user.givenName || user.username || user.email,
             username: user.username,

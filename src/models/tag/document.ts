@@ -1,5 +1,4 @@
 import { Schema, Document } from "mongoose";
-import type { Tag } from "./index";
 
 /** Document of a {@link Tag}, as stored in the database. */
 export interface TagDocument extends Document {
@@ -13,7 +12,7 @@ export interface TagDocument extends Document {
 }
 
 /** Schema used to validate Tag objects for the database. */
-export const TagSchema = new Schema<TagDocument, Tag>(
+export const TagSchema = new Schema<TagDocument>(
   {
     name: {
       type: String,

@@ -1,5 +1,4 @@
 import { ObjectId, Schema, Types } from "mongoose";
-import type { Reservation } from "./index";
 
 /** Document of a {@link Reservation}, as stored in the database. */
 export interface ReservationDocument extends Document {
@@ -20,7 +19,7 @@ export interface ReservationDocument extends Document {
 }
 
 /** Schema used to validate Reservation objects for the database. */
-export const ReservationSchema = new Schema<ReservationDocument, Reservation>(
+export const ReservationSchema = new Schema<ReservationDocument>(
   {
     user: {
       type: Types.ObjectId,

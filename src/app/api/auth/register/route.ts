@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       {
         message: 'Utilisateur créé avec succès',
         user: {
-          id: user._id.toString(),
+          id: (user._id as any).toString(),
           email: user.email,
           username: user.username,
           givenName: user.givenName,
