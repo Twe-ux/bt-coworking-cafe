@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Types } from 'mongoose';
 import { createUser } from '@/lib/auth-helpers';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 interface MongoError extends Error {
   code?: number;
 }

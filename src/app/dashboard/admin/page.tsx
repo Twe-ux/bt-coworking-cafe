@@ -2,6 +2,9 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   const session = await getServerSession(options);
 
