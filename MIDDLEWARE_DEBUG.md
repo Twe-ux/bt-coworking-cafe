@@ -1,8 +1,15 @@
 # Middleware Debugging Guide
 
-## Current Issue
+## 🎯 DÉCOUVERTE CRITIQUE !
 
-Le middleware Next.js ne semble pas s'exécuter. Nous avons simplifié le code et ajouté des outils de débogage pour identifier le problème.
+**Le middleware était au mauvais endroit !**
+
+Votre projet utilise la structure `src/app`, donc le middleware doit être dans `src/middleware.ts` et **NON** à la racine du projet !
+
+## ✅ Correction appliquée
+
+- **Avant** : `/middleware.ts` (racine du projet) ❌
+- **Maintenant** : `/src/middleware.ts` ✓
 
 ## Testing Steps / Étapes de test
 
