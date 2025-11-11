@@ -1,23 +1,23 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
 import { Row } from "react-bootstrap";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const Articles = dynamic(() => import('./components/Articles'), {
+const Articles = dynamicImport(() => import('./components/Articles'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const FreshArticles = dynamic(() => import('./components/FreshArticles'), {
+const FreshArticles = dynamicImport(() => import('./components/FreshArticles'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Posts = dynamic(() => import('./components/Posts'), {
+const Posts = dynamicImport(() => import('./components/Posts'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

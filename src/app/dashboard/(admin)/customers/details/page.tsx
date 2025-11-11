@@ -10,43 +10,43 @@ import {
   Row,
 } from "react-bootstrap";
 import { customerData } from "./data";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const CustomerCard = dynamic(() => import('./components/CustomerCard'), {
+const CustomerCard = dynamicImport(() => import('./components/CustomerCard'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const CustomersDetails = dynamic(() => import('./components/CustomersDetails'), {
+const CustomersDetails = dynamicImport(() => import('./components/CustomersDetails'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const OwnProperty = dynamic(() => import('./components/OwnProperty'), {
+const OwnProperty = dynamicImport(() => import('./components/OwnProperty'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const PropertyCard = dynamic(() => import('./components/PropertyCard'), {
+const PropertyCard = dynamicImport(() => import('./components/PropertyCard'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const TransactionHistory = dynamic(() => import('./components/TransactionHistory'), {
+const TransactionHistory = dynamicImport(() => import('./components/TransactionHistory'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Transactions = dynamic(() => import('./components/Transactions'), {
+const Transactions = dynamicImport(() => import('./components/Transactions'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const WeeklyInquiry = dynamic(() => import('./components/WeeklyInquiry'), {
+const WeeklyInquiry = dynamicImport(() => import('./components/WeeklyInquiry'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

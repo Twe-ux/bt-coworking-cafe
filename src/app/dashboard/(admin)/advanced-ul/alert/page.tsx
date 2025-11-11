@@ -2,13 +2,13 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Component to avoid build-time bundling issues
-const AllSweetAlerts = dynamic(() => import('./Components/AllSweetAlerts'), {
+const AllSweetAlerts = dynamicImport(() => import('./Components/AllSweetAlerts'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

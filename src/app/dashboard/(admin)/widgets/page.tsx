@@ -1,55 +1,47 @@
 import React from 'react'
-import Stats from './components/Stats'
-import Statistic from './components/Statistic'
-import ProjectSummary from './components/ProjectSummary'
 import { Col, Row } from 'react-bootstrap'
-import Schedules from './components/Schedules'
-import Conversions from './components/Conversions'
-import Tasks from './components/Tasks'
-import FriendsRequest from './components/FriendsRequest'
-import RecentTransactions from './components/RecentTransactions'
-import { Metadata } from 'next'
+import dynamicImport from 'next/dynamic'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const Stats = dynamic(() => import('./components/Stats'), {
+const Stats = dynamicImport(() => import('./components/Stats'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Statistic = dynamic(() => import('./components/Statistic'), {
+const Statistic = dynamicImport(() => import('./components/Statistic'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const ProjectSummary = dynamic(() => import('./components/ProjectSummary'), {
+const ProjectSummary = dynamicImport(() => import('./components/ProjectSummary'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Schedules = dynamic(() => import('./components/Schedules'), {
+const Schedules = dynamicImport(() => import('./components/Schedules'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Conversions = dynamic(() => import('./components/Conversions'), {
+const Conversions = dynamicImport(() => import('./components/Conversions'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Tasks = dynamic(() => import('./components/Tasks'), {
+const Tasks = dynamicImport(() => import('./components/Tasks'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const FriendsRequest = dynamic(() => import('./components/FriendsRequest'), {
+const FriendsRequest = dynamicImport(() => import('./components/FriendsRequest'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const RecentTransactions = dynamic(() => import('./components/RecentTransactions'), {
+const RecentTransactions = dynamicImport(() => import('./components/RecentTransactions'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

@@ -1,17 +1,17 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const AgentDetails = dynamic(() => import('./components/AgentDetails'), {
+const AgentDetails = dynamicImport(() => import('./components/AgentDetails'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const AgentsDetailsBanner = dynamic(() => import('./components/AgentsDetailsBannner'), {
+const AgentsDetailsBanner = dynamicImport(() => import('./components/AgentsDetailsBannner'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

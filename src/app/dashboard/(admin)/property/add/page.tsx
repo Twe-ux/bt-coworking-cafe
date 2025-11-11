@@ -2,18 +2,18 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import FileUpload from "@/components/dashboard/FileUpload";
 import { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const PropertyAdd = dynamic(() => import('./components/PropertyAdd'), {
+const PropertyAdd = dynamicImport(() => import('./components/PropertyAdd'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const PropertyAddCard = dynamic(() => import('./components/PropertyAddCard'), {
+const PropertyAddCard = dynamicImport(() => import('./components/PropertyAddCard'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

@@ -2,13 +2,13 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const AllBarCharts = dynamic(() => import('./components/AllBarCharts'), {
+const AllBarCharts = dynamicImport(() => import('./components/AllBarCharts'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

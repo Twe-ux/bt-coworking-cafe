@@ -1,13 +1,13 @@
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const AllTimelineCharts = dynamic(() => import('./components/AllTimelineCharts'), {
+const AllTimelineCharts = dynamicImport(() => import('./components/AllTimelineCharts'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

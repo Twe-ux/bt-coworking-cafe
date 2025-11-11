@@ -1,5 +1,5 @@
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 // import { getAllDataTableRecords } from '@/helpers/data'
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { getAllDataTableRecords } from "@/helpers/data";
@@ -10,7 +10,7 @@ import { Col, Row } from "react-bootstrap";
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const AllDataTables = dynamic(() => import('./components/AllDataTables'), {
+const AllDataTables = dynamicImport(() => import('./components/AllDataTables'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

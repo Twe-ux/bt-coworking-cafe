@@ -1,53 +1,53 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const CollectionRent = dynamic(() => import('./components/CollectionRent'), {
+const CollectionRent = dynamicImport(() => import('./components/CollectionRent'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Goals = dynamic(() => import('./components/Goals'), {
+const Goals = dynamicImport(() => import('./components/Goals'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const JoinAgent = dynamic(() => import('./components/JoinAgent'), {
+const JoinAgent = dynamicImport(() => import('./components/JoinAgent'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const RecentAgent = dynamic(() => import('./components/RecentAgent'), {
+const RecentAgent = dynamicImport(() => import('./components/RecentAgent'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const SalesFunnel = dynamic(() => import('./components/SalesFunnel'), {
+const SalesFunnel = dynamicImport(() => import('./components/SalesFunnel'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const SessionsCountry = dynamic(() => import('./components/SessionsCountry'), {
+const SessionsCountry = dynamicImport(() => import('./components/SessionsCountry'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Statistics = dynamic(() => import('./components/Statistics'), {
+const Statistics = dynamicImport(() => import('./components/Statistics'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const TopAgents = dynamic(() => import('./components/TopAgents'), {
+const TopAgents = dynamicImport(() => import('./components/TopAgents'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const TotalRevenue = dynamic(() => import('./components/TotalRevenue'), {
+const TotalRevenue = dynamicImport(() => import('./components/TotalRevenue'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });

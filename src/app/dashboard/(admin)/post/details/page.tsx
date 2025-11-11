@@ -17,23 +17,23 @@ import {
   DropdownToggle,
   Row,
 } from "react-bootstrap";
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
-const Blogs = dynamic(() => import('./components/Blogs'), {
+const Blogs = dynamicImport(() => import('./components/Blogs'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const Comments = dynamic(() => import('./components/Comments'), {
+const Comments = dynamicImport(() => import('./components/Comments'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
-const PhotoCard = dynamic(() => import('./components/PhotoCard'), {
+const PhotoCard = dynamicImport(() => import('./components/PhotoCard'), {
   ssr: false,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
