@@ -2,9 +2,16 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllModals from "./components/AllModals";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Modals" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Component to avoid build-time bundling issues
+const AllModals = dynamic(() => import('./components/AllModals'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const Modals = () => {
   return (

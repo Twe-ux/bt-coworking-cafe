@@ -1,12 +1,27 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
-import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Card, CardHeader, Col, Row } from "react-bootstrap";
-import AgentData from "./Components/AgentData";
-import AgentGridCard from "./Components/AgentGridCard";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Agent Grid" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const IconifyIcon = dynamic(() => import('@/components/dashboard/wrappers/IconifyIcon'), {
+  ssr: false,
+  loading: () => <span></span>
+});
+
+const AgentData = dynamic(() => import('./Components/AgentData'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const AgentGridCard = dynamic(() => import('./Components/AgentGridCard'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const GridViewPage = () => {
   return (
