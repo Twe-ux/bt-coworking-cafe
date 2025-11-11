@@ -1,8 +1,56 @@
 import { MENU_ITEMS } from "@/assets/dashboard/data/menu-items";
 import type { MenuItemType } from "@/types/menu";
 
-export const getMenuItems = (): MenuItemType[] => {
-  return MENU_ITEMS;
+/**
+ * Get menu items filtered by user role
+ * @param userRole - The role of the current user
+ * @returns Filtered menu items based on role permissions
+ */
+export const getMenuItems = (
+  userRole?: 'dev' | 'admin' | 'staff' | 'client'
+): MenuItemType[] => {
+  // If no role specified, return all items (for dev/admin)
+  if (!userRole) {
+    return MENU_ITEMS;
+  }
+
+  // Filter menu items based on role
+  return filterMenuByRole(MENU_ITEMS, userRole);
+};
+
+/**
+ * Recursively filter menu items by role
+ */
+const filterMenuByRole = (
+  items: MenuItemType[],
+  userRole: 'dev' | 'admin' | 'staff' | 'client'
+): MenuItemType[] => {
+  return items
+    .filter((item) => {
+      // If no roles specified, item is visible to all
+      if (!item.roles || item.roles.length === 0) {
+        return true;
+      }
+      // Check if user's role is in the allowed roles
+      return item.roles.includes(userRole);
+    })
+    .map((item) => {
+      // Recursively filter children
+      if (item.children) {
+        return {
+          ...item,
+          children: filterMenuByRole(item.children, userRole),
+        };
+      }
+      return item;
+    })
+    .filter((item) => {
+      // Remove items with children if all children were filtered out
+      if (item.children) {
+        return item.children.length > 0;
+      }
+      return true;
+    });
 };
 
 export const findAllParent = (

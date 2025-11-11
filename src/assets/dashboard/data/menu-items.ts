@@ -35,6 +35,7 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'property',
     label: 'Property',
     icon: 'ri:community-line',
+    roles: ['dev', 'admin'], // Only dev and admin can manage properties
     children: [
       {
         key: 'property-grid',
@@ -66,6 +67,7 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'agents',
     label: 'Agents',
     icon: 'ri:group-line',
+    roles: ['dev', 'admin'], // Only dev and admin can manage agents
     children: [
       {
         key: 'agents-list-view',
@@ -97,6 +99,7 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'customers',
     label: 'Customers',
     icon: 'ri:contacts-book-3-line',
+    roles: ['dev', 'admin', 'staff'], // Staff and above can manage customers
     children: [
       {
         key: 'list-view',
@@ -255,6 +258,7 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'auth',
     label: 'Authentication',
     icon: 'ri:lock-password-line',
+    roles: ['dev'], // Only dev can see auth pages in dashboard
     children: [
       {
         key: 'sign-in',
@@ -290,11 +294,13 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'Components',
     label: 'COMPONENTS',
     isTitle: true,
+    roles: ['dev', 'admin'], // Only dev and admin see components section
   },
   {
     key: 'base-ui',
     label: 'Base UI',
     icon: 'ri:contrast-drop-line',
+    roles: ['dev', 'admin'], // Only dev and admin can access base UI components
     children: [
       {
         key: 'accordion',
@@ -428,6 +434,7 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'advanced-ul',
     label: 'Advanced Ul',
     icon: 'ri:briefcase-line',
+    roles: ['dev', 'admin'], // Only dev and admin can access advanced UI
     children: [
       {
         key: 'ratings',
@@ -465,6 +472,7 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'charts',
     label: 'charts',
     icon: 'ri:bar-chart-line',
+    roles: ['dev', 'admin'], // Only dev and admin can access charts
     children: [
       {
         key: 'area',
@@ -568,6 +576,7 @@ export const MENU_ITEMS: MenuItemType[] = [
     key: 'forms',
     label: 'Forms',
     icon: 'ri:survey-line',
+    roles: ['dev', 'admin'], // Only dev and admin can access forms
     children: [
       {
         key: 'basic',
