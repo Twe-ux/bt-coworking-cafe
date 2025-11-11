@@ -1,11 +1,17 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import type { Metadata } from "next";
+import { Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
+import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import dynamic from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-import type { Metadata } from "next";
-import { Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllRatings from "./components/AllRatings";
-import UIExamplesList from "@/components/dashboard/UIExamplesList";
+
+// Dynamically import Client Component to avoid build-time bundling issues
+const AllRatings = dynamic(() => import('./components/AllRatings'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 
 const Ratings = () => {

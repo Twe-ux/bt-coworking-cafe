@@ -1,12 +1,18 @@
 import ComponentContainerCard from "@/components/dashboard/ComponentContainerCard";
+import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import type { Metadata } from "next";
+import dynamic from 'next/dynamic';
+import { Col, Row } from "react-bootstrap";
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
-import UIExamplesList from "@/components/dashboard/UIExamplesList";
-import SimplebarReactClient from "@/components/dashboard/wrappers/SimplebarReactClient";
-import type { Metadata } from "next";
-import { Col, Row } from "react-bootstrap";
+
+// Dynamically import Client Component to avoid build-time bundling issues
+const SimplebarReactClient = dynamic(() => import('@/components/dashboard/wrappers/SimplebarReactClient'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+});
 
 
 const DefaultScrollbar = () => {
