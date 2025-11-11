@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const BasicExamples = dynamicImport(() => import('./components/BasicExamples'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

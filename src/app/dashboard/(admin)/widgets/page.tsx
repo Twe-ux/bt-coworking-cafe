@@ -7,42 +7,42 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const Stats = dynamicImport(() => import('./components/Stats'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Statistic = dynamicImport(() => import('./components/Statistic'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const ProjectSummary = dynamicImport(() => import('./components/ProjectSummary'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Schedules = dynamicImport(() => import('./components/Schedules'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Conversions = dynamicImport(() => import('./components/Conversions'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Tasks = dynamicImport(() => import('./components/Tasks'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const FriendsRequest = dynamicImport(() => import('./components/FriendsRequest'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const RecentTransactions = dynamicImport(() => import('./components/RecentTransactions'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

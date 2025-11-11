@@ -8,12 +8,12 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const OwnerDetails = dynamicImport(() => import('./components/OwnerDetails'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const PropertyDetails = dynamicImport(() => import('./components/PropertyDetails'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

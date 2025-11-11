@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Component to avoid build-time bundling issues
 const AllPlaceholders = dynamicImport(() => import('./components/AllPlaceholders'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

@@ -8,27 +8,27 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const BalanceCard = dynamicImport(() => import('./components/BalanceCard'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const SalesChart = dynamicImport(() => import('./components/SalesChart'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const SocialSource = dynamicImport(() => import('./components/SocialSource'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Statistics = dynamicImport(() => import('./components/Statistics'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Transaction = dynamicImport(() => import('./components/Transaction'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

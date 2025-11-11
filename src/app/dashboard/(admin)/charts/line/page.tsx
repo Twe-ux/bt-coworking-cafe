@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const AllLineCharts = dynamicImport(() => import('./components/AllLineCharts'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

@@ -17,37 +17,37 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const CustomerCard = dynamicImport(() => import('./components/CustomerCard'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const CustomersDetails = dynamicImport(() => import('./components/CustomersDetails'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const OwnProperty = dynamicImport(() => import('./components/OwnProperty'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const PropertyCard = dynamicImport(() => import('./components/PropertyCard'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const TransactionHistory = dynamicImport(() => import('./components/TransactionHistory'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Transactions = dynamicImport(() => import('./components/Transactions'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const WeeklyInquiry = dynamicImport(() => import('./components/WeeklyInquiry'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

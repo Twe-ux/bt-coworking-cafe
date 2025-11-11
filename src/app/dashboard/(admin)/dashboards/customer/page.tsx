@@ -8,37 +8,37 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const CustomerByCountry = dynamicImport(() => import('./components/CustomerByCountry'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const CustomerCountry = dynamicImport(() => import('./components/CustomerCountry'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const CustomersInvest = dynamicImport(() => import('./components/CustomersInvest'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const CustomerVisit = dynamicImport(() => import('./components/CustomerVisit'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const PropertyInvestor = dynamicImport(() => import('./components/PropertyInvestor'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const PurchaseProperty = dynamicImport(() => import('./components/PurchaseProperty'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const TopCustomer = dynamicImport(() => import('./components/TopCustomer'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

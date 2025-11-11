@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Component to avoid build-time bundling issues
 const SimplebarReactClient = dynamicImport(() => import('@/components/dashboard/wrappers/SimplebarReactClient'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div>Loading...</div>
 });
 

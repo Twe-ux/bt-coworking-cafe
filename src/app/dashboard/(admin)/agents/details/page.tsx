@@ -7,12 +7,12 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const AgentDetails = dynamicImport(() => import('./components/AgentDetails'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const AgentsDetailsBanner = dynamicImport(() => import('./components/AgentsDetailsBannner'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 

@@ -8,47 +8,47 @@ export const dynamic = 'force-dynamic';
 
 // Dynamically import Client Components to avoid build-time bundling issues
 const CollectionRent = dynamicImport(() => import('./components/CollectionRent'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Goals = dynamicImport(() => import('./components/Goals'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const JoinAgent = dynamicImport(() => import('./components/JoinAgent'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const RecentAgent = dynamicImport(() => import('./components/RecentAgent'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const SalesFunnel = dynamicImport(() => import('./components/SalesFunnel'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const SessionsCountry = dynamicImport(() => import('./components/SessionsCountry'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const Statistics = dynamicImport(() => import('./components/Statistics'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const TopAgents = dynamicImport(() => import('./components/TopAgents'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
 const TotalRevenue = dynamicImport(() => import('./components/TotalRevenue'), {
-  ssr: false,
+  ssr: true,
   loading: () => <div className="text-center p-4">Loading...</div>
 });
 
