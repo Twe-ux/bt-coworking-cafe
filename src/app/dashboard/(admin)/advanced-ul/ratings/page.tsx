@@ -7,7 +7,6 @@ import { Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
 import AllRatings from "./components/AllRatings";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 
-export const metadata: Metadata = { title: "Ratings" };
 
 const Ratings = () => {
   return (

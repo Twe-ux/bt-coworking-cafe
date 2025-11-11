@@ -7,7 +7,6 @@ import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
 import AllSweetAlerts from "./Components/AllSweetAlerts";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 
-export const metadata: Metadata = { title: "Sweet Alert" };
 
 const SweetAlerts = () => {
   return (

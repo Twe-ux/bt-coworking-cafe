@@ -7,7 +7,6 @@ import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
 import AllToastify from "./AllToastify";
 
-export const metadata: Metadata = { title: "Toastify" };
 
 const Toastify = () => {
   return (

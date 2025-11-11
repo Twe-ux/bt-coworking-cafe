@@ -8,7 +8,6 @@ import SimplebarReactClient from "@/components/dashboard/wrappers/SimplebarReact
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
 
-export const metadata: Metadata = { title: "Scrollbar" };
 
 const DefaultScrollbar = () => {
   return (

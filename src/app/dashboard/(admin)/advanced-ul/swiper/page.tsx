@@ -7,7 +7,6 @@ import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
 import AllSwiper from "./AllSwiper";
 
-export const metadata: Metadata = { title: "Swiper" };
 
 const Swiper = () => {
   return (
