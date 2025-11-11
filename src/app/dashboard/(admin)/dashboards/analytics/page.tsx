@@ -1,36 +1,14 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
 import { Row } from "react-bootstrap";
-import dynamicImport from 'next/dynamic';
+import BalanceCard from './components/BalanceCard';
+import SalesChart from './components/SalesChart';
+import SocialSource from './components/SocialSource';
+import Statistics from './components/Statistics';
+import Transaction from './components/Transaction';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-
-// Dynamically import Client Components to avoid build-time bundling issues
-const BalanceCard = dynamicImport(() => import('./components/BalanceCard'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const SalesChart = dynamicImport(() => import('./components/SalesChart'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const SocialSource = dynamicImport(() => import('./components/SocialSource'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const Statistics = dynamicImport(() => import('./components/Statistics'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const Transaction = dynamicImport(() => import('./components/Transaction'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
 
 const AnalyticsPage = () => {
   return (

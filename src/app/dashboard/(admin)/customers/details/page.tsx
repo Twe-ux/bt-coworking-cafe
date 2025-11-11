@@ -10,46 +10,16 @@ import {
   Row,
 } from "react-bootstrap";
 import { customerData } from "./data";
-import dynamicImport from 'next/dynamic';
+import CustomerCard from './components/CustomerCard';
+import CustomersDetails from './components/CustomersDetails';
+import OwnProperty from './components/OwnProperty';
+import PropertyCard from './components/PropertyCard';
+import TransactionHistory from './components/TransactionHistory';
+import Transactions from './components/Transactions';
+import WeeklyInquiry from './components/WeeklyInquiry';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-
-// Dynamically import Client Components to avoid build-time bundling issues
-const CustomerCard = dynamicImport(() => import('./components/CustomerCard'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const CustomersDetails = dynamicImport(() => import('./components/CustomersDetails'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const OwnProperty = dynamicImport(() => import('./components/OwnProperty'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const PropertyCard = dynamicImport(() => import('./components/PropertyCard'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const TransactionHistory = dynamicImport(() => import('./components/TransactionHistory'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const Transactions = dynamicImport(() => import('./components/Transactions'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const WeeklyInquiry = dynamicImport(() => import('./components/WeeklyInquiry'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
 
 const CustomerDetailsPage = async () => {
   const propertyData = await getAllProperty();

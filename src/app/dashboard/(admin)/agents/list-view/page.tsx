@@ -2,16 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import { Metadata } from "next";
 import { Card, CardHeader, Col, Row } from "react-bootstrap";
-import dynamicImport from 'next/dynamic';
+import AgentList from './components/AgentList';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-
-// Dynamically import Client Components to avoid build-time bundling issues
-const AgentList = dynamicImport(() => import('./components/AgentList'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
 
 const ListViewPage = () => {
   return (

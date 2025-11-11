@@ -1,21 +1,11 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
 import { Row } from "react-bootstrap";
-import dynamicImport from 'next/dynamic';
+import PropertiesData from './components/PropertiesData';
+import PropertiesFilter from './components/PropertiesFilter';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-
-// Dynamically import Client Components to avoid build-time bundling issues
-const PropertiesData = dynamicImport(() => import('./components/PropertiesData'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const PropertiesFilter = dynamicImport(() => import('./components/PropertiesFilter'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
 
 const PropertyGridPage = () => {
   return (

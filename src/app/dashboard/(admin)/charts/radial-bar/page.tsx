@@ -2,16 +2,10 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import dynamicImport from 'next/dynamic';
+import AllRadialBarCharts from './components/AllRadialBarCharts';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-
-// Dynamically import Client Components to avoid build-time bundling issues
-const AllRadialBarCharts = dynamicImport(() => import('./components/AllRadialBarCharts'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
 
 const RadialBarCharts = () => {
   return (

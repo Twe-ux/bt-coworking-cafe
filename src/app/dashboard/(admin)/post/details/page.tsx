@@ -6,6 +6,9 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
+import Blogs from './components/Blogs';
+import Comments from './components/Comments';
+import PhotoCard from './components/PhotoCard';
   Button,
   Card,
   CardBody,
@@ -17,26 +20,9 @@ import {
   DropdownToggle,
   Row,
 } from "react-bootstrap";
-import dynamicImport from 'next/dynamic';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-
-// Dynamically import Client Components to avoid build-time bundling issues
-const Blogs = dynamicImport(() => import('./components/Blogs'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const Comments = dynamicImport(() => import('./components/Comments'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
-
-const PhotoCard = dynamicImport(() => import('./components/PhotoCard'), {
-  ssr: true,
-  loading: () => <div className="text-center p-4">Loading...</div>
-});
 
 const PostDetailsPage = () => {
   return (
