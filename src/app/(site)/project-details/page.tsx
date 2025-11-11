@@ -1,4 +1,4 @@
-import PageTitle from '@/components/pageTitle'
+import PageTitle from '@/components/site/pageTitle'
 import SlideUp from '@/utils/animations/slideUp'
 import React from 'react'
 

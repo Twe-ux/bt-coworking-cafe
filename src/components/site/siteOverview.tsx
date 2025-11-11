@@ -1,6 +1,6 @@
 import SlideUp from "@/utils/animations/slideUp";
 import Link from "next/link";
-import AboutCounter from "../about/aboutCounter";
+import AboutCounter from "./about/aboutCounter";
 
 const SiteOverview = () => {
   return (

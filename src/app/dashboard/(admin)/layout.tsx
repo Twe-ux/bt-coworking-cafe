@@ -1,4 +1,4 @@
-import Footer from "@/components/dashboard/layout/footer";
+import Footer from "@/components/dashboard/layout/Footer";
 import AuthProtectionWrapper from "@/components/dashboard/wrappers/AuthProtectionWrapper";
 import { ChildrenType } from "@/types/component-props";
 import dynamic from "next/dynamic";
