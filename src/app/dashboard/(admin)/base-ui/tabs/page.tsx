@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllNavTabs from "./components/AllNavTabs";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Nav Tabs" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Component to avoid build-time bundling issues
+const AllNavTabs = dynamic(() => import('./components/AllNavTabs'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 const Tabs = () => {
   return (
     <>

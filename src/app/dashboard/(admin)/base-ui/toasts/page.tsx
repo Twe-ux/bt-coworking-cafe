@@ -2,9 +2,16 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllToasts from "./components/AllToasts";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Toasts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Component to avoid build-time bundling issues
+const AllToasts = dynamic(() => import('./components/AllToasts'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const Toasts = () => {
   return (
