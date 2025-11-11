@@ -10,41 +10,47 @@ import FriendsRequest from './components/FriendsRequest'
 import RecentTransactions from './components/RecentTransactions'
 import { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Widgets' }
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
-const WidgetsPage = () => {
-  return (
-    <>
-      <div>
-        <Stats />
-        <Statistic />
-        <Row>
-          <Col xl={6}>
-            <ProjectSummary />
-          </Col>
-          <Col xl={6}>
-            <Schedules />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <Conversions />
-          </Col>
-        </Row>
-        <Row>
-          <Col xl={4}>
-            <Tasks />
-          </Col>
-          <Col xl={4}>
-            <FriendsRequest />
-          </Col>
-          <Col xl={4}>
-            <RecentTransactions />
-          </Col>
-        </Row>
-      </div>
-    </>
-  )
-}
+// Dynamically import Client Components to avoid build-time bundling issues
+const Stats = dynamic(() => import('./components/Stats'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
-export default WidgetsPage
+const Statistic = dynamic(() => import('./components/Statistic'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const ProjectSummary = dynamic(() => import('./components/ProjectSummary'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const Schedules = dynamic(() => import('./components/Schedules'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const Conversions = dynamic(() => import('./components/Conversions'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const Tasks = dynamic(() => import('./components/Tasks'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const FriendsRequest = dynamic(() => import('./components/FriendsRequest'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const RecentTransactions = dynamic(() => import('./components/RecentTransactions'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+

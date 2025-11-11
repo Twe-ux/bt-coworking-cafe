@@ -1,8 +1,15 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
-import AllWizard from "./components/AllWizard";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Wizard" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const AllWizard = dynamic(() => import('./components/AllWizard'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const Wizard = () => {
   return (

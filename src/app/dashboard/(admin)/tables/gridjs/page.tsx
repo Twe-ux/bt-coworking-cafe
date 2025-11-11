@@ -1,12 +1,19 @@
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
+import dynamic from 'next/dynamic';
 // import { getAllDataTableRecords } from '@/helpers/data'
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { getAllDataTableRecords } from "@/helpers/data";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllDataTables from "./components/AllDataTables";
 
-export const metadata: Metadata = { title: "GridJs Tables" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const AllDataTables = dynamic(() => import('./components/AllDataTables'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const GridJS = async () => {
   const dataTableRecords = await getAllDataTableRecords();

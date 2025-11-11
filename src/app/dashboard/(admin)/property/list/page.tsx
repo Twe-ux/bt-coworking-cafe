@@ -1,9 +1,20 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import { Metadata } from "next";
-import PropertyList from "./components/PropertyList";
-import PropertyStat from "./components/PropertyStat";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Listing List" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const PropertyList = dynamic(() => import('./components/PropertyList'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const PropertyStat = dynamic(() => import('./components/PropertyStat'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const PropertyListPage = () => {
   return (

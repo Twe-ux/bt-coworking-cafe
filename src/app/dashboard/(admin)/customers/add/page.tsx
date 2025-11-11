@@ -2,10 +2,21 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import FileUpload from "@/components/dashboard/FileUpload";
 import { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AddCustomer from "./components/AddCustomer";
-import CustomerAddCard from "./components/CustomerAddCard";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Customers Add" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const AddCustomer = dynamic(() => import('./components/AddCustomer'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const CustomerAddCard = dynamic(() => import('./components/CustomerAddCard'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const CustomerAddPage = () => {
   return (

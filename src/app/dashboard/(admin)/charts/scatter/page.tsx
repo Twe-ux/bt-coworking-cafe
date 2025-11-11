@@ -2,9 +2,16 @@ import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import UIExamplesList from "@/components/dashboard/UIExamplesList";
 import type { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import AllScatterCharts from "./components/AllScatterCharts";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Scatter Charts" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const AllScatterCharts = dynamic(() => import('./components/AllScatterCharts'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const ScatterCharts = () => {
   return (

@@ -2,10 +2,12 @@ import React from 'react'
 import Error404 from './components/Error404'
 import { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Page Not Found' }
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
-const page = () => {
-  return <Error404 />
-}
+// Dynamically import Client Components to avoid build-time bundling issues
+const Error404 = dynamic(() => import('./components/Error404'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
-export default page

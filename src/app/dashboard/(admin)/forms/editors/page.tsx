@@ -1,9 +1,16 @@
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import type { Metadata } from "next";
 import { Button, Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import AllEditors from "./components/AllEditors";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Editors" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const AllEditors = dynamic(() => import('./components/AllEditors'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const Editors = () => {
   return (

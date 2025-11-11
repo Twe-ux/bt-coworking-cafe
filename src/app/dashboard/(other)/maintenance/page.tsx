@@ -1,10 +1,12 @@
 import { Metadata } from 'next'
 import Maintenance from './components/Maintenance'
 
-export const metadata: Metadata = { title: 'Maintenance' }
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
-const MaintenancePage = () => {
-  return <Maintenance />
-}
+// Dynamically import Client Components to avoid build-time bundling issues
+const Maintenance = dynamic(() => import('./components/Maintenance'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
-export default MaintenancePage

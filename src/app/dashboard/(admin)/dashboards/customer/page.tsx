@@ -1,15 +1,46 @@
 import { Metadata } from "next";
 import { Col, Row } from "react-bootstrap";
-import CustomerByCountry from "./components/CustomerByCountry";
-import CustomerCountry from "./components/CustomerCountry";
-import CustomersInvest from "./components/CustomersInvest";
-import CustomerVisit from "./components/CustomerVisit";
-import PropertyInvestor from "./components/PropertyInvestor";
-import PurchaseProperty from "./components/PurchaseProperty";
-import TopCustomer from "./components/TopCustomer";
 import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import dynamic from 'next/dynamic';
 
-export const metadata: Metadata = { title: "Customers" };
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
+// Dynamically import Client Components to avoid build-time bundling issues
+const CustomerByCountry = dynamic(() => import('./components/CustomerByCountry'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const CustomerCountry = dynamic(() => import('./components/CustomerCountry'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const CustomersInvest = dynamic(() => import('./components/CustomersInvest'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const CustomerVisit = dynamic(() => import('./components/CustomerVisit'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const PropertyInvestor = dynamic(() => import('./components/PropertyInvestor'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const PurchaseProperty = dynamic(() => import('./components/PurchaseProperty'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
+
+const TopCustomer = dynamic(() => import('./components/TopCustomer'), {
+  ssr: false,
+  loading: () => <div className="text-center p-4">Loading...</div>
+});
 
 const CustomerPage = () => {
   return (
