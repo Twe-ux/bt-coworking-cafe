@@ -24,7 +24,7 @@ const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
           <div className="row">
             {blogOneData
               .slice(0, 3)
-              .map(({ author, comments, id, imgSrc, title }) => (
+              .map(({ author, comments, id, imgSrc, title, slug }) => (
                 <SlideUp
                   key={id}
                   className="col-lg-4 col-md-6 mb-lg-0 mb-5"
@@ -36,6 +36,7 @@ const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
                     id={id}
                     imgSrc={imgSrc}
                     title={title}
+                    slug={slug}
                   />
                 </SlideUp>
               ))}
