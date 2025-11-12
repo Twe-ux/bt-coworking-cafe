@@ -10,7 +10,7 @@ const Articles = () => {
     page: 1,
     limit: 4,
     sortBy: 'createdAt',
-    sortOrder: -1,
+    sortOrder: 'desc',
   });
 
   const formatDate = (date: string) => {

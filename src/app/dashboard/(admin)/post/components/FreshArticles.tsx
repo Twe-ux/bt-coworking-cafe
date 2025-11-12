@@ -10,7 +10,7 @@ const FreshArticles = () => {
     page: 1,
     limit: 1,
     sortBy: 'createdAt',
-    sortOrder: -1,
+    sortOrder: 'desc',
   });
 
   const article = data?.articles[0];
