@@ -21,12 +21,14 @@ import {
 } from "react-bootstrap";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
-import { useCreateArticleMutation } from "@/store/api/blogApi";
+import { useCreateArticleMutation, useGetCategoriesQuery, useGetTagsQuery } from "@/store/api/blogApi";
 import { useNotification } from "@/hooks/useNotification";
 
 const CreatePost = () => {
   const router = useRouter();
   const [createArticle, { isLoading }] = useCreateArticleMutation();
+  const { data: categoriesData } = useGetCategoriesQuery({ limit: 100 });
+  const { data: tagsData } = useGetTagsQuery({ limit: 100 });
   const { success, error: showError } = useNotification();
   const [selectedStatus, setSelectedStatus] = useState<string>("draft");
 
@@ -162,6 +164,68 @@ const CreatePost = () => {
               {errors.featuredImage && (
                 <small className="text-danger">{errors.featuredImage.message}</small>
               )}
+            </Col>
+
+            <Col lg={6}>
+              <div className="mb-3">
+                <label htmlFor="categoryId" className="form-label">
+                  Catégorie
+                </label>
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  render={({ field }) => (
+                    <Form.Select {...field} id="categoryId">
+                      <option value="">Sélectionner une catégorie</option>
+                      {categoriesData?.categories.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  )}
+                />
+                {errors.categoryId && (
+                  <small className="text-danger">{errors.categoryId.message}</small>
+                )}
+              </div>
+            </Col>
+
+            <Col lg={6}>
+              <div className="mb-3">
+                <label htmlFor="tagIds" className="form-label">
+                  Tags
+                </label>
+                <Controller
+                  name="tagIds"
+                  control={control}
+                  render={({ field }) => (
+                    <Form.Select
+                      {...field}
+                      id="tagIds"
+                      multiple
+                      size={5}
+                      onChange={(e) => {
+                        const selected = Array.from(e.target.selectedOptions, option => option.value);
+                        field.onChange(selected);
+                      }}
+                      value={field.value || []}
+                    >
+                      {tagsData?.tags.map((tag) => (
+                        <option key={tag._id} value={tag._id}>
+                          {tag.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  )}
+                />
+                <small className="text-muted d-block mt-1">
+                  Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs tags
+                </small>
+                {errors.tagIds && (
+                  <small className="text-danger d-block">{errors.tagIds.message}</small>
+                )}
+              </div>
             </Col>
 
             <Col lg={6}>
