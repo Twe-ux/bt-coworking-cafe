@@ -2,20 +2,40 @@
 
 import SlideUp from '@/utils/animations/slideUp';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import type { Article } from '@/store/api/blogApi';
+import { useToggleLikeMutation } from '@/store/api/blogApi';
 
 interface BlogArticleDetailProps {
     article: Article;
 }
 
 const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
+    const [toggleLike, { isLoading: isLiking }] = useToggleLikeMutation();
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(article.likeCount);
+
     const formatDate = (date: string) => {
         return new Date(date).toLocaleDateString('fr-FR', {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
         });
+    };
+
+    const handleLike = async () => {
+        if (isLiking || liked) return; // Prevent double-click and already liked
+
+        try {
+            setLiked(true);
+            setLikeCount(prev => prev + 1);
+            await toggleLike(article._id).unwrap();
+        } catch (error) {
+            // Revert on error
+            setLiked(false);
+            setLikeCount(prev => prev - 1);
+            console.error('Error liking article:', error);
+        }
     };
 
     return (
@@ -61,16 +81,26 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
                 />
 
                 {/* Stats */}
-                <div className="d-flex gap-4 my-4">
-                    <p>
+                <div className="d-flex gap-4 my-4 align-items-center">
+                    <p className="mb-0">
                         <i className="fa-solid fa-eye me-2"></i>
                         <span>{article.viewCount} vues</span>
                     </p>
-                    <p>
-                        <i className="fa-solid fa-heart me-2"></i>
-                        <span>{article.likeCount} likes</span>
-                    </p>
-                    <p>
+                    <button
+                        onClick={handleLike}
+                        disabled={isLiking || liked}
+                        className={`btn btn-sm d-inline-flex align-items-center gap-2 ${
+                            liked ? 'btn-danger' : 'btn-outline-danger'
+                        }`}
+                        style={{
+                            border: liked ? 'none' : '1px solid #dc3545',
+                            padding: '0.25rem 0.75rem',
+                        }}
+                    >
+                        <i className={`fa-${liked ? 'solid' : 'regular'} fa-heart`}></i>
+                        <span>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</span>
+                    </button>
+                    <p className="mb-0">
                         <i className="fa-solid fa-clock me-2"></i>
                         <span>{article.readingTime} min de lecture</span>
                     </p>
