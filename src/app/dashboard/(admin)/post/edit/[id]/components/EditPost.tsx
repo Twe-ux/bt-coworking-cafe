@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import TextFormInput from "@/components/dashboard/from/TextFormInput";
 import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
 import ImageUpload from "@/components/dashboard/ImageUpload";
+import DropzoneImageUpload from "@/components/dashboard/DropzoneImageUpload";
+import MarkdownEditor from "@/components/dashboard/MarkdownEditor";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
@@ -197,26 +199,31 @@ const EditPost = ({ articleId }: EditPostProps) => {
             </Col>
 
             <Col lg={12}>
-              <div className="mb-3">
-                <TextAreaFormInput
-                  control={control}
-                  name="content"
-                  label="Contenu *"
-                  rows={12}
-                  placeholder="Écrivez votre article ici..."
-                />
-                {errors.content && (
-                  <small className="text-danger">{errors.content.message}</small>
+              <Controller
+                name="content"
+                control={control}
+                render={({ field }) => (
+                  <>
+                    <MarkdownEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      label="Contenu *"
+                      placeholder="Écrivez votre article en Markdown..."
+                    />
+                    {errors.content && (
+                      <small className="text-danger">{errors.content.message}</small>
+                    )}
+                  </>
                 )}
-              </div>
+              />
             </Col>
 
-            <Col lg={6}>
+            <Col lg={12}>
               <Controller
                 name="featuredImage"
                 control={control}
                 render={({ field }) => (
-                  <ImageUpload
+                  <DropzoneImageUpload
                     onImageUpload={field.onChange}
                     currentImage={field.value}
                     label="Image à la une"
@@ -283,7 +290,7 @@ const EditPost = ({ articleId }: EditPostProps) => {
         </CardHeader>
         <CardBody>
           <Row>
-            <Col lg={6}>
+            <Col lg={12}>
               <div className="mb-3">
                 <TextFormInput
                   control={control}
@@ -293,20 +300,6 @@ const EditPost = ({ articleId }: EditPostProps) => {
                 />
                 {errors.seoMetaTitle && (
                   <small className="text-danger">{errors.seoMetaTitle.message}</small>
-                )}
-              </div>
-            </Col>
-
-            <Col lg={6}>
-              <div className="mb-3">
-                <TextFormInput
-                  control={control}
-                  name="seoOgImage"
-                  placeholder="https://example.com/og-image.jpg"
-                  label="Image Open Graph (réseaux sociaux)"
-                />
-                {errors.seoOgImage && (
-                  <small className="text-danger">{errors.seoOgImage.message}</small>
                 )}
               </div>
             </Col>
@@ -324,6 +317,24 @@ const EditPost = ({ articleId }: EditPostProps) => {
                   <small className="text-danger">{errors.seoMetaDescription.message}</small>
                 )}
               </div>
+            </Col>
+
+            <Col lg={12}>
+              <Controller
+                name="seoOgImage"
+                control={control}
+                render={({ field }) => (
+                  <ImageUpload
+                    onImageUpload={field.onChange}
+                    currentImage={field.value}
+                    label="Image Open Graph (réseaux sociaux)"
+                    folder="blog/og"
+                  />
+                )}
+              />
+              {errors.seoOgImage && (
+                <small className="text-danger">{errors.seoOgImage.message}</small>
+              )}
             </Col>
           </Row>
         </CardBody>
