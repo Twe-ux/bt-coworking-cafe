@@ -1,0 +1,124 @@
+'use client';
+
+import SlideUp from '@/utils/animations/slideUp';
+import Link from 'next/link';
+import React from 'react';
+import type { Article } from '@/store/api/blogApi';
+
+interface BlogArticleDetailProps {
+    article: Article;
+}
+
+const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
+    const formatDate = (date: string) => {
+        return new Date(date).toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+        });
+    };
+
+    return (
+        <article>
+            {article.featuredImage && (
+                <img
+                    src={article.featuredImage}
+                    alt={article.title}
+                    className="w-100 thumb__img"
+                />
+            )}
+            <div className="first__para">
+                <ul className="d-flex flex-wrap gap-4">
+                    <li>
+                        <img src="/icons/user-black.svg" alt="author" />
+                        <span>{article.author.name || article.author.username}</span>
+                    </li>
+                    <li>
+                        <img src="/icons/comments-black.svg" alt="comments" />
+                        <span>0 Comments</span>
+                    </li>
+                    <li>
+                        <img src="/icons/clender.svg" alt="date" />
+                        <span>{formatDate(article.publishedAt || article.createdAt)}</span>
+                    </li>
+                </ul>
+                <SlideUp>
+                    <h2 className="t__54">
+                        {article.title}
+                    </h2>
+                </SlideUp>
+
+                {article.excerpt && (
+                    <p className="lead">
+                        {article.excerpt}
+                    </p>
+                )}
+
+                {/* Render article content */}
+                <div
+                    className="article-content"
+                    dangerouslySetInnerHTML={{ __html: article.content }}
+                />
+
+                {/* Stats */}
+                <div className="d-flex gap-4 my-4">
+                    <p>
+                        <i className="fa-solid fa-eye me-2"></i>
+                        <span>{article.viewCount} vues</span>
+                    </p>
+                    <p>
+                        <i className="fa-solid fa-heart me-2"></i>
+                        <span>{article.likeCount} likes</span>
+                    </p>
+                    <p>
+                        <i className="fa-solid fa-clock me-2"></i>
+                        <span>{article.readingTime} min de lecture</span>
+                    </p>
+                </div>
+            </div>
+
+            {/* Tags and Share */}
+            <SlideUp className="d-flex justify-content-between flex-wrap align-items-center share__option">
+                <div className="d-flex align-items-center gap-4">
+                    <h6>Tags:</h6>
+                    {article.tags && article.tags.length > 0 ? (
+                        article.tags.map((tag) => (
+                            <button key={tag._id} className="active">
+                                {tag.name}
+                            </button>
+                        ))
+                    ) : (
+                        <span className="text-muted">Aucun tag</span>
+                    )}
+                </div>
+                <div className="d-flex align-items-center gap-4 mt-3 mt-sm-0">
+                    <h6>Share:</h6>
+                    <ul className="d-flex justify-content-center gap-3">
+                        <li>
+                            <Link href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank">
+                                <i className="fa-brands fa-facebook-f" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&description=${encodeURIComponent(article.title)}`} target="_blank">
+                                <i className="fa-brands fa-pinterest-p" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href={`https://www.instagram.com/`} target="_blank">
+                                <i className="fa-brands fa-instagram" />
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(article.title)}`} target="_blank">
+                                <i className="fa-brands fa-twitter" />
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </SlideUp>
+        </article>
+    );
+};
+
+export default BlogArticleDetail;

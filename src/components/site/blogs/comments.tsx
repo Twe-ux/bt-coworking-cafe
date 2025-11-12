@@ -1,6 +1,9 @@
-import SlideUp from '@/utils/animations/slideUp';
-import React from 'react'
+'use client';
 
+import SlideUp from '@/utils/animations/slideUp';
+import React from 'react';
+
+// Données statiques pour l'instant - sera remplacé par l'API plus tard
 const commentsData = [
     {
         id: 1,
@@ -28,15 +31,24 @@ const commentsData = [
     }
 ];
 
-const Comments = () => {
+interface CommentsProps {
+    articleId: string;
+}
+
+const Comments = ({ articleId }: CommentsProps) => {
+    // TODO: Fetch comments from API using articleId
+    // const { data: comments } = useGetCommentsQuery(articleId);
+
+    const comments = commentsData; // Utiliser les données statiques pour l'instant
+
     return (
         <div className="comments">
             <h1 className="t__54">
                 Comments
-                <span>02</span>
+                <span>{comments.length.toString().padStart(2, '0')}</span>
             </h1>
             <div>
-                {commentsData.map(comment => (
+                {comments.map(comment => (
                     <SlideUp key={comment.id} className="comment">
                         <div className="main__comment">
                             <div className="d-flex justify-content-between align-items-center">
@@ -71,8 +83,7 @@ const Comments = () => {
                 ))}
             </div>
         </div>
+    );
+};
 
-    )
-}
-
-export default Comments
+export default Comments;

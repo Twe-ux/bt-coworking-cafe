@@ -6,17 +6,18 @@ interface BlogCardProps {
     comments: number;
     imgSrc: string;
     title: string;
+    slug: string;
     id?: number;
 }
 
-const BlogCard = ({author, comments, imgSrc, title}: BlogCardProps) => {
+const BlogCard = ({author, comments, imgSrc, title, slug}: BlogCardProps) => {
     return (
         <div className="blogs__wapper_card">
-            <Link href="/blog-details">
+            <Link href={`/blog/${slug}`}>
                 <img src={imgSrc} alt={title} className="card__thumb" />
             </Link>
             <div>
-                <Link href="/blog-details" className="card__title t__28">{title}</Link>
+                <Link href={`/blog/${slug}`} className="card__title t__28">{title}</Link>
                 <div className="d-flex card__author">
                     <p>
                         <img src="/icons/user-black.svg" alt="author" />

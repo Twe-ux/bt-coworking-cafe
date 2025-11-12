@@ -1,24 +1,58 @@
-import { blogOneData } from '@/db/blogOneData'
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
-import React from 'react'
+import React from 'react';
+import { useGetArticlesQuery } from '@/store/api/blogApi';
 
 const categories = [
     { name: "General Construction", count: 9 },
     { name: "Unique UI Design", count: 12 },
     { name: "General Graphic", count: 6 },
     { name: "Business Policy", count: 9 }
-]
+];
 const tags = ["Design", "Marketing", "Creative", "IT", "Business", "Optimization"];
 
-const BlogSidebar = () => {
+interface BlogSidebarProps {
+    onSearch?: (query: string) => void;
+    onCategorySelect?: (category: string) => void;
+}
+
+const BlogSidebar = ({ onSearch, onCategorySelect }: BlogSidebarProps) => {
+    const [searchValue, setSearchValue] = useState("");
+
+    // Fetch latest posts for sidebar
+    const { data: latestPosts } = useGetArticlesQuery({
+        page: 1,
+        limit: 3,
+        sortBy: 'createdAt',
+        sortOrder: -1,
+        status: 'published',
+    });
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (onSearch) {
+            onSearch(searchValue);
+        }
+    };
+
     return (
         <aside className="sidebar">
             <div className="search__box">
                 <label htmlFor="search" className="t__22">Search</label>
-                <div className="position-relative">
-                    <input id="search" type="text" placeholder="Search Now" />
-                    <i className="fa-solid fa-magnifying-glass" />
-                </div>
+                <form onSubmit={handleSearch} className="position-relative">
+                    <input
+                        id="search"
+                        type="text"
+                        placeholder="Search Now"
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                    <button type="submit" style={{ background: 'none', border: 'none', position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
+                        <i className="fa-solid fa-magnifying-glass" />
+                    </button>
+                </form>
             </div>
             {/* -- Categories */}
             <div className="categories pt__60">
@@ -26,7 +60,17 @@ const BlogSidebar = () => {
                 <ul>
                     {categories.map((category, index) => (
                         <li key={index}>
-                            <Link href="/blog-details">{category.name}</Link>
+                            <Link
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (onCategorySelect) {
+                                        onCategorySelect(category.name);
+                                    }
+                                }}
+                            >
+                                {category.name}
+                            </Link>
                             <p>({category.count})</p>
                         </li>
                     ))}
@@ -37,26 +81,40 @@ const BlogSidebar = () => {
             <div className="latest__post pt__60">
                 <h5 className="t__22">Latest Posts</h5>
                 <ul>
-                    {
-                        blogOneData.slice(0, 3).map(({ id, title, imgSrc }) => {
-                            return (
-                                <li key={id}>
-                                    <a href="/blog-details">
-                                        <img src={imgSrc} alt="img" className="thumb__img" />
-                                    </a>
-                                    <div>
-                                        <Link href="/blog-details">
-                                            {title}
-                                        </Link>
-                                        <p>
-                                            <img src="/icons/clender.svg" alt="img" />
-                                            <span>18, January 2025</span>
-                                        </p>
-                                    </div>
-                                </li>
-                            )
-                        })
-                    }
+                    {latestPosts?.articles && latestPosts.articles.length > 0 ? (
+                        latestPosts.articles.map((article) => (
+                            <li key={article._id}>
+                                <Link href={`/blog/${article.slug}`}>
+                                    <img
+                                        src={article.featuredImage || "/images/blogs/blog-1.png"}
+                                        alt={article.title}
+                                        className="thumb__img"
+                                    />
+                                </Link>
+                                <div>
+                                    <Link href={`/blog/${article.slug}`}>
+                                        {article.title.length > 50
+                                            ? `${article.title.substring(0, 50)}...`
+                                            : article.title}
+                                    </Link>
+                                    <p>
+                                        <img src="/icons/clender.svg" alt="img" />
+                                        <span>
+                                            {new Date(article.publishedAt || article.createdAt).toLocaleDateString('fr-FR', {
+                                                day: 'numeric',
+                                                month: 'long',
+                                                year: 'numeric',
+                                            })}
+                                        </span>
+                                    </p>
+                                </div>
+                            </li>
+                        ))
+                    ) : (
+                        <li>
+                            <p className="text-muted">Aucun article récent</p>
+                        </li>
+                    )}
                 </ul>
             </div>
             {/* -- latest post */}
@@ -72,8 +130,7 @@ const BlogSidebar = () => {
                 </ul>
             </div>
         </aside>
+    );
+};
 
-    )
-}
-
-export default BlogSidebar
+export default BlogSidebar;
