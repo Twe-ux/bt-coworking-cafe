@@ -117,7 +117,7 @@ export async function PATCH(
 
     if (excerpt !== undefined) article.excerpt = excerpt;
     if (featuredImage !== undefined) article.featuredImage = featuredImage;
-    if (categoryId !== undefined) article.category = categoryId || null;
+    if (categoryId !== undefined) article.category = categoryId || undefined;
     if (tagIds !== undefined) article.tags = tagIds;
 
     // Handle SEO fields
@@ -137,7 +137,7 @@ export async function PATCH(
     }
 
     if (scheduledFor !== undefined) {
-      article.scheduledFor = scheduledFor ? new Date(scheduledFor) : null;
+      article.scheduledFor = scheduledFor ? new Date(scheduledFor) : undefined;
     }
 
     await article.save();
