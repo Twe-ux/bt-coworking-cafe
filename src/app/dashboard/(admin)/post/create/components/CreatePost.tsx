@@ -1,7 +1,9 @@
 "use client";
-import ChoicesFormInput from "@/components/dashboard/from/ChoicesFormInput";
-import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import TextFormInput from "@/components/dashboard/from/TextFormInput";
+import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
@@ -11,133 +13,273 @@ import {
   CardTitle,
   Col,
   Row,
+  Form,
+  Spinner,
 } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
+import { useCreateArticleMutation } from "@/store/api/blogApi";
+import { useNotification } from "@/hooks/useNotification";
 
 const CreatePost = () => {
-  const messageSchema = yup.object({
-    name: yup.string().required("Please enter name"),
-    description: yup.string().required("Please enter description"),
-    userName: yup.string().required("Please enter user name"),
-    date: yup.string().email().required("Please enter date"),
-    userDetails: yup.string().required("Please enter description"),
+  const router = useRouter();
+  const [createArticle, { isLoading }] = useCreateArticleMutation();
+  const { success, error: showError } = useNotification();
+  const [selectedStatus, setSelectedStatus] = useState<string>("draft");
+
+  const articleSchema = yup.object({
+    title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères"),
+    excerpt: yup.string().max(300, "L'extrait ne peut pas dépasser 300 caractères"),
+    content: yup.string().required("Le contenu est obligatoire").min(50, "Le contenu doit contenir au moins 50 caractères"),
+    featuredImage: yup.string().url("L'URL de l'image doit être valide"),
+    categoryId: yup.string(),
+    tagIds: yup.array().of(yup.string()),
+    scheduledFor: yup.date().nullable(),
+    seoMetaTitle: yup.string().max(60, "Le meta titre ne peut pas dépasser 60 caractères"),
+    seoMetaDescription: yup.string().max(160, "La meta description ne peut pas dépasser 160 caractères"),
+    seoMetaKeywords: yup.array().of(yup.string()),
+    seoOgImage: yup.string().url("L'URL de l'image OG doit être valide"),
   });
 
-  const { handleSubmit, control } = useForm({
-    resolver: yupResolver(messageSchema),
+  const { handleSubmit, control, formState: { errors } } = useForm({
+    resolver: yupResolver(articleSchema),
+    defaultValues: {
+      title: "",
+      excerpt: "",
+      content: "",
+      featuredImage: "",
+      categoryId: "",
+      tagIds: [],
+      scheduledFor: null,
+      seoMetaTitle: "",
+      seoMetaDescription: "",
+      seoMetaKeywords: [],
+      seoOgImage: "",
+    },
   });
+
+  const onSubmit = async (data: any) => {
+    try {
+      const articleData: any = {
+        title: data.title,
+        content: data.content,
+        excerpt: data.excerpt || undefined,
+        featuredImage: data.featuredImage || undefined,
+        categoryId: data.categoryId || undefined,
+        tagIds: data.tagIds?.filter(Boolean) || [],
+        status: selectedStatus,
+        scheduledFor: data.scheduledFor || undefined,
+        seo: {
+          metaTitle: data.seoMetaTitle || undefined,
+          metaDescription: data.seoMetaDescription || undefined,
+          metaKeywords: data.seoMetaKeywords?.filter(Boolean) || [],
+          ogImage: data.seoOgImage || undefined,
+        },
+      };
+
+      const result = await createArticle(articleData).unwrap();
+      success("Article créé avec succès");
+
+      // Redirect to the edit page or post list
+      router.push(`/dashboard/post/edit/${result._id}`);
+    } catch (err: any) {
+      console.error("Error creating article:", err);
+      showError(err?.data?.error || "Erreur lors de la création de l'article");
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(() => {})}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card>
         <CardHeader>
-          <CardTitle as={"h4"}>Blog Information</CardTitle>
+          <CardTitle as={"h4"}>Informations de l'article</CardTitle>
         </CardHeader>
         <CardBody>
           <Row>
-            <Col lg={6}>
+            <Col lg={12}>
               <div className="mb-3">
                 <TextFormInput
                   control={control}
-                  name="name"
-                  placeholder="Name"
-                  label="Blog Title"
+                  name="title"
+                  placeholder="Titre de l'article"
+                  label="Titre *"
                 />
+                {errors.title && (
+                  <small className="text-danger">{errors.title.message}</small>
+                )}
               </div>
             </Col>
-            <Col lg={6}>
-              <label htmlFor="blog-tag" className="form-label">
-                Blog Tag
-              </label>
-              <ChoicesFormInput
-                options={{ removeItemButton: true }}
-                className="form-control"
-                id="choices-multiple-remove-button"
-                data-choices
-                data-choices-removeitem
-                multiple
-              >
-                <option value="Blog">Blog</option>
-                <option value="Business">Business</option>
-                <option value="Health">Health</option>
-                <option value="Computer Software">Computer Software</option>
-                <option value="Lifestyle blogs">Lifestyle blogs</option>
-                <option value="Fashion">Fashion</option>
-              </ChoicesFormInput>
-            </Col>
+
             <Col lg={12}>
               <div className="mb-3">
                 <TextAreaFormInput
                   control={control}
-                  name="description"
-                  type="text"
-                  label="Add Description"
-                  className="Customer-address"
-                  id="schedule-textarea"
-                  rows={3}
-                  placeholder="Enter address"
+                  name="excerpt"
+                  label="Extrait (résumé court)"
+                  rows={2}
+                  placeholder="Un court résumé de l'article..."
                 />
+                {errors.excerpt && (
+                  <small className="text-danger">{errors.excerpt.message}</small>
+                )}
               </div>
             </Col>
-          </Row>
-        </CardBody>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle as={"h4"}>Blog User Information</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <Row>
+
+            <Col lg={12}>
+              <div className="mb-3">
+                <TextAreaFormInput
+                  control={control}
+                  name="content"
+                  label="Contenu *"
+                  rows={12}
+                  placeholder="Écrivez votre article ici..."
+                />
+                {errors.content && (
+                  <small className="text-danger">{errors.content.message}</small>
+                )}
+              </div>
+            </Col>
+
             <Col lg={6}>
               <div className="mb-3">
                 <TextFormInput
                   control={control}
-                  name="userName"
-                  placeholder="Name"
-                  label="User Name"
+                  name="featuredImage"
+                  placeholder="https://example.com/image.jpg"
+                  label="Image à la une (URL)"
                 />
+                {errors.featuredImage && (
+                  <small className="text-danger">{errors.featuredImage.message}</small>
+                )}
               </div>
             </Col>
+
             <Col lg={6}>
               <div className="mb-3">
-                <label htmlFor="create-date" className="form-label">
-                  Date
+                <label htmlFor="status" className="form-label">
+                  Statut *
                 </label>
-                <input
-                  type="text"
-                  id="create-date"
-                  className="form-control flatpickr-input"
-                  placeholder="dd-mm-yyyy"
-                />
+                <Form.Select
+                  id="status"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  <option value="draft">Brouillon</option>
+                  <option value="published">Publié</option>
+                  <option value="archived">Archivé</option>
+                  <option value="scheduled">Programmé</option>
+                </Form.Select>
               </div>
             </Col>
+
+            {selectedStatus === "scheduled" && (
+              <Col lg={6}>
+                <div className="mb-3">
+                  <Controller
+                    name="scheduledFor"
+                    control={control}
+                    render={({ field }) => (
+                      <>
+                        <label htmlFor="scheduledFor" className="form-label">
+                          Date de publication programmée
+                        </label>
+                        <input
+                          {...field}
+                          type="datetime-local"
+                          id="scheduledFor"
+                          className="form-control"
+                          value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
+                          onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                        />
+                      </>
+                    )}
+                  />
+                </div>
+              </Col>
+            )}
+          </Row>
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle as={"h4"}>SEO (Référencement)</CardTitle>
+        </CardHeader>
+        <CardBody>
+          <Row>
+            <Col lg={6}>
+              <div className="mb-3">
+                <TextFormInput
+                  control={control}
+                  name="seoMetaTitle"
+                  placeholder="Titre pour les moteurs de recherche"
+                  label="Meta Titre"
+                />
+                {errors.seoMetaTitle && (
+                  <small className="text-danger">{errors.seoMetaTitle.message}</small>
+                )}
+              </div>
+            </Col>
+
+            <Col lg={6}>
+              <div className="mb-3">
+                <TextFormInput
+                  control={control}
+                  name="seoOgImage"
+                  placeholder="https://example.com/og-image.jpg"
+                  label="Image Open Graph (réseaux sociaux)"
+                />
+                {errors.seoOgImage && (
+                  <small className="text-danger">{errors.seoOgImage.message}</small>
+                )}
+              </div>
+            </Col>
+
             <Col lg={12}>
-              <div>
+              <div className="mb-3">
                 <TextAreaFormInput
                   control={control}
-                  name="userDetails"
-                  type="text"
-                  label="User Detail"
-                  className="Customer-address"
-                  id="schedule-textarea"
-                  rows={4}
-                  placeholder="Description"
+                  name="seoMetaDescription"
+                  label="Meta Description"
+                  rows={2}
+                  placeholder="Description pour les moteurs de recherche..."
                 />
+                {errors.seoMetaDescription && (
+                  <small className="text-danger">{errors.seoMetaDescription.message}</small>
+                )}
               </div>
             </Col>
           </Row>
         </CardBody>
       </Card>
+
       <div className="mb-3 rounded">
         <Row className="justify-content-end g-2">
           <Col lg={2}>
-            <Button variant="outline-primary" type="submit" className="w-100">
-              Create Blog
+            <Button
+              variant="outline-primary"
+              type="submit"
+              className="w-100"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  Création...
+                </>
+              ) : (
+                "Créer l'article"
+              )}
             </Button>
           </Col>
           <Col lg={2}>
-            <Button variant="danger" className="w-100">
-              Cancel
+            <Button
+              variant="danger"
+              className="w-100"
+              onClick={() => router.push("/dashboard/post")}
+              disabled={isLoading}
+            >
+              Annuler
             </Button>
           </Col>
         </Row>
