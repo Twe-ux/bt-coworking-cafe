@@ -208,13 +208,15 @@ export const blogApi = createApi({
   endpoints: (builder) => ({
     // Get all articles (with filters)
     getArticles: builder.query<ArticlesResponse, ArticleFilters | void>({
-      query: (filters = {}) => {
+      query: (filters) => {
         const params = new URLSearchParams();
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value !== undefined) {
-            params.append(key, String(value));
-          }
-        });
+        if (filters) {
+          Object.entries(filters).forEach(([key, value]) => {
+            if (value !== undefined) {
+              params.append(key, String(value));
+            }
+          });
+        }
         return `/articles?${params.toString()}`;
       },
       providesTags: (result) =>
@@ -416,11 +418,13 @@ export const blogApi = createApi({
 
     // Get all categories
     getCategories: builder.query<CategoriesResponse, { visible?: boolean; page?: number; limit?: number } | void>({
-      query: (params = {}) => {
+      query: (params) => {
         const searchParams = new URLSearchParams();
-        Object.entries(params).forEach(([key, value]) => {
-          if (value !== undefined) searchParams.append(key, String(value));
-        });
+        if (params) {
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined) searchParams.append(key, String(value));
+          });
+        }
         return `/categories?${searchParams.toString()}`;
       },
       providesTags: (result) =>
@@ -477,11 +481,13 @@ export const blogApi = createApi({
 
     // Get all tags
     getTags: builder.query<TagsResponse, { search?: string; page?: number; limit?: number } | void>({
-      query: (params = {}) => {
+      query: (params) => {
         const searchParams = new URLSearchParams();
-        Object.entries(params).forEach(([key, value]) => {
-          if (value !== undefined) searchParams.append(key, String(value));
-        });
+        if (params) {
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined) searchParams.append(key, String(value));
+          });
+        }
         return `/tags?${searchParams.toString()}`;
       },
       providesTags: (result) =>
