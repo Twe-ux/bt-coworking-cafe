@@ -22,6 +22,7 @@ export interface ArticleDocument extends Document {
   commentCount: number;
   isFeatured: boolean;
   allowComments: boolean;
+  isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -125,6 +126,10 @@ export const ArticleSchema = new Schema<ArticleDocument>(
       type: Boolean,
       default: true,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     deletedAt: {
       type: Date,
     },
@@ -143,5 +148,6 @@ ArticleSchema.index({ category: 1 });
 ArticleSchema.index({ tags: 1 });
 ArticleSchema.index({ status: 1, publishedAt: -1 });
 ArticleSchema.index({ isFeatured: 1, status: 1 });
+ArticleSchema.index({ isDeleted: 1 });
 ArticleSchema.index({ deletedAt: 1 });
 ArticleSchema.index({ title: "text", content: "text" }); // Full-text search

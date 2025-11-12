@@ -112,14 +112,20 @@ export async function PATCH(
 
     if (content !== undefined) {
       article.content = content;
-      article.readingTime = calculateReadingTime(content);
+      // readingTime is a virtual property, calculated automatically from content
     }
 
     if (excerpt !== undefined) article.excerpt = excerpt;
     if (featuredImage !== undefined) article.featuredImage = featuredImage;
     if (categoryId !== undefined) article.category = categoryId || null;
     if (tagIds !== undefined) article.tags = tagIds;
-    if (seo !== undefined) article.seo = { ...article.seo, ...seo };
+
+    // Handle SEO fields
+    if (seo !== undefined) {
+      if (seo.metaTitle !== undefined) article.metaTitle = seo.metaTitle;
+      if (seo.metaDescription !== undefined) article.metaDescription = seo.metaDescription;
+      if (seo.metaKeywords !== undefined) article.metaKeywords = seo.metaKeywords;
+    }
 
     // Handle status change
     if (status !== undefined && status !== article.status) {

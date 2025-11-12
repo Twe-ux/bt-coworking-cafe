@@ -134,9 +134,6 @@ export async function POST(request: NextRequest) {
       counter++;
     }
 
-    // Calculate reading time
-    const readingTime = calculateReadingTime(content);
-
     // Create article
     const article = await Article.create({
       title,
@@ -150,8 +147,11 @@ export async function POST(request: NextRequest) {
       status,
       publishedAt: status === 'published' ? new Date() : null,
       scheduledFor: scheduledFor ? new Date(scheduledFor) : null,
-      seo: seo || {},
-      readingTime,
+      // SEO fields (not grouped in an object)
+      metaTitle: seo?.metaTitle,
+      metaDescription: seo?.metaDescription,
+      metaKeywords: seo?.metaKeywords || [],
+      // readingTime is a virtual property, calculated automatically from content
       viewCount: 0,
       likeCount: 0,
     });
