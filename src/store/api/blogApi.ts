@@ -75,6 +75,50 @@ export interface ArticleFilters {
   sortOrder?: 'asc' | 'desc';
 }
 
+// Comment Types
+export interface Comment {
+  _id: string;
+  content: string;
+  article: string;
+  user: {
+    _id: string;
+    username: string;
+    name?: string;
+    email?: string;
+  };
+  parent?: string | null;
+  status: 'pending' | 'approved' | 'rejected' | 'spam';
+  likeCount: number;
+  createdAt: string;
+  updatedAt: string;
+  replies?: Comment[];
+}
+
+export interface CreateCommentDto {
+  content: string;
+  articleId: string;
+  parentId?: string;
+}
+
+export interface UpdateCommentDto {
+  content?: string;
+}
+
+export interface CommentsResponse {
+  comments: Comment[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
+export interface CommentFilters {
+  article: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}
+
 export const blogApi = createApi({
   reducerPath: 'blogApi',
   baseQuery: fetchBaseQuery({
@@ -88,7 +132,7 @@ export const blogApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Article', 'Articles', 'Categories', 'Tags'],
+  tagTypes: ['Article', 'Articles', 'Categories', 'Tags', 'Comment', 'Comments'],
   endpoints: (builder) => ({
     // Get all articles (with filters)
     getArticles: builder.query<ArticlesResponse, ArticleFilters | void>({
@@ -198,6 +242,103 @@ export const blogApi = createApi({
         }
       },
     }),
+
+    // ========== COMMENTS ==========
+
+    // Get comments for an article
+    getComments: builder.query<CommentsResponse, CommentFilters>({
+      query: (filters) => {
+        const params = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== undefined) params.append(key, String(value));
+        });
+        return `/comments?${params.toString()}`;
+      },
+      providesTags: (result, error, { article }) =>
+        result
+          ? [
+              ...result.comments.map(({ _id }) => ({
+                type: 'Comment' as const,
+                id: _id,
+              })),
+              { type: 'Comments' as const, id: article },
+            ]
+          : [{ type: 'Comments' as const, id: article }],
+    }),
+
+    // Get single comment
+    getComment: builder.query<Comment, string>({
+      query: (id) => `/comments/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Comment', id }],
+    }),
+
+    // Create comment
+    createComment: builder.mutation<Comment, CreateCommentDto>({
+      query: (data) => ({
+        url: '/comments',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { articleId }) => [
+        { type: 'Comments', id: articleId },
+      ],
+    }),
+
+    // Update comment
+    updateComment: builder.mutation<Comment, { id: string; data: UpdateCommentDto }>({
+      query: ({ id, data }) => ({
+        url: `/comments/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Comment', id },
+      ],
+    }),
+
+    // Delete comment
+    deleteComment: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/comments/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: 'Comment', id },
+      ],
+    }),
+
+    // Approve/Reject comment (admin)
+    approveComment: builder.mutation<Comment, { id: string; status: 'approved' | 'rejected' | 'spam' }>({
+      query: ({ id, status }) => ({
+        url: `/comments/${id}/approve`,
+        method: 'POST',
+        body: { status },
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Comment', id },
+      ],
+    }),
+
+    // Like comment
+    likeComment: builder.mutation<{ likeCount: number }, string>({
+      query: (id) => ({
+        url: `/comments/${id}/like`,
+        method: 'POST',
+      }),
+      // Optimistic update
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          blogApi.util.updateQueryData('getComment', id, (draft) => {
+            draft.likeCount += 1;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
   }),
 });
 
@@ -211,4 +352,12 @@ export const {
   useTogglePublishMutation,
   useIncrementViewCountMutation,
   useToggleLikeMutation,
+  // Comment hooks
+  useGetCommentsQuery,
+  useGetCommentQuery,
+  useCreateCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
+  useApproveCommentMutation,
+  useLikeCommentMutation,
 } = blogApi;

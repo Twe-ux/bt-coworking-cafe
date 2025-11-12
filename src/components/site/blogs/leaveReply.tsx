@@ -2,88 +2,116 @@
 
 import SlideUp from '@/utils/animations/slideUp';
 import React, { useState } from 'react';
+import { useCreateCommentMutation } from '@/store/api/blogApi';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 interface LeaveReplyProps {
     articleId: string;
 }
 
 const LeaveReply = ({ articleId }: LeaveReplyProps) => {
+    const { data: session } = useSession();
+    const [createComment, { isLoading }] = useCreateCommentMutation();
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
         message: '',
-        saveInfo: false,
     });
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        setShowSuccess(false);
 
-        // TODO: Implémenter l'appel API pour créer un commentaire
-        console.log('Submitting comment for article:', articleId, formData);
+        if (!session) {
+            setError('Vous devez être connecté pour commenter.');
+            return;
+        }
 
-        // Reset form
-        setFormData({
-            name: '',
-            email: '',
-            message: '',
-            saveInfo: false,
-        });
+        if (!formData.message.trim()) {
+            setError('Le commentaire ne peut pas être vide.');
+            return;
+        }
 
-        alert('Merci pour votre commentaire ! (API non implémentée pour le moment)');
+        try {
+            await createComment({
+                content: formData.message,
+                articleId: articleId,
+            }).unwrap();
+
+            // Reset form
+            setFormData({
+                message: '',
+            });
+
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 5000);
+        } catch (err: any) {
+            console.error('Error creating comment:', err);
+            setError(
+                err?.data?.error ||
+                'Erreur lors de l\'envoi du commentaire. Veuillez réessayer.'
+            );
+        }
     };
+
+    if (!session) {
+        return (
+            <SlideUp className="leave__replay">
+                <h2 className="t__54">Leave A Reply</h2>
+                <div className="alert alert-info">
+                    <p className="mb-0">
+                        Vous devez être{' '}
+                        <Link href="/auth/login" className="fw-bold">
+                            connecté
+                        </Link>{' '}
+                        pour laisser un commentaire.
+                    </p>
+                </div>
+            </SlideUp>
+        );
+    }
 
     return (
         <SlideUp className="leave__replay">
             <h2 className="t__54">Leave A Reply</h2>
             <p>
-                Your email address will not be published. Required fields are
-                marked *
+                Votre commentaire sera modéré avant publication. Les champs marqués * sont obligatoires.
             </p>
+
+            {showSuccess && (
+                <div className="alert alert-success">
+                    <strong>Merci !</strong> Votre commentaire a été envoyé et sera publié après modération.
+                </div>
+            )}
+
+            {error && (
+                <div className="alert alert-danger">
+                    {error}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit}>
                 <div className="row">
-                    <div className="col-md-6">
-                        <input
-                            type="text"
-                            placeholder="Your Name"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div className="col-md-6">
-                        <input
-                            type="email"
-                            placeholder="Your Email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                        />
-                    </div>
                     <div className="col-12">
                         <textarea
                             name="message"
-                            placeholder="Your Message"
+                            placeholder="Votre commentaire *"
                             value={formData.message}
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                             required
+                            rows={5}
+                            disabled={isLoading}
                         />
-                    </div>
-                    <div className="d-flex align-items-baseline gap-1 w-100">
-                        <input
-                            type="checkbox"
-                            id="check-blog"
-                            className="w-auto"
-                            checked={formData.saveInfo}
-                            onChange={(e) => setFormData({ ...formData, saveInfo: e.target.checked })}
-                        />
-                        <label htmlFor="check-blog">
-                            Save my name, email, and website in this browser for the
-                            next time I comment.
-                        </label>
                     </div>
                     <div>
-                        <button type="submit" className="common__btn mt-4 mt-md-0">
-                            Post A Comment
+                        <button
+                            type="submit"
+                            className="common__btn mt-4 mt-md-0"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Envoi...' : 'Poster le commentaire'}
                             <img src="/icons/arrow-up-rignt-black.svg" alt="img" />
                         </button>
                     </div>
