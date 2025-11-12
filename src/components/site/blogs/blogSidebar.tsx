@@ -26,7 +26,7 @@ const BlogSidebar = ({ onSearch, onCategorySelect }: BlogSidebarProps) => {
         page: 1,
         limit: 3,
         sortBy: 'createdAt',
-        sortOrder: -1,
+        sortOrder: 'desc',
         status: 'published',
     });
 
