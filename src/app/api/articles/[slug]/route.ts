@@ -8,6 +8,9 @@ import { getAuthUser, handleApiError } from '@/lib/api-helpers';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+// Force model registration - prevents MissingSchemaError
+const _ensureModelsRegistered = [Category, Tag];
+
 /**
  * GET /api/articles/[slug]
  * Get article by slug (public)

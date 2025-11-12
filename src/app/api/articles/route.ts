@@ -8,6 +8,10 @@ import { getAuthUser, requireAuth, handleApiError, generateSlug, calculateReadin
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+// Force model registration - prevents MissingSchemaError
+// Reference models to ensure they're registered before populate() is called
+const _ensureModelsRegistered = [Category, Tag];
+
 /**
  * GET /api/articles
  * Get paginated list of articles with filters

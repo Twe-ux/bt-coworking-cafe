@@ -8,6 +8,9 @@ import { requireAuth, getAuthUser, handleApiError, generateSlug, calculateReadin
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+// Force model registration - prevents MissingSchemaError
+const _ensureModelsRegistered = [Category, Tag];
+
 /**
  * GET /api/articles/id/[id]
  * Get article by ID (for editing in admin)
