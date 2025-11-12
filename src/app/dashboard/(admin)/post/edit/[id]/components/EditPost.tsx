@@ -77,10 +77,10 @@ const EditPost = ({ articleId }: EditPostProps) => {
         categoryId: article.category?._id || "",
         tagIds: article.tags?.map((tag: any) => tag._id) || [],
         scheduledFor: article.scheduledFor ? new Date(article.scheduledFor) : null,
-        seoMetaTitle: article.seo?.metaTitle || "",
-        seoMetaDescription: article.seo?.metaDescription || "",
-        seoMetaKeywords: article.seo?.metaKeywords || [],
-        seoOgImage: article.seo?.ogImage || "",
+        seoMetaTitle: article.metaTitle || "",
+        seoMetaDescription: article.metaDescription || "",
+        seoMetaKeywords: article.metaKeywords || [],
+        seoOgImage: "",
       });
       setSelectedStatus(article.status || "draft");
     }
@@ -97,12 +97,10 @@ const EditPost = ({ articleId }: EditPostProps) => {
         tagIds: data.tagIds?.filter(Boolean) || [],
         status: selectedStatus,
         scheduledFor: data.scheduledFor || undefined,
-        seo: {
-          metaTitle: data.seoMetaTitle || undefined,
-          metaDescription: data.seoMetaDescription || undefined,
-          metaKeywords: data.seoMetaKeywords?.filter(Boolean) || [],
-          ogImage: data.seoOgImage || undefined,
-        },
+        // SEO fields as separate properties
+        metaTitle: data.seoMetaTitle || undefined,
+        metaDescription: data.seoMetaDescription || undefined,
+        metaKeywords: data.seoMetaKeywords?.filter(Boolean) || [],
       };
 
       await updateArticle({ id: articleId, data: articleData }).unwrap();

@@ -26,11 +26,10 @@ export interface Article {
   status: 'draft' | 'published' | 'archived' | 'scheduled';
   publishedAt?: string;
   scheduledFor?: string;
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-  };
+  // SEO fields are stored as separate fields in the database, not grouped in an object
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string[];
   viewCount: number;
   likeCount: number;
   readingTime: number;
@@ -47,11 +46,10 @@ export interface CreateArticleDto {
   tagIds?: string[];
   status?: 'draft' | 'published';
   scheduledFor?: string;
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-  };
+  // SEO fields as separate properties to match database schema
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string[];
 }
 
 export interface UpdateArticleDto extends Partial<CreateArticleDto> {}

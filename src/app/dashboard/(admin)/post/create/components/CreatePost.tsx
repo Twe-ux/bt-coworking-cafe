@@ -70,12 +70,10 @@ const CreatePost = () => {
         tagIds: data.tagIds?.filter(Boolean) || [],
         status: selectedStatus,
         scheduledFor: data.scheduledFor || undefined,
-        seo: {
-          metaTitle: data.seoMetaTitle || undefined,
-          metaDescription: data.seoMetaDescription || undefined,
-          metaKeywords: data.seoMetaKeywords?.filter(Boolean) || [],
-          ogImage: data.seoOgImage || undefined,
-        },
+        // SEO fields as separate properties
+        metaTitle: data.seoMetaTitle || undefined,
+        metaDescription: data.seoMetaDescription || undefined,
+        metaKeywords: data.seoMetaKeywords?.filter(Boolean) || [],
       };
 
       const result = await createArticle(articleData).unwrap();
