@@ -111,7 +111,9 @@ export async function POST(request: NextRequest) {
       tagIds,
       status = 'draft',
       scheduledFor,
-      seo,
+      metaTitle,
+      metaDescription,
+      metaKeywords,
     } = body;
 
     // Validate required fields
@@ -147,10 +149,10 @@ export async function POST(request: NextRequest) {
       status,
       publishedAt: status === 'published' ? new Date() : undefined,
       scheduledFor: scheduledFor ? new Date(scheduledFor) : undefined,
-      // SEO fields (not grouped in an object)
-      metaTitle: seo?.metaTitle,
-      metaDescription: seo?.metaDescription,
-      metaKeywords: seo?.metaKeywords || [],
+      // SEO fields as separate properties
+      metaTitle: metaTitle || undefined,
+      metaDescription: metaDescription || undefined,
+      metaKeywords: metaKeywords || [],
       // readingTime is a virtual property, calculated automatically from content
       viewCount: 0,
       likeCount: 0,

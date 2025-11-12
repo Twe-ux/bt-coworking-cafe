@@ -69,7 +69,9 @@ export async function PATCH(
       tagIds,
       status,
       scheduledFor,
-      seo,
+      metaTitle,
+      metaDescription,
+      metaKeywords,
     } = body;
 
     // Find article
@@ -120,12 +122,10 @@ export async function PATCH(
     if (categoryId !== undefined) article.category = categoryId || undefined;
     if (tagIds !== undefined) article.tags = tagIds;
 
-    // Handle SEO fields
-    if (seo !== undefined) {
-      if (seo.metaTitle !== undefined) article.metaTitle = seo.metaTitle;
-      if (seo.metaDescription !== undefined) article.metaDescription = seo.metaDescription;
-      if (seo.metaKeywords !== undefined) article.metaKeywords = seo.metaKeywords;
-    }
+    // Handle SEO fields as separate properties
+    if (metaTitle !== undefined) article.metaTitle = metaTitle;
+    if (metaDescription !== undefined) article.metaDescription = metaDescription;
+    if (metaKeywords !== undefined) article.metaKeywords = metaKeywords;
 
     // Handle status change
     if (status !== undefined && status !== article.status) {
