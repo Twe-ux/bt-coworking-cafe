@@ -53,7 +53,7 @@ const PostCard = ({ article, onDelete, onTogglePublish, isDeleting, isToggling }
         {/* Title & Status */}
         <div className="d-flex align-items-start gap-2 mb-2">
           <Link
-            href={`/dashboard/post/${article._id}`}
+            href={`/dashboard/post/edit/${article._id}`}
             className="text-dark fs-16 fw-medium flex-grow-1"
           >
             {article.title}
