@@ -255,7 +255,7 @@ export const blogApi = createApi({
     // Update article
     updateArticle: builder.mutation<Article, { id: string; data: UpdateArticleDto }>({
       query: ({ id, data }) => ({
-        url: `/articles/${id}`,
+        url: `/articles/id/${id}`,
         method: 'PATCH',
         body: data,
       }),
@@ -268,7 +268,7 @@ export const blogApi = createApi({
     // Delete article
     deleteArticle: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/articles/${id}`,
+        url: `/articles/id/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: [{ type: 'Articles', id: 'LIST' }],
@@ -277,7 +277,7 @@ export const blogApi = createApi({
     // Publish/Unpublish article
     togglePublish: builder.mutation<Article, string>({
       query: (id) => ({
-        url: `/articles/${id}/publish`,
+        url: `/articles/id/${id}/publish`,
         method: 'POST',
       }),
       invalidatesTags: (result, error, id) => [
@@ -299,7 +299,7 @@ export const blogApi = createApi({
     // Like/Unlike article
     toggleLike: builder.mutation<Article, string>({
       query: (id) => ({
-        url: `/articles/${id}/like`,
+        url: `/articles/id/${id}/like`,
         method: 'POST',
       }),
       // Optimistic update

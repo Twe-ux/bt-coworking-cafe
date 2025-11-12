@@ -142,7 +142,7 @@ export const ArticleSchema = new Schema<ArticleDocument>(
 );
 
 // Indexes for search and performance
-ArticleSchema.index({ slug: 1 });
+// Note: slug already has a unique index from the unique: true constraint
 ArticleSchema.index({ author: 1 });
 ArticleSchema.index({ category: 1 });
 ArticleSchema.index({ tags: 1 });

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Article from '@/models/article';
-import Category from '@/models/category';
-import Tag from '@/models/tag';
+import { Category } from '@/models/category';
+import { Tag } from '@/models/tag';
 import { requireAuth, getAuthUser, handleApiError, generateSlug, calculateReadingTime } from '@/lib/api-helpers';
 
 // Force dynamic rendering
