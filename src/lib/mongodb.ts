@@ -67,4 +67,8 @@ async function connectDB(): Promise<typeof mongoose> {
   return cached.conn;
 }
 
+// Export as default and as named export to support both import styles:
+// - import connectDB from '@/lib/mongodb' (default)
+// - import { connectDB } from '@/lib/mongodb' (named)
 export default connectDB;
+export { connectDB };
