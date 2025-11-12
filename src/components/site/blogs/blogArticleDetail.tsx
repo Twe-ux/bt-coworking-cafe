@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import type { Article } from '@/store/api/blogApi';
 import { useToggleLikeMutation } from '@/store/api/blogApi';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 interface BlogArticleDetailProps {
     article: Article;
@@ -75,10 +76,9 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
                 )}
 
                 {/* Render article content */}
-                <div
-                    className="article-content"
-                    dangerouslySetInnerHTML={{ __html: article.content }}
-                />
+                <div className="article-content">
+                    <MarkdownRenderer content={article.content} />
+                </div>
 
                 {/* Stats */}
                 <div className="d-flex gap-4 my-4 align-items-center">
