@@ -29,17 +29,17 @@ const CreatePost = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("draft");
 
   const articleSchema = yup.object({
-    title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères"),
-    excerpt: yup.string().max(300, "L'extrait ne peut pas dépasser 300 caractères"),
-    content: yup.string().required("Le contenu est obligatoire").min(50, "Le contenu doit contenir au moins 50 caractères"),
-    featuredImage: yup.string().url("L'URL de l'image doit être valide").notRequired(),
-    categoryId: yup.string(),
-    tagIds: yup.array().of(yup.string()),
-    scheduledFor: yup.date().nullable(),
-    seoMetaTitle: yup.string().max(60, "Le meta titre ne peut pas dépasser 60 caractères"),
-    seoMetaDescription: yup.string().max(160, "La meta description ne peut pas dépasser 160 caractères"),
-    seoMetaKeywords: yup.array().of(yup.string()),
-    seoOgImage: yup.string().url("L'URL de l'image OG doit être valide").notRequired(),
+    title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères").defined(),
+    excerpt: yup.string().max(300, "L'extrait ne peut pas dépasser 300 caractères").defined().default(""),
+    content: yup.string().required("Le contenu est obligatoire").min(50, "Le contenu doit contenir au moins 50 caractères").defined(),
+    featuredImage: yup.string().url("L'URL de l'image doit être valide").defined().default(""),
+    categoryId: yup.string().defined().default(""),
+    tagIds: yup.array().of(yup.string()).defined().default([]),
+    scheduledFor: yup.date().nullable().default(null),
+    seoMetaTitle: yup.string().max(60, "Le meta titre ne peut pas dépasser 60 caractères").defined().default(""),
+    seoMetaDescription: yup.string().max(160, "La meta description ne peut pas dépasser 160 caractères").defined().default(""),
+    seoMetaKeywords: yup.array().of(yup.string()).defined().default([]),
+    seoOgImage: yup.string().url("L'URL de l'image OG doit être valide").defined().default(""),
   });
 
   const { handleSubmit, control, formState: { errors } } = useForm({
