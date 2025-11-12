@@ -68,7 +68,7 @@ export const ArticleSchema = new Schema<ArticleDocument>(
     category: {
       type: Types.ObjectId,
       ref: "Category",
-      required: [true, "Article category is required"],
+      required: false, // Category is optional
     },
     tags: [
       {
