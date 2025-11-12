@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import TextFormInput from "@/components/dashboard/from/TextFormInput";
 import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
+import ImageUpload from "@/components/dashboard/ImageUpload";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
@@ -31,14 +32,14 @@ const CreatePost = () => {
     title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères"),
     excerpt: yup.string().max(300, "L'extrait ne peut pas dépasser 300 caractères"),
     content: yup.string().required("Le contenu est obligatoire").min(50, "Le contenu doit contenir au moins 50 caractères"),
-    featuredImage: yup.string().url("L'URL de l'image doit être valide"),
+    featuredImage: yup.string().url("L'URL de l'image doit être valide").notRequired(),
     categoryId: yup.string(),
     tagIds: yup.array().of(yup.string()),
     scheduledFor: yup.date().nullable(),
     seoMetaTitle: yup.string().max(60, "Le meta titre ne peut pas dépasser 60 caractères"),
     seoMetaDescription: yup.string().max(160, "La meta description ne peut pas dépasser 160 caractères"),
     seoMetaKeywords: yup.array().of(yup.string()),
-    seoOgImage: yup.string().url("L'URL de l'image OG doit être valide"),
+    seoOgImage: yup.string().url("L'URL de l'image OG doit être valide").notRequired(),
   });
 
   const { handleSubmit, control, formState: { errors } } = useForm({
@@ -141,17 +142,21 @@ const CreatePost = () => {
             </Col>
 
             <Col lg={6}>
-              <div className="mb-3">
-                <TextFormInput
-                  control={control}
-                  name="featuredImage"
-                  placeholder="https://example.com/image.jpg"
-                  label="Image à la une (URL)"
-                />
-                {errors.featuredImage && (
-                  <small className="text-danger">{errors.featuredImage.message}</small>
+              <Controller
+                name="featuredImage"
+                control={control}
+                render={({ field }) => (
+                  <ImageUpload
+                    onImageUpload={field.onChange}
+                    currentImage={field.value}
+                    label="Image à la une"
+                    folder="blog"
+                  />
                 )}
-              </div>
+              />
+              {errors.featuredImage && (
+                <small className="text-danger">{errors.featuredImage.message}</small>
+              )}
             </Col>
 
             <Col lg={6}>

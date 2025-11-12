@@ -119,6 +119,80 @@ export interface CommentFilters {
   limit?: number;
 }
 
+// Category Types
+export interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  parent?: {
+    _id: string;
+    name: string;
+    slug: string;
+  };
+  image?: string;
+  icon?: string;
+  color?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  articleCount: number;
+  order: number;
+  isVisible: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCategoryDto {
+  name: string;
+  description?: string;
+  parentId?: string;
+  image?: string;
+  icon?: string;
+  color?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  order?: number;
+  isVisible?: boolean;
+}
+
+export interface UpdateCategoryDto extends Partial<CreateCategoryDto> {}
+
+export interface CategoriesResponse {
+  categories: Category[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
+// Tag Types
+export interface Tag {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  color?: string;
+  articleCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTagDto {
+  name: string;
+  description?: string;
+  color?: string;
+}
+
+export interface UpdateTagDto extends Partial<CreateTagDto> {}
+
+export interface TagsResponse {
+  tags: Tag[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
 export const blogApi = createApi({
   reducerPath: 'blogApi',
   baseQuery: fetchBaseQuery({
@@ -339,6 +413,128 @@ export const blogApi = createApi({
         }
       },
     }),
+
+    // ========== CATEGORIES ==========
+
+    // Get all categories
+    getCategories: builder.query<CategoriesResponse, { visible?: boolean; page?: number; limit?: number } | void>({
+      query: (params = {}) => {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined) searchParams.append(key, String(value));
+        });
+        return `/categories?${searchParams.toString()}`;
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.categories.map(({ _id }) => ({
+                type: 'Categories' as const,
+                id: _id,
+              })),
+              { type: 'Categories' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Categories' as const, id: 'LIST' }],
+    }),
+
+    // Get single category
+    getCategory: builder.query<Category, string>({
+      query: (id) => `/categories/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Categories', id }],
+    }),
+
+    // Create category
+    createCategory: builder.mutation<Category, CreateCategoryDto>({
+      query: (data) => ({
+        url: '/categories',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: [{ type: 'Categories', id: 'LIST' }],
+    }),
+
+    // Update category
+    updateCategory: builder.mutation<Category, { id: string; data: UpdateCategoryDto }>({
+      query: ({ id, data }) => ({
+        url: `/categories/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Categories', id },
+        { type: 'Categories', id: 'LIST' },
+      ],
+    }),
+
+    // Delete category
+    deleteCategory: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/categories/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Categories', id: 'LIST' }],
+    }),
+
+    // ========== TAGS ==========
+
+    // Get all tags
+    getTags: builder.query<TagsResponse, { search?: string; page?: number; limit?: number } | void>({
+      query: (params = {}) => {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined) searchParams.append(key, String(value));
+        });
+        return `/tags?${searchParams.toString()}`;
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.tags.map(({ _id }) => ({
+                type: 'Tags' as const,
+                id: _id,
+              })),
+              { type: 'Tags' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Tags' as const, id: 'LIST' }],
+    }),
+
+    // Get single tag
+    getTag: builder.query<Tag, string>({
+      query: (id) => `/tags/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Tags', id }],
+    }),
+
+    // Create tag
+    createTag: builder.mutation<Tag, CreateTagDto>({
+      query: (data) => ({
+        url: '/tags',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: [{ type: 'Tags', id: 'LIST' }],
+    }),
+
+    // Update tag
+    updateTag: builder.mutation<Tag, { id: string; data: UpdateTagDto }>({
+      query: ({ id, data }) => ({
+        url: `/tags/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Tags', id },
+        { type: 'Tags', id: 'LIST' },
+      ],
+    }),
+
+    // Delete tag
+    deleteTag: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/tags/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Tags', id: 'LIST' }],
+    }),
   }),
 });
 
@@ -360,4 +556,16 @@ export const {
   useDeleteCommentMutation,
   useApproveCommentMutation,
   useLikeCommentMutation,
+  // Category hooks
+  useGetCategoriesQuery,
+  useGetCategoryQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+  // Tag hooks
+  useGetTagsQuery,
+  useGetTagQuery,
+  useCreateTagMutation,
+  useUpdateTagMutation,
+  useDeleteTagMutation,
 } = blogApi;
