@@ -61,7 +61,7 @@ export async function middleware(req: NextRequest) {
   });
 
   // 1. Public routes - allow everyone
-  if (publicRoutes.includes(pathname)) {
+  if (publicRoutes.includes(pathname) || pathname.startsWith('/blog/')) {
     console.log("✅ Public route, allowing access");
     return NextResponse.next();
   }
