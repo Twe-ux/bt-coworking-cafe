@@ -19,7 +19,7 @@ const HeroOne = () => {
                   <p>
                     Tu l'as trouvé ! Bienvenue dans notre coworking café où tu
                     ne paies que le temps passé sur place. À ta disposition, un
-                    énorme choix de boissons à volontées, des snacks et pleins
+                    énorme choix de boissons à volontés, des snacks et pleins
                     d'autres services.
                   </p>
                 </SlideUp>
@@ -76,8 +76,8 @@ const HeroOne = () => {
             </div>
           </div>
         </div>
-        <div className="position-absolute top-0 h-100 w-100">
-          {/* <div class="position-relative w-100 h-100"> */}
+        {/* <div className="position-absolute top-0 h-100 w-100"> */}
+        <div className="position-relative w-100 h-100">
           <div className="banner__shap_1 banner__shap" />
           <div className="banner__shap_2 banner__shap" />
           <div className="banner__shap_3 banner__shap" />
