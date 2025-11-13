@@ -77,14 +77,22 @@ export interface ArticleFilters {
 export interface Comment {
   _id: string;
   content: string;
-  article: string;
+  article: string | { _id: string; title: string; slug: string };
   user: {
     _id: string;
     username: string;
     name?: string;
     email?: string;
   };
-  parent?: string | null;
+  parent?: {
+    _id: string;
+    content: string;
+    user: {
+      _id: string;
+      username: string;
+      name?: string;
+    };
+  } | string | null;
   status: 'pending' | 'approved' | 'rejected' | 'spam';
   likeCount: number;
   createdAt: string;
@@ -111,7 +119,7 @@ export interface CommentsResponse {
 }
 
 export interface CommentFilters {
-  article: string;
+  article?: string;
   status?: string;
   page?: number;
   limit?: number;
@@ -335,9 +343,9 @@ export const blogApi = createApi({
                 type: 'Comment' as const,
                 id: _id,
               })),
-              { type: 'Comments' as const, id: article },
+              { type: 'Comments' as const, id: article || 'ALL' },
             ]
-          : [{ type: 'Comments' as const, id: article }],
+          : [{ type: 'Comments' as const, id: article || 'ALL' }],
     }),
 
     // Get single comment
@@ -355,6 +363,7 @@ export const blogApi = createApi({
       }),
       invalidatesTags: (result, error, { articleId }) => [
         { type: 'Comments', id: articleId },
+        { type: 'Comments', id: 'ALL' },
       ],
     }),
 
@@ -378,6 +387,7 @@ export const blogApi = createApi({
       }),
       invalidatesTags: (result, error, id) => [
         { type: 'Comment', id },
+        { type: 'Comments', id: 'ALL' },
       ],
     }),
 
@@ -390,6 +400,7 @@ export const blogApi = createApi({
       }),
       invalidatesTags: (result, error, { id }) => [
         { type: 'Comment', id },
+        { type: 'Comments', id: 'ALL' },
       ],
     }),
 
