@@ -3,7 +3,8 @@ import { connectDB } from '@/lib/db';
 import { Comment } from '@/models/comment';
 import { getAuthUser } from '@/lib/api-helpers';
 
-// GET /api/comments?article=xxx - Get comments for an article
+// GET /api/comments?article=xxx&status=xxx - Get comments
+// If no article ID provided, returns all comments (admin only)
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -14,7 +15,11 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '50');
 
-    if (!articleId) {
+    const user = await getAuthUser();
+    const isAdmin = user && ['admin', 'staff', 'dev'].includes(user.role?.slug || '');
+
+    // If no articleId and user is not admin, return error
+    if (!articleId && !isAdmin) {
       return NextResponse.json(
         { error: 'Article ID is required' },
         { status: 400 }
@@ -22,14 +27,17 @@ export async function GET(request: NextRequest) {
     }
 
     const query: any = {
-      article: articleId,
       deletedAt: null,
       parent: null, // Only top-level comments
     };
 
+    // Add article filter if provided
+    if (articleId) {
+      query.article = articleId;
+    }
+
     // Only show approved comments to non-admin users
-    const user = await getAuthUser();
-    if (!user || !['admin', 'staff', 'dev'].includes(user.role?.slug || '')) {
+    if (!isAdmin) {
       query.status = 'approved';
     } else if (status !== 'all') {
       query.status = status;
@@ -40,6 +48,7 @@ export async function GET(request: NextRequest) {
     const [comments, total] = await Promise.all([
       Comment.find(query)
         .populate('user', 'username name email')
+        .populate('article', 'title slug')
         .populate({
           path: 'parent',
           select: 'content user',
