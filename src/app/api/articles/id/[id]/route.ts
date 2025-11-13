@@ -4,6 +4,7 @@ import Article from '@/models/article';
 import { Category } from '@/models/category';
 import { Tag } from '@/models/tag';
 import { requireAuth, getAuthUser, handleApiError, generateSlug, calculateReadingTime } from '@/lib/api-helpers';
+import { createArticleRevision } from '@/lib/article-revision-helpers';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -143,6 +144,12 @@ export async function PATCH(
 
     if (scheduledFor !== undefined) {
       article.scheduledFor = scheduledFor ? new Date(scheduledFor) : undefined;
+    }
+
+    // Create revision before saving changes
+    const currentUser = await getAuthUser();
+    if (currentUser) {
+      await createArticleRevision(article, currentUser._id, 'Article updated');
     }
 
     await article.save();
