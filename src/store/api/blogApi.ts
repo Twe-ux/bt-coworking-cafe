@@ -32,6 +32,7 @@ export interface Article {
   metaKeywords?: string[];
   viewCount: number;
   likeCount: number;
+  commentCount: number;
   readingTime: number;
   createdAt: string;
   updatedAt: string;
