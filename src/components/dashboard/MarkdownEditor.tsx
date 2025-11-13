@@ -28,7 +28,7 @@ const MarkdownEditor = ({
     return {
       spellChecker: false,
       placeholder,
-      status: ['lines', 'words', 'cursor'],
+      status: ['lines', 'words', 'cursor'] as any,
       toolbar: [
         'bold',
         'italic',
@@ -46,9 +46,9 @@ const MarkdownEditor = ({
         'fullscreen',
         '|',
         'guide',
-      ],
+      ] as any,
       autofocus: false,
-      hideIcons: ['guide'],
+      hideIcons: ['guide'] as any,
       sideBySideFullscreen: false,
     };
   }, [placeholder]);
