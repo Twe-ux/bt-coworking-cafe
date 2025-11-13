@@ -194,7 +194,7 @@ const CommentsPage = () => {
                         </td>
                         <td>
                           <div style={{ maxWidth: '200px' }}>
-                            {comment.article?.title ? (
+                            {typeof comment.article === 'object' && comment.article?.title ? (
                               <Link
                                 href={`/blog/${comment.article.slug}`}
                                 className="text-decoration-none"
@@ -330,7 +330,7 @@ const CommentsPage = () => {
               </div>
 
               {/* Article Info */}
-              {selectedComment.article && (
+              {typeof selectedComment.article === 'object' && selectedComment.article && (
                 <div className="mb-4">
                   <h6 className="text-muted mb-2">Article</h6>
                   <Link
@@ -351,7 +351,7 @@ const CommentsPage = () => {
               </div>
 
               {/* Parent Comment */}
-              {selectedComment.parent && (
+              {typeof selectedComment.parent === 'object' && selectedComment.parent && (
                 <div className="mb-4">
                   <h6 className="text-muted mb-2">En réponse à</h6>
                   <p className="bg-light p-3 rounded">
