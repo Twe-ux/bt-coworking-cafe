@@ -299,23 +299,24 @@ const EditPost = ({ articleId }: EditPostProps) => {
                   name="tagIds"
                   control={control}
                   render={({ field }) => (
-                    <Form.Select
+                    <select
                       {...field}
                       id="tagIds"
                       multiple
                       size={5}
+                      className="form-select"
                       onChange={(e) => {
                         const selected = Array.from(e.target.selectedOptions, option => option.value);
                         field.onChange(selected);
                       }}
-                      value={field.value || []}
+                      value={Array.isArray(field.value) ? field.value : []}
                     >
                       {tagsData?.tags.map((tag) => (
                         <option key={tag._id} value={tag._id}>
                           {tag.name}
                         </option>
                       ))}
-                    </Form.Select>
+                    </select>
                   )}
                 />
                 <small className="text-muted d-block mt-1">
