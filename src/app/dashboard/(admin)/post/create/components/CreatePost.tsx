@@ -237,7 +237,7 @@ const CreatePost = () => {
                         const selected = Array.from(e.target.selectedOptions, option => option.value);
                         field.onChange(selected);
                       }}
-                      value={Array.isArray(field.value) ? field.value : []}
+                      value={Array.isArray(field.value) ? field.value.filter((v): v is string => typeof v === 'string') : []}
                     >
                       {tagsData?.tags.map((tag) => (
                         <option key={tag._id} value={tag._id}>
