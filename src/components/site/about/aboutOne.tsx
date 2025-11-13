@@ -30,10 +30,12 @@ const AboutOne = () => {
                 </p>
                 <br />
                 <p>
-                  Ouvert en 2017 à Strasbourg, Cow-or-King by Anticafé, propose
-                  un espace chaleureux, accessible sans réservation, pensé pour
-                  les indépendants, étudiants, télétravailleurs et équipes en
-                  quête d'un lieu inspirant.
+                  Ouvert en 2017 à Strasbourg, Coworking Café by Anticafé est né
+                  sous l’enseigne Anticafé avant de devenir un lieu indépendant,
+                  ancré dans la vie locale. Un espace chaleureux, accessible
+                  sans réservation, pensé pour les indépendants, étudiants,
+                  télétravailleurs et équipes en quête d’un lieu où travailler
+                  comme à la maison, mais en mieux.
                 </p>
                 <Link href="/concept" className="circle">
                   <i className="fa-solid fa-arrow-right"></i>
@@ -45,7 +47,7 @@ const AboutOne = () => {
           <div className="col-xl-4 col-lg-6">
             <SlideUp delay={2}>
               <div className="about__wapper_center">
-                <img src="/images/about/Rectangle105.png" alt="img" />
+                <img src="/images/about/open-space.webp" alt="img" />
               </div>
             </SlideUp>
           </div>

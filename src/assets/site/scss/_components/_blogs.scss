@@ -41,6 +41,9 @@
         border-radius: 10px;
         margin-bottom: 34px;
         width: 100%;
+        max-width: 356px;
+        max-height: 235px;
+        object-fit: cover;
 
         @include breakpoint(md) {
           margin-bottom: 28px;

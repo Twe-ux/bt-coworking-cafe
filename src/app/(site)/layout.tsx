@@ -7,6 +7,7 @@ import Bootstrap from "@/components/site/Bootstrap";
 import Footer from "@/components/site/footer";
 import Header from "@/components/site/header/header";
 import PathNameLoad from "@/utils/pathNameLoad";
+import { SiteProvidersWrapper } from "@/components/providers/SiteProvidersWrapper";
 import { ReactNode } from "react";
 
 export const metadata = {
@@ -21,11 +22,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <AhrefsAnalytics />
       </head>
       <body suppressHydrationWarning>
-        <Bootstrap />
-        <PathNameLoad />
-        <Header />
-        {children}
-        <Footer />
+        <SiteProvidersWrapper>
+          <Bootstrap />
+          <PathNameLoad />
+          <Header />
+          {children}
+          <Footer />
+        </SiteProvidersWrapper>
       </body>
     </html>
   );

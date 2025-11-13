@@ -1,73 +1,121 @@
-import smallImg from "@/assets/dashboard/images/small/img-3.jpg";
-import avatar1 from "@/assets/dashboard/images/users/avatar-8.jpg";
+'use client';
+
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
-import Image from "next/image";
 import Link from "next/link";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
-import { articleData } from "../data";
+import { Card, CardBody, Col, Row, Spinner, Badge } from "react-bootstrap";
+import { useGetArticlesQuery } from '@/store/api/blogApi';
 
 const Articles = () => {
+  const { data, isLoading, error } = useGetArticlesQuery({
+    page: 1,
+    limit: 4,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  });
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const getBadgeColor = (tagName: string) => {
+    const colors: { [key: string]: string } = {
+      'Tutorials': 'success',
+      'Blog': 'danger',
+      'News': 'warning',
+      'Homes': 'primary',
+    };
+    return colors[tagName] || 'primary';
+  };
+
+  if (isLoading) {
+    return (
+      <Col xl={7} lg={12}>
+        <Card>
+          <CardBody className="text-center py-5">
+            <Spinner animation="border" variant="primary" />
+            <p className="text-muted mt-3">Chargement des articles...</p>
+          </CardBody>
+        </Card>
+      </Col>
+    );
+  }
+
+  if (error || !data?.articles || data.articles.length === 0) {
+    return (
+      <Col xl={7} lg={12}>
+        <Card>
+          <CardBody className="text-center py-5">
+            <IconifyIcon
+              icon="solar:document-outline"
+              className="fs-48 text-muted mb-3"
+            />
+            <p className="text-muted">Aucun article disponible</p>
+          </CardBody>
+        </Card>
+      </Col>
+    );
+  }
+
+  const articles = data.articles;
+  const featuredArticle = articles[0];
+  const recentArticles = articles.slice(1);
+
   return (
     <Col xl={7} lg={12}>
       <Card>
         <CardBody>
-          {articleData.map((item, idx) => (
+          {/* Recent Articles List */}
+          {recentArticles.map((article, idx) => (
             <div
-              className={`border-bottom pb-3 ${idx != 0 && "py-3"} `}
-              key={idx}
+              className={`border-bottom pb-3 ${idx !== 0 && "py-3"}`}
+              key={article._id}
             >
               <span className="text-dark">
-                <Link href="" className="text-dark fs-18 fw-medium">
-                  {item.title}
+                <Link href={`/blog/${article.slug}`} className="text-dark fs-18 fw-medium">
+                  {article.title}
                 </Link>
               </span>
               <div className="mb-2 mt-1">
-                {item.tags.map((tag, idx) => (
-                  <>
-                    <span
-                      className={`badge px-2 py-1 bg-${
-                        tag == "Tutorials"
-                          ? "success"
-                          : tag == "Blog"
-                          ? "danger"
-                          : "primary"
-                      }-subtle text-${
-                        tag == "Tutorials"
-                          ? "success"
-                          : tag == "Blog"
-                          ? "danger"
-                          : "primary"
-                      } ms-1`}
-                      key={idx}
+                {article.tags && article.tags.slice(0, 3).map((tag) => (
+                  <span key={tag._id}>
+                    <Badge
+                      bg={`${getBadgeColor(tag.name)}-subtle`}
+                      text={getBadgeColor(tag.name)}
+                      className="ms-1"
                     >
-                      {tag}
-                    </span>
+                      {tag.name}
+                    </Badge>
                     &nbsp;
-                  </>
+                  </span>
                 ))}
               </div>
-              <p className="mt-2 text-muted">{item.description}</p>
+              <p className="mt-2 text-muted">
+                {article.excerpt
+                  ? article.excerpt.substring(0, 150)
+                  : article.content.substring(0, 150)}
+                ...
+              </p>
               <div className="d-flex align-items-center gap-1">
                 <div className="position-relative">
-                  <Image
-                    src={item.image}
-                    alt="avatar"
-                    className="avatar rounded-circle flex-shrink-0"
-                  />
+                  <div className="avatar rounded-circle flex-shrink-0 bg-primary-subtle d-flex align-items-center justify-content-center">
+                    <span className="text-primary fs-16 fw-semibold">
+                      {(article.author.name || article.author.username).charAt(0).toUpperCase()}
+                    </span>
+                  </div>
                 </div>
                 <div className="d-block ms-2 flex-grow-1">
                   <span className="text-dark">
-                    <Link href="" className="text-dark fw-medium">
-                      {item.name}
-                    </Link>
+                    <span className="text-dark fw-medium">
+                      {article.author.name || article.author.username}
+                    </span>
                   </span>
                   <p className="text-muted mb-0">
-                    <IconifyIcon icon="ti:calendar-due" />
-                    {item.date.toLocaleString("en-us", {
-                      month: "short",
-                      day: "2-digit",
-                      year: "numeric",
-                    })}
+                    <IconifyIcon icon="ti:calendar-due" />{' '}
+                    {formatDate(article.publishedAt || article.createdAt)}
                   </p>
                 </div>
                 <div className="ms-auto">
@@ -77,7 +125,6 @@ const Articles = () => {
                       className="btn btn-soft-danger avatar-sm d-inline-flex align-items-center justify-content-center fs-20 rounded-circle"
                     >
                       <span>
-                        {" "}
                         <IconifyIcon icon="solar:heart-broken" />
                       </span>
                     </button>
@@ -86,65 +133,75 @@ const Articles = () => {
               </div>
             </div>
           ))}
+
+          {/* Featured Article with Image */}
           <div className="pt-3">
             <span className="text-dark">
-              <Link href="" className="text-dark fs-18 fw-medium">
-                The Future of Smart Homes: Technology Trends in Real Estate
+              <Link href={`/blog/${featuredArticle.slug}`} className="text-dark fs-18 fw-medium">
+                {featuredArticle.title}
               </Link>
               &nbsp;
-              <span className="badge px-2 py-1 bg-danger-subtle text-danger ms-1">
-                Blog
-              </span>
+              {featuredArticle.category && (
+                <Badge
+                  bg={`${getBadgeColor(featuredArticle.category.name)}-subtle`}
+                  text={getBadgeColor(featuredArticle.category.name)}
+                  className="ms-1"
+                >
+                  {featuredArticle.category.name}
+                </Badge>
+              )}
               &nbsp;
-              <span className="badge px-2 py-1 bg-warning-subtle text-warning ms-1">
-                News
-              </span>
+              {featuredArticle.tags && featuredArticle.tags.slice(0, 2).map((tag) => (
+                <Badge
+                  key={tag._id}
+                  bg={`${getBadgeColor(tag.name)}-subtle`}
+                  text={getBadgeColor(tag.name)}
+                  className="ms-1"
+                >
+                  {tag.name}
+                </Badge>
+              ))}
             </span>
             <Row className="my-2 align-items-center">
-              <Col lg={3}>
-                <Image
-                  alt="small"
-                  src={smallImg}
-                  className="rounded-3 img-fluid"
-                />
-              </Col>
-              <Col lg={9}>
+              {featuredArticle.featuredImage && (
+                <Col lg={3}>
+                  <img
+                    alt={featuredArticle.title}
+                    src={featuredArticle.featuredImage}
+                    className="rounded-3 img-fluid"
+                    style={{ maxHeight: '150px', objectFit: 'cover', width: '100%' }}
+                  />
+                </Col>
+              )}
+              <Col lg={featuredArticle.featuredImage ? 9 : 12}>
                 <p className="my-2 text-muted">
-                  The concept of smart homes has evolved rapidly over the past
-                  few years, driven by advancements in technology and an
-                  increasing demand for convenience, security, and energy
-                  efficiency.{" "}
+                  {featuredArticle.excerpt
+                    ? featuredArticle.excerpt.substring(0, 120)
+                    : featuredArticle.content.substring(0, 120)}
+                  ...
                 </p>
-                <p className="mb-3 text-muted">
-                  <span className="text-dark fw-semibold mb-0">
-                    Seamless Integration :{" "}
-                  </span>
-                  The Internet of Things (IoT) is the backbone of smart home
-                  technology, enabling devices and systems to communicate and
-                  work together seamlessly. In the future, the integration of
-                  IoT will become more sophisticated.
-                </p>
-                <Link href="" className="link-primary">
+                <Link href={`/blog/${featuredArticle.slug}`} className="link-primary">
                   View More
                 </Link>
               </Col>
             </Row>
             <div className="d-flex align-items-center gap-1 mt-2 pt-1">
               <div className="position-relative">
-                <Image
-                  src={avatar1}
-                  alt="avatar"
-                  className="avatar rounded-circle flex-shrink-0"
-                />
+                <div className="avatar rounded-circle flex-shrink-0 bg-primary-subtle d-flex align-items-center justify-content-center">
+                  <span className="text-primary fs-16 fw-semibold">
+                    {(featuredArticle.author.name || featuredArticle.author.username).charAt(0).toUpperCase()}
+                  </span>
+                </div>
               </div>
               <div className="d-block ms-2 flex-grow-1">
                 <span className="text-dark">
-                  <Link href="" className="text-dark fw-medium">
-                    Gabriela E. Phelps
-                  </Link>
+                  <span className="text-dark fw-medium">
+                    {featuredArticle.author.name || featuredArticle.author.username}
+                  </span>
                 </span>
                 <p className="text-muted mb-0">
-                  <IconifyIcon icon="ti:calendar-due" /> March 14, 2023
+                  <IconifyIcon icon="ti:calendar-due" />{' '}
+                  {formatDate(featuredArticle.publishedAt || featuredArticle.createdAt)}
                 </p>
               </div>
               <div className="ms-auto">
@@ -153,9 +210,7 @@ const Articles = () => {
                     type="button"
                     className="btn btn-soft-danger avatar-sm d-inline-flex align-items-center justify-content-center fs-20 rounded-circle"
                   >
-                    {" "}
                     <span>
-                      {" "}
                       <IconifyIcon icon="solar:heart-broken" />
                     </span>
                   </button>

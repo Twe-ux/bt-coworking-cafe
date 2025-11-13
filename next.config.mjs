@@ -11,6 +11,11 @@ const nextConfig = {
     serverComponentsExternalPackages: ['mongoose'],
   },
 
+  // Disable font optimization in dev if DISABLE_FONT_OPTIMIZATION is set
+  // This is useful for dev environments without internet access
+  // Set DISABLE_FONT_OPTIMIZATION=true in .env.local for local dev
+  optimizeFonts: process.env.DISABLE_FONT_OPTIMIZATION !== 'true',
+
   // Explicitly configure webpack to resolve path aliases
   webpack: (config) => {
     config.resolve.alias = {

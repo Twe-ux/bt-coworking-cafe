@@ -1,14 +1,23 @@
-import { blogOneData } from "@/db/blogOneData";
+'use client';
+
 import React from "react";
 import BlogCard from "./blogCard";
 import SlideDown from "@/utils/animations/slideDown";
 import SlideUp from "@/utils/animations/slideUp";
+import { useGetArticlesQuery } from "@/store/api/blogApi";
 
 interface HomeBlogProps {
   className?: string;
 }
 
 const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
+  const { data, isLoading, error } = useGetArticlesQuery({
+    limit: 3,
+    sortBy: 'publishedAt',
+    sortOrder: 'desc',
+    status: 'published',
+  });
+
   return (
     <section className={`blogs ${className}`}>
       <div className="container">
@@ -22,23 +31,37 @@ const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
         {/* title End */}
         <div className="blogs__wapper">
           <div className="row">
-            {blogOneData
-              .slice(0, 3)
-              .map(({ author, comments, id, imgSrc, title }) => (
+            {isLoading ? (
+              <div className="col-12 text-center py-5">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Chargement...</span>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="col-12 text-center py-5">
+                <p>Erreur lors du chargement des articles.</p>
+              </div>
+            ) : !data?.articles || data.articles.length === 0 ? (
+              <div className="col-12 text-center py-5">
+                <p>Aucun article disponible pour le moment.</p>
+              </div>
+            ) : (
+              data.articles.map((article, index) => (
                 <SlideUp
-                  key={id}
+                  key={article._id}
                   className="col-lg-4 col-md-6 mb-lg-0 mb-5"
-                  delay={id}
+                  delay={index + 1}
                 >
                   <BlogCard
-                    author={author}
-                    comments={comments}
-                    id={id}
-                    imgSrc={imgSrc}
-                    title={title}
+                    author={article.author?.name || article.author?.username || 'Auteur inconnu'}
+                    comments={article.commentCount || 0}
+                    imgSrc={article.featuredImage || '/images/blogs/blog-1.png'}
+                    title={article.title}
+                    slug={article.slug}
                   />
                 </SlideUp>
-              ))}
+              ))
+            )}
           </div>
         </div>
       </div>

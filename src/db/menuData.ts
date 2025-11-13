@@ -31,7 +31,7 @@ export const menuData: MenuItem[] = [
   },
   {
     title: "Le Mag'",
-    link: "/mag",
+    link: "/blog",
   },
   // {
   //   title: "Services",

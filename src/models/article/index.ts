@@ -19,4 +19,8 @@ if (!ArticleModel) {
   throw new Error("Article model not initialized");
 }
 
+// Export as both named and default to support both import styles:
+// - import Article from '@/models/article' (default)
+// - import { Article } from '@/models/article' (named)
 export { ArticleModel as Article };
+export default ArticleModel;

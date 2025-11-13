@@ -271,33 +271,66 @@ p {
 }
 
 .partner {
-  background-color: #293634;
+  display: flex;
+  flex-direction: row;
+  background-color: hsl(171, 14%, 25%);
   border-radius: 10px;
-  padding: 90px;
+  padding: 40px;
   margin-top: 106px;
   overflow-x: hidden;
 
+  .partner__logo {
+    height: 100px;
+  }
+
   @include breakpoint(xl) {
-    padding: 70px;
+    padding: 40px;
     margin-top: 90px;
   }
 
   @include breakpoint(md) {
-    padding: 50px;
     margin-top: 70px;
   }
 
   &__wapper {
-    max-width: 1120px;
-    margin: auto;
+    flex: 1 1 0;
     overflow: hidden;
+    position: relative;
+
+    &::after,
+    &::before {
+      display: block;
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 20px;
+      z-index: 1;
+    }
+
+    &::after {
+      right: 0;
+      background-image: linear-gradient(
+        to left,
+        hsl(171, 14%, 25%) 0,
+        transparent 100%
+      );
+    }
+    &::before {
+      left: 0;
+      background-image: linear-gradient(
+        to right,
+        hsl(171, 14%, 25%) 0,
+        transparent 100%
+      );
+    }
   }
 
   &__content {
-    overflow-x: hidden;
+    // overflow-x: hidden;
     @include justify();
-    // gap: 60px;
-    width: calc(220px * 10);
+    gap: 20px;
+    // width: calc(220px * 10);
     animation: scroll 40s linear infinite;
   }
 }
