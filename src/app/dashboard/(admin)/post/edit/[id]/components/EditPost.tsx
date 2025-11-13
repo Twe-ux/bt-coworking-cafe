@@ -7,6 +7,7 @@ import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
 import ImageUpload from "@/components/dashboard/ImageUpload";
 import DropzoneImageUpload from "@/components/dashboard/DropzoneImageUpload";
 import MarkdownEditor from "@/components/dashboard/MarkdownEditor";
+import PreviewModal from "@/components/dashboard/PreviewModal";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
@@ -25,6 +26,7 @@ import * as yup from "yup";
 import { useGetArticleByIdQuery, useUpdateArticleMutation, useGetCategoriesQuery, useGetTagsQuery } from "@/store/api/blogApi";
 import { useNotification } from "@/hooks/useNotification";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
 
 interface EditPostProps {
   articleId: string;
@@ -38,6 +40,7 @@ const EditPost = ({ articleId }: EditPostProps) => {
   const { data: tagsData } = useGetTagsQuery({ limit: 100 });
   const { success, error: showError } = useNotification();
   const [selectedStatus, setSelectedStatus] = useState<string>("draft");
+  const [showPreview, setShowPreview] = useState(false);
 
   const articleSchema = yup.object({
     title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères").defined(),
@@ -53,7 +56,7 @@ const EditPost = ({ articleId }: EditPostProps) => {
     seoOgImage: yup.string().url("L'URL de l'image OG doit être valide").defined().default(""),
   });
 
-  const { handleSubmit, control, formState: { errors }, reset } = useForm({
+  const { handleSubmit, control, formState: { errors }, reset, watch, setValue } = useForm({
     resolver: yupResolver(articleSchema),
     defaultValues: {
       title: "",
@@ -69,6 +72,30 @@ const EditPost = ({ articleId }: EditPostProps) => {
       seoOgImage: "",
     },
   });
+
+  // Auto-generate SEO meta description from content
+  const handleGenerateMetaDescription = () => {
+    const content = watch("content");
+    if (!content) {
+      showError("Veuillez d'abord rédiger le contenu de l'article");
+      return;
+    }
+    const metaDesc = generateMetaDescription(content, 160);
+    setValue("seoMetaDescription", metaDesc);
+    success("Meta description générée automatiquement");
+  };
+
+  // Auto-generate SEO meta title from title
+  const handleGenerateMetaTitle = () => {
+    const title = watch("title");
+    if (!title) {
+      showError("Veuillez d'abord saisir le titre de l'article");
+      return;
+    }
+    const metaTitle = generateMetaTitle(title, "Cow-or-King Café", 60);
+    setValue("seoMetaTitle", metaTitle);
+    success("Meta titre généré automatiquement");
+  };
 
   // Populate form when article data is loaded
   useEffect(() => {
@@ -356,11 +383,23 @@ const EditPost = ({ articleId }: EditPostProps) => {
           <Row>
             <Col lg={12}>
               <div className="mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <label className="form-label mb-0">Meta Titre</label>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={handleGenerateMetaTitle}
+                    type="button"
+                  >
+                    <i className="bi bi-magic me-1"></i>
+                    Générer automatiquement
+                  </Button>
+                </div>
                 <TextFormInput
                   control={control}
                   name="seoMetaTitle"
                   placeholder="Titre pour les moteurs de recherche"
-                  label="Meta Titre"
+                  label=""
                 />
                 {errors.seoMetaTitle && (
                   <small className="text-danger">{errors.seoMetaTitle.message}</small>
@@ -370,10 +409,22 @@ const EditPost = ({ articleId }: EditPostProps) => {
 
             <Col lg={12}>
               <div className="mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <label className="form-label mb-0">Meta Description</label>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={handleGenerateMetaDescription}
+                    type="button"
+                  >
+                    <i className="bi bi-magic me-1"></i>
+                    Générer automatiquement
+                  </Button>
+                </div>
                 <TextAreaFormInput
                   control={control}
                   name="seoMetaDescription"
-                  label="Meta Description"
+                  label=""
                   rows={2}
                   placeholder="Description pour les moteurs de recherche..."
                 />
@@ -448,13 +499,25 @@ const EditPost = ({ articleId }: EditPostProps) => {
         <Row className="justify-content-end g-2">
           <Col lg={2}>
             <Button
+              variant="outline-info"
+              className="w-100"
+              type="button"
+              onClick={() => setShowPreview(true)}
+              disabled={isUpdating}
+            >
+              <i className="bi bi-eye me-2"></i>
+              Prévisualiser
+            </Button>
+          </Col>
+          <Col lg={2}>
+            <Button
               variant="outline-secondary"
               className="w-100"
               onClick={() => router.push(`/blog/${article.slug}`)}
               disabled={isUpdating}
             >
-              <IconifyIcon icon="solar:eye-outline" className="me-2" />
-              Voir
+              <IconifyIcon icon="solar:link-outline" className="me-2" />
+              Voir publié
             </Button>
           </Col>
           <Col lg={2}>
@@ -489,6 +552,21 @@ const EditPost = ({ articleId }: EditPostProps) => {
           </Col>
         </Row>
       </div>
+
+      {/* Preview Modal */}
+      <PreviewModal
+        show={showPreview}
+        onHide={() => setShowPreview(false)}
+        article={{
+          title: watch("title") || "Sans titre",
+          excerpt: watch("excerpt"),
+          content: watch("content") || "Pas de contenu",
+          featuredImage: watch("featuredImage"),
+          author: article?.author || { name: "Vous" },
+          tags: article?.tags || [],
+          category: article?.category || categoriesData?.categories.find(c => c._id === watch("categoryId")),
+        }}
+      />
     </form>
   );
 };

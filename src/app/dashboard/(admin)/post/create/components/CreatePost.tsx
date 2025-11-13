@@ -7,6 +7,7 @@ import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
 import ImageUpload from "@/components/dashboard/ImageUpload";
 import DropzoneImageUpload from "@/components/dashboard/DropzoneImageUpload";
 import MarkdownEditor from "@/components/dashboard/MarkdownEditor";
+import PreviewModal from "@/components/dashboard/PreviewModal";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
@@ -23,6 +24,7 @@ import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { useCreateArticleMutation, useGetCategoriesQuery, useGetTagsQuery } from "@/store/api/blogApi";
 import { useNotification } from "@/hooks/useNotification";
+import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
 
 const CreatePost = () => {
   const router = useRouter();
@@ -31,6 +33,7 @@ const CreatePost = () => {
   const { data: tagsData } = useGetTagsQuery({ limit: 100 });
   const { success, error: showError } = useNotification();
   const [selectedStatus, setSelectedStatus] = useState<string>("draft");
+  const [showPreview, setShowPreview] = useState(false);
 
   const articleSchema = yup.object({
     title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères").defined(),
@@ -46,7 +49,7 @@ const CreatePost = () => {
     seoOgImage: yup.string().url("L'URL de l'image OG doit être valide").defined().default(""),
   });
 
-  const { handleSubmit, control, formState: { errors } } = useForm({
+  const { handleSubmit, control, formState: { errors }, watch, setValue } = useForm({
     resolver: yupResolver(articleSchema),
     defaultValues: {
       title: "",
@@ -62,6 +65,30 @@ const CreatePost = () => {
       seoOgImage: "",
     },
   });
+
+  // Auto-generate SEO meta description from content
+  const handleGenerateMetaDescription = () => {
+    const content = watch("content");
+    if (!content) {
+      showError("Veuillez d'abord rédiger le contenu de l'article");
+      return;
+    }
+    const metaDesc = generateMetaDescription(content, 160);
+    setValue("seoMetaDescription", metaDesc);
+    success("Meta description générée automatiquement");
+  };
+
+  // Auto-generate SEO meta title from title
+  const handleGenerateMetaTitle = () => {
+    const title = watch("title");
+    if (!title) {
+      showError("Veuillez d'abord saisir le titre de l'article");
+      return;
+    }
+    const metaTitle = generateMetaTitle(title, "Cow-or-King Café", 60);
+    setValue("seoMetaTitle", metaTitle);
+    success("Meta titre généré automatiquement");
+  };
 
   const onSubmit = async (data: any) => {
     try {
@@ -283,11 +310,23 @@ const CreatePost = () => {
           <Row>
             <Col lg={12}>
               <div className="mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <label className="form-label mb-0">Meta Titre</label>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={handleGenerateMetaTitle}
+                    type="button"
+                  >
+                    <i className="bi bi-magic me-1"></i>
+                    Générer automatiquement
+                  </Button>
+                </div>
                 <TextFormInput
                   control={control}
                   name="seoMetaTitle"
                   placeholder="Titre pour les moteurs de recherche"
-                  label="Meta Titre"
+                  label=""
                 />
                 {errors.seoMetaTitle && (
                   <small className="text-danger">{errors.seoMetaTitle.message}</small>
@@ -297,10 +336,22 @@ const CreatePost = () => {
 
             <Col lg={12}>
               <div className="mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <label className="form-label mb-0">Meta Description</label>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={handleGenerateMetaDescription}
+                    type="button"
+                  >
+                    <i className="bi bi-magic me-1"></i>
+                    Générer automatiquement
+                  </Button>
+                </div>
                 <TextAreaFormInput
                   control={control}
                   name="seoMetaDescription"
-                  label="Meta Description"
+                  label=""
                   rows={2}
                   placeholder="Description pour les moteurs de recherche..."
                 />
@@ -335,6 +386,18 @@ const CreatePost = () => {
         <Row className="justify-content-end g-2">
           <Col lg={2}>
             <Button
+              variant="outline-info"
+              type="button"
+              className="w-100"
+              onClick={() => setShowPreview(true)}
+              disabled={isLoading}
+            >
+              <i className="bi bi-eye me-2"></i>
+              Prévisualiser
+            </Button>
+          </Col>
+          <Col lg={2}>
+            <Button
               variant="outline-primary"
               type="submit"
               className="w-100"
@@ -362,6 +425,23 @@ const CreatePost = () => {
           </Col>
         </Row>
       </div>
+
+      {/* Preview Modal */}
+      <PreviewModal
+        show={showPreview}
+        onHide={() => setShowPreview(false)}
+        article={{
+          title: watch("title") || "Sans titre",
+          excerpt: watch("excerpt"),
+          content: watch("content") || "Pas de contenu",
+          featuredImage: watch("featuredImage"),
+          author: {
+            name: "Vous",
+          },
+          tags: [],
+          category: categoriesData?.categories.find(c => c._id === watch("categoryId")),
+        }}
+      />
     </form>
   );
 };
