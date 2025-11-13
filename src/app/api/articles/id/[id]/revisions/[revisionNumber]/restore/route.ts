@@ -40,7 +40,7 @@ export async function POST(
     if (currentUser) {
       await createArticleRevision(
         article,
-        currentUser._id,
+        currentUser.id as any,
         `Before restoring revision #${revisionNum}`
       );
     }

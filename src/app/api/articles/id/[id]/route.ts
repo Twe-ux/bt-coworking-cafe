@@ -149,7 +149,7 @@ export async function PATCH(
     // Create revision before saving changes
     const currentUser = await getAuthUser();
     if (currentUser) {
-      await createArticleRevision(article, currentUser._id, 'Article updated');
+      await createArticleRevision(article, currentUser.id as any, 'Article updated');
     }
 
     await article.save();

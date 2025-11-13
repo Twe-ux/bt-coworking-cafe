@@ -26,7 +26,7 @@ export async function GET(
     }
 
     const like = await ArticleLike.findOne({
-      user: user._id,
+      user: user.id,
       article: id,
     }).lean();
 
@@ -73,7 +73,7 @@ export async function POST(
 
     // Check if already liked
     const existingLike = await ArticleLike.findOne({
-      user: user._id,
+      user: user.id,
       article: id,
     });
 
@@ -86,7 +86,7 @@ export async function POST(
 
     // Create like
     await ArticleLike.create({
-      user: user._id,
+      user: user.id,
       article: id,
     });
 
@@ -131,7 +131,7 @@ export async function DELETE(
 
     // Delete like
     const result = await ArticleLike.findOneAndDelete({
-      user: user._id,
+      user: user.id,
       article: id,
     });
 

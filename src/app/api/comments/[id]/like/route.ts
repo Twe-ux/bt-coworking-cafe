@@ -26,7 +26,7 @@ export async function GET(
     }
 
     const like = await CommentLike.findOne({
-      user: user._id,
+      user: user.id,
       comment: id,
     }).lean();
 
@@ -73,7 +73,7 @@ export async function POST(
 
     // Check if already liked
     const existingLike = await CommentLike.findOne({
-      user: user._id,
+      user: user.id,
       comment: id,
     });
 
@@ -86,7 +86,7 @@ export async function POST(
 
     // Create like
     await CommentLike.create({
-      user: user._id,
+      user: user.id,
       comment: id,
     });
 
@@ -131,7 +131,7 @@ export async function DELETE(
 
     // Delete like
     const result = await CommentLike.findOneAndDelete({
-      user: user._id,
+      user: user.id,
       comment: id,
     });
 
