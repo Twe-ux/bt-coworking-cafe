@@ -213,7 +213,16 @@ export const blogApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Article', 'Articles', 'Categories', 'Tags', 'Comment', 'Comments'],
+  tagTypes: [
+    'Article',
+    'Articles',
+    'ArticleLikes',
+    'Categories',
+    'Tags',
+    'Comment',
+    'Comments',
+    'CommentLikes',
+  ],
   endpoints: (builder) => ({
     // Get all articles (with filters)
     getArticles: builder.query<ArticlesResponse, ArticleFilters | void>({
@@ -305,12 +314,25 @@ export const blogApi = createApi({
       invalidatesTags: [],
     }),
 
-    // Like/Unlike article
-    toggleLike: builder.mutation<Article, string>({
+    // Check if article is liked by current user
+    isArticleLiked: builder.query<{ liked: boolean }, string>({
+      query: (id) => `/articles/id/${id}/like`,
+      providesTags: (result, error, id) => [{ type: 'ArticleLikes', id }],
+    }),
+
+    // Like article
+    likeArticle: builder.mutation<
+      { success: boolean; liked: boolean; likeCount: number },
+      string
+    >({
       query: (id) => ({
         url: `/articles/id/${id}/like`,
         method: 'POST',
       }),
+      invalidatesTags: (result, error, id) => [
+        { type: 'ArticleLikes', id },
+        { type: 'Articles', id },
+      ],
       // Optimistic update
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
@@ -324,6 +346,43 @@ export const blogApi = createApi({
           patchResult.undo();
         }
       },
+    }),
+
+    // Unlike article
+    unlikeArticle: builder.mutation<
+      { success: boolean; liked: boolean; likeCount: number },
+      string
+    >({
+      query: (id) => ({
+        url: `/articles/id/${id}/like`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: 'ArticleLikes', id },
+        { type: 'Articles', id },
+      ],
+      // Optimistic update
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          blogApi.util.updateQueryData('getArticleById', id, (draft) => {
+            draft.likeCount -= 1;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
+
+    // Legacy: Toggle like (for backward compatibility)
+    toggleLike: builder.mutation<Article, string>({
+      query: (id) => ({
+        url: `/articles/id/${id}/like`,
+        method: 'POST',
+      }),
+      invalidatesTags: (result, error, id) => [{ type: 'ArticleLikes', id }],
     }),
 
     // ========== COMMENTS ==========
@@ -405,17 +464,58 @@ export const blogApi = createApi({
       ],
     }),
 
+    // Check if comment is liked by current user
+    isCommentLiked: builder.query<{ liked: boolean }, string>({
+      query: (id) => `/comments/${id}/like`,
+      providesTags: (result, error, id) => [{ type: 'CommentLikes', id }],
+    }),
+
     // Like comment
-    likeComment: builder.mutation<{ likeCount: number }, string>({
+    likeComment: builder.mutation<
+      { success: boolean; liked: boolean; likeCount: number },
+      string
+    >({
       query: (id) => ({
         url: `/comments/${id}/like`,
         method: 'POST',
       }),
+      invalidatesTags: (result, error, id) => [
+        { type: 'CommentLikes', id },
+        { type: 'Comment', id },
+      ],
       // Optimistic update
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           blogApi.util.updateQueryData('getComment', id, (draft) => {
             draft.likeCount += 1;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
+
+    // Unlike comment
+    unlikeComment: builder.mutation<
+      { success: boolean; liked: boolean; likeCount: number },
+      string
+    >({
+      query: (id) => ({
+        url: `/comments/${id}/like`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: 'CommentLikes', id },
+        { type: 'Comment', id },
+      ],
+      // Optimistic update
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          blogApi.util.updateQueryData('getComment', id, (draft) => {
+            draft.likeCount -= 1;
           })
         );
         try {
@@ -564,6 +664,9 @@ export const {
   useTogglePublishMutation,
   useIncrementViewCountMutation,
   useToggleLikeMutation,
+  useIsArticleLikedQuery,
+  useLikeArticleMutation,
+  useUnlikeArticleMutation,
   // Comment hooks
   useGetCommentsQuery,
   useGetCommentQuery,
@@ -572,6 +675,8 @@ export const {
   useDeleteCommentMutation,
   useApproveCommentMutation,
   useLikeCommentMutation,
+  useUnlikeCommentMutation,
+  useIsCommentLikedQuery,
   // Category hooks
   useGetCategoriesQuery,
   useGetCategoryQuery,
