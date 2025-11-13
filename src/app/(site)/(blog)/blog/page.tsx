@@ -11,14 +11,32 @@ const Blog = () => {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
 
   const { data, isLoading, error } = useGetArticlesQuery({
     page,
     limit: 6,
     search: searchQuery || undefined,
     category: selectedCategory || undefined,
+    tag: selectedTag || undefined,
     status: 'published',
   });
+
+  // Reset page when filters change
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setPage(1);
+  };
+
+  const handleTagSelect = (tagId: string) => {
+    setSelectedTag(tagId);
+    setPage(1);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setPage(1);
+  };
 
   return (
     <>
@@ -87,8 +105,11 @@ const Blog = () => {
             </div>
             <div className="col-lg-4 mt-5 mt-lg-0">
               <BlogSidebar
-                onSearch={setSearchQuery}
-                onCategorySelect={setSelectedCategory}
+                onSearch={handleSearch}
+                onCategorySelect={handleCategorySelect}
+                onTagSelect={handleTagSelect}
+                selectedCategory={selectedCategory}
+                selectedTag={selectedTag}
               />
             </div>
           </div>

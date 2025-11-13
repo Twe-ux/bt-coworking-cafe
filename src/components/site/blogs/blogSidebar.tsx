@@ -3,22 +3,23 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import React from 'react';
-import { useGetArticlesQuery } from '@/store/api/blogApi';
-
-const categories = [
-    { name: "General Construction", count: 9 },
-    { name: "Unique UI Design", count: 12 },
-    { name: "General Graphic", count: 6 },
-    { name: "Business Policy", count: 9 }
-];
-const tags = ["Design", "Marketing", "Creative", "IT", "Business", "Optimization"];
+import { useGetArticlesQuery, useGetCategoriesQuery, useGetTagsQuery } from '@/store/api/blogApi';
 
 interface BlogSidebarProps {
     onSearch?: (query: string) => void;
-    onCategorySelect?: (category: string) => void;
+    onCategorySelect?: (categoryId: string) => void;
+    onTagSelect?: (tagId: string) => void;
+    selectedCategory?: string;
+    selectedTag?: string;
 }
 
-const BlogSidebar = ({ onSearch, onCategorySelect }: BlogSidebarProps) => {
+const BlogSidebar = ({
+    onSearch,
+    onCategorySelect,
+    onTagSelect,
+    selectedCategory,
+    selectedTag
+}: BlogSidebarProps) => {
     const [searchValue, setSearchValue] = useState("");
 
     // Fetch latest posts for sidebar
@@ -30,10 +31,30 @@ const BlogSidebar = ({ onSearch, onCategorySelect }: BlogSidebarProps) => {
         status: 'published',
     });
 
+    // Fetch categories with article count
+    const { data: categoriesData } = useGetCategoriesQuery({ limit: 100 });
+
+    // Fetch tags
+    const { data: tagsData } = useGetTagsQuery({ limit: 100 });
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         if (onSearch) {
             onSearch(searchValue);
+        }
+    };
+
+    const handleCategoryClick = (e: React.MouseEvent, categoryId: string) => {
+        e.preventDefault();
+        if (onCategorySelect) {
+            onCategorySelect(categoryId);
+        }
+    };
+
+    const handleTagClick = (e: React.MouseEvent, tagId: string) => {
+        e.preventDefault();
+        if (onTagSelect) {
+            onTagSelect(tagId);
         }
     };
 
@@ -54,29 +75,52 @@ const BlogSidebar = ({ onSearch, onCategorySelect }: BlogSidebarProps) => {
                     </button>
                 </form>
             </div>
+
             {/* -- Categories */}
             <div className="categories pt__60">
                 <h5 className="t__22">Categories</h5>
                 <ul>
-                    {categories.map((category, index) => (
-                        <li key={index}>
-                            <Link
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    if (onCategorySelect) {
-                                        onCategorySelect(category.name);
-                                    }
-                                }}
-                            >
-                                {category.name}
-                            </Link>
-                            <p>({category.count})</p>
+                    {/* "All" option */}
+                    <li>
+                        <Link
+                            href="#"
+                            onClick={(e) => handleCategoryClick(e, '')}
+                            style={{
+                                fontWeight: !selectedCategory ? 'bold' : 'normal',
+                                color: !selectedCategory ? '#000' : 'inherit'
+                            }}
+                        >
+                            Tous les articles
+                        </Link>
+                    </li>
+
+                    {categoriesData?.categories && categoriesData.categories.length > 0 ? (
+                        categoriesData.categories
+                            .filter(cat => cat.isVisible !== false)
+                            .map((category) => (
+                                <li key={category._id}>
+                                    <Link
+                                        href="#"
+                                        onClick={(e) => handleCategoryClick(e, category._id)}
+                                        style={{
+                                            fontWeight: selectedCategory === category._id ? 'bold' : 'normal',
+                                            color: selectedCategory === category._id ? (category.color || '#000') : 'inherit'
+                                        }}
+                                    >
+                                        {category.name}
+                                    </Link>
+                                    <p>({category.articleCount || 0})</p>
+                                </li>
+                            ))
+                    ) : (
+                        <li>
+                            <p className="text-muted">Aucune catégorie</p>
                         </li>
-                    ))}
+                    )}
                 </ul>
             </div>
             {/* -- Categories */}
+
             {/* -- latest post */}
             <div className="latest__post pt__60">
                 <h5 className="t__22">Latest Posts</h5>
@@ -118,15 +162,32 @@ const BlogSidebar = ({ onSearch, onCategorySelect }: BlogSidebarProps) => {
                 </ul>
             </div>
             {/* -- latest post */}
+
             {/* -- Tags */}
             <div className="tags pt__60">
                 <h5 className="t__22">Tags:</h5>
                 <ul>
-                    {tags.map((tag, index) => (
-                        <li key={index}>
-                            <Link href="#" className={tag === "Design" ? "active" : ""}>{tag}</Link>
+                    {tagsData?.tags && tagsData.tags.length > 0 ? (
+                        tagsData.tags.map((tag) => (
+                            <li key={tag._id}>
+                                <Link
+                                    href="#"
+                                    onClick={(e) => handleTagClick(e, tag._id)}
+                                    className={selectedTag === tag._id ? "active" : ""}
+                                    style={{
+                                        backgroundColor: selectedTag === tag._id ? (tag.color || '#007bff') : 'transparent',
+                                        color: selectedTag === tag._id ? '#fff' : 'inherit'
+                                    }}
+                                >
+                                    {tag.name}
+                                </Link>
+                            </li>
+                        ))
+                    ) : (
+                        <li>
+                            <p className="text-muted">Aucun tag</p>
                         </li>
-                    ))}
+                    )}
                 </ul>
             </div>
         </aside>
