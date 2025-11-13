@@ -227,11 +227,12 @@ const CreatePost = () => {
                   name="tagIds"
                   control={control}
                   render={({ field }) => (
-                    <Form.Select
+                    <select
                       {...field}
                       id="tagIds"
                       multiple
                       size={5}
+                      className="form-select"
                       onChange={(e) => {
                         const selected = Array.from(e.target.selectedOptions, option => option.value);
                         field.onChange(selected);
@@ -243,7 +244,7 @@ const CreatePost = () => {
                           {tag.name}
                         </option>
                       ))}
-                    </Form.Select>
+                    </select>
                   )}
                 />
                 <small className="text-muted d-block mt-1">
