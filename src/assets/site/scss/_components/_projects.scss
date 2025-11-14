@@ -56,6 +56,13 @@
         margin-bottom: 40px;
       }
 
+      .d-flex {
+        gap: 1rem;
+        @include breakpoint(md) {
+          gap: 8px;
+        }
+      }
+
       &:last-child {
         @include breakpoint(lg) {
           margin-bottom: 30px;
@@ -93,8 +100,14 @@
         color: var(--btn-clr);
 
         @include breakpoint(lg) {
-          width: 150px;
-          height: 150px;
+          width: 30px;
+          height: 30px;
+        }
+
+        @include breakpoint(md) {
+          width: 20px;
+          height: 20px;
+          margin-bottom: 5px;
         }
 
         i {
@@ -102,6 +115,9 @@
           font-size: 14px;
           display: flex;
           align-items: center;
+          @include breakpoint(md) {
+            font-size: 10px;
+          }
         }
 
         &:hover {

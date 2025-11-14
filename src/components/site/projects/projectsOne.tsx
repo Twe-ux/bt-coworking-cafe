@@ -32,7 +32,7 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
                     <img src={imgSrc} alt="img" />
                   </Link>
                   <div>
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center">
                       <Link
                         href="/project-details"
                         className="prj__title t__28"

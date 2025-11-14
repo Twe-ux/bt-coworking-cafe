@@ -29,12 +29,30 @@
     @include breakpoint(sm) {
       margin-bottom: -200px;
     }
+
+    .swiper-slide {
+      min-height: 426px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      @include breakpoint(xl) {
+        min-height: 452px;
+      }
+      @include breakpoint(lg) {
+        min-height: 546px;
+      }
+      @include breakpoint(md) {
+        min-height: 378px;
+      }
+    }
+
     .slide {
       background-color: #588983;
       border-radius: 10px;
       padding: 40px;
+
       @include breakpoint(md) {
-        padding: 25px;
+        padding: 30px;
       }
     }
     .star {
@@ -43,18 +61,18 @@
       }
     }
     .review {
-      font-size: 22px;
+      font-size: 18px;
       color: var(--grayWhite-clr);
       font-weight: 6000;
       margin-bottom: 50px;
       margin-top: 30px;
       @include breakpoint(md) {
-        font-size: 19px;
+        font-size: 15px;
         margin-top: 25px;
         margin-bottom: 40px;
       }
       @include breakpoint(sm) {
-        font-size: 17px;
+        font-size: 13px;
         margin-top: 22px;
         margin-bottom: 30px;
       }
@@ -107,9 +125,9 @@
     color: var(--grayWhite-clr);
     cursor: pointer;
   }
-  .slide-dots-active{
+  .slide-dots-active {
     background-color: var(--btn-clr);
-    color: var(--secondary-clr)
+    color: var(--secondary-clr);
   }
   .slide__nav {
     @extend .slide-dots;
@@ -122,7 +140,6 @@
       color: var(--secondary-clr);
     }
   }
-
 }
 
 // ------------ testimonial__2 for home page 2 and it's extend code from main home page
