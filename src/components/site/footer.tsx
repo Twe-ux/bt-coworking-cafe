@@ -3,6 +3,7 @@
 import ProtectedEmail from "@/components/common/ProtectedEmail";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import BookingHelper from "./booking/BookingHelper";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -38,7 +39,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         {/* Subscribe Form - Hidden on client dashboard pages */}
-        {!isClientDashboard && (
+        {/* {!isClientDashboard && (
           <div className="subscribe">
             <div className="row">
               <div className="col-lg-8">
@@ -58,7 +59,8 @@ const Footer = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
+        <BookingHelper />
         {/* Subscribe Form */}
         {/* -------Logo and socal icon */}
         <div className="row footer__lo_co ">

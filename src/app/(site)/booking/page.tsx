@@ -1,53 +1,54 @@
-'use client';
+"use client";
 
-import PageTitle from '@/components/site/pageTitle';
-import BookingProgressBar from '@/components/site/booking/BookingProgressBar';
-import Link from 'next/link';
+import PageTitle from "@/components/site/pageTitle";
+import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
+import Link from "next/link";
+import BookingHelper from "@/components/site/booking/BookingHelper";
 
 const spaceTypes = [
   {
-    id: 'open-space',
-    title: 'Place',
-    subtitle: 'Open-space',
-    description: 'Bureau dans un espace partagé et convivial',
-    icon: 'bi-person-workspace',
-    image: '/images/spaces/open-space.jpg',
-    capacity: '1 personne',
-    features: ['WiFi', 'Café', 'Imprimante'],
-    priceFrom: '10€/h',
+    id: "open-space",
+    title: "Place",
+    subtitle: "Open-space",
+    description: "Bureau dans un espace partagé et convivial",
+    icon: "bi-person-workspace",
+    image: "/images/spaces/open-space.jpg",
+    capacity: "1 personne",
+    features: ["WiFi", "Café", "Imprimante"],
+    priceFrom: "10€/h",
   },
   {
-    id: 'meeting-room-glass',
-    title: 'Salle de réunion',
-    subtitle: 'Verrière',
-    description: 'Salle lumineuse avec verrière pour vos réunions',
-    icon: 'bi-briefcase',
-    image: '/images/spaces/meeting-glass.jpg',
-    capacity: '2-8 personnes',
-    features: ['Écran', 'WiFi', 'Tableau blanc'],
-    priceFrom: '40€/h',
+    id: "meeting-room-glass",
+    title: "Salle de réunion",
+    subtitle: "Verrière",
+    description: "Salle lumineuse avec verrière pour vos réunions",
+    icon: "bi-briefcase",
+    image: "/images/spaces/meeting-glass.jpg",
+    capacity: "2-8 personnes",
+    features: ["Écran", "WiFi", "Tableau blanc"],
+    priceFrom: "40€/h",
   },
   {
-    id: 'meeting-room-floor',
-    title: 'Salle de réunion',
-    subtitle: 'Étage',
-    description: 'Salle privée à l\'étage, calme et équipée',
-    icon: 'bi-building',
-    image: '/images/spaces/meeting-floor.jpg',
-    capacity: '4-12 personnes',
-    features: ['Projecteur', 'WiFi', 'Climatisation'],
-    priceFrom: '50€/h',
+    id: "meeting-room-floor",
+    title: "Salle de réunion",
+    subtitle: "Étage",
+    description: "Salle privée à l'étage, calme et équipée",
+    icon: "bi-building",
+    image: "/images/spaces/meeting-floor.jpg",
+    capacity: "4-12 personnes",
+    features: ["Projecteur", "WiFi", "Climatisation"],
+    priceFrom: "50€/h",
   },
   {
-    id: 'event-space',
-    title: 'Événementiel',
-    subtitle: 'Grand espace',
-    description: 'Espace modulable pour vos événements et conférences',
-    icon: 'bi-calendar-event',
-    image: '/images/spaces/event.jpg',
-    capacity: 'Jusqu\'à 50 personnes',
-    features: ['Sonorisation', 'Vidéoprojecteur', 'Traiteur possible'],
-    priceFrom: '200€/h',
+    id: "event-space",
+    title: "Événementiel",
+    subtitle: "Grand espace",
+    description: "Espace modulable pour vos événements et conférences",
+    icon: "bi-calendar-event",
+    image: "/images/spaces/event.jpg",
+    capacity: "Jusqu'à 50 personnes",
+    features: ["Sonorisation", "Vidéoprojecteur", "Traiteur possible"],
+    priceFrom: "200€/h",
   },
 ];
 
@@ -67,8 +68,10 @@ export default function BookingPage() {
 
           {/* Page Title */}
           <div className="text-center mb-4">
-            <h2 className="mb-2" style={{ fontSize: '1.75rem' }}>Quel espace souhaitez-vous réserver ?</h2>
-            <p className="text-muted" style={{ fontSize: '0.95rem' }}>
+            <h2 className="mb-2" style={{ fontSize: "1.75rem" }}>
+              Quel espace souhaitez-vous réserver ?
+            </h2>
+            <p className="text-muted" style={{ fontSize: "0.95rem" }}>
               Sélectionnez le type d'espace qui correspond à vos besoins
             </p>
           </div>
@@ -76,7 +79,7 @@ export default function BookingPage() {
           {/* Space Type Cards */}
           <div className="row g-4 justify-content-center">
             {spaceTypes.map((space) => (
-              <div key={space.id} className="col-lg-6 col-md-6">
+              <div key={space.id} className="col-lg-3 col-md-6">
                 <Link
                   href={`/booking/${space.id}/new`}
                   className="text-decoration-none"
@@ -89,16 +92,16 @@ export default function BookingPage() {
                           alt={space.title}
                           className="space-image"
                           onError={(e) => {
-                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.style.display = "none";
                             e.currentTarget.nextElementSibling?.classList.remove(
-                              'd-none'
+                              "d-none"
                             );
                           }}
                         />
                       ) : null}
                       <div
                         className={`space-icon-placeholder ${
-                          space.image ? 'd-none' : ''
+                          space.image ? "d-none" : ""
                         }`}
                       >
                         <i className={space.icon}></i>
@@ -143,7 +146,6 @@ export default function BookingPage() {
               </div>
             ))}
           </div>
-
         </div>
       </section>
 
