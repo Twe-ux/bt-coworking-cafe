@@ -1,6 +1,6 @@
 import ArticleRevision from '@/models/articleRevision';
 import type { ArticleDocument } from '@/models/article/document';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 /**
  * Create a revision snapshot of an article before updating it
@@ -73,12 +73,12 @@ export async function restoreArticleRevision(
     article.featuredImage = revision.featuredImage;
     article.featuredImageAlt = revision.featuredImageAlt;
     if (revision.category) {
-      article.category = revision.category as any;
+      article.category = revision.category as unknown as ObjectId;
     }
-    article.tags = revision.tags as any;
+    article.tags = revision.tags as unknown as ObjectId[];
     article.metaTitle = revision.metaTitle;
     article.metaDescription = revision.metaDescription;
-    article.metaKeywords = revision.metaKeywords;
+    article.metaKeywords = revision.metaKeywords ?? [];
 
     await article.save();
     return true;
