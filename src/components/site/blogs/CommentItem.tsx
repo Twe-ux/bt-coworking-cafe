@@ -45,7 +45,7 @@ const CommentItem = ({ comment, articleId, level = 0, maxLevel = 3 }: CommentIte
       await createComment({
         articleId: articleId,
         content: replyContent,
-        parent: comment._id,
+        parentId: comment._id,
       }).unwrap();
 
       success('Votre réponse a été envoyée pour modération');
