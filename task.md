@@ -144,39 +144,43 @@
   - [ ] Permet de gérer les disponibilités facilement
   - **Note** : Peut être implémenté plus tard si nécessaire pour la performance
 
-### Phase 2 : API Endpoints
+### ✅ Phase 2 : API Endpoints - TERMINÉ
 
-- [ ] **API Spaces**
-  - [ ] `GET /api/spaces` - Liste des espaces (filtres : type, capacity, price)
-  - [ ] `POST /api/spaces` - Créer un espace (admin only)
-  - [ ] `GET /api/spaces/[id]` - Détails d'un espace
-  - [ ] `PATCH /api/spaces/[id]` - Modifier un espace (admin only)
-  - [ ] `DELETE /api/spaces/[id]` - Supprimer un espace (admin only)
-  - [ ] `GET /api/spaces/[id]/availability` - Vérifier disponibilités pour une date
+- [x] **API Spaces** (`src/app/api/spaces/`)
+  - [x] `GET /api/spaces` - Liste des espaces avec filtres (type, capacity, minPrice, maxPrice, amenities, search, isActive)
+  - [x] `POST /api/spaces` - Créer un espace (admin only, validation complète)
+  - [x] `GET /api/spaces/[id]` - Détails d'un espace (par ID ou slug, auto-increment viewCount)
+  - [x] `PATCH /api/spaces/[id]` - Modifier un espace (admin only, gestion slug unique)
+  - [x] `DELETE /api/spaces/[id]` - Supprimer un espace (admin only, soft delete par défaut, ?permanent=true pour hard delete)
+  - **Fonctionnalités**: Pagination, filtres avancés, permissions admin, validation des données
+  - [ ] `GET /api/spaces/[id]/availability` - Vérifier disponibilités pour une date (TODO: Phase suivante)
 
-- [ ] **API Bookings**
-  - [ ] `GET /api/bookings` - Liste des réservations (user = ses réservations, admin = toutes)
-  - [ ] `POST /api/bookings` - Créer une réservation
-    - [ ] Vérifier disponibilité de l'espace
-    - [ ] Calculer le prix total
-    - [ ] Créer un Payment Intent Stripe
-    - [ ] Créer la réservation avec status "pending"
-  - [ ] `GET /api/bookings/[id]` - Détails d'une réservation
-  - [ ] `PATCH /api/bookings/[id]` - Modifier une réservation (avant confirmation)
-  - [ ] `DELETE /api/bookings/[id]` - Annuler une réservation
-    - [ ] Gérer le remboursement Stripe si applicable
-  - [ ] `POST /api/bookings/[id]/confirm` - Confirmer une réservation après paiement
+- [x] **API Bookings** (`src/app/api/bookings/`)
+  - [x] `GET /api/bookings` - Liste des réservations (user = ses réservations, admin = toutes, filtres: status, spaceId, userId, dates)
+  - [x] `POST /api/bookings` - Créer une réservation
+    - [x] Vérifier disponibilité de l'espace (check overlapping bookings)
+    - [x] Calculer le prix total (basé sur durée et pricing)
+    - [x] Validation complète (date future, capacité, time format)
+    - [x] Créer la réservation avec status "pending"
+    - [ ] Créer un Payment Intent Stripe (TODO: Phase 3)
+  - [x] `GET /api/bookings/[id]` - Détails d'une réservation (permission owner/admin)
+  - [x] `PATCH /api/bookings/[id]` - Modifier une réservation (users: pending only, admin: toutes, check overlap)
+  - [x] `DELETE /api/bookings/[id]` - Annuler une réservation (politique 24h pour users, admin sans limite)
+    - [ ] Gérer le remboursement Stripe si applicable (TODO: Phase 3)
+  - **Fonctionnalités**: Permissions granulaires, validation overlap, politique d'annulation, calcul automatique prix
+  - [ ] `POST /api/bookings/[id]/confirm` - Confirmer une réservation après paiement (TODO: Phase 3)
 
-- [ ] **API Payments (Stripe)**
-  - [ ] `POST /api/payments/create-intent` - Créer un Payment Intent
-  - [ ] `POST /api/payments/confirm` - Confirmer le paiement
-  - [ ] `POST /api/payments/webhook` - Webhook Stripe pour les événements
+- [x] **API Payments (Stripe)** - Structure de base créée
+  - [x] `POST /api/payments/create-intent` - Structure créée (implémentation Stripe Phase 3)
+  - [ ] `POST /api/payments/confirm` - Confirmer le paiement (TODO: Phase 3)
+  - [ ] `POST /api/payments/webhook` - Webhook Stripe pour les événements (TODO: Phase 3)
     - [ ] payment_intent.succeeded
     - [ ] payment_intent.payment_failed
     - [ ] charge.refunded
-  - [ ] `POST /api/payments/[id]/refund` - Rembourser un paiement (admin)
+  - [ ] `POST /api/payments/[id]/refund` - Rembourser un paiement (admin) (TODO: Phase 3)
+  - **Note**: L'intégration Stripe complète sera faite en Phase 3
 
-- [ ] **API Availability**
+- [ ] **API Availability** (Optionnel, peut être fait plus tard)
   - [ ] `POST /api/availability/check` - Vérifier si un créneau est disponible
   - [ ] `GET /api/availability/calendar/[spaceId]` - Calendrier des disponibilités
 
