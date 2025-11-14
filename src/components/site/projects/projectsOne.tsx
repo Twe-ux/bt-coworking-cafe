@@ -32,9 +32,21 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
                     <img src={imgSrc} alt="img" />
                   </Link>
                   <div>
-                    <Link href="/project-details" className="prj__title t__28">
-                      {title}
-                    </Link>
+                    <div className="d-flex align-items-center gap-3">
+                      <Link
+                        href="/project-details"
+                        className="prj__title t__28"
+                      >
+                        {title}
+                      </Link>
+                      <Link
+                        href="/"
+                        className="projects__wapper_card_circle mt-3"
+                      >
+                        <i className="fa-solid fa-arrow-right"></i>
+                      </Link>
+                    </div>
+
                     <p className="project__group">{categories}</p>
                     <p className="project__group">{subCategories}</p>
                   </div>
