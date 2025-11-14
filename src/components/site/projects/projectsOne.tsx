@@ -1,9 +1,8 @@
-import React from "react";
 import { projectsOneData } from "@/db/projectsOneData";
-import ProjectsUseCase from "../projectsUseCase";
 import SlideDown from "@/utils/animations/slideDown";
 import SlideUp from "@/utils/animations/slideUp";
 import Link from "next/link";
+import React from "react";
 
 interface ProjectsOneProps {
   isProjectUseCaseShow?: boolean;
@@ -11,7 +10,7 @@ interface ProjectsOneProps {
 
 const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
   return (
-    <section className="projects py__130">
+    <section className="projects pt__120 pb__130">
       <div className="container">
         {/* title Start */}
         <SlideDown className="d-lg-flex justify-content-between align-items-center projects__title">
