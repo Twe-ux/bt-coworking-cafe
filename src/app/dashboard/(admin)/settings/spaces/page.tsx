@@ -174,77 +174,6 @@ export default function SpacesSettingsPage() {
     );
   };
 
-  const updateDayHours = (
-    spaceType: string,
-    day: keyof WeeklyHours,
-    updates: Partial<DayHours>
-  ) => {
-    setConfigurations((prev) =>
-      prev.map((config) =>
-        config.spaceType === spaceType
-          ? {
-              ...config,
-              defaultHours: {
-                ...config.defaultHours,
-                [day]: {
-                  ...config.defaultHours[day],
-                  ...updates,
-                },
-              },
-            }
-          : config
-      )
-    );
-  };
-
-  const addExceptionalClosure = (spaceType: string) => {
-    setConfigurations((prev) =>
-      prev.map((config) =>
-        config.spaceType === spaceType
-          ? {
-              ...config,
-              exceptionalClosures: [
-                ...config.exceptionalClosures,
-                { date: new Date().toISOString().split("T")[0], reason: "" },
-              ],
-            }
-          : config
-      )
-    );
-  };
-
-  const removeExceptionalClosure = (spaceType: string, index: number) => {
-    setConfigurations((prev) =>
-      prev.map((config) =>
-        config.spaceType === spaceType
-          ? {
-              ...config,
-              exceptionalClosures: config.exceptionalClosures.filter((_, i) => i !== index),
-            }
-          : config
-      )
-    );
-  };
-
-  const updateExceptionalClosure = (
-    spaceType: string,
-    index: number,
-    field: keyof ExceptionalClosure,
-    value: string
-  ) => {
-    setConfigurations((prev) =>
-      prev.map((config) =>
-        config.spaceType === spaceType
-          ? {
-              ...config,
-              exceptionalClosures: config.exceptionalClosures.map((closure, i) =>
-                i === index ? { ...closure, [field]: value } : closure
-              ),
-            }
-          : config
-      )
-    );
-  };
 
   if (loading) {
     return (
@@ -511,114 +440,72 @@ export default function SpacesSettingsPage() {
                           </Col>
                         </Row>
 
-                        {/* Opening Hours */}
+                        {/* Opening Hours - Read Only */}
                         <h5 className="mb-3 mt-4">Horaires d'ouverture</h5>
-                        {daysOfWeek.map((day) => {
-                          const dayKey = day.key as keyof WeeklyHours;
-                          const dayHours = config.defaultHours[dayKey];
-                          return (
-                            <Row key={day.key} className="mb-2 align-items-center">
-                              <Col md={2}>
-                                <strong>{day.label}</strong>
-                              </Col>
-                              <Col md={2}>
-                                <Form.Check
-                                  type="switch"
-                                  label={dayHours.isOpen ? "Ouvert" : "Fermé"}
-                                  checked={dayHours.isOpen}
-                                  onChange={(e) =>
-                                    updateDayHours(config.spaceType, dayKey, {
-                                      isOpen: e.target.checked,
-                                    })
-                                  }
-                                />
-                              </Col>
-                              {dayHours.isOpen && (
-                                <>
-                                  <Col md={3}>
-                                    <Form.Control
-                                      type="time"
-                                      value={dayHours.openTime || ""}
-                                      onChange={(e) =>
-                                        updateDayHours(config.spaceType, dayKey, {
-                                          openTime: e.target.value,
-                                        })
-                                      }
-                                    />
-                                  </Col>
-                                  <Col md={1} className="text-center">
-                                    à
-                                  </Col>
-                                  <Col md={3}>
-                                    <Form.Control
-                                      type="time"
-                                      value={dayHours.closeTime || ""}
-                                      onChange={(e) =>
-                                        updateDayHours(config.spaceType, dayKey, {
-                                          closeTime: e.target.value,
-                                        })
-                                      }
-                                    />
-                                  </Col>
-                                </>
-                              )}
-                            </Row>
-                          );
-                        })}
+                        <Alert variant="info">
+                          <div className="d-flex align-items-center justify-content-between">
+                            <div>
+                              <i className="bi bi-clock me-2"></i>
+                              Les horaires sont gérés de manière centralisée pour tous les espaces.
+                            </div>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              href="/dashboard/settings/horaires"
+                            >
+                              Gérer les horaires <i className="bi bi-arrow-right ms-1"></i>
+                            </Button>
+                          </div>
+                        </Alert>
 
-                        {/* Exceptional Closures */}
+                        <div className="border rounded p-3 bg-light">
+                          {daysOfWeek.map((day) => {
+                            const dayKey = day.key as keyof WeeklyHours;
+                            const dayHours = config.defaultHours[dayKey];
+                            return (
+                              <Row key={day.key} className="mb-2 align-items-center">
+                                <Col md={3}>
+                                  <strong>{day.label}</strong>
+                                </Col>
+                                <Col md={9}>
+                                  {dayHours.isOpen ? (
+                                    <span className="text-success">
+                                      <i className="bi bi-check-circle me-2"></i>
+                                      {dayHours.openTime} - {dayHours.closeTime}
+                                    </span>
+                                  ) : (
+                                    <span className="text-muted">
+                                      <i className="bi bi-x-circle me-2"></i>
+                                      Fermé
+                                    </span>
+                                  )}
+                                </Col>
+                              </Row>
+                            );
+                          })}
+                        </div>
+
+                        {/* Exceptional Closures - Read Only */}
                         <h5 className="mb-3 mt-4">Fermetures exceptionnelles</h5>
-                        {config.exceptionalClosures.map((closure, index) => (
-                          <Row key={index} className="mb-2 align-items-center">
-                            <Col md={3}>
-                              <Form.Control
-                                type="date"
-                                value={closure.date.split("T")[0]}
-                                onChange={(e) =>
-                                  updateExceptionalClosure(
-                                    config.spaceType,
-                                    index,
-                                    "date",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </Col>
-                            <Col md={7}>
-                              <Form.Control
-                                type="text"
-                                placeholder="Raison (optionnel)"
-                                value={closure.reason || ""}
-                                onChange={(e) =>
-                                  updateExceptionalClosure(
-                                    config.spaceType,
-                                    index,
-                                    "reason",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </Col>
-                            <Col md={2}>
-                              <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() =>
-                                  removeExceptionalClosure(config.spaceType, index)
-                                }
-                              >
-                                <i className="bi bi-trash"></i> Supprimer
-                              </Button>
-                            </Col>
-                          </Row>
-                        ))}
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => addExceptionalClosure(config.spaceType)}
-                        >
-                          <i className="bi bi-plus-circle"></i> Ajouter une fermeture
-                        </Button>
+                        {config.exceptionalClosures.length > 0 ? (
+                          <div className="border rounded p-3 bg-light">
+                            {config.exceptionalClosures
+                              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                              .map((closure, index) => (
+                                <div key={index} className="mb-2">
+                                  <i className="bi bi-calendar-x text-warning me-2"></i>
+                                  <strong>{new Date(closure.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong>
+                                  {closure.reason && (
+                                    <span className="text-muted ms-2">- {closure.reason}</span>
+                                  )}
+                                </div>
+                              ))}
+                          </div>
+                        ) : (
+                          <Alert variant="secondary">
+                            Aucune fermeture exceptionnelle programmée.
+                          </Alert>
+                        )}
 
                         {/* Save Button */}
                         <div className="mt-4">

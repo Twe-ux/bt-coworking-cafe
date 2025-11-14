@@ -97,6 +97,57 @@ export async function PUT(
 }
 
 /**
+ * PATCH /api/admin/space-configurations/[spaceType]
+ * Partially update a space configuration (e.g., only hours)
+ */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { spaceType: string } }
+) {
+  try {
+    // Check authentication
+    const session = await getServerSession();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await connectDB();
+
+    const body = await request.json();
+
+    const configuration = await SpaceConfiguration.findOneAndUpdate(
+      {
+        spaceType: params.spaceType,
+        isDeleted: false,
+      },
+      { $set: body },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!configuration) {
+      return NextResponse.json(
+        { error: "Configuration not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: configuration,
+    });
+  } catch (error) {
+    console.error("Error updating space configuration:", error);
+    return NextResponse.json(
+      { error: "Failed to update configuration" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
  * DELETE /api/admin/space-configurations/[spaceType]
  * Soft delete a space configuration
  */
