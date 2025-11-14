@@ -72,7 +72,9 @@ export async function restoreArticleRevision(
     article.excerpt = revision.excerpt;
     article.featuredImage = revision.featuredImage;
     article.featuredImageAlt = revision.featuredImageAlt;
-    article.category = revision.category;
+    if (revision.category) {
+      article.category = revision.category;
+    }
     article.tags = revision.tags;
     article.metaTitle = revision.metaTitle;
     article.metaDescription = revision.metaDescription;
