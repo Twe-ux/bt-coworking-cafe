@@ -43,7 +43,7 @@ const CommentItem = ({ comment, articleId, level = 0, maxLevel = 3 }: CommentIte
 
     try {
       await createComment({
-        article: articleId,
+        articleId: articleId,
         content: replyContent,
         parent: comment._id,
       }).unwrap();
