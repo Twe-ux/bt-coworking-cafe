@@ -5,6 +5,14 @@ import { useRouter } from 'next/navigation';
 import PageTitle from '@/components/site/pageTitle';
 import BookingProgressBar from '@/components/site/booking/BookingProgressBar';
 
+// Map URL slugs to database spaceType values
+const spaceTypeMapping: Record<string, string> = {
+  'open-space': 'open-space',
+  'meeting-room-glass': 'salle-verriere',
+  'meeting-room-floor': 'salle-etage',
+  'event-space': 'evenementiel',
+};
+
 const spaceTypeInfo: Record<string, { title: string; subtitle: string }> = {
   'open-space': { title: 'Place', subtitle: 'Open-space' },
   'meeting-room-glass': { title: 'Salle de réunion', subtitle: 'Verrière' },
@@ -13,6 +21,27 @@ const spaceTypeInfo: Record<string, { title: string; subtitle: string }> = {
 };
 
 type ReservationType = 'hourly' | 'daily' | 'weekly' | 'monthly';
+
+interface SpaceConfiguration {
+  spaceType: string;
+  name: string;
+  pricing: {
+    hourly: number;
+    daily: number;
+    weekly: number;
+    monthly: number;
+    perPerson: boolean;
+  };
+  minCapacity: number;
+  maxCapacity: number;
+  defaultHours: {
+    [key: string]: {
+      isOpen: boolean;
+      openTime?: string;
+      closeTime?: string;
+    };
+  };
+}
 
 const reservationTypes = [
   { id: 'hourly' as ReservationType, label: 'À l\'heure', icon: 'bi-clock' },
@@ -31,6 +60,7 @@ const timeSlots = [
 export default function BookingDatePage({ params }: { params: { type: string } }) {
   const router = useRouter();
   const spaceInfo = spaceTypeInfo[params.type] || { title: 'Espace', subtitle: '' };
+  const dbSpaceType = spaceTypeMapping[params.type] || params.type;
 
   const [reservationType, setReservationType] = useState<ReservationType>('hourly');
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -38,6 +68,33 @@ export default function BookingDatePage({ params }: { params: { type: string } }
   const [endTime, setEndTime] = useState<string>('');
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
   const [duration, setDuration] = useState<string>('');
+  const [spaceConfig, setSpaceConfig] = useState<SpaceConfiguration | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
+
+  // Fetch space configuration
+  useEffect(() => {
+    const fetchSpaceConfig = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/space-configurations/${dbSpaceType}`);
+        const data = await response.json();
+
+        if (data.success) {
+          setSpaceConfig(data.data);
+        } else {
+          setError('Configuration de l\'espace non disponible');
+        }
+      } catch (err) {
+        console.error('Error fetching space config:', err);
+        setError('Erreur lors du chargement de la configuration');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpaceConfig();
+  }, [dbSpaceType]);
 
   // Set default date to today
   useEffect(() => {
@@ -47,13 +104,13 @@ export default function BookingDatePage({ params }: { params: { type: string } }
 
   // Calculate price and duration when times change
   useEffect(() => {
-    if (startTime && endTime && selectedDate) {
+    if (startTime && endTime && selectedDate && spaceConfig) {
       calculatePriceAndDuration();
     }
-  }, [startTime, endTime, selectedDate, reservationType]);
+  }, [startTime, endTime, selectedDate, reservationType, spaceConfig]);
 
-  const calculatePriceAndDuration = () => {
-    if (!startTime || !endTime) return;
+  const calculatePriceAndDuration = async () => {
+    if (!startTime || !endTime || !spaceConfig) return;
 
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
@@ -75,26 +132,123 @@ export default function BookingDatePage({ params }: { params: { type: string } }
     const minutes = durationMinutes % 60;
     setDuration(hours > 0 ? `${hours}H ${minutes > 0 ? minutes.toString().padStart(2, '0') : ''}`.trim() : `${minutes}min`);
 
-    // Calculate price based on type
-    let price = 0;
-    switch (reservationType) {
-      case 'hourly':
-        price = durationHours * 15; // Example: 15€/h for open-space
-        break;
-      case 'daily':
-        price = 80; // Example: 80€/day
-        break;
-      case 'weekly':
-        price = 400; // Example: 400€/week
-        break;
-      case 'monthly':
-        price = 1200; // Example: 1200€/month
-        break;
+    // Calculate price using API
+    try {
+      const startDateTime = new Date(`${selectedDate}T${startTime}`).toISOString();
+      const endDateTime = new Date(`${selectedDate}T${endTime}`).toISOString();
+
+      const response = await fetch('/api/calculate-price', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          spaceType: dbSpaceType,
+          reservationType,
+          startTime: startDateTime,
+          endTime: endDateTime,
+          numberOfPeople: 1, // Default to 1, will be updated in details page
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Use base price (before per-person multiplier) for display
+        setCalculatedPrice(data.data.basePrice);
+      } else {
+        console.error('Price calculation error:', data.error);
+        // Fallback to local calculation
+        let price = 0;
+        switch (reservationType) {
+          case 'hourly':
+            price = durationHours * spaceConfig.pricing.hourly;
+            break;
+          case 'daily':
+            price = spaceConfig.pricing.daily;
+            break;
+          case 'weekly':
+            price = spaceConfig.pricing.weekly;
+            break;
+          case 'monthly':
+            price = spaceConfig.pricing.monthly;
+            break;
+        }
+        setCalculatedPrice(price);
+      }
+    } catch (err) {
+      console.error('Error calculating price:', err);
+      // Fallback to local calculation
+      let price = 0;
+      switch (reservationType) {
+        case 'hourly':
+          price = durationHours * spaceConfig.pricing.hourly;
+          break;
+        case 'daily':
+          price = spaceConfig.pricing.daily;
+          break;
+        case 'weekly':
+          price = spaceConfig.pricing.weekly;
+          break;
+        case 'monthly':
+          price = spaceConfig.pricing.monthly;
+          break;
+      }
+      setCalculatedPrice(price);
     }
-    setCalculatedPrice(price);
   };
 
+  // Check if selected time is within opening hours
+  const checkOpeningHours = (): { isValid: boolean; message?: string } => {
+    if (!spaceConfig || !selectedDate || !startTime || !endTime) {
+      return { isValid: true };
+    }
+
+    // Check exceptional closures
+    const selectedDateOnly = selectedDate.split('T')[0];
+    const closure = spaceConfig.exceptionalClosures?.find(
+      (c) => c.date.split('T')[0] === selectedDateOnly
+    );
+    if (closure) {
+      return {
+        isValid: false,
+        message: `L'espace est fermé ce jour${closure.reason ? ` : ${closure.reason}` : ''}`,
+      };
+    }
+
+    // Get day of week
+    const dayOfWeek = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'lowercase' });
+    const dayHours = spaceConfig.defaultHours?.[dayOfWeek];
+
+    if (!dayHours || !dayHours.isOpen) {
+      return {
+        isValid: false,
+        message: 'L\'espace est fermé ce jour',
+      };
+    }
+
+    // Check if times are within opening hours (only for hourly reservations)
+    if (reservationType === 'hourly' && dayHours.openTime && dayHours.closeTime) {
+      if (startTime < dayHours.openTime || endTime > dayHours.closeTime) {
+        return {
+          isValid: false,
+          message: `Les horaires d'ouverture pour ce jour sont de ${dayHours.openTime} à ${dayHours.closeTime}`,
+        };
+      }
+    }
+
+    return { isValid: true };
+  };
+
+  const openingHoursCheck = checkOpeningHours();
+
   const handleContinue = () => {
+    // Validate opening hours
+    if (!openingHoursCheck.isValid) {
+      alert(openingHoursCheck.message);
+      return;
+    }
+
     // Store booking data in sessionStorage
     const bookingData = {
       spaceType: params.type,
@@ -111,7 +265,39 @@ export default function BookingDatePage({ params }: { params: { type: string } }
     router.push('/booking/details');
   };
 
-  const isValidSelection = selectedDate && startTime && endTime && calculatedPrice > 0;
+  const isValidSelection = selectedDate && startTime && endTime && calculatedPrice > 0 && openingHoursCheck.isValid;
+
+  if (loading) {
+    return (
+      <>
+        <PageTitle title="Réserver un espace" currentPage="Date et horaires" />
+        <section className="booking-date-page py-5">
+          <div className="container">
+            <div className="text-center">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Chargement...</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <PageTitle title="Réserver un espace" currentPage="Date et horaires" />
+        <section className="booking-date-page py-5">
+          <div className="container">
+            <div className="alert alert-danger text-center">
+              {error}
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
 
   return (
     <>
@@ -232,8 +418,16 @@ export default function BookingDatePage({ params }: { params: { type: string } }
                   </div>
                 </div>
 
+                {/* Opening Hours Warning */}
+                {!openingHoursCheck.isValid && openingHoursCheck.message && (
+                  <div className="alert alert-warning mb-4">
+                    <i className="bi bi-exclamation-triangle me-2"></i>
+                    {openingHoursCheck.message}
+                  </div>
+                )}
+
                 {/* Duration & Price Display */}
-                {duration && calculatedPrice > 0 && (
+                {duration && calculatedPrice > 0 && openingHoursCheck.isValid && (
                   <div className="price-summary mb-4">
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <span className="text-muted">
@@ -245,7 +439,9 @@ export default function BookingDatePage({ params }: { params: { type: string } }
                       {calculatedPrice.toFixed(0)}€
                     </div>
                     <p className="text-muted text-center mb-0 small">
-                      Tarif de base - Services supplémentaires à l'étape suivante
+                      Tarif de base
+                      {spaceConfig?.pricing.perPerson && ' par personne'}
+                      {' - Services supplémentaires à l\'étape suivante'}
                     </p>
                   </div>
                 )}
