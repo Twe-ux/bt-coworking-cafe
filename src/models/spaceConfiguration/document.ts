@@ -28,6 +28,9 @@ export interface WeeklyHours {
 export interface ExceptionalClosure {
   date: Date;
   reason?: string;
+  startTime?: string; // Optional: Format "HH:mm" (e.g., "14:00") - if absent, closed all day
+  endTime?: string; // Optional: Format "HH:mm" (e.g., "18:00") - if absent, closed all day
+  isFullDay?: boolean; // If true or if times absent, closed all day
 }
 
 /**

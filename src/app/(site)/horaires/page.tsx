@@ -22,6 +22,9 @@ interface WeeklyHours {
 interface ExceptionalClosure {
   date: string;
   reason?: string;
+  startTime?: string;
+  endTime?: string;
+  isFullDay?: boolean;
 }
 
 interface OpeningHoursData {
@@ -123,19 +126,27 @@ export default function HorairesPage() {
                     <div>
                       <h5 className="alert-heading mb-2">Fermetures exceptionnelles à venir</h5>
                       <ul className="mb-0">
-                        {upcomingClosures.map((closure, index) => (
-                          <li key={index}>
-                            <strong>
-                              {new Date(closure.date).toLocaleDateString("fr-FR", {
-                                weekday: "long",
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              })}
-                            </strong>
-                            {closure.reason && ` - ${closure.reason}`}
-                          </li>
-                        ))}
+                        {upcomingClosures.map((closure, index) => {
+                          const isPartialClosure = closure.isFullDay === false && closure.startTime && closure.endTime;
+                          return (
+                            <li key={index}>
+                              <strong>
+                                {new Date(closure.date).toLocaleDateString("fr-FR", {
+                                  weekday: "long",
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              </strong>
+                              {isPartialClosure && (
+                                <span className="text-muted">
+                                  {" "}(de {closure.startTime} à {closure.endTime})
+                                </span>
+                              )}
+                              {closure.reason && ` - ${closure.reason}`}
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>

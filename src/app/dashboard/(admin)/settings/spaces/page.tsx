@@ -22,6 +22,9 @@ interface WeeklyHours {
 interface ExceptionalClosure {
   date: string;
   reason?: string;
+  startTime?: string;
+  endTime?: string;
+  isFullDay?: boolean;
 }
 
 interface PricingStructure {
@@ -491,15 +494,23 @@ export default function SpacesSettingsPage() {
                           <div className="border rounded p-3 bg-light">
                             {config.exceptionalClosures
                               .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                              .map((closure, index) => (
-                                <div key={index} className="mb-2">
-                                  <i className="bi bi-calendar-x text-warning me-2"></i>
-                                  <strong>{new Date(closure.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong>
-                                  {closure.reason && (
-                                    <span className="text-muted ms-2">- {closure.reason}</span>
-                                  )}
-                                </div>
-                              ))}
+                              .map((closure, index) => {
+                                const isPartialClosure = closure.isFullDay === false && closure.startTime && closure.endTime;
+                                return (
+                                  <div key={index} className="mb-2">
+                                    <i className="bi bi-calendar-x text-warning me-2"></i>
+                                    <strong>{new Date(closure.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong>
+                                    {isPartialClosure && (
+                                      <span className="badge bg-info-subtle text-info ms-2">
+                                        {closure.startTime} - {closure.endTime}
+                                      </span>
+                                    )}
+                                    {closure.reason && (
+                                      <span className="text-muted ms-2">- {closure.reason}</span>
+                                    )}
+                                  </div>
+                                );
+                              })}
                           </div>
                         ) : (
                           <Alert variant="secondary">

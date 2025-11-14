@@ -22,6 +22,9 @@ interface WeeklyHours {
 interface ExceptionalClosure {
   date: string;
   reason?: string;
+  startTime?: string;
+  endTime?: string;
+  isFullDay?: boolean;
 }
 
 interface HoursConfiguration {
@@ -125,7 +128,13 @@ export default function HorairesSettingsPage() {
       ...configuration,
       exceptionalClosures: [
         ...configuration.exceptionalClosures,
-        { date: new Date().toISOString().split("T")[0], reason: "" },
+        {
+          date: new Date().toISOString().split("T")[0],
+          reason: "",
+          isFullDay: true,
+          startTime: "",
+          endTime: ""
+        },
       ],
     });
   };
@@ -142,14 +151,20 @@ export default function HorairesSettingsPage() {
   const updateExceptionalClosure = (
     index: number,
     field: keyof ExceptionalClosure,
-    value: string
+    value: string | boolean
   ) => {
     if (!configuration) return;
+
+    // Convert string booleans to actual booleans for isFullDay
+    let processedValue = value;
+    if (field === "isFullDay" && typeof value === "string") {
+      processedValue = value === "true";
+    }
 
     setConfiguration({
       ...configuration,
       exceptionalClosures: configuration.exceptionalClosures.map((closure, i) =>
-        i === index ? { ...closure, [field]: value } : closure
+        i === index ? { ...closure, [field]: processedValue } : closure
       ),
     });
   };
@@ -282,36 +297,85 @@ export default function HorairesSettingsPage() {
               ) : (
                 <>
                   {configuration.exceptionalClosures.map((closure, index) => (
-                    <Row key={index} className="mb-2 align-items-center">
-                      <Col md={4}>
-                        <Form.Control
-                          type="date"
-                          value={closure.date.split("T")[0]}
-                          onChange={(e) =>
-                            updateExceptionalClosure(index, "date", e.target.value)
-                          }
-                        />
-                      </Col>
-                      <Col md={6}>
-                        <Form.Control
-                          type="text"
-                          placeholder="Raison (ex: Jour férié, Congés annuels...)"
-                          value={closure.reason || ""}
-                          onChange={(e) =>
-                            updateExceptionalClosure(index, "reason", e.target.value)
-                          }
-                        />
-                      </Col>
-                      <Col md={2}>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => removeExceptionalClosure(index)}
-                        >
-                          <i className="bi bi-trash"></i>
-                        </Button>
-                      </Col>
-                    </Row>
+                    <div key={index} className="border rounded p-3 mb-3">
+                      <Row className="mb-3 align-items-center">
+                        <Col md={3}>
+                          <Form.Label className="mb-1 small text-muted">Date</Form.Label>
+                          <Form.Control
+                            type="date"
+                            value={closure.date.split("T")[0]}
+                            onChange={(e) =>
+                              updateExceptionalClosure(index, "date", e.target.value)
+                            }
+                          />
+                        </Col>
+                        <Col md={7}>
+                          <Form.Label className="mb-1 small text-muted">Raison</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Raison (ex: Jour férié, Congés annuels...)"
+                            value={closure.reason || ""}
+                            onChange={(e) =>
+                              updateExceptionalClosure(index, "reason", e.target.value)
+                            }
+                          />
+                        </Col>
+                        <Col md={2} className="d-flex align-items-end">
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => removeExceptionalClosure(index)}
+                            className="w-100"
+                          >
+                            <i className="bi bi-trash"></i>
+                          </Button>
+                        </Col>
+                      </Row>
+
+                      <Row className="align-items-center">
+                        <Col md={12}>
+                          <Form.Check
+                            type="switch"
+                            id={`fullday-${index}`}
+                            label="Fermeture toute la journée"
+                            checked={closure.isFullDay !== false}
+                            onChange={(e) =>
+                              updateExceptionalClosure(index, "isFullDay", e.target.checked ? "true" : "false")
+                            }
+                          />
+                        </Col>
+                      </Row>
+
+                      {closure.isFullDay === false && (
+                        <Row className="mt-3">
+                          <Col md={5}>
+                            <Form.Label className="mb-1 small text-muted">Heure de début</Form.Label>
+                            <Form.Control
+                              type="time"
+                              value={closure.startTime || ""}
+                              onChange={(e) =>
+                                updateExceptionalClosure(index, "startTime", e.target.value)
+                              }
+                              placeholder="09:00"
+                            />
+                          </Col>
+                          <Col md={2} className="d-flex align-items-end justify-content-center">
+                            <span className="text-muted">à</span>
+                          </Col>
+                          <Col md={5}>
+                            <Form.Label className="mb-1 small text-muted">Heure de fin</Form.Label>
+                            <Form.Control
+                              type="time"
+                              value={closure.endTime || ""}
+                              onChange={(e) =>
+                                updateExceptionalClosure(index, "endTime", e.target.value)
+                              }
+                              placeholder="18:00"
+                            />
+                          </Col>
+                        </Row>
+                      )}
+                    </div>
                   ))}
                 </>
               )}
@@ -365,6 +429,11 @@ export default function HorairesSettingsPage() {
               <p>
                 <strong>Fermetures exceptionnelles</strong><br />
                 Lorsque vous ajoutez une fermeture, une bannière s'affiche automatiquement sur le site pour informer les visiteurs.
+              </p>
+              <hr />
+              <p>
+                <strong>Tranches horaires</strong><br />
+                Vous pouvez choisir entre une fermeture journée complète ou une fermeture partielle (par exemple: fermé de 14h à 16h). Décochez "Fermeture toute la journée" pour définir des horaires spécifiques.
               </p>
               <hr />
               <p>

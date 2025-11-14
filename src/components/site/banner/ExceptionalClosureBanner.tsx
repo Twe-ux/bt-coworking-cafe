@@ -6,6 +6,9 @@ import Link from "next/link";
 interface ExceptionalClosure {
   date: string;
   reason?: string;
+  startTime?: string;
+  endTime?: string;
+  isFullDay?: boolean;
 }
 
 export default function ExceptionalClosureBanner() {
@@ -71,6 +74,17 @@ export default function ExceptionalClosureBanner() {
     month: "long",
   });
 
+  // Format time range if partial closure
+  const getClosureTimeText = () => {
+    if (nextClosure.isFullDay !== false && !nextClosure.startTime && !nextClosure.endTime) {
+      return "toute la journée";
+    }
+    if (nextClosure.startTime && nextClosure.endTime) {
+      return `de ${nextClosure.startTime} à ${nextClosure.endTime}`;
+    }
+    return "toute la journée";
+  };
+
   return (
     <div className="exceptional-closure-banner">
       <div className="container">
@@ -81,6 +95,7 @@ export default function ExceptionalClosureBanner() {
           <div className="banner-text">
             <strong>Fermeture exceptionnelle :</strong>{" "}
             <span className="closure-date">{formattedDate}</span>
+            {" "}<span className="closure-time">({getClosureTimeText()})</span>
             {nextClosure.reason && <span className="closure-reason"> - {nextClosure.reason}</span>}
             {upcomingClosures.length > 1 && (
               <span className="more-closures">
