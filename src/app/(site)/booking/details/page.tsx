@@ -231,7 +231,7 @@ export default function BookingDetailsPage() {
         .booking-details-page {
           background-color: #f8f9fa;
           min-height: 70vh;
-          padding: 3rem 0 !important;
+          padding: 2.5rem 0 !important;
         }
 
         .booking-card {
@@ -255,9 +255,9 @@ export default function BookingDetailsPage() {
           width: 42px;
           height: 42px;
           border-radius: 50%;
-          border: 2px solid #5cb85c;
+          border: 2px solid #417972;
           background: white;
-          color: #5cb85c;
+          color: #417972;
           font-size: 1.25rem;
           display: flex;
           align-items: center;
@@ -267,7 +267,7 @@ export default function BookingDetailsPage() {
         }
 
         .counter-btn:hover {
-          background: #5cb85c;
+          background: #417972;
           color: white;
         }
 
@@ -305,12 +305,12 @@ export default function BookingDetailsPage() {
 
         .form-control:focus,
         .form-control-lg:focus {
-          border-color: #5cb85c;
+          border-color: #417972;
           box-shadow: 0 0 0 0.2rem rgba(92, 184, 92, 0.1);
         }
 
         .btn-success {
-          background: #5cb85c;
+          background: #417972;
           border: none;
           padding: 1rem;
           font-weight: 600;

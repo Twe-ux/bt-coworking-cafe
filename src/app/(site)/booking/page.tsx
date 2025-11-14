@@ -151,7 +151,7 @@ export default function BookingPage() {
         .booking-selection {
           background-color: #f8f9fa;
           min-height: 60vh;
-          padding: 3rem 0 !important;
+          padding: 2.5rem 0 !important;
         }
 
         .space-card {
@@ -244,7 +244,7 @@ export default function BookingPage() {
         }
 
         .price-badge {
-          background: #5cb85c;
+          background: #417972;
           color: white;
           padding: 0.4rem 0.85rem;
           border-radius: 16px;

@@ -77,7 +77,7 @@ export default function BookingProgressBar({ currentStep }: BookingProgressBarPr
           top: 0;
           left: 0;
           height: 4px;
-          background-color: #5cb85c;
+          background-color: #417972;
           border-radius: 2px;
           transition: width 0.3s ease;
         }
@@ -106,13 +106,13 @@ export default function BookingProgressBar({ currentStep }: BookingProgressBarPr
         }
 
         .step-label.active .step-circle {
-          background-color: #5cb85c;
+          background-color: #417972;
           color: white;
-          box-shadow: 0 0 0 4px rgba(92, 184, 92, 0.2);
+          box-shadow: 0 0 0 4px rgba(65, 121, 114, 0.2);
         }
 
         .step-label.completed .step-circle {
-          background-color: #5cb85c;
+          background-color: #417972;
           color: white;
         }
 

@@ -269,7 +269,7 @@ export default function BookingDatePage({ params }: { params: { type: string } }
         .booking-date-page {
           background-color: #f8f9fa;
           min-height: 70vh;
-          padding: 3rem 0 !important;
+          padding: 2.5rem 0 !important;
         }
 
         .booking-card {
@@ -315,13 +315,13 @@ export default function BookingDatePage({ params }: { params: { type: string } }
         }
 
         .reservation-type-btn:hover {
-          border-color: #5cb85c;
+          border-color: #417972;
           background: #f0f8f0;
         }
 
         .reservation-type-btn.active {
-          background: #5cb85c;
-          border-color: #5cb85c;
+          background: #417972;
+          border-color: #417972;
           color: white;
         }
 
@@ -347,13 +347,13 @@ export default function BookingDatePage({ params }: { params: { type: string } }
         }
 
         .time-slot-btn:hover:not(.disabled) {
-          border-color: #5cb85c;
+          border-color: #417972;
           background: #f0f8f0;
         }
 
         .time-slot-btn.active {
-          background: #5cb85c;
-          border-color: #5cb85c;
+          background: #417972;
+          border-color: #417972;
           color: white;
         }
 
@@ -377,7 +377,7 @@ export default function BookingDatePage({ params }: { params: { type: string } }
         }
 
         .btn-success {
-          background: #5cb85c;
+          background: #417972;
           border: none;
           padding: 1rem;
           font-weight: 600;

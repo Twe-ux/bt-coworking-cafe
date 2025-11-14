@@ -479,7 +479,7 @@ export default function BookingSummaryPage() {
         .booking-summary-page {
           background-color: #f8f9fa;
           min-height: 70vh;
-          padding: 3rem 0 !important;
+          padding: 2.5rem 0 !important;
         }
 
         .booking-card {
@@ -538,7 +538,7 @@ export default function BookingSummaryPage() {
         }
 
         .service-item.selected {
-          border-color: #5cb85c;
+          border-color: #417972;
           background: #f0f8f0;
         }
 
@@ -577,7 +577,7 @@ export default function BookingSummaryPage() {
 
         .service-price {
           font-weight: 600;
-          color: #5cb85c;
+          color: #417972;
           white-space: nowrap;
           margin-left: 1rem;
         }
@@ -595,9 +595,9 @@ export default function BookingSummaryPage() {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          border: 2px solid #5cb85c;
+          border: 2px solid #417972;
           background: white;
-          color: #5cb85c;
+          color: #417972;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -605,7 +605,7 @@ export default function BookingSummaryPage() {
         }
 
         .service-quantity button:hover:not(:disabled) {
-          background: #5cb85c;
+          background: #417972;
           color: white;
         }
 
@@ -646,7 +646,7 @@ export default function BookingSummaryPage() {
         }
 
         .total-price {
-          color: #5cb85c;
+          color: #417972;
           font-size: 1.35rem;
         }
 
@@ -656,7 +656,7 @@ export default function BookingSummaryPage() {
         }
 
         .btn-success {
-          background: #5cb85c;
+          background: #417972;
           border: none;
           font-weight: 600;
           border-radius: 12px;
@@ -667,8 +667,8 @@ export default function BookingSummaryPage() {
         }
 
         .btn-outline-success {
-          border: 2px solid #5cb85c;
-          color: #5cb85c;
+          border: 2px solid #417972;
+          color: #417972;
           font-weight: 600;
           border-radius: 12px;
         }
