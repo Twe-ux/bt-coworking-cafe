@@ -1,280 +1,338 @@
-"use client";
+'use client';
 
-import PageTitle from "@/components/site/pageTitle";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import PageTitle from '@/components/site/pageTitle';
+import BookingProgressBar from '@/components/site/booking/BookingProgressBar';
+import Link from 'next/link';
 
-interface Space {
-  _id: string;
-  name: string;
-  slug: string;
-  description: string;
-  type: string;
-  capacity: number;
-  pricing: {
-    hourly?: number;
-    daily?: number;
-    weekly?: number;
-    monthly?: number;
-  };
-  amenities: string[];
-  featuredImage?: string;
-  isActive: boolean;
-}
+const spaceTypes = [
+  {
+    id: 'open-space',
+    title: 'Place',
+    subtitle: 'Open-space',
+    description: 'Bureau dans un espace partagé et convivial',
+    icon: 'bi-person-workspace',
+    image: '/images/spaces/open-space.jpg',
+    capacity: '1 personne',
+    features: ['WiFi', 'Café', 'Imprimante'],
+    priceFrom: '10€/h',
+  },
+  {
+    id: 'meeting-room-glass',
+    title: 'Salle de réunion',
+    subtitle: 'Verrière',
+    description: 'Salle lumineuse avec verrière pour vos réunions',
+    icon: 'bi-briefcase',
+    image: '/images/spaces/meeting-glass.jpg',
+    capacity: '2-8 personnes',
+    features: ['Écran', 'WiFi', 'Tableau blanc'],
+    priceFrom: '40€/h',
+  },
+  {
+    id: 'meeting-room-floor',
+    title: 'Salle de réunion',
+    subtitle: 'Étage',
+    description: 'Salle privée à l\'étage, calme et équipée',
+    icon: 'bi-building',
+    image: '/images/spaces/meeting-floor.jpg',
+    capacity: '4-12 personnes',
+    features: ['Projecteur', 'WiFi', 'Climatisation'],
+    priceFrom: '50€/h',
+  },
+  {
+    id: 'event-space',
+    title: 'Événementiel',
+    subtitle: 'Grand espace',
+    description: 'Espace modulable pour vos événements et conférences',
+    icon: 'bi-calendar-event',
+    image: '/images/spaces/event.jpg',
+    capacity: 'Jusqu\'à 50 personnes',
+    features: ['Sonorisation', 'Vidéoprojecteur', 'Traiteur possible'],
+    priceFrom: '200€/h',
+  },
+];
 
-const BookingPage = () => {
-  const [spaces, setSpaces] = useState<Space[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    type: "",
-    minCapacity: "",
-    maxCapacity: "",
-    search: "",
-  });
-
-  useEffect(() => {
-    fetchSpaces();
-  }, [filters]);
-
-  const fetchSpaces = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      if (filters.type) params.append("type", filters.type);
-      if (filters.minCapacity)
-        params.append("minCapacity", filters.minCapacity);
-      if (filters.maxCapacity)
-        params.append("maxCapacity", filters.maxCapacity);
-      if (filters.search) params.append("search", filters.search);
-
-      const response = await fetch(`/api/spaces?${params.toString()}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setSpaces(data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching spaces:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getMinPrice = (pricing: Space["pricing"]) => {
-    const prices = [
-      pricing.hourly,
-      pricing.daily,
-      pricing.weekly,
-      pricing.monthly,
-    ].filter(Boolean) as number[];
-    return prices.length > 0 ? Math.min(...prices) : 0;
-  };
-
-  const getTypeLabel = (type: string) => {
-    const labels: Record<string, string> = {
-      desk: "Bureau",
-      "meeting-room": "Salle de réunion",
-      "private-office": "Bureau privé",
-      "event-space": "Espace événement",
-    };
-    return labels[type] || type;
-  };
-
+export default function BookingPage() {
   return (
     <>
-      <PageTitle title="Réservation d'espaces" currentPage="Réservation" />
+      <PageTitle title="Réserver un espace" currentPage="Réservation" />
 
-      <section className="booking-spaces py__130">
+      <section className="booking-selection py-5">
         <div className="container">
-          {/* Filters */}
-          <div className="row mb-5">
-            <div className="col-12">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body">
-                  <h5 className="card-title mb-4">Filtres de recherche</h5>
-                  <div className="row g-3">
-                    <div className="col-md-3">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Rechercher..."
-                        value={filters.search}
-                        onChange={(e) =>
-                          setFilters({ ...filters, search: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <select
-                        className="form-select"
-                        value={filters.type}
-                        onChange={(e) =>
-                          setFilters({ ...filters, type: e.target.value })
-                        }
+          {/* Progress Bar */}
+          <div className="row justify-content-center mb-5">
+            <div className="col-lg-8">
+              <BookingProgressBar currentStep={1} />
+            </div>
+          </div>
+
+          {/* Page Title */}
+          <div className="text-center mb-5">
+            <h2 className="mb-3">Quel espace souhaitez-vous réserver ?</h2>
+            <p className="text-muted">
+              Sélectionnez le type d'espace qui correspond à vos besoins
+            </p>
+          </div>
+
+          {/* Space Type Cards */}
+          <div className="row g-4 justify-content-center">
+            {spaceTypes.map((space) => (
+              <div key={space.id} className="col-lg-6 col-md-6">
+                <Link
+                  href={`/booking/${space.id}/new`}
+                  className="text-decoration-none"
+                >
+                  <div className="space-card h-100">
+                    <div className="card-image-container">
+                      {space.image ? (
+                        <img
+                          src={space.image}
+                          alt={space.title}
+                          className="space-image"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove(
+                              'd-none'
+                            );
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        className={`space-icon-placeholder ${
+                          space.image ? 'd-none' : ''
+                        }`}
                       >
-                        <option value="">Tous les types</option>
-                        <option value="desk">Bureau</option>
-                        <option value="meeting-room">Salle de réunion</option>
-                        <option value="private-office">Bureau privé</option>
-                        <option value="event-space">Espace événement</option>
-                      </select>
+                        <i className={space.icon}></i>
+                      </div>
+                      <div className="card-overlay">
+                        <div className="overlay-content">
+                          <i className="bi bi-arrow-right-circle"></i>
+                          <span>Réserver</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-md-3">
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Capacité min"
-                        value={filters.minCapacity}
-                        onChange={(e) =>
-                          setFilters({
-                            ...filters,
-                            minCapacity: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-md-3">
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Capacité max"
-                        value={filters.maxCapacity}
-                        onChange={(e) =>
-                          setFilters({
-                            ...filters,
-                            maxCapacity: e.target.value,
-                          })
-                        }
-                      />
+
+                    <div className="card-content">
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                          <h3 className="card-title mb-0">{space.title}</h3>
+                          <p className="card-subtitle text-muted">
+                            {space.subtitle}
+                          </p>
+                        </div>
+                        <span className="price-badge">{space.priceFrom}</span>
+                      </div>
+
+                      <p className="card-description">{space.description}</p>
+
+                      <div className="card-meta">
+                        <div className="meta-item">
+                          <i className="bi bi-people me-2"></i>
+                          <span>{space.capacity}</span>
+                        </div>
+                        <div className="features-list">
+                          {space.features.map((feature, index) => (
+                            <span key={index} className="feature-badge">
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Help Section */}
+          <div className="row justify-content-center mt-5">
+            <div className="col-lg-8">
+              <div className="help-card text-center">
+                <i className="bi bi-question-circle help-icon"></i>
+                <h5 className="mb-2">Besoin d'aide pour choisir ?</h5>
+                <p className="text-muted mb-3">
+                  Notre équipe est à votre disposition pour vous conseiller
+                </p>
+                <div className="d-flex justify-content-center gap-3 flex-wrap">
+                  <a href="tel:+33123456789" className="btn btn-outline-primary">
+                    <i className="bi bi-telephone me-2"></i>
+                    Appelez-nous
+                  </a>
+                  <a href="mailto:contact@btcafe.com" className="btn btn-outline-primary">
+                    <i className="bi bi-envelope me-2"></i>
+                    Écrivez-nous
+                  </a>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Spaces Grid */}
-          {loading ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Chargement...</span>
-              </div>
-            </div>
-          ) : spaces.length === 0 ? (
-            <div className="alert alert-info text-center">
-              Aucun espace disponible pour les critères sélectionnés.
-            </div>
-          ) : (
-            <div className="row g-4">
-              {spaces.map((space) => (
-                <div key={space._id} className="col-lg-4 col-md-6">
-                  <div className="card h-100 border-0 shadow-sm hover-shadow transition">
-                    {space.featuredImage && (
-                      <img
-                        src={space.featuredImage}
-                        className="card-img-top"
-                        alt={space.name}
-                        style={{ height: "200px", objectFit: "cover" }}
-                      />
-                    )}
-                    {!space.featuredImage && (
-                      <div
-                        className="card-img-top bg-light d-flex align-items-center justify-content-center"
-                        style={{ height: "200px" }}
-                      >
-                        <i
-                          className="bi bi-building"
-                          style={{ fontSize: "3rem", color: "#dee2e6" }}
-                        ></i>
-                      </div>
-                    )}
-                    <div className="card-body d-flex flex-column">
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <h5 className="card-title mb-0">{space.name}</h5>
-                        <span className="badge bg-primary">
-                          {getTypeLabel(space.type)}
-                        </span>
-                      </div>
-
-                      <p
-                        className="card-text text-muted mb-3"
-                        style={{ fontSize: "0.9rem" }}
-                      >
-                        {space.description.length > 100
-                          ? `${space.description.substring(0, 100)}...`
-                          : space.description}
-                      </p>
-
-                      <div className="mb-3">
-                        <div className="d-flex align-items-center mb-2">
-                          <i className="bi bi-people me-2"></i>
-                          <span>
-                            {space.capacity}{" "}
-                            {space.capacity > 1 ? "personnes" : "personne"}
-                          </span>
-                        </div>
-                        {space.amenities.length > 0 && (
-                          <div className="d-flex flex-wrap gap-1">
-                            {space.amenities.slice(0, 3).map((amenity) => (
-                              <span
-                                key={amenity}
-                                className="badge bg-light text-dark"
-                                style={{ fontSize: "0.75rem" }}
-                              >
-                                {amenity}
-                              </span>
-                            ))}
-                            {space.amenities.length > 3 && (
-                              <span
-                                className="badge bg-light text-dark"
-                                style={{ fontSize: "0.75rem" }}
-                              >
-                                +{space.amenities.length - 3} plus
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-auto">
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                          <div>
-                            <small className="text-muted">À partir de</small>
-                            <div className="h5 mb-0 text-primary">
-                              {getMinPrice(space.pricing)}€
-                              <small className="text-muted">/h</small>
-                            </div>
-                          </div>
-                        </div>
-                        <Link
-                          href={`/booking/${space.slug}`}
-                          className="btn btn-primary w-100"
-                        >
-                          Réserver maintenant
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 
       <style jsx>{`
-        .hover-shadow {
-          transition: box-shadow 0.3s ease;
+        .booking-selection {
+          background-color: #f8f9fa;
+          min-height: 70vh;
         }
-        .hover-shadow:hover {
-          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-        }
-        .transition {
+
+        .space-card {
+          background: white;
+          border-radius: 16px;
+          overflow: hidden;
           transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+          cursor: pointer;
+        }
+
+        .space-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-image-container {
+          position: relative;
+          height: 240px;
+          overflow: hidden;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .space-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        .space-card:hover .space-image {
+          transform: scale(1.05);
+        }
+
+        .space-icon-placeholder {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 4rem;
+        }
+
+        .card-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(92, 184, 92, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .space-card:hover .card-overlay {
+          opacity: 1;
+        }
+
+        .overlay-content {
+          color: white;
+          text-align: center;
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+
+        .overlay-content i {
+          font-size: 3rem;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        .card-content {
+          padding: 1.5rem;
+        }
+
+        .card-title {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #333;
+          margin-bottom: 0.25rem;
+        }
+
+        .card-subtitle {
+          font-size: 0.95rem;
+          margin-bottom: 0;
+        }
+
+        .price-badge {
+          background: #5cb85c;
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 20px;
+          font-weight: 600;
+          font-size: 0.9rem;
+        }
+
+        .card-description {
+          color: #666;
+          font-size: 0.95rem;
+          margin: 1rem 0;
+          line-height: 1.6;
+        }
+
+        .card-meta {
+          border-top: 1px solid #eee;
+          padding-top: 1rem;
+        }
+
+        .meta-item {
+          color: #666;
+          font-size: 0.9rem;
+          margin-bottom: 0.75rem;
+          font-weight: 500;
+        }
+
+        .features-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        .feature-badge {
+          background: #f0f0f0;
+          padding: 0.25rem 0.75rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          color: #666;
+        }
+
+        .help-card {
+          background: white;
+          border-radius: 12px;
+          padding: 2rem;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .help-icon {
+          font-size: 3rem;
+          color: #5cb85c;
+          margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+          .card-image-container {
+            height: 180px;
+          }
+
+          .card-title {
+            font-size: 1.25rem;
+          }
+
+          .space-icon-placeholder {
+            font-size: 3rem;
+          }
         }
       `}</style>
     </>
   );
-};
-
-export default BookingPage;
+}

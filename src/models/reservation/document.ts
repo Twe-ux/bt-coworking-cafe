@@ -1,5 +1,13 @@
 import { ObjectId, Schema, Types, Document } from "mongoose";
 
+export interface AdditionalServiceItem {
+  service: ObjectId;
+  name: string; // Nom du service au moment de la réservation
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
 /** Document of a {@link Reservation}, as stored in the database. */
 export interface ReservationDocument extends Document {
   user: ObjectId;
@@ -10,7 +18,23 @@ export interface ReservationDocument extends Document {
   endTime: string; // Format: "HH:mm"
   numberOfPeople: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
-  totalPrice: number;
+
+  // Pricing
+  basePrice: number; // Prix de base de l'espace
+  servicesPrice: number; // Prix total des services supplémentaires
+  totalPrice: number; // basePrice + servicesPrice
+  reservationType?: "hourly" | "daily" | "weekly" | "monthly"; // Type de réservation
+
+  // Contact information
+  contactName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+
+  // Services supplémentaires
+  additionalServices: AdditionalServiceItem[];
+
+  // Payment
+  requiresPayment: boolean; // true si paiement requis avant confirmation
   notes?: string;
   specialRequests?: string;
   confirmationNumber?: string;
@@ -19,6 +43,7 @@ export interface ReservationDocument extends Document {
   stripePaymentIntentId?: string;
   stripeSessionId?: string;
   stripeCustomerId?: string;
+
   createdAt: Date;
   updatedAt: Date;
   cancelledAt?: Date;
@@ -78,10 +103,77 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       default: "pending",
       index: true,
     },
+    basePrice: {
+      type: Number,
+      required: [true, "Base price is required"],
+      min: [0, "Price cannot be negative"],
+      default: 0,
+    },
+    servicesPrice: {
+      type: Number,
+      default: 0,
+      min: [0, "Services price cannot be negative"],
+    },
     totalPrice: {
       type: Number,
       required: [true, "Total price is required"],
       min: [0, "Price cannot be negative"],
+    },
+    reservationType: {
+      type: String,
+      enum: {
+        values: ["hourly", "daily", "weekly", "monthly"],
+        message: "{VALUE} is not a valid reservation type",
+      },
+    },
+    contactName: {
+      type: String,
+      trim: true,
+    },
+    contactEmail: {
+      type: String,
+      trim: true,
+      lowercase: true,
+    },
+    contactPhone: {
+      type: String,
+      trim: true,
+    },
+    additionalServices: {
+      type: [
+        {
+          service: {
+            type: Types.ObjectId,
+            ref: "AdditionalService",
+            required: true,
+          },
+          name: {
+            type: String,
+            required: true,
+          },
+          quantity: {
+            type: Number,
+            required: true,
+            min: 1,
+            default: 1,
+          },
+          unitPrice: {
+            type: Number,
+            required: true,
+            min: 0,
+          },
+          totalPrice: {
+            type: Number,
+            required: true,
+            min: 0,
+          },
+        },
+      ],
+      default: [],
+    },
+    requiresPayment: {
+      type: Boolean,
+      default: true,
     },
     notes: {
       type: String,
