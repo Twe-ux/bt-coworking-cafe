@@ -21,6 +21,7 @@ interface Booking {
   totalPrice: number;
   status: string;
   paymentStatus: string;
+  requiresPayment: boolean;
   confirmationNumber?: string;
   specialRequests?: string;
   createdAt: string;
@@ -161,6 +162,7 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
   const statusBadge = getStatusBadge(booking.status);
   const paymentBadge = getPaymentStatusBadge(booking.paymentStatus);
   const isPaid = booking.paymentStatus === 'paid';
+  const isConfirmed = isPaid || !booking.requiresPayment;
 
   return (
     <>
@@ -171,14 +173,16 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
           <div className="row justify-content-center">
             <div className="col-lg-8">
               {/* Success Message */}
-              {isPaid && (
+              {isConfirmed && (
                 <div className="text-center mb-5">
                   <div className="success-icon mb-3">
                     <i className="bi bi-check-circle-fill text-success" style={{ fontSize: '4rem' }}></i>
                   </div>
                   <h2 className="mb-3">Réservation confirmée !</h2>
                   <p className="text-muted">
-                    Votre réservation a été confirmée avec succès. Un email de confirmation a été envoyé à votre adresse.
+                    {isPaid
+                      ? 'Votre réservation a été confirmée avec succès. Un email de confirmation a été envoyé à votre adresse.'
+                      : 'Votre demande de réservation a été enregistrée. Vous recevrez une confirmation par email dans les plus brefs délais.'}
                   </p>
                 </div>
               )}

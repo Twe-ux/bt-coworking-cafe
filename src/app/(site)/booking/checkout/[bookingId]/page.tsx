@@ -22,6 +22,7 @@ interface Booking {
   totalPrice: number;
   status: string;
   paymentStatus: string;
+  requiresPayment: boolean;
 }
 
 // Initialize Stripe - this will be loaded once
@@ -64,6 +65,12 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
 
       const bookingDetails = bookingData.data;
       setBooking(bookingDetails);
+
+      // Check if payment is not required - redirect to confirmation
+      if (bookingDetails.requiresPayment === false) {
+        router.push(`/booking/confirmation/${params.bookingId}`);
+        return;
+      }
 
       // Check if already paid
       if (bookingDetails.paymentStatus === 'paid') {
