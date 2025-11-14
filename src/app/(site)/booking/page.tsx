@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import PageTitle from '@/components/site/pageTitle';
-import Link from 'next/link';
+import PageTitle from "@/components/site/pageTitle";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface Space {
   _id: string;
@@ -26,10 +26,10 @@ const BookingPage = () => {
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    type: '',
-    minCapacity: '',
-    maxCapacity: '',
-    search: '',
+    type: "",
+    minCapacity: "",
+    maxCapacity: "",
+    search: "",
   });
 
   useEffect(() => {
@@ -40,10 +40,12 @@ const BookingPage = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (filters.type) params.append('type', filters.type);
-      if (filters.minCapacity) params.append('minCapacity', filters.minCapacity);
-      if (filters.maxCapacity) params.append('maxCapacity', filters.maxCapacity);
-      if (filters.search) params.append('search', filters.search);
+      if (filters.type) params.append("type", filters.type);
+      if (filters.minCapacity)
+        params.append("minCapacity", filters.minCapacity);
+      if (filters.maxCapacity)
+        params.append("maxCapacity", filters.maxCapacity);
+      if (filters.search) params.append("search", filters.search);
 
       const response = await fetch(`/api/spaces?${params.toString()}`);
       const data = await response.json();
@@ -52,23 +54,28 @@ const BookingPage = () => {
         setSpaces(data.data);
       }
     } catch (error) {
-      console.error('Error fetching spaces:', error);
+      console.error("Error fetching spaces:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getMinPrice = (pricing: Space['pricing']) => {
-    const prices = [pricing.hourly, pricing.daily, pricing.weekly, pricing.monthly].filter(Boolean) as number[];
+  const getMinPrice = (pricing: Space["pricing"]) => {
+    const prices = [
+      pricing.hourly,
+      pricing.daily,
+      pricing.weekly,
+      pricing.monthly,
+    ].filter(Boolean) as number[];
     return prices.length > 0 ? Math.min(...prices) : 0;
   };
 
   const getTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
-      'desk': 'Bureau',
-      'meeting-room': 'Salle de réunion',
-      'private-office': 'Bureau privé',
-      'event-space': 'Espace événement',
+      desk: "Bureau",
+      "meeting-room": "Salle de réunion",
+      "private-office": "Bureau privé",
+      "event-space": "Espace événement",
     };
     return labels[type] || type;
   };
@@ -92,14 +99,18 @@ const BookingPage = () => {
                         className="form-control"
                         placeholder="Rechercher..."
                         value={filters.search}
-                        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, search: e.target.value })
+                        }
                       />
                     </div>
                     <div className="col-md-3">
                       <select
                         className="form-select"
                         value={filters.type}
-                        onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({ ...filters, type: e.target.value })
+                        }
                       >
                         <option value="">Tous les types</option>
                         <option value="desk">Bureau</option>
@@ -114,7 +125,12 @@ const BookingPage = () => {
                         className="form-control"
                         placeholder="Capacité min"
                         value={filters.minCapacity}
-                        onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({
+                            ...filters,
+                            minCapacity: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-md-3">
@@ -123,7 +139,12 @@ const BookingPage = () => {
                         className="form-control"
                         placeholder="Capacité max"
                         value={filters.maxCapacity}
-                        onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })}
+                        onChange={(e) =>
+                          setFilters({
+                            ...filters,
+                            maxCapacity: e.target.value,
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -153,24 +174,32 @@ const BookingPage = () => {
                         src={space.featuredImage}
                         className="card-img-top"
                         alt={space.name}
-                        style={{ height: '200px', objectFit: 'cover' }}
+                        style={{ height: "200px", objectFit: "cover" }}
                       />
                     )}
                     {!space.featuredImage && (
                       <div
                         className="card-img-top bg-light d-flex align-items-center justify-content-center"
-                        style={{ height: '200px' }}
+                        style={{ height: "200px" }}
                       >
-                        <i className="bi bi-building" style={{ fontSize: '3rem', color: '#dee2e6' }}></i>
+                        <i
+                          className="bi bi-building"
+                          style={{ fontSize: "3rem", color: "#dee2e6" }}
+                        ></i>
                       </div>
                     )}
                     <div className="card-body d-flex flex-column">
                       <div className="d-flex justify-content-between align-items-start mb-2">
                         <h5 className="card-title mb-0">{space.name}</h5>
-                        <span className="badge bg-primary">{getTypeLabel(space.type)}</span>
+                        <span className="badge bg-primary">
+                          {getTypeLabel(space.type)}
+                        </span>
                       </div>
 
-                      <p className="card-text text-muted mb-3" style={{ fontSize: '0.9rem' }}>
+                      <p
+                        className="card-text text-muted mb-3"
+                        style={{ fontSize: "0.9rem" }}
+                      >
                         {space.description.length > 100
                           ? `${space.description.substring(0, 100)}...`
                           : space.description}
@@ -179,17 +208,27 @@ const BookingPage = () => {
                       <div className="mb-3">
                         <div className="d-flex align-items-center mb-2">
                           <i className="bi bi-people me-2"></i>
-                          <span>{space.capacity} {space.capacity > 1 ? 'personnes' : 'personne'}</span>
+                          <span>
+                            {space.capacity}{" "}
+                            {space.capacity > 1 ? "personnes" : "personne"}
+                          </span>
                         </div>
                         {space.amenities.length > 0 && (
                           <div className="d-flex flex-wrap gap-1">
                             {space.amenities.slice(0, 3).map((amenity) => (
-                              <span key={amenity} className="badge bg-light text-dark" style={{ fontSize: '0.75rem' }}>
+                              <span
+                                key={amenity}
+                                className="badge bg-light text-dark"
+                                style={{ fontSize: "0.75rem" }}
+                              >
                                 {amenity}
                               </span>
                             ))}
                             {space.amenities.length > 3 && (
-                              <span className="badge bg-light text-dark" style={{ fontSize: '0.75rem' }}>
+                              <span
+                                className="badge bg-light text-dark"
+                                style={{ fontSize: "0.75rem" }}
+                              >
                                 +{space.amenities.length - 3} plus
                               </span>
                             )}
