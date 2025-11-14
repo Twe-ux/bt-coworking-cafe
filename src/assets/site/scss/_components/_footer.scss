@@ -1,8 +1,9 @@
 .footer {
   background-color: var(--secondary-clr);
   .subscribe {
+    max-height: 350px;
     background-color: #588983;
-    padding: 97px 80px;
+    padding: 80px 80px;
     border-radius: 10px;
     transform: translateY(-50%);
     @include breakpoint(xl) {

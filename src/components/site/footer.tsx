@@ -56,7 +56,11 @@ const Footer = () => {
         {showBookingHelper && <BookingHelper />}
         {/* -------Logo and socal icon */}
         <div className="row footer__lo_co ">
-          <div className={!isClientDashboard ? "col-12" : " mt-5"}>
+          <div
+            className={
+              !isClientDashboard || !showBookingHelper ? "col-12" : " mt-5"
+            }
+          >
             <div className="d-flex justify-content-center">
               <Link
                 href={"#"}
