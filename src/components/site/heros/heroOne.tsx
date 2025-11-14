@@ -68,7 +68,7 @@ const HeroOne = () => {
               />
               <div>
                 <img
-                  src="/images/banner/ANOFF.jpg"
+                  src="/images/banner/coworking-café.jpg"
                   alt="img"
                   className="bg__img"
                 />
