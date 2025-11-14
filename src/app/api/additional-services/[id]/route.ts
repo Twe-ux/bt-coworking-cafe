@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import connectDB from '@/lib/db';
 import AdditionalService from '@/models/additionalService';
 import { requireAuth } from '@/lib/auth-helpers';
 import mongoose from 'mongoose';
@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await dbConnect();
+    await connectDB();
 
     const { id } = params;
 
@@ -58,7 +58,7 @@ export async function PATCH(
       );
     }
 
-    await dbConnect();
+    await connectDB();
 
     const { id } = params;
     const body = await request.json();
@@ -133,7 +133,7 @@ export async function DELETE(
       );
     }
 
-    await dbConnect();
+    await connectDB();
 
     const { id } = params;
     const permanent = request.nextUrl.searchParams.get('permanent') === 'true';

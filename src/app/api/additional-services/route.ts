@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import connectDB from '@/lib/db';
 import AdditionalService from '@/models/additionalService';
 import { requireAuth } from '@/lib/auth-helpers';
 
 // GET /api/additional-services - Liste des services supplémentaires
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
 
     const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get('category');
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await dbConnect();
+    await connectDB();
 
     const body = await request.json();
     const {

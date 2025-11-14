@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import connectDB from '@/lib/db';
 import Reservation from '@/models/reservation';
 import Space from '@/models/space';
 import User from '@/models/user';
@@ -8,7 +8,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
+    await connectDB();
 
     const session = await getServerSession(authOptions);
     const body = await request.json();
