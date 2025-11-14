@@ -76,6 +76,28 @@ const pricingStructureSchema = new Schema(
   { _id: false }
 );
 
+const availableReservationTypesSchema = new Schema(
+  {
+    hourly: {
+      type: Boolean,
+      default: true,
+    },
+    daily: {
+      type: Boolean,
+      default: true,
+    },
+    weekly: {
+      type: Boolean,
+      default: false,
+    },
+    monthly: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { _id: false }
+);
+
 const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
   {
     spaceType: {
@@ -99,6 +121,14 @@ const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
     pricing: {
       type: pricingStructureSchema,
       required: true,
+    },
+    availableReservationTypes: {
+      type: availableReservationTypesSchema,
+      required: true,
+    },
+    requiresQuote: {
+      type: Boolean,
+      default: false,
     },
     minCapacity: {
       type: Number,

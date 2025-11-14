@@ -48,7 +48,8 @@ const spaceTypes = [
     image: "/images/spaces/event.jpg",
     capacity: "Jusqu'à 50 personnes",
     features: ["Sonorisation", "Vidéoprojecteur", "Traiteur possible"],
-    priceFrom: "200€/h",
+    priceFrom: "Sur devis",
+    requiresQuote: true,
   },
 ];
 
@@ -81,7 +82,7 @@ export default function BookingPage() {
             {spaceTypes.map((space) => (
               <div key={space.id} className="col-lg-3 col-md-6">
                 <Link
-                  href={`/booking/${space.id}/new`}
+                  href={space.requiresQuote ? "/contact" : `/booking/${space.id}/new`}
                   className="text-decoration-none"
                 >
                   <div className="space-card h-100">
@@ -109,7 +110,7 @@ export default function BookingPage() {
                       <div className="card-overlay">
                         <div className="overlay-content">
                           <i className="bi bi-arrow-right-circle"></i>
-                          <span>Réserver</span>
+                          <span>{space.requiresQuote ? "Demander un devis" : "Réserver"}</span>
                         </div>
                       </div>
                     </div>

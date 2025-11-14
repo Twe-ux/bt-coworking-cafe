@@ -32,6 +32,13 @@ interface SpaceConfiguration {
     monthly: number;
     perPerson: boolean;
   };
+  availableReservationTypes: {
+    hourly: boolean;
+    daily: boolean;
+    weekly: boolean;
+    monthly: boolean;
+  };
+  requiresQuote: boolean;
   minCapacity: number;
   maxCapacity: number;
   defaultHours: {
@@ -41,9 +48,13 @@ interface SpaceConfiguration {
       closeTime?: string;
     };
   };
+  exceptionalClosures?: Array<{
+    date: string;
+    reason?: string;
+  }>;
 }
 
-const reservationTypes = [
+const allReservationTypes = [
   { id: 'hourly' as ReservationType, label: 'À l\'heure', icon: 'bi-clock' },
   { id: 'daily' as ReservationType, label: 'À la journée', icon: 'bi-calendar-day' },
   { id: 'weekly' as ReservationType, label: 'À la semaine', icon: 'bi-calendar-week' },
@@ -72,6 +83,13 @@ export default function BookingDatePage({ params }: { params: { type: string } }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
+  // Filter available reservation types based on configuration
+  const availableReservationTypes = spaceConfig
+    ? allReservationTypes.filter(
+        (type) => spaceConfig.availableReservationTypes[type.id]
+      )
+    : allReservationTypes;
+
   // Fetch space configuration
   useEffect(() => {
     const fetchSpaceConfig = async () => {
@@ -82,6 +100,12 @@ export default function BookingDatePage({ params }: { params: { type: string } }
 
         if (data.success) {
           setSpaceConfig(data.data);
+
+          // Redirect to contact if this space requires a quote
+          if (data.data.requiresQuote) {
+            router.push('/contact');
+            return;
+          }
         } else {
           setError('Configuration de l\'espace non disponible');
         }
@@ -343,7 +367,7 @@ export default function BookingDatePage({ params }: { params: { type: string } }
                     Type de réservation
                   </label>
                   <div className="reservation-types-grid">
-                    {reservationTypes.map((type) => (
+                    {availableReservationTypes.map((type) => (
                       <button
                         key={type.id}
                         className={`reservation-type-btn ${

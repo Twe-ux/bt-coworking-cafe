@@ -32,6 +32,13 @@ interface PricingStructure {
   perPerson: boolean;
 }
 
+interface AvailableReservationTypes {
+  hourly: boolean;
+  daily: boolean;
+  weekly: boolean;
+  monthly: boolean;
+}
+
 interface SpaceConfiguration {
   _id: string;
   spaceType: string;
@@ -39,6 +46,8 @@ interface SpaceConfiguration {
   slug: string;
   description?: string;
   pricing: PricingStructure;
+  availableReservationTypes: AvailableReservationTypes;
+  requiresQuote: boolean;
   minCapacity: number;
   maxCapacity: number;
   defaultHours: WeeklyHours;
@@ -348,91 +357,124 @@ export default function SpacesSettingsPage() {
 
                         {/* Pricing */}
                         <h5 className="mb-3 mt-4">Tarification</h5>
-                        <Row className="mb-3">
-                          <Col md={3}>
-                            <Form.Group>
-                              <Form.Label>Prix Horaire (€)</Form.Label>
-                              <Form.Control
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={config.pricing.hourly}
-                                onChange={(e) =>
-                                  updatePricing(
-                                    config.spaceType,
-                                    "hourly",
-                                    parseFloat(e.target.value)
-                                  )
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col md={3}>
-                            <Form.Group>
-                              <Form.Label>Prix Journée (€)</Form.Label>
-                              <Form.Control
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={config.pricing.daily}
-                                onChange={(e) =>
-                                  updatePricing(
-                                    config.spaceType,
-                                    "daily",
-                                    parseFloat(e.target.value)
-                                  )
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col md={3}>
-                            <Form.Group>
-                              <Form.Label>Prix Semaine (€)</Form.Label>
-                              <Form.Control
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={config.pricing.weekly}
-                                onChange={(e) =>
-                                  updatePricing(
-                                    config.spaceType,
-                                    "weekly",
-                                    parseFloat(e.target.value)
-                                  )
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                          <Col md={3}>
-                            <Form.Group>
-                              <Form.Label>Prix Mois (€)</Form.Label>
-                              <Form.Control
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={config.pricing.monthly}
-                                onChange={(e) =>
-                                  updatePricing(
-                                    config.spaceType,
-                                    "monthly",
-                                    parseFloat(e.target.value)
-                                  )
-                                }
-                              />
-                            </Form.Group>
-                          </Col>
-                        </Row>
 
                         <Form.Group className="mb-3">
                           <Form.Check
-                            type="checkbox"
-                            label="Prix par personne (multiplier par le nombre de personnes)"
-                            checked={config.pricing.perPerson}
+                            type="switch"
+                            label="Tarifs sur devis (désactive la réservation en ligne)"
+                            checked={config.requiresQuote}
                             onChange={(e) =>
-                              updatePricing(config.spaceType, "perPerson", e.target.checked)
+                              updateConfiguration(config.spaceType, {
+                                requiresQuote: e.target.checked,
+                              })
                             }
                           />
                         </Form.Group>
+
+                        {!config.requiresQuote && (
+                          <>
+                            <Row className="mb-3">
+                              {config.availableReservationTypes.hourly && (
+                                <Col md={config.availableReservationTypes.weekly || config.availableReservationTypes.monthly ? 3 : 6}>
+                                  <Form.Group>
+                                    <Form.Label>Prix Horaire (€)</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      value={config.pricing.hourly}
+                                      onChange={(e) =>
+                                        updatePricing(
+                                          config.spaceType,
+                                          "hourly",
+                                          parseFloat(e.target.value)
+                                        )
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                              )}
+                              {config.availableReservationTypes.daily && (
+                                <Col md={config.availableReservationTypes.weekly || config.availableReservationTypes.monthly ? 3 : 6}>
+                                  <Form.Group>
+                                    <Form.Label>Prix Journée (€)</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      value={config.pricing.daily}
+                                      onChange={(e) =>
+                                        updatePricing(
+                                          config.spaceType,
+                                          "daily",
+                                          parseFloat(e.target.value)
+                                        )
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                              )}
+                              {config.availableReservationTypes.weekly && (
+                                <Col md={3}>
+                                  <Form.Group>
+                                    <Form.Label>Prix Semaine (€)</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      value={config.pricing.weekly}
+                                      onChange={(e) =>
+                                        updatePricing(
+                                          config.spaceType,
+                                          "weekly",
+                                          parseFloat(e.target.value)
+                                        )
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                              )}
+                              {config.availableReservationTypes.monthly && (
+                                <Col md={3}>
+                                  <Form.Group>
+                                    <Form.Label>Prix Mois (€)</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      value={config.pricing.monthly}
+                                      onChange={(e) =>
+                                        updatePricing(
+                                          config.spaceType,
+                                          "monthly",
+                                          parseFloat(e.target.value)
+                                        )
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                              )}
+                            </Row>
+
+                            <Form.Group className="mb-3">
+                              <Form.Check
+                                type="checkbox"
+                                label="Prix par personne (multiplier par le nombre de personnes)"
+                                checked={config.pricing.perPerson}
+                                onChange={(e) =>
+                                  updatePricing(config.spaceType, "perPerson", e.target.checked)
+                                }
+                              />
+                            </Form.Group>
+                          </>
+                        )}
+
+                        {config.requiresQuote && (
+                          <Alert variant="info">
+                            <i className="bi bi-info-circle me-2"></i>
+                            Mode "sur devis" activé. Les visiteurs verront un message les invitant à vous contacter pour un devis personnalisé.
+                          </Alert>
+                        )}
 
                         {/* Capacity */}
                         <h5 className="mb-3 mt-4">Capacité</h5>
