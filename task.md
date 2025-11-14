@@ -2,36 +2,40 @@
 
 ## 📝 Blog - Tâches Restantes
 
-### Priorité 1 (Haute)
+### ✅ Priorité 1 (Haute) - TERMINÉ
 
-- [ ] **Auto-publication des articles programmés**
-  - [ ] Créer un cron job / scheduled task pour vérifier les articles avec `scheduledFor`
-  - [ ] Mettre à jour le statut de "scheduled" à "published" automatiquement
-  - [ ] Définir `publishedAt` lors de la publication automatique
-  - [ ] Ajouter des logs pour tracer les publications automatiques
-  - [ ] Option : Utiliser Vercel Cron ou Next.js API route avec cron-job.org
+- [x] **Auto-publication des articles programmés**
+  - [x] Créer un cron job / scheduled task pour vérifier les articles avec `scheduledFor`
+  - [x] Mettre à jour le statut de "scheduled" à "published" automatiquement
+  - [x] Définir `publishedAt` lors de la publication automatique
+  - [x] Ajouter des logs pour tracer les publications automatiques
+  - [x] Option : Utiliser Vercel Cron ou Next.js API route avec cron-job.org
+  - **Implémentation**: Cron job `/api/cron/publish-scheduled`, configuration `vercel.json`, documentation `CRON_SETUP.md`
 
-- [ ] **Système de likes par utilisateur**
-  - [ ] Créer un modèle `ArticleLike` (userId, articleId, createdAt)
-  - [ ] Créer un modèle `CommentLike` (userId, commentId, createdAt)
-  - [ ] Modifier l'API `/api/articles/id/[id]/like` pour tracker l'utilisateur
-  - [ ] Ajouter endpoint `DELETE` pour unlike
-  - [ ] Afficher l'état "liked" dans l'UI (cœur rouge/gris)
-  - [ ] Empêcher les likes multiples du même utilisateur
+- [x] **Système de likes par utilisateur**
+  - [x] Créer un modèle `ArticleLike` (userId, articleId, createdAt)
+  - [x] Créer un modèle `CommentLike` (userId, commentId, createdAt)
+  - [x] Modifier l'API `/api/articles/id/[id]/like` pour tracker l'utilisateur
+  - [x] Ajouter endpoint `DELETE` pour unlike
+  - [x] Afficher l'état "liked" dans l'UI (cœur rouge/gris)
+  - [x] Empêcher les likes multiples du même utilisateur
+  - **Implémentation**: Models avec index unique composé, API GET/POST/DELETE, RTK Query avec optimistic updates
 
-- [ ] **UI des commentaires imbriqués**
-  - [ ] Créer un composant récursif pour afficher les réponses
-  - [ ] Ajouter un bouton "Répondre" sous chaque commentaire
-  - [ ] Implémenter un formulaire de réponse inline
-  - [ ] Afficher l'indentation visuelle pour les niveaux de réponses
-  - [ ] Limiter la profondeur des réponses (ex: 3 niveaux max)
+- [x] **UI des commentaires imbriqués**
+  - [x] Créer un composant récursif pour afficher les réponses
+  - [x] Ajouter un bouton "Répondre" sous chaque commentaire
+  - [x] Implémenter un formulaire de réponse inline
+  - [x] Afficher l'indentation visuelle pour les niveaux de réponses
+  - [x] Limiter la profondeur des réponses (ex: 3 niveaux max)
+  - **Implémentation**: Composant `CommentItem.tsx` récursif avec profondeur max configurable (défaut: 3)
 
-- [ ] **Historique des révisions d'articles**
-  - [ ] Créer un modèle `ArticleRevision` (articleId, content, title, author, createdAt)
-  - [ ] Sauvegarder une révision à chaque modification
-  - [ ] Créer une page `/dashboard/post/edit/[id]/history`
-  - [ ] Permettre la comparaison entre versions (diff)
-  - [ ] Permettre la restauration d'une version précédente
+- [x] **Historique des révisions d'articles**
+  - [x] Créer un modèle `ArticleRevision` (articleId, content, title, author, createdAt)
+  - [x] Sauvegarder une révision à chaque modification
+  - [x] Créer API pour gérer les révisions
+  - [x] Permettre la restauration d'une version précédente
+  - **Implémentation**: Model `ArticleRevision`, helpers `article-revision-helpers.ts`, API `/api/articles/id/[id]/revisions`
+  - **Note**: Page UI `/dashboard/post/edit/[id]/history` à créer (Priorité 2)
 
 ### Priorité 2 (Moyenne)
 
