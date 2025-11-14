@@ -140,9 +140,9 @@ export default function BookingDatePage({ params }: { params: { type: string } }
                 </button>
 
                 {/* Title */}
-                <div className="text-center mb-4">
-                  <h2 className="mb-2">Quand voulez-vous venir ?</h2>
-                  <p className="text-muted">
+                <div className="text-center mb-3">
+                  <h2 className="mb-2" style={{ fontSize: '1.5rem' }}>Quand voulez-vous venir ?</h2>
+                  <p className="text-muted mb-2" style={{ fontSize: '0.9rem' }}>
                     Sélectionnez votre durée et votre créneau
                   </p>
                   <div className="selected-space-badge">
@@ -268,14 +268,15 @@ export default function BookingDatePage({ params }: { params: { type: string } }
       <style jsx>{`
         .booking-date-page {
           background-color: #f8f9fa;
-          min-height: 80vh;
+          min-height: 70vh;
+          padding: 3rem 0 !important;
         }
 
         .booking-card {
           background: white;
-          border-radius: 20px;
-          padding: 2.5rem;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+          border-radius: 16px;
+          padding: 1.75rem;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .selected-space-badge {
@@ -369,7 +370,7 @@ export default function BookingDatePage({ params }: { params: { type: string } }
         }
 
         .price-display {
-          font-size: 3rem;
+          font-size: 2.25rem;
           font-weight: 700;
           color: #333;
           margin: 0.5rem 0;

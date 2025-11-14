@@ -106,9 +106,9 @@ export default function BookingDetailsPage() {
                 </button>
 
                 {/* Title */}
-                <div className="text-center mb-5">
-                  <h2 className="mb-2">Finaliser les détails</h2>
-                  <p className="text-muted">Quelques informations supplémentaires</p>
+                <div className="text-center mb-4">
+                  <h2 className="mb-2" style={{ fontSize: '1.5rem' }}>Finaliser les détails</h2>
+                  <p className="text-muted" style={{ fontSize: '0.9rem' }}>Quelques informations supplémentaires</p>
                 </div>
 
                 {/* Number of People */}
@@ -230,34 +230,35 @@ export default function BookingDetailsPage() {
       <style jsx>{`
         .booking-details-page {
           background-color: #f8f9fa;
-          min-height: 80vh;
+          min-height: 70vh;
+          padding: 3rem 0 !important;
         }
 
         .booking-card {
           background: white;
-          border-radius: 20px;
-          padding: 2.5rem;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+          border-radius: 16px;
+          padding: 1.75rem;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .people-counter {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 2rem;
+          gap: 1.5rem;
           background: #f8f9fa;
-          padding: 2rem;
-          border-radius: 16px;
+          padding: 1.5rem;
+          border-radius: 12px;
         }
 
         .counter-btn {
-          width: 50px;
-          height: 50px;
+          width: 42px;
+          height: 42px;
           border-radius: 50%;
           border: 2px solid #5cb85c;
           background: white;
           color: #5cb85c;
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -272,11 +273,11 @@ export default function BookingDetailsPage() {
 
         .counter-display {
           text-align: center;
-          min-width: 150px;
+          min-width: 120px;
         }
 
         .counter-number {
-          font-size: 3rem;
+          font-size: 2.25rem;
           font-weight: 700;
           color: #333;
           line-height: 1;

@@ -66,9 +66,9 @@ export default function BookingPage() {
           </div>
 
           {/* Page Title */}
-          <div className="text-center mb-5">
-            <h2 className="mb-3">Quel espace souhaitez-vous réserver ?</h2>
-            <p className="text-muted">
+          <div className="text-center mb-4">
+            <h2 className="mb-2" style={{ fontSize: '1.75rem' }}>Quel espace souhaitez-vous réserver ?</h2>
+            <p className="text-muted" style={{ fontSize: '0.95rem' }}>
               Sélectionnez le type d'espace qui correspond à vos besoins
             </p>
           </div>
@@ -144,54 +144,33 @@ export default function BookingPage() {
             ))}
           </div>
 
-          {/* Help Section */}
-          <div className="row justify-content-center mt-5">
-            <div className="col-lg-8">
-              <div className="help-card text-center">
-                <i className="bi bi-question-circle help-icon"></i>
-                <h5 className="mb-2">Besoin d'aide pour choisir ?</h5>
-                <p className="text-muted mb-3">
-                  Notre équipe est à votre disposition pour vous conseiller
-                </p>
-                <div className="d-flex justify-content-center gap-3 flex-wrap">
-                  <a href="tel:+33123456789" className="btn btn-outline-primary">
-                    <i className="bi bi-telephone me-2"></i>
-                    Appelez-nous
-                  </a>
-                  <a href="mailto:contact@btcafe.com" className="btn btn-outline-primary">
-                    <i className="bi bi-envelope me-2"></i>
-                    Écrivez-nous
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       <style jsx>{`
         .booking-selection {
           background-color: #f8f9fa;
-          min-height: 70vh;
+          min-height: 60vh;
+          padding: 3rem 0 !important;
         }
 
         .space-card {
           background: white;
-          border-radius: 16px;
+          border-radius: 12px;
           overflow: hidden;
           transition: all 0.3s ease;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
           cursor: pointer;
         }
 
         .space-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
 
         .card-image-container {
           position: relative;
-          height: 240px;
+          height: 180px;
           overflow: hidden;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
@@ -214,7 +193,7 @@ export default function BookingPage() {
           align-items: center;
           justify-content: center;
           color: white;
-          font-size: 4rem;
+          font-size: 3rem;
         }
 
         .card-overlay {
@@ -238,98 +217,85 @@ export default function BookingPage() {
         .overlay-content {
           color: white;
           text-align: center;
-          font-size: 1.2rem;
+          font-size: 1rem;
           font-weight: 600;
         }
 
         .overlay-content i {
-          font-size: 3rem;
+          font-size: 2.5rem;
           display: block;
           margin-bottom: 0.5rem;
         }
 
         .card-content {
-          padding: 1.5rem;
+          padding: 1.25rem;
         }
 
         .card-title {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           font-weight: 700;
           color: #333;
           margin-bottom: 0.25rem;
         }
 
         .card-subtitle {
-          font-size: 0.95rem;
+          font-size: 0.85rem;
           margin-bottom: 0;
         }
 
         .price-badge {
           background: #5cb85c;
           color: white;
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
+          padding: 0.4rem 0.85rem;
+          border-radius: 16px;
           font-weight: 600;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
         }
 
         .card-description {
           color: #666;
-          font-size: 0.95rem;
-          margin: 1rem 0;
-          line-height: 1.6;
+          font-size: 0.875rem;
+          margin: 0.85rem 0;
+          line-height: 1.5;
         }
 
         .card-meta {
           border-top: 1px solid #eee;
-          padding-top: 1rem;
+          padding-top: 0.85rem;
         }
 
         .meta-item {
           color: #666;
-          font-size: 0.9rem;
-          margin-bottom: 0.75rem;
+          font-size: 0.85rem;
+          margin-bottom: 0.65rem;
           font-weight: 500;
         }
 
         .features-list {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
+          gap: 0.4rem;
         }
 
         .feature-badge {
           background: #f0f0f0;
-          padding: 0.25rem 0.75rem;
-          border-radius: 12px;
-          font-size: 0.8rem;
+          padding: 0.2rem 0.65rem;
+          border-radius: 10px;
+          font-size: 0.75rem;
           color: #666;
-        }
-
-        .help-card {
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .help-icon {
-          font-size: 3rem;
-          color: #5cb85c;
-          margin-bottom: 1rem;
         }
 
         @media (max-width: 768px) {
           .card-image-container {
-            height: 180px;
+            height: 150px;
           }
 
           .card-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
           }
 
           .space-icon-placeholder {
-            font-size: 3rem;
+            font-size: 2.5rem;
           }
         }
       `}</style>

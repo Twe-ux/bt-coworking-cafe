@@ -206,10 +206,10 @@ export default function BookingSummaryPage() {
     <>
       <PageTitle title="Récapitulatif de la réservation" currentPage="Récapitulatif" />
 
-      <section className="booking-summary-page py-5">
+      <section className="booking-summary-page py-4">
         <div className="container">
           {/* Progress Bar */}
-          <div className="row justify-content-center mb-4">
+          <div className="row justify-content-center mb-3">
             <div className="col-lg-10">
               <BookingProgressBar currentStep={4} />
             </div>
@@ -229,11 +229,11 @@ export default function BookingSummaryPage() {
               <div className="row g-4">
                 {/* Left Column - Summary */}
                 <div className="col-lg-7">
-                  <div className="booking-card mb-4">
-                    <h4 className="mb-4">
+                  <div className="booking-card mb-3">
+                    <h5 className="mb-3" style={{ fontSize: '1.1rem' }}>
                       <i className="bi bi-receipt me-2"></i>
                       Récapitulatif de votre réservation
-                    </h4>
+                    </h5>
 
                     <div className="summary-section">
                       <div className="summary-row">
@@ -302,10 +302,10 @@ export default function BookingSummaryPage() {
 
                   {/* Additional Services */}
                   <div className="booking-card">
-                    <h4 className="mb-4">
+                    <h5 className="mb-3" style={{ fontSize: '1.1rem' }}>
                       <i className="bi bi-plus-circle me-2"></i>
                       Services supplémentaires
-                    </h4>
+                    </h5>
 
                     {servicesLoading ? (
                       <div className="text-center py-4">
@@ -384,7 +384,7 @@ export default function BookingSummaryPage() {
                 {/* Right Column - Price & Actions */}
                 <div className="col-lg-5">
                   <div className="booking-card sticky-card">
-                    <h4 className="mb-4">Total</h4>
+                    <h5 className="mb-3" style={{ fontSize: '1.1rem' }}>Total</h5>
 
                     <div className="price-breakdown">
                       <div className="price-row">
@@ -478,14 +478,15 @@ export default function BookingSummaryPage() {
       <style jsx>{`
         .booking-summary-page {
           background-color: #f8f9fa;
-          min-height: 80vh;
+          min-height: 70vh;
+          padding: 3rem 0 !important;
         }
 
         .booking-card {
           background: white;
-          border-radius: 16px;
-          padding: 2rem;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+          border-radius: 14px;
+          padding: 1.5rem;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
 
         .sticky-card {
@@ -646,7 +647,7 @@ export default function BookingSummaryPage() {
 
         .total-price {
           color: #5cb85c;
-          font-size: 1.5rem;
+          font-size: 1.35rem;
         }
 
         .price-divider {
