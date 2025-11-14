@@ -1,59 +1,157 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import PageTitle from "@/components/site/pageTitle";
 import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
 import Link from "next/link";
 import BookingHelper from "@/components/site/booking/BookingHelper";
 
-const spaceTypes = [
-  {
-    id: "open-space",
+interface SpaceConfig {
+  spaceType: string;
+  name: string;
+  slug: string;
+  description?: string;
+  pricing: {
+    hourly: number;
+    daily: number;
+    weekly: number;
+    monthly: number;
+    perPerson: boolean;
+  };
+  availableReservationTypes: {
+    hourly: boolean;
+    daily: boolean;
+    weekly: boolean;
+    monthly: boolean;
+  };
+  requiresQuote: boolean;
+  minCapacity: number;
+  maxCapacity: number;
+  imageUrl?: string;
+  displayOrder: number;
+}
+
+interface DisplaySpace {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: string;
+  image: string;
+  capacity: string;
+  features: string[];
+  priceFrom: string;
+  requiresQuote: boolean;
+}
+
+// Mapping DB spaceType to URL slug
+const spaceTypeToSlug: Record<string, string> = {
+  "open-space": "open-space",
+  "salle-verriere": "meeting-room-glass",
+  "salle-etage": "meeting-room-floor",
+  "evenementiel": "event-space",
+};
+
+// Static display data (icons, features, etc.)
+const spaceDisplayData: Record<string, Partial<DisplaySpace>> = {
+  "open-space": {
     title: "Place",
     subtitle: "Open-space",
-    description: "Bureau dans un espace partagé et convivial",
     icon: "bi-person-workspace",
-    image: "/images/spaces/open-space.jpg",
-    capacity: "1 personne",
     features: ["WiFi", "Café", "Imprimante"],
-    priceFrom: "10€/h",
   },
-  {
-    id: "meeting-room-glass",
+  "salle-verriere": {
     title: "Salle de réunion",
     subtitle: "Verrière",
-    description: "Salle lumineuse avec verrière pour vos réunions",
     icon: "bi-briefcase",
-    image: "/images/spaces/meeting-glass.jpg",
-    capacity: "2-8 personnes",
     features: ["Écran", "WiFi", "Tableau blanc"],
-    priceFrom: "40€/h",
   },
-  {
-    id: "meeting-room-floor",
+  "salle-etage": {
     title: "Salle de réunion",
     subtitle: "Étage",
-    description: "Salle privée à l'étage, calme et équipée",
     icon: "bi-building",
-    image: "/images/spaces/meeting-floor.jpg",
-    capacity: "4-12 personnes",
     features: ["Projecteur", "WiFi", "Climatisation"],
-    priceFrom: "50€/h",
   },
-  {
-    id: "event-space",
+  "evenementiel": {
     title: "Événementiel",
     subtitle: "Grand espace",
-    description: "Espace modulable pour vos événements et conférences",
     icon: "bi-calendar-event",
-    image: "/images/spaces/event.jpg",
-    capacity: "Jusqu'à 50 personnes",
     features: ["Sonorisation", "Vidéoprojecteur", "Traiteur possible"],
-    priceFrom: "Sur devis",
-    requiresQuote: true,
   },
-];
+};
 
 export default function BookingPage() {
+  const [spaces, setSpaces] = useState<DisplaySpace[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      try {
+        const response = await fetch("/api/space-configurations");
+        const data = await response.json();
+
+        if (data.success) {
+          const displaySpaces = data.data.map((config: SpaceConfig) => {
+            const displayData = spaceDisplayData[config.spaceType] || {};
+            const urlSlug = spaceTypeToSlug[config.spaceType] || config.slug;
+
+            // Determine price display
+            let priceFrom = "Sur devis";
+            if (!config.requiresQuote) {
+              const lowestPrice = config.pricing.hourly > 0 ? config.pricing.hourly : config.pricing.daily;
+              priceFrom = lowestPrice > 0 ? `${lowestPrice}€/h` : "Sur devis";
+            }
+
+            // Format capacity
+            const capacity =
+              config.minCapacity === config.maxCapacity
+                ? `${config.minCapacity} personne${config.minCapacity > 1 ? "s" : ""}`
+                : config.maxCapacity > 50
+                ? `Jusqu'à ${config.maxCapacity} personnes`
+                : `${config.minCapacity}-${config.maxCapacity} personnes`;
+
+            return {
+              id: urlSlug,
+              title: displayData.title || config.name,
+              subtitle: displayData.subtitle || "",
+              description: config.description || displayData.description || "",
+              icon: displayData.icon || "bi-building",
+              image: config.imageUrl || `/images/spaces/${config.slug}.jpg`,
+              capacity,
+              features: displayData.features || [],
+              priceFrom,
+              requiresQuote: config.requiresQuote,
+            };
+          });
+
+          setSpaces(displaySpaces);
+        }
+      } catch (error) {
+        console.error("Error fetching spaces:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpaces();
+  }, []);
+
+  if (loading) {
+    return (
+      <>
+        <PageTitle title="Réserver un espace" currentPage="Réservation" />
+        <section className="booking-selection py-5">
+          <div className="container">
+            <div className="text-center">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Chargement...</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
   return (
     <>
       <PageTitle title="Réserver un espace" currentPage="Réservation" />
@@ -79,7 +177,7 @@ export default function BookingPage() {
 
           {/* Space Type Cards */}
           <div className="row g-4 justify-content-center">
-            {spaceTypes.map((space) => (
+            {spaces.map((space) => (
               <div key={space.id} className="col-lg-3 col-md-6">
                 <Link
                   href={space.requiresQuote ? "/contact" : `/booking/${space.id}/new`}

@@ -5,6 +5,7 @@ import Space from '@/models/space';
 import User from '@/models/user';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { sendBookingConfirmation } from '@/lib/email/emailService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -188,6 +189,27 @@ export async function POST(request: NextRequest) {
     const populatedReservation = await Reservation.findById(reservation._id)
       .populate('space')
       .populate('user', 'name email');
+
+    // Send confirmation email
+    try {
+      await sendBookingConfirmation(contactEmail, {
+        name: contactName,
+        spaceName: space.name,
+        date: bookingDate.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }),
+        time: `${startTime} - ${endTime}`,
+        price: totalPrice || basePrice || 0,
+        bookingId: reservation._id.toString(),
+        requiresPayment: requiresPayment !== false,
+      });
+    } catch (emailError) {
+      console.error('Error sending confirmation email:', emailError);
+      // Don't fail the whole request if email fails
+    }
 
     return NextResponse.json(
       {

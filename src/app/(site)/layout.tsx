@@ -6,6 +6,7 @@ import AhrefsAnalytics from "@/components/site/AhrefsWebAnalytics";
 import Bootstrap from "@/components/site/Bootstrap";
 import Footer from "@/components/site/footer";
 import Header from "@/components/site/header/header";
+import ExceptionalClosureBanner from "@/components/site/banner/ExceptionalClosureBanner";
 import PathNameLoad from "@/utils/pathNameLoad";
 import { SiteProvidersWrapper } from "@/components/providers/SiteProvidersWrapper";
 import { ReactNode } from "react";
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Bootstrap />
           <PathNameLoad />
           <Header />
+          <ExceptionalClosureBanner />
           {children}
           <Footer />
         </SiteProvidersWrapper>
