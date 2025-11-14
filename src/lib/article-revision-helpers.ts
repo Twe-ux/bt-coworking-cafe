@@ -1,12 +1,12 @@
 import ArticleRevision from '@/models/articleRevision';
-import type { IArticle } from '@/models/article/document';
+import type { ArticleDocument } from '@/models/article/document';
 import mongoose from 'mongoose';
 
 /**
  * Create a revision snapshot of an article before updating it
  */
 export async function createArticleRevision(
-  article: IArticle,
+  article: ArticleDocument,
   author: mongoose.Types.ObjectId,
   changeDescription?: string
 ): Promise<void> {
@@ -52,7 +52,7 @@ export async function createArticleRevision(
  * Restore an article from a specific revision
  */
 export async function restoreArticleRevision(
-  article: IArticle,
+  article: ArticleDocument,
   revisionNumber: number
 ): Promise<boolean> {
   try {
