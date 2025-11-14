@@ -1,0 +1,415 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import PageTitle from '@/components/site/pageTitle';
+import BookingProgressBar from '@/components/site/booking/BookingProgressBar';
+
+const spaceTypeInfo: Record<string, { title: string; subtitle: string }> = {
+  'open-space': { title: 'Place', subtitle: 'Open-space' },
+  'meeting-room-glass': { title: 'Salle de réunion', subtitle: 'Verrière' },
+  'meeting-room-floor': { title: 'Salle de réunion', subtitle: 'Étage' },
+  'event-space': { title: 'Événementiel', subtitle: 'Grand espace' },
+};
+
+type ReservationType = 'hourly' | 'daily' | 'weekly' | 'monthly';
+
+const reservationTypes = [
+  { id: 'hourly' as ReservationType, label: 'À l\'heure', icon: 'bi-clock' },
+  { id: 'daily' as ReservationType, label: 'À la journée', icon: 'bi-calendar-day' },
+  { id: 'weekly' as ReservationType, label: 'À la semaine', icon: 'bi-calendar-week' },
+  { id: 'monthly' as ReservationType, label: 'Au mois', icon: 'bi-calendar-month' },
+];
+
+const timeSlots = [
+  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
+  '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30',
+  '20:00', '20:30', '21:00',
+];
+
+export default function BookingDatePage({ params }: { params: { type: string } }) {
+  const router = useRouter();
+  const spaceInfo = spaceTypeInfo[params.type] || { title: 'Espace', subtitle: '' };
+
+  const [reservationType, setReservationType] = useState<ReservationType>('hourly');
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [startTime, setStartTime] = useState<string>('');
+  const [endTime, setEndTime] = useState<string>('');
+  const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
+  const [duration, setDuration] = useState<string>('');
+
+  // Set default date to today
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    setSelectedDate(today);
+  }, []);
+
+  // Calculate price and duration when times change
+  useEffect(() => {
+    if (startTime && endTime && selectedDate) {
+      calculatePriceAndDuration();
+    }
+  }, [startTime, endTime, selectedDate, reservationType]);
+
+  const calculatePriceAndDuration = () => {
+    if (!startTime || !endTime) return;
+
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    const startMinutes = startHour * 60 + startMinute;
+    const endMinutes = endHour * 60 + endMinute;
+
+    if (endMinutes <= startMinutes) {
+      setDuration('');
+      setCalculatedPrice(0);
+      return;
+    }
+
+    const durationMinutes = endMinutes - startMinutes;
+    const durationHours = durationMinutes / 60;
+
+    // Format duration
+    const hours = Math.floor(durationHours);
+    const minutes = durationMinutes % 60;
+    setDuration(hours > 0 ? `${hours}H ${minutes > 0 ? minutes.toString().padStart(2, '0') : ''}`.trim() : `${minutes}min`);
+
+    // Calculate price based on type
+    let price = 0;
+    switch (reservationType) {
+      case 'hourly':
+        price = durationHours * 15; // Example: 15€/h for open-space
+        break;
+      case 'daily':
+        price = 80; // Example: 80€/day
+        break;
+      case 'weekly':
+        price = 400; // Example: 400€/week
+        break;
+      case 'monthly':
+        price = 1200; // Example: 1200€/month
+        break;
+    }
+    setCalculatedPrice(price);
+  };
+
+  const handleContinue = () => {
+    // Store booking data in sessionStorage
+    const bookingData = {
+      spaceType: params.type,
+      reservationType,
+      date: selectedDate,
+      startTime,
+      endTime,
+      basePrice: calculatedPrice,
+      duration,
+    };
+    sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+
+    // Navigate to details page
+    router.push('/booking/details');
+  };
+
+  const isValidSelection = selectedDate && startTime && endTime && calculatedPrice > 0;
+
+  return (
+    <>
+      <PageTitle title="Réserver un espace" currentPage="Date et horaires" />
+
+      <section className="booking-date-page py-5">
+        <div className="container">
+          {/* Progress Bar */}
+          <div className="row justify-content-center mb-4">
+            <div className="col-lg-8">
+              <BookingProgressBar currentStep={2} />
+            </div>
+          </div>
+
+          {/* Main Card */}
+          <div className="row justify-content-center">
+            <div className="col-lg-8">
+              <div className="booking-card">
+                {/* Back button */}
+                <button
+                  onClick={() => router.back()}
+                  className="btn btn-link text-muted p-0 mb-4"
+                >
+                  <i className="bi bi-arrow-left me-2"></i>
+                  Retour
+                </button>
+
+                {/* Title */}
+                <div className="text-center mb-4">
+                  <h2 className="mb-2">Quand voulez-vous venir ?</h2>
+                  <p className="text-muted">
+                    Sélectionnez votre durée et votre créneau
+                  </p>
+                  <div className="selected-space-badge">
+                    <i className="bi bi-geo-alt me-2"></i>
+                    {spaceInfo.title} - {spaceInfo.subtitle}
+                  </div>
+                </div>
+
+                {/* Reservation Type */}
+                <div className="mb-5">
+                  <label className="form-label fw-semibold mb-3">
+                    Type de réservation
+                  </label>
+                  <div className="reservation-types-grid">
+                    {reservationTypes.map((type) => (
+                      <button
+                        key={type.id}
+                        className={`reservation-type-btn ${
+                          reservationType === type.id ? 'active' : ''
+                        }`}
+                        onClick={() => setReservationType(type.id)}
+                      >
+                        <i className={type.icon}></i>
+                        <span>{type.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Date Selection */}
+                <div className="mb-5">
+                  <label className="form-label fw-semibold mb-3">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control form-control-lg"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+
+                {/* Time Selection */}
+                <div className="row mb-5">
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold mb-3">
+                      Heure de début
+                    </label>
+                    <div className="time-slots-grid">
+                      {timeSlots.map((time) => (
+                        <button
+                          key={time}
+                          className={`time-slot-btn ${
+                            startTime === time ? 'active' : ''
+                          }`}
+                          onClick={() => setStartTime(time)}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold mb-3">
+                      Heure de fin
+                      {duration && (
+                        <span className="text-muted ms-2">
+                          (sélection: {startTime} - {endTime})
+                        </span>
+                      )}
+                    </label>
+                    <div className="time-slots-grid">
+                      {timeSlots.map((time) => (
+                        <button
+                          key={time}
+                          className={`time-slot-btn ${
+                            endTime === time ? 'active' : ''
+                          } ${startTime && time <= startTime ? 'disabled' : ''}`}
+                          onClick={() => setEndTime(time)}
+                          disabled={startTime && time <= startTime}
+                        >
+                          {time}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Duration & Price Display */}
+                {duration && calculatedPrice > 0 && (
+                  <div className="price-summary mb-4">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <span className="text-muted">
+                        <i className="bi bi-clock me-2"></i>
+                        Durée: {duration}
+                      </span>
+                    </div>
+                    <div className="price-display">
+                      {calculatedPrice.toFixed(0)}€
+                    </div>
+                    <p className="text-muted text-center mb-0 small">
+                      Tarif de base - Services supplémentaires à l'étape suivante
+                    </p>
+                  </div>
+                )}
+
+                {/* Continue Button */}
+                <button
+                  className="btn btn-success btn-lg w-100"
+                  onClick={handleContinue}
+                  disabled={!isValidSelection}
+                >
+                  Continuer vers les détails
+                  <i className="bi bi-arrow-right ms-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <style jsx>{`
+        .booking-date-page {
+          background-color: #f8f9fa;
+          min-height: 80vh;
+        }
+
+        .booking-card {
+          background: white;
+          border-radius: 20px;
+          padding: 2.5rem;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .selected-space-badge {
+          display: inline-block;
+          background: #f0f0f0;
+          padding: 0.5rem 1.5rem;
+          border-radius: 20px;
+          color: #666;
+          font-size: 0.9rem;
+          margin-top: 1rem;
+        }
+
+        .reservation-types-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 1rem;
+        }
+
+        .reservation-type-btn {
+          background: #f8f9fa;
+          border: 2px solid #e0e0e0;
+          border-radius: 12px;
+          padding: 1.5rem 1rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-weight: 500;
+          color: #666;
+        }
+
+        .reservation-type-btn i {
+          font-size: 1.5rem;
+        }
+
+        .reservation-type-btn:hover {
+          border-color: #5cb85c;
+          background: #f0f8f0;
+        }
+
+        .reservation-type-btn.active {
+          background: #5cb85c;
+          border-color: #5cb85c;
+          color: white;
+        }
+
+        .time-slots-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+          gap: 0.5rem;
+          max-height: 300px;
+          overflow-y: auto;
+          padding: 0.5rem;
+        }
+
+        .time-slot-btn {
+          background: #f8f9fa;
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          padding: 0.75rem 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-weight: 500;
+          color: #666;
+          font-size: 0.9rem;
+        }
+
+        .time-slot-btn:hover:not(.disabled) {
+          border-color: #5cb85c;
+          background: #f0f8f0;
+        }
+
+        .time-slot-btn.active {
+          background: #5cb85c;
+          border-color: #5cb85c;
+          color: white;
+        }
+
+        .time-slot-btn.disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        .price-summary {
+          background: #f8f9fa;
+          border-radius: 12px;
+          padding: 1.5rem;
+          text-align: center;
+        }
+
+        .price-display {
+          font-size: 3rem;
+          font-weight: 700;
+          color: #333;
+          margin: 0.5rem 0;
+        }
+
+        .btn-success {
+          background: #5cb85c;
+          border: none;
+          padding: 1rem;
+          font-weight: 600;
+          border-radius: 12px;
+        }
+
+        .btn-success:hover:not(:disabled) {
+          background: #4cae4c;
+        }
+
+        .btn-success:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+          .booking-card {
+            padding: 1.5rem;
+          }
+
+          .time-slots-grid {
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+          }
+
+          .price-display {
+            font-size: 2.5rem;
+          }
+
+          .reservation-types-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+      `}</style>
+    </>
+  );
+}
