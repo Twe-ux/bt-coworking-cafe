@@ -1,9 +1,10 @@
-import { ObjectId, Schema, Types } from "mongoose";
+import { ObjectId, Schema, Types, Document } from "mongoose";
 
 /** Document of a {@link Reservation}, as stored in the database. */
 export interface ReservationDocument extends Document {
   user: ObjectId;
-  spaceType: "desk" | "meeting-room" | "private-office" | "event-space";
+  space: ObjectId;
+  spaceType?: "desk" | "meeting-room" | "private-office" | "event-space"; // Deprecated: kept for backward compatibility
   date: Date;
   startTime: string; // Format: "HH:mm"
   endTime: string; // Format: "HH:mm"
@@ -11,11 +12,17 @@ export interface ReservationDocument extends Document {
   status: "pending" | "confirmed" | "cancelled" | "completed";
   totalPrice: number;
   notes?: string;
-  paymentStatus: "pending" | "paid" | "refunded";
+  specialRequests?: string;
+  confirmationNumber?: string;
+  paymentStatus: "pending" | "paid" | "refunded" | "failed";
   paymentMethod?: "card" | "cash" | "bank-transfer";
+  stripePaymentIntentId?: string;
+  stripeSessionId?: string;
+  stripeCustomerId?: string;
   createdAt: Date;
   updatedAt: Date;
   cancelledAt?: Date;
+  completedAt?: Date;
 }
 
 /** Schema used to validate Reservation objects for the database. */
@@ -27,9 +34,14 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       required: [true, "User is required"],
       index: true,
     },
+    space: {
+      type: Types.ObjectId,
+      ref: "Space",
+      required: [true, "Space is required"],
+      index: true,
+    },
     spaceType: {
       type: String,
-      required: [true, "Space type is required"],
       enum: {
         values: ["desk", "meeting-room", "private-office", "event-space"],
         message: "{VALUE} is not a valid space type",
@@ -76,11 +88,22 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       trim: true,
       maxlength: [500, "Notes cannot exceed 500 characters"],
     },
+    specialRequests: {
+      type: String,
+      trim: true,
+      maxlength: [1000, "Special requests cannot exceed 1000 characters"],
+    },
+    confirmationNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+      uppercase: true,
+    },
     paymentStatus: {
       type: String,
       required: true,
       enum: {
-        values: ["pending", "paid", "refunded"],
+        values: ["pending", "paid", "refunded", "failed"],
         message: "{VALUE} is not a valid payment status",
       },
       default: "pending",
@@ -93,7 +116,23 @@ export const ReservationSchema = new Schema<ReservationDocument>(
         message: "{VALUE} is not a valid payment method",
       },
     },
+    stripePaymentIntentId: {
+      type: String,
+      trim: true,
+      index: true,
+    },
+    stripeSessionId: {
+      type: String,
+      trim: true,
+    },
+    stripeCustomerId: {
+      type: String,
+      trim: true,
+    },
     cancelledAt: {
+      type: Date,
+    },
+    completedAt: {
       type: Date,
     },
   },
@@ -106,5 +145,17 @@ export const ReservationSchema = new Schema<ReservationDocument>(
 
 // Indexes
 ReservationSchema.index({ user: 1, date: 1 });
+ReservationSchema.index({ space: 1, date: 1 });
 ReservationSchema.index({ status: 1, date: 1 });
 ReservationSchema.index({ date: 1, spaceType: 1 });
+ReservationSchema.index({ stripePaymentIntentId: 1 }, { sparse: true });
+ReservationSchema.index({ confirmationNumber: 1 }, { sparse: true });
+
+// Compound index to prevent double bookings
+ReservationSchema.index({
+  space: 1,
+  date: 1,
+  startTime: 1,
+  endTime: 1,
+  status: 1,
+});

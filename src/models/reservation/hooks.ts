@@ -68,7 +68,7 @@ export function attachHooks(): void {
     return this.canCancel();
   });
 
-  // Pre-save hook to validate times
+  // Pre-save hook to validate times and generate confirmation number
   ReservationSchema.pre("save", function (next) {
     const [startHour, startMinute] = this.startTime.split(":").map(Number);
     const [endHour, endMinute] = this.endTime.split(":").map(Number);
@@ -77,8 +77,25 @@ export function attachHooks(): void {
 
     if (endInMinutes <= startInMinutes) {
       next(new Error("End time must be after start time"));
-    } else {
-      next();
+      return;
     }
+
+    // Generate confirmation number if not exists and status is confirmed
+    if (
+      !this.confirmationNumber &&
+      (this.status === "confirmed" || this.paymentStatus === "paid")
+    ) {
+      this.confirmationNumber = `BK${Date.now().toString(36).toUpperCase()}${Math.random()
+        .toString(36)
+        .substring(2, 5)
+        .toUpperCase()}`;
+    }
+
+    // Set completedAt when status changes to completed
+    if (this.isModified("status") && this.status === "completed" && !this.completedAt) {
+      this.completedAt = new Date();
+    }
+
+    next();
   });
 }

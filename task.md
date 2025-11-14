@@ -96,38 +96,53 @@
 
 ## 🏢 Plateforme de Réservation - Nouvelles Fonctionnalités
 
-### Phase 1 : Modèles et Base de Données
+### ✅ Phase 1 : Modèles et Base de Données - TERMINÉ
 
-- [ ] **Créer le modèle `Space` (Espace/Salle)**
-  - [ ] Fields : name, description, type (desk/room/meetingRoom)
-  - [ ] capacity, pricePerHour, pricePerDay, pricePerMonth
-  - [ ] amenities[] (wifi, projector, whiteboard, coffee, etc.)
-  - [ ] images[] (Cloudinary URLs)
-  - [ ] availability: { dayOfWeek, startTime, endTime }[]
-  - [ ] isActive, location (floor, building)
-  - [ ] Indexes : type, isActive, pricePerHour
+- [x] **Créer le modèle `Space` (Espace/Salle)**
+  - [x] Fields : name, slug, description, type (desk/meeting-room/private-office/event-space)
+  - [x] capacity, pricing { hourly, daily, weekly, monthly }
+  - [x] amenities[] (14 types: wifi, projector, whiteboard, coffee, printer, phone, tv, air-conditioning, natural-light, standing-desk, ergonomic-chair, locker, kitchen-access, parking)
+  - [x] images[], featuredImage (Cloudinary URLs)
+  - [x] availability: { dayOfWeek, startTime, endTime, isAvailable }[]
+  - [x] isActive, isDeleted, floor, building, viewCount, bookingCount
+  - [x] Indexes : type, isActive, pricing, capacity, full-text search
+  - [x] Methods : activate(), deactivate(), softDelete(), incrementView(), incrementBooking(), isAvailableOnDay()
+  - [x] Virtuals : hasPricing, minPrice, isBookable, averageRating, occupancyRate
+  - [x] Hooks : auto-generate slug, set deletedAt
+  - **Structure** : `src/models/space/` (document.ts, hooks.ts, methods.ts, virtuals.ts, index.ts)
 
-- [ ] **Créer le modèle `Booking` (Réservation)**
-  - [ ] Fields : spaceId, userId, startDate, endDate, startTime, endTime
-  - [ ] status (pending/confirmed/cancelled/completed)
-  - [ ] totalPrice, paymentStatus (pending/paid/refunded)
-  - [ ] stripePaymentIntentId, stripePaymentMethodId
-  - [ ] specialRequests (text)
-  - [ ] createdAt, updatedAt, cancelledAt
-  - [ ] Indexes : userId, spaceId, status, startDate
-  - [ ] Validation : empêcher les réservations qui se chevauchent
+- [x] **Modifier le modèle `Reservation` (Réservation)**
+  - [x] Ajout référence `space: ObjectId`
+  - [x] Fields : user, space, date, startTime, endTime, numberOfPeople
+  - [x] status (pending/confirmed/cancelled/completed)
+  - [x] totalPrice, paymentStatus (pending/paid/refunded/failed)
+  - [x] specialRequests, confirmationNumber, notes
+  - [x] stripePaymentIntentId, stripeSessionId, stripeCustomerId
+  - [x] createdAt, updatedAt, cancelledAt, completedAt
+  - [x] Indexes : userId, spaceId, status, date, stripePaymentIntentId, confirmationNumber
+  - [x] Compound index : space + date + startTime + endTime + status (prévenir double booking)
+  - [x] Methods : calculateDuration(), canCancel(), cancel()
+  - [x] Virtuals : duration, isUpcoming, isPast, canBeCancelled
+  - [x] Hooks : validate times, generate confirmation number, set completedAt
+  - **Modifié** : `src/models/reservation/document.ts` & `hooks.ts`
 
-- [ ] **Créer le modèle `Payment`**
-  - [ ] Fields : bookingId, userId, amount, currency
-  - [ ] stripePaymentIntentId, stripeChargeId
-  - [ ] status (pending/succeeded/failed/refunded)
-  - [ ] paymentMethod (card/stripe)
-  - [ ] metadata (card brand, last4, etc.)
-  - [ ] createdAt, completedAt
+- [x] **Créer le modèle `Payment`**
+  - [x] Fields : booking, user, amount, currency (default EUR)
+  - [x] stripePaymentIntentId, stripeChargeId, stripeCustomerId, stripeRefundId
+  - [x] status (pending/processing/succeeded/failed/refunded/cancelled)
+  - [x] paymentMethod (card/cash/bank-transfer/wallet)
+  - [x] metadata: { cardBrand, cardLast4, cardExpiryMonth, cardExpiryYear, receiptUrl, receiptNumber, refundReason, refundedAmount, refundedAt }
+  - [x] description, failureReason, completedAt, failedAt
+  - [x] Indexes : user, booking, status, createdAt, stripePaymentIntentId
+  - [x] Methods : markAsSucceeded(), markAsFailed(), markAsRefunded(), canBeRefunded(), isSuccessful()
+  - [x] Virtuals : isPending, isCompleted, isRefunded, formattedAmount, processingTime, maskedCardNumber
+  - [x] Hooks : set completedAt/failedAt, update booking paymentStatus automatiquement
+  - **Structure** : `src/models/payment/` (document.ts, hooks.ts, methods.ts, virtuals.ts, index.ts)
 
 - [ ] **Créer le modèle `TimeSlot` (optionnel, pour optimisation)**
   - [ ] spaceId, date, startTime, endTime, isBooked
   - [ ] Permet de gérer les disponibilités facilement
+  - **Note** : Peut être implémenté plus tard si nécessaire pour la performance
 
 ### Phase 2 : API Endpoints
 
