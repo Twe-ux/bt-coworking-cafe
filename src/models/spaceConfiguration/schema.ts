@@ -183,8 +183,7 @@ const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
 );
 
 // Indexes
-spaceConfigurationSchema.index({ spaceType: 1 });
-spaceConfigurationSchema.index({ slug: 1 });
+// Note: spaceType and slug already have unique indexes from schema definition
 spaceConfigurationSchema.index({ isActive: 1, isDeleted: 1 });
 
 export default spaceConfigurationSchema;
