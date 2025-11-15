@@ -15,32 +15,34 @@ export async function getAuthUser() {
   return {
     id: session.user.id,
     email: session.user.email,
+    name: session.user.name,
     role: session.user.role,
     username: session.user.username,
   };
 }
 
 /**
- * Helper to check if user is admin/staff/dev
+ * Helper to check if user is authenticated and has required role
+ * Returns the user if authorized, throws NextResponse error otherwise
  */
 export async function requireAuth(allowedRoles: string[] = ['admin', 'staff', 'dev']) {
   const user = await getAuthUser();
 
   if (!user) {
-    return NextResponse.json(
+    throw NextResponse.json(
       { error: 'Authentication required' },
       { status: 401 }
     );
   }
 
   if (!allowedRoles.includes(user.role?.slug || '')) {
-    return NextResponse.json(
+    throw NextResponse.json(
       { error: 'Insufficient permissions' },
       { status: 403 }
     );
   }
 
-  return null; // null means authorized
+  return user; // Return user if authorized
 }
 
 /**

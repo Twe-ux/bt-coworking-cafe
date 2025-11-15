@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import Reservation from '@/models/reservation';
+import { Reservation } from '@/models/reservation';
 import Space from '@/models/space';
-import User from '@/models/user';
+import { User } from '@/models/user';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { sendBookingConfirmation } from '@/lib/email/emailService';
+import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
   try {
@@ -203,7 +204,7 @@ export async function POST(request: NextRequest) {
         }),
         time: `${startTime} - ${endTime}`,
         price: totalPrice || basePrice || 0,
-        bookingId: reservation._id.toString(),
+        bookingId: (reservation._id as mongoose.Types.ObjectId).toString(),
         requiresPayment: requiresPayment !== false,
       });
     } catch (emailError) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Reservation from '@/models/reservation';
+import { Reservation } from '@/models/reservation';
 import Payment from '@/models/payment';
 import { requireAuth, handleApiError } from '@/lib/api-helpers';
 import { createPaymentIntent, formatAmountForStripe, getOrCreateStripeCustomer } from '@/lib/stripe';
@@ -111,8 +111,8 @@ export async function POST(request: NextRequest) {
     );
 
     // Create description
-    const spaceName = typeof booking.space === 'object' && booking.space?.name
-      ? booking.space.name
+    const spaceName = typeof booking.space === 'object' && booking.space !== null && 'name' in booking.space
+      ? (booking.space as { name: string }).name
       : 'Space';
     const description = `Booking for ${spaceName} on ${new Date(booking.date).toLocaleDateString('fr-FR')}`;
 

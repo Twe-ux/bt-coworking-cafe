@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Reservation from '@/models/reservation';
+import { Reservation } from '@/models/reservation';
 import Space from '@/models/space';
 import { getAuthUser, requireAuth, handleApiError } from '@/lib/api-helpers';
 import mongoose from 'mongoose';
@@ -46,7 +46,10 @@ export async function GET(
 
     // Check permissions
     const isAdminOrStaff = user && ['admin', 'staff', 'dev'].includes(user.role?.slug || '');
-    const isOwner = booking.user && (booking.user._id?.toString() === user.id || booking.user.toString() === user.id);
+    const bookingUserId = typeof booking.user === 'object' && booking.user !== null && '_id' in booking.user
+      ? (booking.user._id as unknown as string).toString()
+      : booking.user?.toString();
+    const isOwner = booking.user && bookingUserId === user.id;
 
     if (!isAdminOrStaff && !isOwner) {
       return NextResponse.json(
@@ -202,7 +205,7 @@ export async function PATCH(
     // Update allowed fields
     allowedFields.forEach((field) => {
       if (body[field] !== undefined) {
-        (booking as Record<string, unknown>)[field] = body[field];
+        (booking as unknown as Record<string, unknown>)[field] = body[field];
       }
     });
 

@@ -13,8 +13,8 @@ addVirtuals(AdditionalServiceSchema);
 AdditionalServiceSchema.set('toJSON', {
   virtuals: true,
   transform: function (doc, ret) {
-    delete ret.__v;
-    return ret;
+    const { __v, ...rest } = ret;
+    return rest;
   },
 });
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Reservation from '@/models/reservation';
+import { Reservation } from '@/models/reservation';
 import Space from '@/models/space';
 import { getAuthUser, requireAuth, handleApiError } from '@/lib/api-helpers';
 import mongoose from 'mongoose';

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Payment from '@/models/payment';
-import Reservation from '@/models/reservation';
-import { verifyWebhookSignature } from '@/lib/stripe';
+import { Reservation } from '@/models/reservation';
+import { verifyWebhookSignature, stripe } from '@/lib/stripe';
 import Stripe from 'stripe';
+import type { CardBrand } from '@/models/payment/document';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -121,19 +122,23 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
     payment.status = 'succeeded';
     payment.completedAt = new Date();
 
-    // Extract card details from payment method if available
-    if (paymentIntent.charges.data.length > 0) {
-      const charge = paymentIntent.charges.data[0];
+    // Extract card details from latest charge if available
+    if (paymentIntent.latest_charge) {
+      const charge = typeof paymentIntent.latest_charge === 'string'
+        ? await stripe.charges.retrieve(paymentIntent.latest_charge)
+        : paymentIntent.latest_charge;
+
       payment.stripeChargeId = charge.id;
 
       if (charge.payment_method_details?.card) {
+        const card = charge.payment_method_details.card;
         payment.metadata = {
           ...payment.metadata,
-          cardBrand: charge.payment_method_details.card.brand as typeof payment.metadata.cardBrand,
-          cardLast4: charge.payment_method_details.card.last4,
-          cardExpiryMonth: charge.payment_method_details.card.exp_month,
-          cardExpiryYear: charge.payment_method_details.card.exp_year,
-          receiptUrl: charge.receipt_url || undefined,
+          cardBrand: card.brand as CardBrand | undefined,
+          cardLast4: card.last4 ?? undefined,
+          cardExpiryMonth: card.exp_month ?? undefined,
+          cardExpiryYear: card.exp_year ?? undefined,
+          receiptUrl: charge.receipt_url ? charge.receipt_url : undefined,
         };
       }
     }

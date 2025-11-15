@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectDB from "@/lib/db";
-import Reservation from "@/models/reservation";
+import { Reservation } from "@/models/reservation";
 
 /**
  * GET /api/admin/reservations
@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
     let filteredReservations = reservations;
     if (spaceType) {
       filteredReservations = reservations.filter(
-        (r: Record<string, unknown>) =>
-          (r.space as Record<string, unknown>)?.spaceType === spaceType
+        (r) =>
+          ((r.space as unknown as Record<string, unknown>)?.spaceType === spaceType)
       );
     }
 

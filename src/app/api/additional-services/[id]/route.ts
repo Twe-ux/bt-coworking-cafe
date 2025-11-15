@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import AdditionalService from '@/models/additionalService';
-import { requireAuth } from '@/lib/auth-helpers';
+import { requireAuth } from '@/lib/api-helpers';
 import mongoose from 'mongoose';
 
 // GET /api/additional-services/[id] - Récupérer un service

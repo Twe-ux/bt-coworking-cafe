@@ -154,7 +154,7 @@ export async function PATCH(
 
     allowedFields.forEach((field) => {
       if (body[field] !== undefined) {
-        (space as Record<string, unknown>)[field] = body[field];
+        (space as unknown as Record<string, unknown>)[field] = body[field];
       }
     });
 

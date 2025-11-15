@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import AdditionalService from '@/models/additionalService';
-import { requireAuth } from '@/lib/auth-helpers';
+import { requireAuth } from '@/lib/api-helpers';
 
 // GET /api/additional-services - Liste des services supplémentaires
 export async function GET(request: NextRequest) {
