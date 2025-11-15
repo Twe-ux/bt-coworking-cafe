@@ -8,12 +8,7 @@ import { useSession } from 'next-auth/react';
 
 interface Booking {
   _id: string;
-  space: {
-    _id: string;
-    name: string;
-    type: string;
-    featuredImage?: string;
-  };
+  spaceType: string;
   date: string;
   startTime: string;
   endTime: string;
@@ -27,10 +22,17 @@ interface Booking {
   createdAt: string;
 }
 
+interface SpaceConfig {
+  name: string;
+  spaceType: string;
+  imageUrl?: string;
+}
+
 export default function ConfirmationPage({ params }: { params: { bookingId: string } }) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [booking, setBooking] = useState<Booking | null>(null);
+  const [spaceConfig, setSpaceConfig] = useState<SpaceConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +62,18 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
         return;
       }
 
-      setBooking(data.data);
+      const bookingDetails = data.data;
+      setBooking(bookingDetails);
+
+      // Fetch space configuration
+      if (bookingDetails.spaceType) {
+        const spaceResponse = await fetch(`/api/space-configurations/${bookingDetails.spaceType}`);
+        const spaceData = await spaceResponse.json();
+        if (spaceData.success) {
+          setSpaceConfig(spaceData.data);
+        }
+      }
+
       setLoading(false);
     } catch (err) {
       console.error('Error fetching booking:', err);
@@ -88,6 +101,10 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
       'meeting-room': 'Salle de réunion',
       'private-office': 'Bureau privé',
       'event-space': 'Espace événement',
+      'open-space': 'Open-space',
+      'salle-verriere': 'Salle Verrière',
+      'salle-etage': 'Salle Étage',
+      'evenementiel': 'Événementiel',
     };
     return labels[type] || type;
   };
@@ -210,11 +227,11 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                   </h5>
 
                   {/* Space Image */}
-                  {booking.space.featuredImage && (
+                  {spaceConfig?.imageUrl && (
                     <div className="mb-4">
                       <img
-                        src={booking.space.featuredImage}
-                        alt={booking.space.name}
+                        src={spaceConfig.imageUrl}
+                        alt={spaceConfig.name}
                         className="img-fluid rounded"
                         style={{ maxHeight: '300px', width: '100%', objectFit: 'cover' }}
                       />
@@ -224,9 +241,9 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                   <div className="row mb-3">
                     <div className="col-sm-4 text-muted">Espace</div>
                     <div className="col-sm-8">
-                      <strong>{booking.space.name}</strong>
+                      <strong>{spaceConfig?.name || 'Espace'}</strong>
                       <span className="badge bg-primary ms-2">
-                        {getTypeLabel(booking.space.type)}
+                        {getTypeLabel(booking.spaceType)}
                       </span>
                     </div>
                   </div>
