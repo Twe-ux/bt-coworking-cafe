@@ -20,16 +20,6 @@ if (!MONGODB_URI) {
   process.exit(1);
 }
 
-const defaultHours = {
-  monday: { isOpen: true, openTime: "09:00", closeTime: "20:00" },
-  tuesday: { isOpen: true, openTime: "09:00", closeTime: "20:00" },
-  wednesday: { isOpen: true, openTime: "09:00", closeTime: "20:00" },
-  thursday: { isOpen: true, openTime: "09:00", closeTime: "20:00" },
-  friday: { isOpen: true, openTime: "09:00", closeTime: "20:00" },
-  saturday: { isOpen: true, openTime: "10:00", closeTime: "20:00" },
-  sunday: { isOpen: true, openTime: "10:00", closeTime: "20:00" },
-};
-
 const seedData = [
   {
     spaceType: "open-space",
@@ -52,8 +42,6 @@ const seedData = [
     requiresQuote: false,
     minCapacity: 1,
     maxCapacity: 50,
-    defaultHours,
-    exceptionalClosures: [],
     isActive: true,
     imageUrl: "/images/open-space.jpg",
     displayOrder: 1,
@@ -79,8 +67,6 @@ const seedData = [
     requiresQuote: false,
     minCapacity: 2,
     maxCapacity: 12,
-    defaultHours,
-    exceptionalClosures: [],
     isActive: true,
     imageUrl: "/images/salle-verriere.jpg",
     displayOrder: 2,
@@ -106,8 +92,6 @@ const seedData = [
     requiresQuote: false,
     minCapacity: 2,
     maxCapacity: 8,
-    defaultHours,
-    exceptionalClosures: [],
     isActive: true,
     imageUrl: "/images/salle-etage.jpg",
     displayOrder: 3,
@@ -133,8 +117,6 @@ const seedData = [
     requiresQuote: true,
     minCapacity: 10,
     maxCapacity: 80,
-    defaultHours,
-    exceptionalClosures: [],
     isActive: true,
     imageUrl: "/images/evenementiel.jpg",
     displayOrder: 4,
@@ -164,52 +146,6 @@ const SpaceConfigurationSchema = new mongoose.Schema(
     requiresQuote: { type: Boolean, default: false },
     minCapacity: { type: Number, default: 1 },
     maxCapacity: { type: Number, default: 12 },
-    defaultHours: {
-      monday: {
-        isOpen: { type: Boolean, default: true },
-        openTime: String,
-        closeTime: String,
-      },
-      tuesday: {
-        isOpen: { type: Boolean, default: true },
-        openTime: String,
-        closeTime: String,
-      },
-      wednesday: {
-        isOpen: { type: Boolean, default: true },
-        openTime: String,
-        closeTime: String,
-      },
-      thursday: {
-        isOpen: { type: Boolean, default: true },
-        openTime: String,
-        closeTime: String,
-      },
-      friday: {
-        isOpen: { type: Boolean, default: true },
-        openTime: String,
-        closeTime: String,
-      },
-      saturday: {
-        isOpen: { type: Boolean, default: true },
-        openTime: String,
-        closeTime: String,
-      },
-      sunday: {
-        isOpen: { type: Boolean, default: true },
-        openTime: String,
-        closeTime: String,
-      },
-    },
-    exceptionalClosures: [
-      {
-        startDate: Date,
-        endDate: Date,
-        startTime: String,
-        endTime: String,
-        reason: String,
-      },
-    ],
     isActive: { type: Boolean, default: true },
     imageUrl: String,
     displayOrder: { type: Number, default: 0 },

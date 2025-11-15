@@ -1,39 +1,6 @@
 import { Document } from "mongoose";
 
 /**
- * Opening hours for a specific day
- */
-export interface DayHours {
-  isOpen: boolean;
-  openTime?: string; // Format: "HH:mm" (e.g., "09:00")
-  closeTime?: string; // Format: "HH:mm" (e.g., "20:00")
-}
-
-/**
- * Weekly opening hours
- */
-export interface WeeklyHours {
-  monday: DayHours;
-  tuesday: DayHours;
-  wednesday: DayHours;
-  thursday: DayHours;
-  friday: DayHours;
-  saturday: DayHours;
-  sunday: DayHours;
-}
-
-/**
- * Exceptional closure (holidays, special events, etc.)
- */
-export interface ExceptionalClosure {
-  date: Date;
-  reason?: string;
-  startTime?: string; // Optional: Format "HH:mm" (e.g., "14:00") - if absent, closed all day
-  endTime?: string; // Optional: Format "HH:mm" (e.g., "18:00") - if absent, closed all day
-  isFullDay?: boolean; // If true or if times absent, closed all day
-}
-
-/**
  * Pricing structure for different reservation types
  */
 export interface PricingStructure {
@@ -71,10 +38,6 @@ export interface SpaceConfigurationDocument extends Document {
   // Capacity
   minCapacity: number;
   maxCapacity: number;
-
-  // Opening hours
-  defaultHours: WeeklyHours;
-  exceptionalClosures: ExceptionalClosure[];
 
   // Availability
   isActive: boolean;

@@ -3,30 +3,6 @@
 import { useEffect, useState } from "react";
 import { Card, Button, Form, Row, Col, Nav, Tab, Alert } from "react-bootstrap";
 
-interface DayHours {
-  isOpen: boolean;
-  openTime?: string;
-  closeTime?: string;
-}
-
-interface WeeklyHours {
-  monday: DayHours;
-  tuesday: DayHours;
-  wednesday: DayHours;
-  thursday: DayHours;
-  friday: DayHours;
-  saturday: DayHours;
-  sunday: DayHours;
-}
-
-interface ExceptionalClosure {
-  date: string;
-  reason?: string;
-  startTime?: string;
-  endTime?: string;
-  isFullDay?: boolean;
-}
-
 interface PricingStructure {
   hourly: number;
   daily: number;
@@ -53,22 +29,10 @@ interface SpaceConfiguration {
   requiresQuote: boolean;
   minCapacity: number;
   maxCapacity: number;
-  defaultHours: WeeklyHours;
-  exceptionalClosures: ExceptionalClosure[];
   isActive: boolean;
   imageUrl?: string;
   displayOrder: number;
 }
-
-const daysOfWeek = [
-  { key: "monday", label: "Lundi" },
-  { key: "tuesday", label: "Mardi" },
-  { key: "wednesday", label: "Mercredi" },
-  { key: "thursday", label: "Jeudi" },
-  { key: "friday", label: "Vendredi" },
-  { key: "saturday", label: "Samedi" },
-  { key: "sunday", label: "Dimanche" },
-];
 
 export default function SpacesSettingsPage() {
   const [configurations, setConfigurations] = useState<SpaceConfiguration[]>([]);
@@ -443,13 +407,13 @@ export default function SpacesSettingsPage() {
                           </Col>
                         </Row>
 
-                        {/* Opening Hours - Read Only */}
+                        {/* Opening Hours - Info */}
                         <h5 className="mb-3 mt-4">Horaires d'ouverture</h5>
                         <Alert variant="info">
                           <div className="d-flex align-items-center justify-content-between">
                             <div>
                               <i className="bi bi-clock me-2"></i>
-                              Les horaires sont gérés de manière centralisée pour tous les espaces.
+                              Les horaires d'ouverture et fermetures exceptionnelles sont gérés de manière centralisée pour tout le coworking.
                             </div>
                             <Button
                               variant="primary"
@@ -460,63 +424,6 @@ export default function SpacesSettingsPage() {
                             </Button>
                           </div>
                         </Alert>
-
-                        <div className="border rounded p-3 bg-light">
-                          {daysOfWeek.map((day) => {
-                            const dayKey = day.key as keyof WeeklyHours;
-                            const dayHours = config.defaultHours[dayKey];
-                            return (
-                              <Row key={day.key} className="mb-2 align-items-center">
-                                <Col md={3}>
-                                  <strong>{day.label}</strong>
-                                </Col>
-                                <Col md={9}>
-                                  {dayHours.isOpen ? (
-                                    <span className="text-success">
-                                      <i className="bi bi-check-circle me-2"></i>
-                                      {dayHours.openTime} - {dayHours.closeTime}
-                                    </span>
-                                  ) : (
-                                    <span className="text-muted">
-                                      <i className="bi bi-x-circle me-2"></i>
-                                      Fermé
-                                    </span>
-                                  )}
-                                </Col>
-                              </Row>
-                            );
-                          })}
-                        </div>
-
-                        {/* Exceptional Closures - Read Only */}
-                        <h5 className="mb-3 mt-4">Fermetures exceptionnelles</h5>
-                        {config.exceptionalClosures.length > 0 ? (
-                          <div className="border rounded p-3 bg-light">
-                            {config.exceptionalClosures
-                              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                              .map((closure, index) => {
-                                const isPartialClosure = closure.isFullDay === false && closure.startTime && closure.endTime;
-                                return (
-                                  <div key={index} className="mb-2">
-                                    <i className="bi bi-calendar-x text-warning me-2"></i>
-                                    <strong>{new Date(closure.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong>
-                                    {isPartialClosure && (
-                                      <span className="badge bg-info-subtle text-info ms-2">
-                                        {closure.startTime} - {closure.endTime}
-                                      </span>
-                                    )}
-                                    {closure.reason && (
-                                      <span className="text-muted ms-2">- {closure.reason}</span>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                          </div>
-                        ) : (
-                          <Alert variant="secondary">
-                            Aucune fermeture exceptionnelle programmée.
-                          </Alert>
-                        )}
 
                         {/* Save Button */}
                         <div className="mt-4">

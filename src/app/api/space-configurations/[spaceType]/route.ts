@@ -39,8 +39,6 @@ export async function GET(
         requiresQuote: configuration.requiresQuote,
         minCapacity: configuration.minCapacity,
         maxCapacity: configuration.maxCapacity,
-        defaultHours: configuration.defaultHours,
-        exceptionalClosures: configuration.exceptionalClosures,
         imageUrl: configuration.imageUrl,
       },
     });

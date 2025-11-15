@@ -55,7 +55,7 @@ export default function HorairesSettingsPage() {
   const fetchConfiguration = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/space-configurations/open-space");
+      const response = await fetch("/api/admin/global-hours");
       const data = await response.json();
 
       if (data.success) {
@@ -79,7 +79,7 @@ export default function HorairesSettingsPage() {
 
     try {
       setSaving(true);
-      const response = await fetch("/api/admin/space-configurations/open-space", {
+      const response = await fetch("/api/admin/global-hours", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

@@ -41,6 +41,9 @@ interface SpaceConfiguration {
   requiresQuote: boolean;
   minCapacity: number;
   maxCapacity: number;
+}
+
+interface GlobalHours {
   defaultHours: {
     [key: string]: {
       isOpen: boolean;
@@ -48,9 +51,12 @@ interface SpaceConfiguration {
       closeTime?: string;
     };
   };
-  exceptionalClosures?: Array<{
+  exceptionalClosures: Array<{
     date: string;
     reason?: string;
+    startTime?: string;
+    endTime?: string;
+    isFullDay: boolean;
   }>;
 }
 
@@ -80,6 +86,7 @@ export default function BookingDatePage({ params }: { params: { type: string } }
   const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
   const [duration, setDuration] = useState<string>('');
   const [spaceConfig, setSpaceConfig] = useState<SpaceConfiguration | null>(null);
+  const [globalHours, setGlobalHours] = useState<GlobalHours | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
@@ -89,6 +96,24 @@ export default function BookingDatePage({ params }: { params: { type: string } }
         return spaceConfig.availableReservationTypes?.[reservType.id as keyof typeof spaceConfig.availableReservationTypes];
       })
     : allReservationTypes;
+
+  // Fetch global hours configuration
+  useEffect(() => {
+    const fetchGlobalHours = async () => {
+      try {
+        const response = await fetch('/api/global-hours');
+        const data = await response.json();
+
+        if (data.success) {
+          setGlobalHours(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching global hours:', error);
+      }
+    };
+
+    fetchGlobalHours();
+  }, []);
 
   // Fetch space configuration
   useEffect(() => {
@@ -224,30 +249,50 @@ export default function BookingDatePage({ params }: { params: { type: string } }
 
   // Check if selected time is within opening hours
   const checkOpeningHours = (): { isValid: boolean; message?: string } => {
-    if (!spaceConfig || !selectedDate || !startTime || !endTime) {
+    if (!globalHours || !selectedDate || !startTime || !endTime) {
       return { isValid: true };
     }
 
     // Check exceptional closures
     const selectedDateOnly = selectedDate.split('T')[0];
-    const closure = spaceConfig.exceptionalClosures?.find(
-      (c) => c.date.split('T')[0] === selectedDateOnly
+    const closure = globalHours.exceptionalClosures?.find(
+      (c) => {
+        const closureDate = new Date(c.date).toISOString().split('T')[0];
+        return closureDate === selectedDateOnly;
+      }
     );
     if (closure) {
-      return {
-        isValid: false,
-        message: `L'espace est fermé ce jour${closure.reason ? ` : ${closure.reason}` : ''}`,
-      };
+      // Check if it's a partial closure (time-based)
+      if (!closure.isFullDay && closure.startTime && closure.endTime) {
+        // Check if selected time overlaps with closure time
+        const closureStart = closure.startTime;
+        const closureEnd = closure.endTime;
+
+        if ((startTime >= closureStart && startTime < closureEnd) ||
+            (endTime > closureStart && endTime <= closureEnd) ||
+            (startTime <= closureStart && endTime >= closureEnd)) {
+          return {
+            isValid: false,
+            message: `Fermeture exceptionnelle de ${closureStart} à ${closureEnd}${closure.reason ? ` : ${closure.reason}` : ''}`,
+          };
+        }
+      } else {
+        // Full day closure
+        return {
+          isValid: false,
+          message: `Le coworking est fermé ce jour${closure.reason ? ` : ${closure.reason}` : ''}`,
+        };
+      }
     }
 
     // Get day of week
     const dayOfWeek = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-    const dayHours = spaceConfig.defaultHours?.[dayOfWeek];
+    const dayHours = globalHours.defaultHours?.[dayOfWeek];
 
     if (!dayHours || !dayHours.isOpen) {
       return {
         isValid: false,
-        message: 'L\'espace est fermé ce jour',
+        message: 'Le coworking est fermé ce jour',
       };
     }
 
