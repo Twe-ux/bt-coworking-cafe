@@ -3,6 +3,20 @@ import { getServerSession } from 'next-auth';
 import { options } from '@/lib/auth-options';
 
 /**
+ * Custom error class for API authentication/authorization errors
+ */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number = 500,
+    public data?: Record<string, unknown>
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+/**
  * Helper to get authenticated user from session
  */
 export async function getAuthUser() {
@@ -23,26 +37,20 @@ export async function getAuthUser() {
 
 /**
  * Helper to check if user is authenticated and has required role
- * Returns the user if authorized, throws NextResponse error otherwise
+ * Throws ApiError if not authorized
  */
 export async function requireAuth(allowedRoles: string[] = ['admin', 'staff', 'dev']) {
   const user = await getAuthUser();
 
   if (!user) {
-    throw NextResponse.json(
-      { error: 'Authentication required' },
-      { status: 401 }
-    );
+    throw new ApiError('Authentication required', 401);
   }
 
   if (!allowedRoles.includes(user.role?.slug || '')) {
-    throw NextResponse.json(
-      { error: 'Insufficient permissions' },
-      { status: 403 }
-    );
+    throw new ApiError('Insufficient permissions', 403);
   }
 
-  return user; // Return user if authorized
+  return user;
 }
 
 /**
@@ -50,6 +58,13 @@ export async function requireAuth(allowedRoles: string[] = ['admin', 'staff', 'd
  */
 export function handleApiError(error: unknown) {
   console.error('API Error:', error);
+
+  if (error instanceof ApiError) {
+    return NextResponse.json(
+      { error: error.message, ...error.data },
+      { status: error.statusCode }
+    );
+  }
 
   if (error instanceof Error) {
     return NextResponse.json(

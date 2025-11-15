@@ -27,6 +27,7 @@ export default function BookingDetailsPage() {
   const [contactPhone, setContactPhone] = useState('');
   const [specialRequests, setSpecialRequests] = useState('');
   const [loading, setLoading] = useState(false);
+  const [updatedPrice, setUpdatedPrice] = useState<number | null>(null);
 
   useEffect(() => {
     // Load booking data from sessionStorage
@@ -44,15 +45,52 @@ export default function BookingDetailsPage() {
     }
   }, [session]);
 
+  // Recalculate price when numberOfPeople changes
+  useEffect(() => {
+    if (!bookingData) return;
+
+    const recalculatePrice = async () => {
+      try {
+        const startDateTime = new Date(`${bookingData.date}T${bookingData.startTime}`).toISOString();
+        const endDateTime = new Date(`${bookingData.date}T${bookingData.endTime}`).toISOString();
+
+        const response = await fetch('/api/calculate-price', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            spaceType: bookingData.spaceType,
+            reservationType: bookingData.reservationType,
+            startTime: startDateTime,
+            endTime: endDateTime,
+            numberOfPeople: numberOfPeople,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setUpdatedPrice(data.data.totalPrice);
+        }
+      } catch (error) {
+        console.error('Error recalculating price:', error);
+      }
+    };
+
+    recalculatePrice();
+  }, [numberOfPeople, bookingData]);
+
   const handleContinue = async () => {
     if (!isValidForm()) return;
 
     setLoading(true);
 
-    // Update booking data with contact details
+    // Update booking data with contact details and updated price
     const updatedBookingData = {
       ...bookingData,
       numberOfPeople,
+      basePrice: updatedPrice || bookingData?.basePrice || 0,
       contactName,
       contactEmail,
       contactPhone,
@@ -140,6 +178,12 @@ export default function BookingDetailsPage() {
                   <small className="text-muted mt-2 d-block">
                     Capacité maximum: 12 personnes
                   </small>
+                  {updatedPrice !== null && updatedPrice !== bookingData?.basePrice && (
+                    <div className="alert alert-info mt-3">
+                      <i className="bi bi-info-circle me-2"></i>
+                      Prix mis à jour: <strong>{updatedPrice.toFixed(2)} €</strong>
+                    </div>
+                  )}
                 </div>
 
                 {/* Contact Information */}
