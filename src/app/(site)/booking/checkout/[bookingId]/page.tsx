@@ -10,11 +10,7 @@ import { useSession } from 'next-auth/react';
 
 interface Booking {
   _id: string;
-  space: {
-    _id: string;
-    name: string;
-    type: string;
-  };
+  spaceType: string;
   date: string;
   startTime: string;
   endTime: string;
@@ -25,6 +21,11 @@ interface Booking {
   requiresPayment: boolean;
 }
 
+interface SpaceConfig {
+  name: string;
+  spaceType: string;
+}
+
 // Initialize Stripe - this will be loaded once
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
@@ -32,6 +33,7 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
   const router = useRouter();
   const { data: session, status } = useSession();
   const [booking, setBooking] = useState<Booking | null>(null);
+  const [spaceConfig, setSpaceConfig] = useState<SpaceConfig | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +67,15 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
 
       const bookingDetails = bookingData.data;
       setBooking(bookingDetails);
+
+      // Fetch space configuration
+      if (bookingDetails.spaceType) {
+        const spaceResponse = await fetch(`/api/space-configurations/${bookingDetails.spaceType}`);
+        const spaceData = await spaceResponse.json();
+        if (spaceData.success) {
+          setSpaceConfig(spaceData.data);
+        }
+      }
 
       // Check if payment is not required - redirect to confirmation
       if (bookingDetails.requiresPayment === false) {
@@ -132,6 +143,10 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
       'meeting-room': 'Salle de réunion',
       'private-office': 'Bureau privé',
       'event-space': 'Espace événement',
+      'open-space': 'Open-space',
+      'salle-verriere': 'Salle Verrière',
+      'salle-etage': 'Salle Étage',
+      'evenementiel': 'Événementiel',
     };
     return labels[type] || type;
   };
@@ -218,9 +233,9 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
                   <div className="row mb-3">
                     <div className="col-sm-4 text-muted">Espace</div>
                     <div className="col-sm-8">
-                      <strong>{booking.space.name}</strong>
+                      <strong>{spaceConfig?.name || 'Espace'}</strong>
                       <span className="badge bg-primary ms-2">
-                        {getTypeLabel(booking.space.type)}
+                        {getTypeLabel(booking.spaceType)}
                       </span>
                     </div>
                   </div>
