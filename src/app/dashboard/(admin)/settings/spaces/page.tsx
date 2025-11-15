@@ -269,6 +269,95 @@ export default function SpacesSettingsPage() {
 
                         {!config.requiresQuote && (
                           <>
+                            {/* Reservation Types Selection */}
+                            <div className="mb-4">
+                              <h6 className="mb-3">Types de réservation disponibles</h6>
+                              <Row>
+                                <Col md={6}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Check
+                                      type="switch"
+                                      id={`hourly-${config.spaceType}`}
+                                      label="Réservation à l'heure"
+                                      checked={config.availableReservationTypes?.hourly || false}
+                                      onChange={(e) =>
+                                        updateConfiguration(config.spaceType, {
+                                          availableReservationTypes: {
+                                            hourly: e.target.checked,
+                                            daily: config.availableReservationTypes?.daily || false,
+                                            weekly: config.availableReservationTypes?.weekly || false,
+                                            monthly: config.availableReservationTypes?.monthly || false,
+                                          },
+                                        })
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Check
+                                      type="switch"
+                                      id={`daily-${config.spaceType}`}
+                                      label="Réservation à la journée"
+                                      checked={config.availableReservationTypes?.daily || false}
+                                      onChange={(e) =>
+                                        updateConfiguration(config.spaceType, {
+                                          availableReservationTypes: {
+                                            hourly: config.availableReservationTypes?.hourly || false,
+                                            daily: e.target.checked,
+                                            weekly: config.availableReservationTypes?.weekly || false,
+                                            monthly: config.availableReservationTypes?.monthly || false,
+                                          },
+                                        })
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Check
+                                      type="switch"
+                                      id={`weekly-${config.spaceType}`}
+                                      label="Réservation à la semaine"
+                                      checked={config.availableReservationTypes?.weekly || false}
+                                      onChange={(e) =>
+                                        updateConfiguration(config.spaceType, {
+                                          availableReservationTypes: {
+                                            hourly: config.availableReservationTypes?.hourly || false,
+                                            daily: config.availableReservationTypes?.daily || false,
+                                            weekly: e.target.checked,
+                                            monthly: config.availableReservationTypes?.monthly || false,
+                                          },
+                                        })
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Check
+                                      type="switch"
+                                      id={`monthly-${config.spaceType}`}
+                                      label="Réservation au mois"
+                                      checked={config.availableReservationTypes?.monthly || false}
+                                      onChange={(e) =>
+                                        updateConfiguration(config.spaceType, {
+                                          availableReservationTypes: {
+                                            hourly: config.availableReservationTypes?.hourly || false,
+                                            daily: config.availableReservationTypes?.daily || false,
+                                            weekly: config.availableReservationTypes?.weekly || false,
+                                            monthly: e.target.checked,
+                                          },
+                                        })
+                                      }
+                                    />
+                                  </Form.Group>
+                                </Col>
+                              </Row>
+                            </div>
+
+                            {/* Pricing Fields */}
+                            <h6 className="mb-3">Tarifs</h6>
                             <Row className="mb-3">
                               {config.availableReservationTypes?.hourly && (
                                 <Col md={config.availableReservationTypes?.weekly || config.availableReservationTypes?.monthly ? 3 : 6}>
