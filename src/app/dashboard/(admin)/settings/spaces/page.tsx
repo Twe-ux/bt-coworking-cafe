@@ -49,7 +49,7 @@ interface SpaceConfiguration {
   slug: string;
   description?: string;
   pricing: PricingStructure;
-  availableReservationTypes: AvailableReservationTypes;
+  availableReservationTypes?: AvailableReservationTypes;
   requiresQuote: boolean;
   minCapacity: number;
   maxCapacity: number;
@@ -306,8 +306,8 @@ export default function SpacesSettingsPage() {
                         {!config.requiresQuote && (
                           <>
                             <Row className="mb-3">
-                              {config.availableReservationTypes.hourly && (
-                                <Col md={config.availableReservationTypes.weekly || config.availableReservationTypes.monthly ? 3 : 6}>
+                              {config.availableReservationTypes?.hourly && (
+                                <Col md={config.availableReservationTypes?.weekly || config.availableReservationTypes?.monthly ? 3 : 6}>
                                   <Form.Group>
                                     <Form.Label>Prix Horaire (€)</Form.Label>
                                     <Form.Control
@@ -326,8 +326,8 @@ export default function SpacesSettingsPage() {
                                   </Form.Group>
                                 </Col>
                               )}
-                              {config.availableReservationTypes.daily && (
-                                <Col md={config.availableReservationTypes.weekly || config.availableReservationTypes.monthly ? 3 : 6}>
+                              {config.availableReservationTypes?.daily && (
+                                <Col md={config.availableReservationTypes?.weekly || config.availableReservationTypes?.monthly ? 3 : 6}>
                                   <Form.Group>
                                     <Form.Label>Prix Journée (€)</Form.Label>
                                     <Form.Control
@@ -346,7 +346,7 @@ export default function SpacesSettingsPage() {
                                   </Form.Group>
                                 </Col>
                               )}
-                              {config.availableReservationTypes.weekly && (
+                              {config.availableReservationTypes?.weekly && (
                                 <Col md={3}>
                                   <Form.Group>
                                     <Form.Label>Prix Semaine (€)</Form.Label>
@@ -366,7 +366,7 @@ export default function SpacesSettingsPage() {
                                   </Form.Group>
                                 </Col>
                               )}
-                              {config.availableReservationTypes.monthly && (
+                              {config.availableReservationTypes?.monthly && (
                                 <Col md={3}>
                                   <Form.Group>
                                     <Form.Label>Prix Mois (€)</Form.Label>
