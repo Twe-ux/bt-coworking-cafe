@@ -344,7 +344,64 @@ Puis configurer les variables dans `.env.local` (voir STRIPE_SETUP.md)
 - ✅ Messages en français
 - ✅ Sécurité (client secret, webhook verification)
 
-### Phase 5 : Dashboard Admin
+### ✅ Phase 5 : Système d'Horaires Globaux et Configuration Avancée - TERMINÉ
+
+- [x] **Migration vers SpaceConfiguration centralisé**
+  - [x] Suppression du modèle `Space` (deprecated)
+  - [x] `SpaceConfiguration` comme source unique de vérité
+  - [x] Suppression champs `defaultHours` et `exceptionalClosures` de SpaceConfiguration
+  - [x] Mise à jour API bookings pour utiliser `spaceType` au lieu de `space._id`
+  - [x] Correction modèle Reservation (champ `space` optionnel, `spaceType` requis)
+
+- [x] **Système d'horaires globaux**
+  - [x] Création modèle `GlobalHoursConfiguration`
+    - [x] `defaultHours` : horaires par jour de la semaine (lundi-dimanche)
+    - [x] `exceptionalClosures` : fermetures exceptionnelles avec support tranches horaires
+  - [x] API Routes `/api/global-hours` (public) et `/api/admin/global-hours` (admin)
+  - [x] Page `/dashboard/settings/horaires` mise à jour pour utiliser horaires globaux
+  - [x] Support fermetures partielles (ex: fermé de 14h à 16h)
+
+- [x] **Configuration types de réservation**
+  - [x] Switchs pour activer/désactiver chaque type (hourly, daily, weekly, monthly)
+  - [x] Champs prix dynamiques selon types activés
+  - [x] Champ `availableReservationTypes` dans SpaceConfiguration
+  - [x] Migration automatique des données existantes
+
+- [x] **Horaires dynamiques côté booking**
+  - [x] Plages horaires adaptées aux horaires d'ouverture
+  - [x] Filtrage automatique des créneaux invalides
+  - [x] Validation temps réel contre horaires globaux et fermetures
+  - [x] Messages d'erreur contextuels
+
+- [x] **Corrections pages de paiement**
+  - [x] Page checkout : récupération SpaceConfiguration au lieu de Space
+  - [x] Page confirmation : même correction + affichage image espace
+  - [x] Labels français pour tous les types d'espaces
+  - [x] Configuration Stripe correcte (NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+
+- [x] **Scripts de migration**
+  - [x] `migrate-add-reservation-types.ts` : Ajoute availableReservationTypes aux configs
+  - [x] `migrate-to-global-hours.ts` : Migre horaires vers GlobalHoursConfiguration
+  - [x] Suppression index dupliqués Mongoose
+
+**Processus final implémenté:**
+1. `/dashboard/settings/horaires` → Gestion horaires globaux (tout le coworking)
+2. `/dashboard/settings/spaces` → Configuration espaces (tarifs, capacités, types réservation)
+3. `/site/booking` → Horaires et créneaux dynamiques selon configuration globale
+4. Validation complète : horaires, fermetures exceptionnelles, capacité, overlap
+
+**Requis pour fonctionner:**
+```bash
+# Sur votre machine locale
+npx ts-node scripts/migrate-add-reservation-types.ts
+npx ts-node scripts/migrate-to-global-hours.ts
+
+# Configurer Stripe dans .env.local
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_... (obligatoire pour client)
+STRIPE_SECRET_KEY=sk_test_... (obligatoire pour serveur)
+```
+
+### Phase 6 : Dashboard Admin
 
 - [ ] **Page `/dashboard/booking` - Vue d'ensemble**
   - [ ] Statistiques : réservations du jour, CA du mois, taux d'occupation
