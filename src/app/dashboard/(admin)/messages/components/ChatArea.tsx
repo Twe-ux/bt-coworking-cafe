@@ -3,7 +3,7 @@ import EmojiPicker from "@emoji-mart/react";
 import clsx from "clsx";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -19,37 +19,36 @@ import {
   Offcanvas,
   OffcanvasHeader,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
-import { messages } from "@/assets/dashboard/data/social";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import SimplebarReactClient from "@/components/dashboard/wrappers/SimplebarReactClient";
-import { useChatContext } from "@/context/useChatContext";
+import { useChatContext, type Conversation, type Message } from "@/context/useChatContext";
 import { useLayoutContext } from "@/context/useLayoutContext";
-import type { ChatMessageType, UserType } from "@/types/data";
-import { addOrSubtractMinutesFromDate } from "@/utils/date";
+import { timeSince } from "@/utils/date";
 import { getFileExtensionIcon } from "@/utils/get-icons";
 
 import small1 from "@/assets/dashboard/images/small/img-1.jpg";
 import small2 from "@/assets/dashboard/images/small/img-2.jpg";
 import small3 from "@/assets/dashboard/images/small/img-3.jpg";
-import avatar10 from "@/assets/dashboard/images/users/avatar-10.jpg";
+import avatar1 from "@/assets/dashboard/images/users/avatar-1.jpg";
 import TextFormInput from "@/components/dashboard/from/TextFormInput";
 import Image from "next/image";
 import Link from "next/link";
 
 const MessageDropdown = ({
   message,
-  toUser,
+  isOwnMessage,
 }: {
-  message: ChatMessageType;
-  toUser: UserType;
+  message: Message;
+  isOwnMessage: boolean;
 }) => {
   return (
     <Dropdown
-      drop={message.from.id === toUser.id ? "end" : "start"}
+      drop={isOwnMessage ? "end" : "start"}
       className="chat-conversation-actions"
     >
       <DropdownToggle as={"a"} role="button" className="ps-1">
@@ -58,209 +57,86 @@ const MessageDropdown = ({
       <DropdownMenu>
         <DropdownItem>
           <IconifyIcon icon="bx:share" className="me-2" />
-          Reply
+          Répondre
         </DropdownItem>
         <DropdownItem>
           <IconifyIcon icon="bx:share-alt" className="me-2" />
-          Forward
+          Transférer
         </DropdownItem>
         <DropdownItem>
           <IconifyIcon icon="bx:copy" className="me-2" />
-          Copy
+          Copier
         </DropdownItem>
         <DropdownItem>
           <IconifyIcon icon="bx:bookmark" className="me-2" />
-          Bookmark
-        </DropdownItem>
-        <DropdownItem>
-          <IconifyIcon icon="bx:star" className="me-2" />
-          Starred
-        </DropdownItem>
-        <DropdownItem>
-          <IconifyIcon icon="bx:info-square" className="me-2" />
-          Mark as Unread
+          Marquer
         </DropdownItem>
         <DropdownItem>
           <IconifyIcon icon="bx:trash" className="me-2" />
-          Delete
+          Supprimer
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
 };
 
-const VideoCall = ({ selectedUser }: { selectedUser: UserType }) => {
+// Simplified components for video/voice calls - to be fully implemented later
+const VideoCall = () => {
   const { videoCall } = useChatContext();
   return (
-    <>
-      <li className="list-inline-item fs-20 dropdown">
-        <div
-          role="button"
-          className="btn btn-light avatar-sm d-flex align-items-center justify-content-center text-dark fs-20"
-          onClick={videoCall.toggle}
-        >
-          <span>
-            {" "}
-            <IconifyIcon icon="solar:videocamera-record-bold-duotone" />
-          </span>
-        </div>
-      </li>
-
-      <Modal
-        show={videoCall.open}
-        onHide={videoCall.toggle}
-        centered
-        contentClassName="video-call"
-        className="fade mx-auto d-flex"
-        id="videocall"
-        aria-hidden="true"
+    <li className="list-inline-item fs-20 dropdown">
+      <div
+        role="button"
+        className="btn btn-light avatar-sm d-flex align-items-center justify-content-center text-dark fs-20"
+        onClick={videoCall.toggle}
+        title="Appel vidéo (bientôt disponible)"
       >
-        <ModalHeader className="border-0 mb-5 justify-content-end">
-          <div className="video-call-head">
-            <Image
-              src={selectedUser.avatar}
-              className="rounded"
-              alt="avatar-4"
-            />
-          </div>
-        </ModalHeader>
-        <ModalBody>
-          <div className="video-call-action text-center pt-4 pb-0">
-            <ul className="d-flex align-items-center justify-content-evenly bg-dark m-3 p-2 rounded-pill">
-              <li className="list-inline-item avatar-sm me-2">
-                <Link
-                  href=""
-                  className="avatar-title rounded-circle bg-soft-light text-white fs-16"
-                >
-                  <IconifyIcon icon="ri:mic-off-line" />
-                </Link>
-              </li>
-              <li className="list-inline-item avatar-sm">
-                <Link
-                  href=""
-                  className="avatar-title rounded-circle bg-soft-light text-white fs-16"
-                >
-                  <IconifyIcon icon="ri:volume-up-line" />
-                </Link>
-              </li>
-              <li className="list-inline-item avatar-sm me-2">
-                <Link
-                  href=""
-                  className="avatar-title rounded-circle bg-soft-light text-white fs-16"
-                >
-                  <IconifyIcon icon="ri:camera-switch-line" />
-                </Link>
-              </li>
-              <li className="list-inline-item avatar-sm">
-                <Link
-                  href=""
-                  className="avatar-title rounded-circle bg-soft-light text-white fs-16"
-                >
-                  <IconifyIcon icon="ri:camera-off-line" />
-                </Link>
-              </li>
-              <li className="list-inline-item fw-bold" data-bs-dismiss="modal">
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={videoCall.toggle}
-                  className="rounded-pill d-flex icons-center"
-                >
-                  <IconifyIcon
-                    width={13}
-                    height={13}
-                    icon="ri:phone-line"
-                    className="me-1"
-                  />
-                  10:02
-                </Button>
-              </li>
-            </ul>
-          </div>
-        </ModalBody>
-      </Modal>
-    </>
+        <span>
+          <IconifyIcon icon="solar:videocamera-record-bold-duotone" />
+        </span>
+      </div>
+    </li>
   );
 };
 
-const VoiceCall = ({ selectedUser }: { selectedUser: UserType }) => {
+const VoiceCall = () => {
   const { voiceCall } = useChatContext();
   return (
-    <>
-      <li className="list-inline-item fs-20 dropdown">
-        <div
-          role="button"
-          className="btn btn-light avatar-sm d-flex align-items-center justify-content-center text-dark fs-20"
-          onClick={voiceCall.toggle}
-        >
-          <span>
-            {" "}
-            <IconifyIcon icon="solar:outgoing-call-rounded-bold-duotone" />
-          </span>
-        </div>
-      </li>
-
-      <Modal
-        show={voiceCall.open}
-        onHide={voiceCall.toggle}
-        centered
-        contentClassName="voice-call  mx-auto d-flex"
-        className="fade"
-        id="voicecall"
-        aria-hidden="true"
+    <li className="list-inline-item fs-20 dropdown">
+      <div
+        role="button"
+        className="btn btn-light avatar-sm d-flex align-items-center justify-content-center text-dark fs-20"
+        onClick={voiceCall.toggle}
+        title="Appel vocal (bientôt disponible)"
       >
-        <ModalHeader className="border-0 mt-5 justify-content-center">
-          <div className="voice-call-head">
-            <Image
-              src={selectedUser.avatar}
-              className="rounded-circle"
-              alt="avatar-4"
-            />
-          </div>
-        </ModalHeader>
-        <ModalBody className="pt-0 text-center">
-          <h5>{selectedUser.name}</h5>
-          <p className="mb-5">Calling...</p>
-          <div className="voice-call-action pt-4 pb-0">
-            <ul className="d-flex align-items-center justify-content-between bg-dark mx-5 mb-3 p-2 rounded-pill">
-              <li className="list-inline-item avatar-sm me-2">
-                <Link
-                  href=""
-                  className="avatar-title rounded-circle bg-soft-light text-white fs-16"
-                >
-                  <IconifyIcon icon="ri:mic-off-line" />
-                </Link>
-              </li>
-              <li
-                className="list-inline-item avatar-sm me-2"
-                data-bs-dismiss="modal"
-              >
-                <Link
-                  href=""
-                  onClick={voiceCall.toggle}
-                  className="avatar-title rounded-circle bg-danger text-white fs-18"
-                >
-                  <IconifyIcon icon="solar:end-call-linear" />
-                </Link>
-              </li>
-              <li className="list-inline-item avatar-sm">
-                <Link
-                  href=""
-                  className="avatar-title rounded-circle bg-soft-light text-white fs-16"
-                >
-                  <IconifyIcon icon="ri:volume-up-line" />
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </ModalBody>
-      </Modal>
-    </>
+        <span>
+          <IconifyIcon icon="solar:outgoing-call-rounded-bold-duotone" />
+        </span>
+      </div>
+    </li>
   );
 };
 
-const ProfileDetail = ({ selectedUser }: { selectedUser: UserType }) => {
+const ProfileDetail = ({ conversation }: { conversation: Conversation }) => {
   const { chatProfile } = useChatContext();
+
+  const getConversationInfo = () => {
+    if (conversation.type === "group") {
+      return {
+        name: conversation.name || "Groupe",
+        avatar: conversation.avatar || avatar1,
+      };
+    }
+    const otherParticipant = conversation.participants.find(
+      (p) => p.user._id !== conversation.participants[0]?.user._id
+    );
+    return {
+      name: otherParticipant?.user.name || "Utilisateur",
+      avatar: otherParticipant?.user.avatar || avatar1,
+    };
+  };
+
+  const { name, avatar } = getConversationInfo();
 
   return (
     <>
@@ -271,7 +147,6 @@ const ProfileDetail = ({ selectedUser }: { selectedUser: UserType }) => {
           onClick={chatProfile.toggle}
         >
           <span>
-            {" "}
             <IconifyIcon icon="solar:user-bold-duotone" />
           </span>
         </div>
@@ -286,123 +161,36 @@ const ProfileDetail = ({ selectedUser }: { selectedUser: UserType }) => {
         tabIndex={-1}
       >
         <OffcanvasHeader closeButton>
-          <h5
-            className="offcanvas-title text-truncate w-50"
-            id="user-profileLabel"
-          >
-            Profile
-          </h5>
+          <h5 className="offcanvas-title text-truncate w-50">Profil</h5>
         </OffcanvasHeader>
         <SimplebarReactClient className="offcanvas-body p-0 h-100">
           <div className="p-3">
             <div className="text-center">
               <Image
-                src={selectedUser.avatar}
-                alt="shreyu"
+                src={avatar}
+                alt={name}
                 className="img-thumbnail avatar-lg rounded-circle mb-1"
+                width={80}
+                height={80}
               />
-              <h4>{selectedUser.name}</h4>
-              <Button variant="primary" size="sm" className="mt-1">
-                <IconifyIcon icon="bi:envelope" className="me-1" />
-                Send Email
-              </Button>
-              <p className="text-muted mt-2 fs-14">
-                Last Interacted:
-                <strong
-                  className={`text-${
-                    selectedUser.activityStatus === "offline"
-                      ? "danger"
-                      : "success"
-                  }`}
-                >
-                  {" "}
-                  {selectedUser.activityStatus}
-                </strong>
-              </p>
+              <h4>{name}</h4>
+              {conversation.type === "group" ? (
+                <p className="text-muted mt-2">
+                  {conversation.participants.length} participants
+                </p>
+              ) : (
+                <p className="text-muted mt-2">Conversation directe</p>
+              )}
             </div>
-            <div className="mt-3">
-              <hr />
-              <p className="mt-3 mb-1">
-                <strong className="icons-center">
-                  <IconifyIcon icon="ri:phone-line" className="me-1" />
-                  Phone Number:
-                </strong>
-              </p>
-              <p>+1 {selectedUser.contact}</p>
-              <p className="mt-3 mb-1">
-                <strong className="icons-center">
-                  <IconifyIcon icon="ri:map-pin-line" className="me-1" />
-                  Location:
-                </strong>
-              </p>
-              <p>{selectedUser.location}</p>
-              <p className="mt-3 mb-1">
-                <strong className="icons-center">
-                  <IconifyIcon icon="ri:global-line" className="me-1" />
-                  Languages:
-                </strong>
-              </p>
-              <p>
-                {selectedUser.languages.map((language, idx) => (
-                  <Fragment key={idx}>{language}, </Fragment>
-                ))}
-              </p>
-              <p className="mt-3 mb-2">
-                <strong className="icons-center">
-                  <IconifyIcon icon="ri:group-3-line" className="me-1" />
-                  Groups:
-                </strong>
-              </p>
-              <p className="mb-0">
-                <span className="badge badge-soft-success p-1 fs-14 me-1">
-                  Work
-                </span>
-                <span className="badge badge-soft-primary p-1 fs-14">
-                  Friends
-                </span>
-              </p>
-            </div>
-            <h5 className="mt-3">
-              <span role="button" className="my-0">
-                <span className="float-end">See All</span>
-                Shared Photoes
-              </span>
-            </h5>
-            <Row className="gx-1 pt-2">
-              <Col xs={4}>
-                <div role="button">
-                  <Image
-                    src={small1}
-                    alt="img-1"
-                    className="img-fluid rounded"
-                  />
-                </div>
-              </Col>
-              <Col xs={4}>
-                <div role="button">
-                  <Image
-                    src={small2}
-                    alt="img-2"
-                    className="img-fluid rounded"
-                  />
-                </div>
-              </Col>
-              <Col xs={4}>
-                <div className="position-relative overflow-hidden rounded">
-                  <div role="button">
-                    <Image
-                      src={small3}
-                      alt="img-3"
-                      className="img-fluid rounded"
-                    />
-                    <div className="bg-overlay bg-dark" />
-                    <h3 className="position-absolute top-50 start-50 translate-middle my-0 text-white">
-                      +3
-                    </h3>
-                  </div>
-                </div>
-              </Col>
-            </Row>
+            {conversation.description && (
+              <div className="mt-3">
+                <hr />
+                <p className="mt-3 mb-1">
+                  <strong>Description:</strong>
+                </p>
+                <p>{conversation.description}</p>
+              </div>
+            )}
           </div>
         </SimplebarReactClient>
       </Offcanvas>
@@ -412,104 +200,137 @@ const ProfileDetail = ({ selectedUser }: { selectedUser: UserType }) => {
 
 const UserMessage = ({
   message,
-  toUser,
+  currentUserId,
 }: {
-  message: ChatMessageType;
-  toUser: UserType;
+  message: Message;
+  currentUserId?: string;
 }) => {
+  const isOwnMessage = message.sender._id === currentUserId;
+  const senderAvatar = message.sender.avatar || avatar1;
+
   return (
     <li
       className={clsx("clearfix gap-2 d-flex", {
-        "justify-content-end odd": message.from.id === toUser.id,
+        "justify-content-end odd": isOwnMessage,
       })}
     >
-      {message.from.id != toUser.id && (
+      {!isOwnMessage && (
         <div className="chat-avatar text-center">
           <Image
-            src={message.from.avatar}
-            alt="avatar"
+            src={senderAvatar}
+            alt={message.sender.name}
             className="avatar rounded-circle"
+            width={40}
+            height={40}
           />
         </div>
       )}
       <div
         className={clsx("chat-conversation-text", {
-          "ms-0": message.from.id === toUser.id,
+          "ms-0": isOwnMessage,
         })}
       >
-        {message.from.id === toUser.id ? (
-          <p className="mb-2  text-end">
-            08:30{" "}
-            <span className={`text-dark fw-medium me-1 `}>
-              {message.from.id === toUser.id ? "you" : message.from.name}
-            </span>{" "}
+        {isOwnMessage ? (
+          <p className="mb-2 text-end">
+            <span className="text-muted fs-12 me-1">
+              {timeSince(new Date(message.createdAt))}
+            </span>
+            <span className="text-dark fw-medium me-1">Vous</span>
           </p>
         ) : (
           <p className="mb-2">
-            <span className={`text-dark fw-medium me-1 `}>
-              {message.from.id === toUser.id ? "you" : message.from.name}
-            </span>{" "}
-            08:30
+            <span className="text-dark fw-medium me-1">
+              {message.sender.name}
+            </span>
+            <span className="text-muted fs-12">
+              {timeSince(new Date(message.createdAt))}
+            </span>
           </p>
         )}
         <div
           className={clsx("d-flex", {
-            "justify-content-end": message.from.id === toUser.id,
+            "justify-content-end": isOwnMessage,
           })}
         >
-          {message.from.id === toUser.id && (
-            <MessageDropdown message={message} toUser={toUser} />
+          {isOwnMessage && (
+            <MessageDropdown message={message} isOwnMessage={isOwnMessage} />
           )}
-          <div className="chat-ctext-wrap d-flex ">
-            {message.message.type === "text" &&
-              typeof message.message.value === "string" && (
-                <p className="">{message.message.value}</p>
-              )}
-            {message.message.type === "file" &&
-              typeof message.message.value === "object" &&
-              message.message.value.map((item, idx) => (
-                <Fragment key={idx}>
-                  {item.preview && (
-                    <div role=" button" key={idx}>
-                      <Image
-                        src={item.preview}
-                        alt="attachment"
-                        height={84}
-                        width={121}
-                        className="img-thumbnail me-1"
+          <div className="chat-ctext-wrap d-flex">
+            {message.type === "text" && <p className="">{message.content}</p>}
+            {message.type === "image" && message.attachments.length > 0 && (
+              <div className="d-flex flex-wrap gap-1">
+                {message.attachments.map((attachment, idx) => (
+                  <div role="button" key={idx}>
+                    <Image
+                      src={attachment.url}
+                      alt="attachment"
+                      height={84}
+                      width={121}
+                      className="img-thumbnail"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            {message.type === "file" && message.attachments.length > 0 && (
+              <div className="d-flex flex-column gap-2">
+                {message.attachments.map((attachment, idx) => (
+                  <div
+                    key={idx}
+                    className="d-flex align-items-center justify-content-center"
+                  >
+                    <div className="flex-shrink-0">
+                      <IconifyIcon
+                        icon={getFileExtensionIcon(
+                          attachment.name || attachment.url
+                        )}
+                        className="fs-24 me-1 text-success"
                       />
                     </div>
-                  )}
-                  {item.name && (
-                    <div className="d-flex align-items-center justify-content-center">
-                      <div className="flex-shrink-0">
-                        <IconifyIcon
-                          icon={getFileExtensionIcon(item.name)}
-                          className="fs-24 me-1 text-success"
-                        />
-                      </div>
-                      <div className="flex-grow-1">
-                        <span role="button" className="text-dark">
-                          {item.name}
-                        </span>
-                        <p className="mb-0">{item.size} MB</p>
-                      </div>
+                    <div className="flex-grow-1">
+                      <span role="button" className="text-dark">
+                        {attachment.name || "Fichier"}
+                      </span>
+                      {attachment.size && (
+                        <p className="mb-0">
+                          {(attachment.size / (1024 * 1024)).toFixed(2)} MB
+                        </p>
+                      )}
                     </div>
-                  )}
-                </Fragment>
-              ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          {message.from.id != toUser.id && (
-            <MessageDropdown message={message} toUser={toUser} />
+          {!isOwnMessage && (
+            <MessageDropdown message={message} isOwnMessage={isOwnMessage} />
           )}
         </div>
+        {isOwnMessage && (
+          <p className="mb-0 text-end">
+            <IconifyIcon
+              icon={
+                message.status === "read"
+                  ? "ri:check-double-line"
+                  : message.status === "delivered"
+                  ? "ri:check-double-line"
+                  : "ri:check-line"
+              }
+              className={`fs-16 ${
+                message.status === "read" ? "text-primary" : "text-muted"
+              }`}
+            />
+          </p>
+        )}
       </div>
-      {message.from.id === toUser.id && (
+      {isOwnMessage && (
         <div className="chat-avatar text-center ms-2">
           <Image
-            src={message.from.avatar}
-            alt="avatar"
+            src={senderAvatar}
+            alt={message.sender.name}
             className="avatar rounded-circle"
+            width={40}
+            height={40}
           />
         </div>
       )}
@@ -517,73 +338,52 @@ const UserMessage = ({
   );
 };
 
-const ChatArea = ({ selectedUser }: { selectedUser: UserType }) => {
-  const [userMessages, setUserMessages] = useState<ChatMessageType[]>([]);
-
+const ChatArea = ({ conversation }: { conversation: Conversation }) => {
   const messageSchema = yup.object({
-    newMessage: yup.string().required("Please enter message"),
+    newMessage: yup.string().required("Veuillez entrer un message"),
   });
 
   const { reset, handleSubmit, control } = useForm({
     resolver: yupResolver(messageSchema),
   });
-  const [toUser] = useState<UserType>({
-    id: "112",
-    mutualCount: 56,
-    name: "Gilbert Chicoine",
-    avatar: avatar10,
-    email: "jamesbridge@teleworm.us",
-    message: "Hey! Okay, thank you for letting me know. See you!",
-    time: addOrSubtractMinutesFromDate(650),
-    contact: "456 9595 9594",
-    emailMessage: "",
-    location: "California, USA",
-    languages: ["English", "German", "Spanish"],
-    activityStatus: "typing",
-    status: "Active",
-  });
 
-  const getMessagesForUser = useCallback(() => {
-    if (selectedUser) {
-      setUserMessages(
-        [...messages].filter(
-          (m) =>
-            (m.to.id === toUser.id && m.from.id === selectedUser.id) ||
-            (toUser.id === m.from.id && m.to.id === selectedUser.id)
-        )
-      );
+  const { messages, loadingMessages, sendMessage, chatList, chatProfile } =
+    useChatContext();
+
+  // Get conversation display info
+  const getConversationInfo = () => {
+    if (conversation.type === "group") {
+      return {
+        name: conversation.name || "Groupe",
+        avatar: conversation.avatar || avatar1,
+      };
     }
-  }, [selectedUser, toUser]);
+    const otherParticipant = conversation.participants.find(
+      (p) => p.user._id !== conversation.participants[0]?.user._id // TODO: use actual current user ID
+    );
+    return {
+      name: otherParticipant?.user.name || "Utilisateur",
+      avatar: otherParticipant?.user.avatar || avatar1,
+    };
+  };
 
-  useEffect(() => {
-    getMessagesForUser();
-  }, [getMessagesForUser]);
+  const { name, avatar } = getConversationInfo();
+
+  // TODO: Get current user ID from session/auth
+  const currentUserId = conversation.participants[0]?.user._id;
 
   /**
    * sends the chat message
    */
-  const sendChatMessage = (values: { newMessage?: string }) => {
-    const newUserMessages = [...userMessages];
-    newUserMessages.push({
-      id: (userMessages.length + 1).toString(),
-      from: toUser,
-      to: selectedUser,
-      message: { type: "text", value: values.newMessage ?? "" },
-      sentOn: addOrSubtractMinutesFromDate(0.1),
-    });
-    setTimeout(() => {
-      const otherNewMessages = [...newUserMessages];
-      otherNewMessages.push({
-        id: (userMessages.length + 1).toString(),
-        from: selectedUser,
-        to: toUser,
-        message: { type: "text", value: values.newMessage ?? "" },
-        sentOn: addOrSubtractMinutesFromDate(0.1),
-      });
-      setUserMessages(otherNewMessages);
-    }, 1000);
-    setUserMessages(newUserMessages);
-    reset();
+  const handleSendMessage = async (values: { newMessage?: string }) => {
+    if (!values.newMessage || !values.newMessage.trim()) return;
+
+    try {
+      await sendMessage(values.newMessage.trim());
+      reset();
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   const AlwaysScrollToBottom = () => {
@@ -600,8 +400,6 @@ const ChatArea = ({ selectedUser }: { selectedUser: UserType }) => {
     return <div ref={elementRef} />;
   };
 
-  const { chatList, chatProfile } = useChatContext();
-
   const { theme } = useLayoutContext();
 
   return (
@@ -617,11 +415,11 @@ const ChatArea = ({ selectedUser }: { selectedUser: UserType }) => {
         </Button>
         <div className="d-flex align-items-center">
           <Image
-            src={selectedUser.avatar}
+            src={avatar}
             className="me-2 rounded"
             width={36}
             height={36}
-            alt="avatar-4"
+            alt="avatar"
           />
           <div className="d-none d-md-flex flex-column">
             <h5 className="my-0 fs-16 fw-semibold">
@@ -630,29 +428,23 @@ const ChatArea = ({ selectedUser }: { selectedUser: UserType }) => {
                 onClick={chatProfile.toggle}
                 className="text-dark"
               >
-                {selectedUser.name}
+                {name}
               </span>
             </h5>
-            <p
-              className={`mb-0 text-${
-                selectedUser.activityStatus === "offline" ? "danger" : "success"
-              } fw-semibold fst-italic`}
-            >
-              {selectedUser.activityStatus != "typing" && (
-                <IconifyIcon icon="bxs:circle" className="fs-13" />
-              )}
-              {selectedUser.activityStatus}
-              {selectedUser.activityStatus === "typing" && "..."}
+            <p className="mb-0 text-muted fs-12">
+              {conversation.type === "group"
+                ? `${conversation.participants.length} participants`
+                : "Conversation directe"}
             </p>
           </div>
         </div>
         <div className="flex-grow-1">
           <ul className="list-inline float-end d-flex gap-1 mb-0">
-            <VideoCall selectedUser={selectedUser} />
+            <VideoCall />
 
-            <VoiceCall selectedUser={selectedUser} />
+            <VoiceCall />
 
-            <ProfileDetail selectedUser={selectedUser} />
+            <ProfileDetail conversation={conversation} />
 
             <Dropdown className="list-inline-item fs-20 d-none d-md-flex">
               <DropdownToggle
@@ -695,10 +487,34 @@ const ChatArea = ({ selectedUser }: { selectedUser: UserType }) => {
       </CardHeader>
       <div className="chat-box">
         <SimplebarReactClient className="chat-conversation-list p-3 chatbox-height">
-          {userMessages.map((message, idx) => (
-            <UserMessage message={message} toUser={toUser} key={idx} />
-          ))}
-          <AlwaysScrollToBottom />
+          {loadingMessages ? (
+            <div className="text-center py-5">
+              <Spinner animation="border" variant="primary" />
+              <p className="mt-3 text-muted">Chargement des messages...</p>
+            </div>
+          ) : messages.length === 0 ? (
+            <div className="text-center py-5">
+              <IconifyIcon
+                icon="bi:chat-dots"
+                className="fs-1 text-muted"
+              />
+              <p className="mt-3 text-muted">Aucun message</p>
+              <p className="text-muted">
+                Envoyez un message pour commencer la conversation
+              </p>
+            </div>
+          ) : (
+            <>
+              {messages.map((message) => (
+                <UserMessage
+                  message={message}
+                  currentUserId={currentUserId}
+                  key={message._id}
+                />
+              ))}
+              <AlwaysScrollToBottom />
+            </>
+          )}
         </SimplebarReactClient>
 
         <div className="bg-light bg-opacity-50 p-2">
@@ -706,7 +522,7 @@ const ChatArea = ({ selectedUser }: { selectedUser: UserType }) => {
             className="needs-validation"
             name="chat-form"
             id="chat-form"
-            onSubmit={handleSubmit(sendChatMessage)}
+            onSubmit={handleSubmit(handleSendMessage)}
           >
             <Row className="align-items-center">
               <Col className="mb-2 mb-sm-0 d-flex">
@@ -737,7 +553,7 @@ const ChatArea = ({ selectedUser }: { selectedUser: UserType }) => {
                     name="newMessage"
                     containerClassName="w-100"
                     className="border-0 h-100"
-                    placeholder="Enter your message"
+                    placeholder="Tapez votre message..."
                   />
                 </div>
               </Col>

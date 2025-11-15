@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
-import { useChatContext } from "@/context/useChatContext";
-import type { UserType } from "@/types/data";
+import { useChatContext, type Conversation } from "@/context/useChatContext";
 import {
   Accordion,
   AccordionBody,
@@ -27,29 +26,45 @@ import Image from "next/image";
 import Link from "next/link";
 import "swiper/css";
 
-type ChatUsersProps = {
-  onUserSelect: (value: UserType) => void;
-  users: UserType[];
-  selectedUser: UserType;
+type ChatSidebarProps = {
+  conversations: Conversation[];
+  activeConversation: Conversation | null;
+  onConversationSelect: (conversationId: string) => void;
 };
 
 const ChatLeftSidebar = ({
-  users,
-  onUserSelect,
-  selectedUser,
-}: ChatUsersProps) => {
+  conversations,
+  activeConversation,
+  onConversationSelect,
+}: ChatSidebarProps) => {
   const { chatSetting } = useChatContext();
-  const [user, setUser] = useState<UserType[]>([...users]);
+  const [searchText, setSearchText] = useState("");
 
-  const search = (text: string) => {
-    setUser(
-      text
-        ? [...users].filter(
-            (u) => u.name!.toLowerCase().indexOf(text.toLowerCase()) >= 0
-          )
-        : [...users]
-    );
-  };
+  // Filter conversations based on search
+  const filteredConversations = useMemo(() => {
+    if (!searchText) return conversations;
+
+    return conversations.filter((conv) => {
+      // For direct chats, search in participant names
+      if (conv.type === "direct") {
+        return conv.participants.some((p) =>
+          p.user.name?.toLowerCase().includes(searchText.toLowerCase())
+        );
+      }
+      // For groups, search in group name
+      return conv.name?.toLowerCase().includes(searchText.toLowerCase());
+    });
+  }, [conversations, searchText]);
+
+  // Get total unread count
+  const totalUnreadCount = useMemo(() => {
+    return conversations.reduce((sum, conv) => {
+      const currentUserParticipant = conv.participants.find(
+        (p) => p.user._id === conv.participants[0]?.user._id // TODO: use actual current user ID
+      );
+      return sum + (currentUserParticipant?.unreadCount || 0);
+    }, 0);
+  }, [conversations]);
   return (
     <Card className="position-relative overflow-hidden">
       <CardHeader className="border-0 d-flex justify-content-between align-items-center gap-3">
@@ -58,9 +73,10 @@ const ChatLeftSidebar = ({
             <input
               className="form-control"
               type="text"
-              onKeyUp={(e: any) => search(e.target.value)}
+              onChange={(e) => setSearchText(e.target.value)}
+              value={searchText}
               name="search"
-              placeholder="Search ..."
+              placeholder="Rechercher une conversation..."
             />
             <button
               type="button"
@@ -83,7 +99,7 @@ const ChatLeftSidebar = ({
         </a>
       </CardHeader>
       <CardTitle as={"h4"} className="mb-3 mx-3">
-        Active
+        Conversations récentes
       </CardTitle>
       <Swiper
         pagination={{ el: ".swiper-pagination", clickable: true }}
@@ -100,22 +116,40 @@ const ChatLeftSidebar = ({
         autoHeight
         className="mySwiper mx-3"
       >
-        {users.map((user) => (
-          <SwiperSlide className="avatar" key={user.id}>
-            <div className="chat-user-status-box">
-              <span>
-                <Image
-                  src={user.avatar}
-                  alt="avatar-1"
-                  className=" avatar rounded-circle  flex-shrink-0"
-                />
-              </span>
-            </div>
-          </SwiperSlide>
-        ))}
+        {conversations.slice(0, 8).map((conv) => {
+          const otherParticipant = conv.participants.find(
+            (p) => p.user._id !== conv.participants[0]?.user._id
+          );
+          const displayAvatar = conv.type === "group"
+            ? conv.avatar || avatar1
+            : otherParticipant?.user.avatar || avatar1;
+
+          return (
+            <SwiperSlide className="avatar" key={conv._id}>
+              <div
+                className="chat-user-status-box"
+                onClick={() => onConversationSelect(conv._id)}
+                role="button"
+              >
+                <span>
+                  <Image
+                    src={displayAvatar}
+                    alt="avatar"
+                    className="avatar rounded-circle flex-shrink-0"
+                    width={40}
+                    height={40}
+                  />
+                </span>
+              </div>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
       <CardTitle as={"h4"} className="m-3">
-        Message <span className="badge bg-danger badge-pill">5</span>
+        Messages{" "}
+        {totalUnreadCount > 0 && (
+          <span className="badge bg-danger badge-pill">{totalUnreadCount}</span>
+        )}
       </CardTitle>
       <Tabs
         justify
@@ -125,9 +159,9 @@ const ChatLeftSidebar = ({
       >
         <Tab title="Chat" eventKey={"chat-tab"}>
           <Chat
-            onUserSelect={onUserSelect}
-            users={user}
-            selectedUser={selectedUser}
+            conversations={filteredConversations}
+            activeConversation={activeConversation}
+            onConversationSelect={onConversationSelect}
           />
         </Tab>
         <Tab title="Group" eventKey={"group-tab"}>
