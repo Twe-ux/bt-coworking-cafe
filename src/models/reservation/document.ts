@@ -214,6 +214,7 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       type: String,
       trim: true,
       index: true,
+      sparse: true, // Allow multiple null values
     },
     stripeSessionId: {
       type: String,
@@ -242,8 +243,7 @@ ReservationSchema.index({ user: 1, date: 1 });
 ReservationSchema.index({ space: 1, date: 1 });
 ReservationSchema.index({ status: 1, date: 1 });
 ReservationSchema.index({ date: 1, spaceType: 1 });
-ReservationSchema.index({ stripePaymentIntentId: 1 }, { sparse: true });
-ReservationSchema.index({ confirmationNumber: 1 }, { sparse: true });
+// stripePaymentIntentId and confirmationNumber indexes are already defined in schema with sparse option
 
 // Compound index to prevent double bookings
 ReservationSchema.index({
