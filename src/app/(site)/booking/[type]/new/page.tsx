@@ -241,7 +241,7 @@ export default function BookingDatePage({ params }: { params: { type: string } }
     }
 
     // Get day of week
-    const dayOfWeek = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'lowercase' });
+    const dayOfWeek = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
     const dayHours = spaceConfig.defaultHours?.[dayOfWeek];
 
     if (!dayHours || !dayHours.isOpen) {
@@ -433,7 +433,7 @@ export default function BookingDatePage({ params }: { params: { type: string } }
                             endTime === time ? 'active' : ''
                           } ${startTime && time <= startTime ? 'disabled' : ''}`}
                           onClick={() => setEndTime(time)}
-                          disabled={startTime && time <= startTime}
+                          disabled={!!(startTime && time <= startTime)}
                         >
                           {time}
                         </button>
