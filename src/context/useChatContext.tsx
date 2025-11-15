@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import type { ChildrenType } from '@/types/component-props'
 import type { ChatOffcanvasStatesType, OffcanvasControlType } from '@/types/context'
 
@@ -66,6 +66,10 @@ interface MessagingContextType {
   messages: Message[];
   loadingMessages: boolean;
 
+  // Typing indicators
+  typingUsers: string[];
+  setIsTyping: (isTyping: boolean) => void;
+
   // Actions
   fetchConversations: () => Promise<void>;
   selectConversation: (conversationId: string) => Promise<void>;
@@ -97,6 +101,8 @@ export const ChatProvider = ({ children }: ChildrenType) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [loadingConversations, setLoadingConversations] = useState(false)
   const [loadingMessages, setLoadingMessages] = useState(false)
+  const [typingUsers, setTypingUsers] = useState<string[]>([])
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Offcanvas states (keep existing)
   const [offcanvasStates, setOffcanvasStates] = useState<ChatOffcanvasStatesType>({
@@ -213,6 +219,51 @@ export const ChatProvider = ({ children }: ChildrenType) => {
     }
   }, [])
 
+  // Typing indicators
+  const setIsTyping = useCallback(async (isTyping: boolean) => {
+    if (!activeConversation) return
+
+    try {
+      // Clear previous timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+
+      // Send typing status to server
+      await fetch(`/api/conversations/${activeConversation._id}/typing`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isTyping }),
+      })
+
+      // If typing, set timeout to automatically stop typing after 3 seconds
+      if (isTyping) {
+        typingTimeoutRef.current = setTimeout(() => {
+          setIsTyping(false)
+        }, 3000)
+      }
+    } catch (error) {
+      console.error('Error setting typing status:', error)
+    }
+  }, [activeConversation])
+
+  const fetchTypingIndicators = useCallback(async () => {
+    if (!activeConversation) return
+
+    try {
+      const response = await fetch(`/api/conversations/${activeConversation._id}/typing`)
+      const data = await response.json()
+
+      if (data.success) {
+        setTypingUsers(data.typingUsers || [])
+      }
+    } catch (error) {
+      console.error('Error fetching typing indicators:', error)
+    }
+  }, [activeConversation])
+
   // Offcanvas toggles
   const toggleChatList: OffcanvasControlType['toggle'] = () => {
     setOffcanvasStates({ ...offcanvasStates, showChatList: !offcanvasStates.showChatList })
@@ -264,14 +315,35 @@ export const ChatProvider = ({ children }: ChildrenType) => {
     fetchConversations()
   }, [])
 
-  // Auto-refresh conversations every 10 seconds
+  // Auto-refresh conversations every 3 seconds (real-time feel)
   useEffect(() => {
     const interval = setInterval(() => {
       fetchConversations()
-    }, 10000)
+    }, 3000)
 
     return () => clearInterval(interval)
   }, [fetchConversations])
+
+  // Poll typing indicators when conversation is active
+  useEffect(() => {
+    if (!activeConversation) {
+      setTypingUsers([])
+      return
+    }
+
+    // Initial fetch
+    fetchTypingIndicators()
+
+    // Poll every 2 seconds
+    const interval = setInterval(() => {
+      fetchTypingIndicators()
+    }, 2000)
+
+    return () => {
+      clearInterval(interval)
+      setTypingUsers([])
+    }
+  }, [activeConversation, fetchTypingIndicators])
 
   return (
     <MessagingContext.Provider
@@ -281,6 +353,8 @@ export const ChatProvider = ({ children }: ChildrenType) => {
         loadingConversations,
         messages,
         loadingMessages,
+        typingUsers,
+        setIsTyping,
         fetchConversations,
         selectConversation,
         sendMessage,
