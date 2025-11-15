@@ -4,7 +4,7 @@ import { Reservation } from '@/models/reservation';
 import Space from '@/models/space';
 import { User } from '@/models/user';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { options as authOptions } from '@/lib/auth-options';
 import { sendBookingConfirmation } from '@/lib/email/emailService';
 import mongoose from 'mongoose';
 

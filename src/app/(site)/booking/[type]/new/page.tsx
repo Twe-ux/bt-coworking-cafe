@@ -84,9 +84,9 @@ export default function BookingDatePage({ params }: { params: { type: string } }
   const [error, setError] = useState<string>('');
 
   // Filter available reservation types based on configuration
-  const availableReservationTypes = spaceConfig
+  const availableReservationTypes = spaceConfig?.availableReservationTypes
     ? allReservationTypes.filter((reservType) => {
-        return spaceConfig.availableReservationTypes[reservType.id as keyof typeof spaceConfig.availableReservationTypes];
+        return spaceConfig.availableReservationTypes?.[reservType.id as keyof typeof spaceConfig.availableReservationTypes];
       })
     : allReservationTypes;
 
