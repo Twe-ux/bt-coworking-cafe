@@ -27,6 +27,9 @@ const publicRoutes = [
 // Auth routes
 const authRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password"];
 
+// Protected routes that require authentication but are accessible to all authenticated users
+const protectedRoutes = ["/messages", "/booking", "/mes-reservations", "/horaires"];
+
 // Admin dashboard routes
 const adminDashboardPattern = /^\/dashboard(\/.*)?$/;
 
@@ -66,7 +69,22 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Auth routes (login, register, etc.)
+  // 2. Protected routes - require authentication but accessible to all authenticated users
+  if (protectedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+    if (!isAuthenticated) {
+      console.log("❌ Protected route requires auth, redirecting to login");
+      return NextResponse.redirect(
+        new URL(
+          `/auth/login?callbackUrl=${encodeURIComponent(pathname)}`,
+          req.url
+        )
+      );
+    }
+    console.log("✅ Protected route, user authenticated, allowing access");
+    return NextResponse.next();
+  }
+
+  // 3. Auth routes (login, register, etc.)
   if (authRoutes.includes(pathname)) {
     if (isAuthenticated) {
       console.log("🔒 Already authenticated, redirecting based on role");
@@ -91,7 +109,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. Admin dashboard routes
+  // 4. Admin dashboard routes
   if (adminDashboardPattern.test(pathname)) {
     if (!isAuthenticated) {
       console.log("❌ Admin dashboard requires auth, redirecting to login");
@@ -118,7 +136,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 4. Client dashboard routes (/{username}/...)
+  // 5. Client dashboard routes (/{username}/...)
   if (
     clientDashboardPattern.test(pathname) &&
     !publicRoutes.includes(pathname)
@@ -151,7 +169,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 5. Default: allow access
+  // 6. Default: allow access
   console.log("✅ Default allow");
   return NextResponse.next();
 }
