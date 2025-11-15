@@ -8,13 +8,6 @@ import Stripe from 'stripe';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-// Disable body parsing for webhook (we need raw body for signature verification)
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 /**
  * POST /api/payments/webhook
  * Handle Stripe webhook events
