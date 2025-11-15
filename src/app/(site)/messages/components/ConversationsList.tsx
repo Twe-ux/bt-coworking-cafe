@@ -8,10 +8,12 @@ import avatar1 from "@/assets/dashboard/images/users/avatar-1.jpg";
 
 interface ConversationsListProps {
   onConversationSelect?: () => void;
+  onNewConversation?: () => void;
 }
 
 export default function ConversationsList({
   onConversationSelect,
+  onNewConversation,
 }: ConversationsListProps) {
   const { conversations, activeConversation, selectConversation } =
     useChatContext();
@@ -73,6 +75,18 @@ export default function ConversationsList({
     <div className="conversations-list">
       {/* Header with search */}
       <div className="p-3 border-bottom">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h6 className="mb-0">Conversations</h6>
+          {onNewConversation && (
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={onNewConversation}
+              title="Nouvelle conversation"
+            >
+              <i className="bi bi-plus-circle"></i>
+            </button>
+          )}
+        </div>
         <div className="input-group">
           <span className="input-group-text bg-white">
             <i className="bi bi-search"></i>
