@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Reservation } from '@/models/reservation';
-import Space from '@/models/space';
+import SpaceConfiguration from '@/models/spaceConfiguration';
 import { User } from '@/models/user';
 import { getServerSession } from 'next-auth';
 import { options as authOptions } from '@/lib/auth-options';
@@ -78,31 +78,41 @@ export async function POST(request: NextRequest) {
       userId = user._id;
     }
 
-    // Find a space matching the type
-    // For now, we'll find the first active space of this type
-    // In production, you might want to select based on availability
+    // Map URL space types to database spaceType values
     const spaceTypeMap: Record<string, string> = {
-      'open-space': 'desk',
-      'meeting-room-glass': 'meeting-room',
-      'meeting-room-floor': 'meeting-room',
-      'event-space': 'event-space',
+      'open-space': 'open-space',
+      'meeting-room-glass': 'salle-verriere',
+      'meeting-room-floor': 'salle-etage',
+      'event-space': 'evenementiel',
     };
 
-    const mappedSpaceType = spaceTypeMap[spaceType] || 'desk';
+    const dbSpaceType = spaceTypeMap[spaceType] || spaceType;
 
-    let space = await Space.findOne({
-      type: mappedSpaceType,
+    // Find space configuration
+    const spaceConfig = await SpaceConfiguration.findOne({
+      spaceType: dbSpaceType,
       isActive: true,
       isDeleted: false,
     });
 
-    if (!space) {
+    if (!spaceConfig) {
       return NextResponse.json(
         {
           success: false,
-          error: `No active space found for type: ${spaceType}`,
+          error: `No active space configuration found for type: ${spaceType}`,
         },
         { status: 404 }
+      );
+    }
+
+    // Check if space requires a quote instead of direct booking
+    if (spaceConfig.requiresQuote) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'This space requires a custom quote. Please contact us directly.',
+        },
+        { status: 400 }
       );
     }
 
@@ -143,7 +153,7 @@ export async function POST(request: NextRequest) {
 
     // Check for overlapping bookings
     const overlappingBooking = await Reservation.findOne({
-      space: space._id,
+      spaceType: dbSpaceType,
       date: bookingDate,
       status: { $nin: ['cancelled'] },
       $or: [
@@ -166,8 +176,7 @@ export async function POST(request: NextRequest) {
     // Create the reservation
     const reservation = await Reservation.create({
       user: userId,
-      space: space._id,
-      spaceType: mappedSpaceType,
+      spaceType: dbSpaceType,
       date: bookingDate,
       startTime,
       endTime,
@@ -186,16 +195,15 @@ export async function POST(request: NextRequest) {
       paymentStatus: 'pending',
     });
 
-    // Populate the reservation with space details
+    // Populate the reservation with user details
     const populatedReservation = await Reservation.findById(reservation._id)
-      .populate('space')
       .populate('user', 'name email');
 
     // Send confirmation email
     try {
       await sendBookingConfirmation(contactEmail, {
         name: contactName,
-        spaceName: space.name,
+        spaceName: spaceConfig.name,
         date: bookingDate.toLocaleDateString('fr-FR', {
           weekday: 'long',
           day: 'numeric',

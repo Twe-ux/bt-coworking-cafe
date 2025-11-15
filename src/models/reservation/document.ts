@@ -11,8 +11,8 @@ export interface AdditionalServiceItem {
 /** Document of a {@link Reservation}, as stored in the database. */
 export interface ReservationDocument extends Document {
   user: ObjectId;
-  space: ObjectId;
-  spaceType?: "desk" | "meeting-room" | "private-office" | "event-space"; // Deprecated: kept for backward compatibility
+  space?: ObjectId; // DEPRECATED: Old reference to Space model (kept for backward compatibility)
+  spaceType: "open-space" | "salle-verriere" | "salle-etage" | "evenementiel"; // New: spaceType from SpaceConfiguration
   date: Date;
   startTime: string; // Format: "HH:mm"
   endTime: string; // Format: "HH:mm"
@@ -62,15 +62,17 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     space: {
       type: Types.ObjectId,
       ref: "Space",
-      required: [true, "Space is required"],
+      required: false, // DEPRECATED: Made optional for backward compatibility
       index: true,
     },
     spaceType: {
       type: String,
       enum: {
-        values: ["desk", "meeting-room", "private-office", "event-space"],
+        values: ["open-space", "salle-verriere", "salle-etage", "evenementiel", "desk", "meeting-room", "private-office", "event-space"],
         message: "{VALUE} is not a valid space type",
       },
+      required: [true, "Space type is required"],
+      index: true,
     },
     date: {
       type: Date,
