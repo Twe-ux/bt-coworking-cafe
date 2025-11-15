@@ -35,6 +35,8 @@ export async function GET(
         slug: configuration.slug,
         description: configuration.description,
         pricing: configuration.pricing,
+        availableReservationTypes: configuration.availableReservationTypes,
+        requiresQuote: configuration.requiresQuote,
         minCapacity: configuration.minCapacity,
         maxCapacity: configuration.maxCapacity,
         defaultHours: configuration.defaultHours,
