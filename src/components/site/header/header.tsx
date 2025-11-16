@@ -8,8 +8,10 @@ const Header = () => {
   const [activeNavbar, setActiveNavebar] = useState(false);
 
   return (
-    <header className="header header__1">
-      <TopHeader />
+    <>
+      <header className="header header__1">
+        <TopHeader />
+      </header>
       <div className="header__bottom">
         <div className="container">
           <div className="d-flex align-items-center justify-content-between">
@@ -46,7 +48,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-    </header>
+    </>
   );
 };
 

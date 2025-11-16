@@ -74,10 +74,10 @@ const ServiceDetails = () => {
               Coworking Café by Anticafé : le meilleur café pour travailler à
               Strasbourg
             </h2>
-            <h4 className="t__28">
+            <h3 className="t__28">
               Un espace pensé pour les indépendants, télétravailleurs, étudiants
               et voyageurs
-            </h4>
+            </h3>
             <p>
               À Strasbourg, l’aventure commence fin 2017 avec l’ouverture d’un
               espace Anticafé en franchise. Dès le début, l’accueil est fort :
@@ -102,7 +102,9 @@ const ServiceDetails = () => {
                 </ul>
               </div>
             </SlideUp>
-            <h5>Le coworking flexible au cœur du centre-ville</h5>
+            <h3 className="t__28">
+              Le coworking flexible au cœur du centre-ville
+            </h3>
             <p> Nos forfaits s’adaptent à votre rythme :</p>
             <ul>
               <li>
@@ -130,7 +132,7 @@ const ServiceDetails = () => {
               </SlideUp>
               <SlideUp className="col-md-5 mt-4 mt-md-0">
                 <div>
-                  <h4 className="t__28">Pour qui est fait Coworking Café ?</h4>
+                  <h3 className="t__28">Pour qui est fait Coworking Café ?</h3>
                   <p> Nous accueillons aussi bien :</p>
                   <ul>
                     <li>les indépendants qui veulent un QG sans engagement,</li>
@@ -159,11 +161,11 @@ const ServiceDetails = () => {
           </div>
 
           <div className="d-flex gap-5 justify-content-center">
-            <button className="common__btn">
+            <button className="common__btn buttons_file">
               <span>Nos espace</span>
               <i className="fa-solid fa-arrow-right"></i>
             </button>
-            <button className="common__btn">
+            <button className="common__btn buttons_file">
               <span>Nos tarifs</span>
               <i className="fa-solid fa-arrow-right"></i>
             </button>

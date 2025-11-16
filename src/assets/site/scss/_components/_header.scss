@@ -1,4 +1,6 @@
 .header {
+  position: relative;
+
   &__top {
     background-color: var(--main-clr);
     color: var(--primary-clr);
@@ -47,8 +49,10 @@
   &__bottom {
     background-color: var(--btn-clr);
     padding: 24px 0;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1000;
+    transition: all 0.3s ease-in-out;
     &_logo {
       h5 {
         font-size: 34px;
