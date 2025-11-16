@@ -3,6 +3,8 @@
 import ProtectedEmail from "@/components/common/ProtectedEmail";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import BookingHelper from "./booking/BookingHelper";
+import SubscribeForm from "./SubscribeForm";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -32,37 +34,33 @@ const Footer = () => {
       "/menu",
       "/professionnels",
       "/mag",
+      "/booking",
+      "/signin",
+      "/signup",
     ].includes(pathname);
+
+  // Check if we're on a booking page
+  const isBookingPage = pathname && pathname.startsWith("/booking");
+
+  // Determine which component to show
+  const showSubscribeForm = !isClientDashboard && !isBookingPage;
+  const showBookingHelper = !isClientDashboard && isBookingPage;
 
   return (
     <footer className="footer">
       <div className="container">
-        {/* Subscribe Form - Hidden on client dashboard pages */}
-        {!isClientDashboard && (
-          <div className="subscribe">
-            <div className="row">
-              <div className="col-lg-8">
-                <h2>
-                  Abonne-toi à notre newsletter et reçois seulement une fois par
-                  mois toutes les actus, événements et promotions en cours...
-                </h2>
-              </div>
-              <div className="col-lg-4 mt-5 mt-lg-0">
-                <div>
-                  <input type="text" placeholder="Your Email" />
-                  <button className="common__btn">
-                    <span>Inscris toi</span>
-                    <i className="fa-solid fa-arrow-right"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        {/* Subscribe Form */}
+        {/* Show Subscribe Form on site pages (except booking) */}
+        {showSubscribeForm && <SubscribeForm />}
+
+        {/* Show Booking Helper on booking pages */}
+        {showBookingHelper && <BookingHelper />}
         {/* -------Logo and socal icon */}
         <div className="row footer__lo_co ">
-          <div className={!isClientDashboard ? "col-12" : " mt-5"}>
+          <div
+            className={
+              !isClientDashboard || !showBookingHelper ? "col-12" : " mt-5"
+            }
+          >
             <div className="d-flex justify-content-center">
               <Link
                 href={"#"}
