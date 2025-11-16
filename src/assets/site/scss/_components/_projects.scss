@@ -1,25 +1,23 @@
-// .home1 {
-//   .projects {
-//     padding-top: 284px;
-//   }
-// }
-
 .projects {
   @include breakpoint(lg) {
-    padding-top: 220px;
+    padding-top: 150px;
   }
 
   @include breakpoint(md) {
-    padding-top: 210px;
+    padding-top: 100px;
   }
 
   @include breakpoint(sm) {
-    padding-top: 200px;
+    padding-top: 50px;
   }
 
   &__title {
     .title {
       max-width: 800px;
+
+      @include breakpoint(xl) {
+        max-width: 750px;
+      }
     }
   }
 

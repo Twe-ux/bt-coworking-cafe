@@ -1,8 +1,8 @@
 .page__header {
   background-color: #1f4038;
-  padding: 148px 0;
-  @include breakpoint(xl){
-    padding: 120px 0;
+  padding: 58px 0;
+  @include breakpoint(xl) {
+    padding: 58px 0;
   }
   .left__arrow {
     margin-top: 130px;
