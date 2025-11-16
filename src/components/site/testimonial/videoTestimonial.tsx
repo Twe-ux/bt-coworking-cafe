@@ -15,11 +15,11 @@ const VideoTestimonial = () => {
         <div className="position-relative">
           <img
             src="/images/testimonail/anticafé-strasbourg.png"
-            alt="img"
+            alt="anticafé-strasbourg"
             className="video_thumb"
           />
           <div onClick={() => setOpen(true)} className="video_icon video-play">
-            <img src="/images/testimonail/Frame_20.svg" alt="img" />
+            <img src="/images/testimonail/Frame_20.svg" alt="bouton play" />
           </div>
         </div>
       </div>

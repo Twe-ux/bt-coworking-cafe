@@ -47,7 +47,10 @@ const AboutOne = () => {
           <div className="col-xl-4 col-lg-6">
             <SlideUp delay={2}>
               <div className="about__wapper_center">
-                <img src="/images/about/open-space-strasbourg.webp" alt="img" />
+                <img
+                  src="/images/about/open-space-strasbourg.webp"
+                  alt="open-space-strasbourg"
+                />
               </div>
             </SlideUp>
           </div>

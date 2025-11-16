@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from "react";
-import BlogCard from "./blogCard";
+import { useGetArticlesQuery } from "@/store/api/blogApi";
 import SlideDown from "@/utils/animations/slideDown";
 import SlideUp from "@/utils/animations/slideUp";
-import { useGetArticlesQuery } from "@/store/api/blogApi";
+import React from "react";
+import BlogCard from "./blogCard";
 
 interface HomeBlogProps {
   className?: string;
@@ -13,9 +13,9 @@ interface HomeBlogProps {
 const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
   const { data, isLoading, error } = useGetArticlesQuery({
     limit: 3,
-    sortBy: 'publishedAt',
-    sortOrder: 'desc',
-    status: 'published',
+    sortBy: "publishedAt",
+    sortOrder: "desc",
+    status: "published",
   });
 
   return (
@@ -24,8 +24,8 @@ const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
         {/* title Start */}
         <SlideDown className="">
           <h1 className="title text-center">
-            Restez informé avec notre journal : actus, conseils, événements,
-            portraits...
+            Entres projets et cappuccinos :<br />
+            nos actus, nos conseils et la worklife des sans bureau fixe.
           </h1>
         </SlideDown>
         {/* title End */}
@@ -53,9 +53,13 @@ const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
                   delay={index + 1}
                 >
                   <BlogCard
-                    author={article.author?.name || article.author?.username || 'Auteur inconnu'}
+                    author={
+                      article.author?.name ||
+                      article.author?.username ||
+                      "Auteur inconnu"
+                    }
                     comments={article.commentCount || 0}
-                    imgSrc={article.featuredImage || '/images/blogs/blog-1.png'}
+                    imgSrc={article.featuredImage || "/images/blogs/blog-1.png"}
                     title={article.title}
                     slug={article.slug}
                   />

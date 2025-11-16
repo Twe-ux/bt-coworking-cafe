@@ -29,7 +29,7 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
               return (
                 <SlideUp delay={id} key={id} className="projects__wapper_card">
                   <Link href="/project-details">
-                    <img src={imgSrc} alt="img" />
+                    <img src={imgSrc} alt="photos des salles de réunion" />
                   </Link>
                   <div>
                     <div className="d-flex align-items-center">

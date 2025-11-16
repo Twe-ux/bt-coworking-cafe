@@ -36,14 +36,14 @@
 
       .circle {
         margin: auto;
-        margin-top: 70px;
+        margin-top: 30px;
 
         @include breakpoint(xl) {
-          margin-top: 50px;
+          margin-top: 20px;
         }
 
         @include breakpoint(lg) {
-          margin-top: 40px;
+          margin-top: 20px;
         }
       }
     }
