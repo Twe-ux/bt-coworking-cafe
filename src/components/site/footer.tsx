@@ -63,7 +63,7 @@ const Footer = () => {
           >
             <div className="d-flex justify-content-center">
               <Link
-                href={"#"}
+                href={"/"}
                 className="d-flex align-items-center footer__logo"
               >
                 <img
