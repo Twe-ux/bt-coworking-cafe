@@ -1,5 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+@font-face {
+  font-family: "Brittany";
+  src: url("../../font/Brittany-Signature/BrittanySignature.otf")
+    format("OpenType Font");
+  src: url("../../font/Brittany-Signature/BrittanySignature.ttf")
+    format("truetype");
+}
+
+.brittany {
+  font-family: "Brittany", sans-serif;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   background-color: var(--grayWhite-clr);
@@ -90,18 +102,18 @@ p {
 }
 
 .py__130 {
-  padding: 130px 0;
+  padding: 130px 0 0 0;
 
   @include breakpoint(lg) {
-    padding: 110px 0;
+    padding: 110px 0 0 0;
   }
 
   @include breakpoint(md) {
-    padding: 100px 0;
+    padding: 100px 0 0 0;
   }
 
   @include breakpoint(sm) {
-    padding: 90px 0;
+    padding: 90px 0 0 0;
   }
 }
 

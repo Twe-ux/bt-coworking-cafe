@@ -1,3 +1,4 @@
+import Concept from "@/components/site/concept/concept";
 import PageTitle from "@/components/site/pageTitle";
 import SlideUp from "@/utils/animations/slideUp";
 import { Metadata } from "next";
@@ -102,6 +103,7 @@ const ServiceDetails = () => {
                 </ul>
               </div>
             </SlideUp>
+
             <h3 className="t__28">
               Le coworking flexible au cœur du centre-ville
             </h3>
@@ -159,19 +161,9 @@ const ServiceDetails = () => {
               </SlideUp>
             </div>
           </div>
-
-          <div className="d-flex gap-5 justify-content-center">
-            <button className="common__btn buttons_file">
-              <span>Nos espace</span>
-              <i className="fa-solid fa-arrow-right"></i>
-            </button>
-            <button className="common__btn buttons_file">
-              <span>Nos tarifs</span>
-              <i className="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
         </div>
       </article>
+      <Concept />
     </>
   );
 };

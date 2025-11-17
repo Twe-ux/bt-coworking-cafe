@@ -1,0 +1,43 @@
+import { conceptData } from "@/db/concept/conceptData";
+import SlideDown from "@/utils/animations/slideDown";
+import SlideUp from "@/utils/animations/slideUp";
+import Link from "next/link";
+
+const Concept = () => {
+  return (
+    <section className="concept__bg py__130">
+      <div className="container position-relative ">
+        {/* Title */}
+        <SlideDown className="d-lg-flex justify-content-between align-items-center concept__title">
+          <h1 className="title">Comment ça marche ?</h1>
+          <div className="d-flex gap-3">
+            <Link href={"/"} className="common__btn mt-4 mt-lg-0">
+              <span>Nos espaces</span>
+              <i className="fa-solid fa-arrow-right"></i>
+            </Link>
+            <Link href={"/"} className="common__btn mt-4 mt-lg-0">
+              <span>Nos tarifs</span>
+              <i className="fa-solid fa-arrow-right"></i>
+            </Link>
+          </div>
+        </SlideDown>
+        <div className="concept__wapper">
+          <div className="concept__wapper_list">
+            {conceptData.map((concept) => (
+              <SlideUp delay={concept.id} key={concept.id}>
+                <div className="concepts__name">
+                  <sup>{`0${concept.id}`}</sup>
+                  {concept.title}
+                </div>
+
+                <p className="describe">{concept.description}</p>
+              </SlideUp>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Concept;

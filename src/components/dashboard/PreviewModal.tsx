@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Modal, Button } from 'react-bootstrap';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import MarkdownRenderer from "@/components/site/blogs/MarkdownRenderer";
+import { Button, Modal } from "react-bootstrap";
 
 interface PreviewModalProps {
   show: boolean;
@@ -21,10 +21,10 @@ interface PreviewModalProps {
 }
 
 const PreviewModal = ({ show, onHide, article }: PreviewModalProps) => {
-  const today = new Date().toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  const today = new Date().toLocaleDateString("fr-FR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 
   return (
@@ -35,7 +35,7 @@ const PreviewModal = ({ show, onHide, article }: PreviewModalProps) => {
           Prévisualisation de l'article
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ maxHeight: '80vh' }}>
+      <Modal.Body style={{ maxHeight: "80vh" }}>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-10">
@@ -43,10 +43,13 @@ const PreviewModal = ({ show, onHide, article }: PreviewModalProps) => {
               <article>
                 <header className="mb-5">
                   {/* Category and Tags */}
-                  {(article.category || (article.tags && article.tags.length > 0)) && (
+                  {(article.category ||
+                    (article.tags && article.tags.length > 0)) && (
                     <div className="mb-3">
                       {article.category && (
-                        <span className="badge bg-primary me-2">{article.category.name}</span>
+                        <span className="badge bg-primary me-2">
+                          {article.category.name}
+                        </span>
                       )}
                       {article.tags?.map((tag) => (
                         <span key={tag._id} className="badge bg-secondary me-2">
@@ -69,14 +72,22 @@ const PreviewModal = ({ show, onHide, article }: PreviewModalProps) => {
                     <div className="d-flex align-items-center gap-2">
                       <div
                         className="avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                        style={{ width: '40px', height: '40px' }}
+                        style={{ width: "40px", height: "40px" }}
                       >
                         <span className="fw-semibold">
-                          {(article.author?.name || article.author?.username || 'A').charAt(0).toUpperCase()}
+                          {(
+                            article.author?.name ||
+                            article.author?.username ||
+                            "A"
+                          )
+                            .charAt(0)
+                            .toUpperCase()}
                         </span>
                       </div>
                       <span className="fw-medium text-dark">
-                        {article.author?.name || article.author?.username || 'Auteur'}
+                        {article.author?.name ||
+                          article.author?.username ||
+                          "Auteur"}
                       </span>
                     </div>
                     <span>•</span>
@@ -92,7 +103,7 @@ const PreviewModal = ({ show, onHide, article }: PreviewModalProps) => {
                         src={article.featuredImage}
                         alt={article.title}
                         className="img-fluid rounded w-100"
-                        style={{ maxHeight: '500px', objectFit: 'cover' }}
+                        style={{ maxHeight: "500px", objectFit: "cover" }}
                       />
                     </div>
                   )}
@@ -106,7 +117,8 @@ const PreviewModal = ({ show, onHide, article }: PreviewModalProps) => {
                 {/* Preview Notice */}
                 <div className="alert alert-info">
                   <i className="bi bi-info-circle me-2"></i>
-                  <strong>Note :</strong> Ceci est une prévisualisation. L'article n'est pas encore publié.
+                  <strong>Note :</strong> Ceci est une prévisualisation.
+                  L'article n'est pas encore publié.
                 </div>
               </article>
             </div>
