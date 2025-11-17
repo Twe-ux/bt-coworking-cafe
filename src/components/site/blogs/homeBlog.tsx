@@ -24,7 +24,7 @@ const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
         {/* title Start */}
         <SlideDown className="">
           <h1 className="title text-center">Entre projets et cappuccinos :</h1>
-          <p className="d-flex justify-content-center mt-4">
+          <p className="d-flex justify-content-center mt-4 subtitle">
             nos actus, nos conseils et la worklife des sans bureau fixe.
           </p>
         </SlideDown>

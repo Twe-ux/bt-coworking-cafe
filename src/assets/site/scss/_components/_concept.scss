@@ -1,7 +1,7 @@
 .concept {
   max-width: 1096px;
   margin: auto;
-  margin-bottom: 181px;
+
   .thumb__img {
     width: 100%;
     max-height: 500px;
@@ -97,6 +97,19 @@
   &__bg {
     background-color: var(--main-clr);
     padding-bottom: 300px;
+
+    .container h5 {
+      @include breakpoint(md) {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .container div {
+      @include breakpoint(md) {
+        justify-content: center;
+      }
+    }
   }
 
   &__title {
@@ -115,19 +128,19 @@
       div {
         @include justify();
         color: var(--grayWhite-clr);
-        padding: 54px 0;
+        padding: 27px 0;
         border-bottom: 1px solid #e3ece71f;
         gap: 30px;
         &:last-child {
           padding: 0px;
-          padding-top: 54px;
+          padding-top: 27px;
           border-bottom: none;
         }
         @include breakpoint(md) {
           flex-direction: column;
           align-items: start;
           gap: 15px;
-          padding: 40px 0;
+          // padding: 40px 0;
         }
         .concepts__name {
           border: none;
@@ -137,8 +150,10 @@
             top: 0;
             font-size: 36px;
             font-weight: 600;
-            // display: block;
             color: var(--btn-clr);
+            @include breakpoint(md) {
+              padding-bottom: 10px;
+            }
           }
 
           font-size: 32px;
@@ -148,7 +163,8 @@
             font-size: 30px;
           }
           @include breakpoint(md) {
-            font-size: 25px;
+            font-size: 20px;
+            width: 100%;
           }
         }
 
@@ -156,7 +172,7 @@
           max-width: 501px;
           color: var(--grayWhite-clr);
           text-align: justify;
-          font-size: 18px;
+          // font-size: 18px;
         }
       }
     }

@@ -9,7 +9,7 @@ const Concept = () => {
       <div className="container position-relative ">
         {/* Title */}
         <SlideDown className="d-lg-flex justify-content-between align-items-center concept__title">
-          <h1 className="title">Comment ça marche ?</h1>
+          <h5 className="title">Comment ça marche ?</h5>
           <div className="d-flex gap-3">
             <Link href={"/"} className="common__btn mt-4 mt-lg-0">
               <span>Nos espaces</span>

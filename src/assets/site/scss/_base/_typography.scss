@@ -102,18 +102,18 @@ p {
 }
 
 .py__130 {
-  padding: 130px 0 0 0;
+  padding: 130px 0;
 
   @include breakpoint(lg) {
-    padding: 110px 0 0 0;
+    padding: 110px 0;
   }
 
   @include breakpoint(md) {
-    padding: 100px 0 0 0;
+    padding: 100px 0;
   }
 
   @include breakpoint(sm) {
-    padding: 90px 0 0 0;
+    padding: 90px 0;
   }
 }
 
