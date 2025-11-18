@@ -1,24 +1,26 @@
-import { SpacesDetailsProps } from "@/db/spaces/spacesData";
+import React from 'react'
 
-const AboutCounter = ({ counterBox }: SpacesDetailsProps) => {
-  // console.log(counterBox[0].id);
-
+const AboutCounter = () => {
   return (
-    <div>
-      <div className="counter">
-        {counterBox.map((id) => {
-          return (
-            <div key={id.id} className="counter__box">
-              <h1 className="counter__number">{id.number}</h1>
-              <p className="counter__text">{id.box}</p>
-            </div>
-          );
-        })}
+    <div className="counter">
+      <div className="counter__box">
+        <h1 className="counter__number">549+</h1>
+        <p className="counter__text">Total Client</p>
       </div>
-      {/* {counterBox[0] ? null : <p className="stars">﹡ A partir de </p>} */}
-      {/* <p className="stars">﹡ A partir de </p> */}
+      <div className="counter__box">
+        <h1 className="counter__number">100%</h1>
+        <p className="counter__text">Your Satisfaction Rate</p>
+      </div>
+      <div className="counter__box">
+        <h1 className="counter__number">836</h1>
+        <p className="counter__text">Total Employee</p>
+      </div>
+      <div className="counter__box">
+        <h1 className="counter__number">67+</h1>
+        <p className="counter__text">Global Awards</p>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default AboutCounter;
+export default AboutCounter

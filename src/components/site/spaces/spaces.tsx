@@ -59,19 +59,7 @@ const Spaces = () => {
                 </p>
               </div>
             </div>
-            {/* {spacesDetailsData.map(
-              (id, title, description, subDescription, imgSrc, counterBox) => {
-                <div key={id}>
-                  <SpaceDetails
-                    title={title}
-                    description={description}
-                    subDescritpion={subDescription}
-                    imgSrc={imgSrc}
-                    counterBox={counterBox}
-                  />
-                </div>;
-              }
-            )} */}
+
             {spacesDetailsData.map(
               ({
                 id,

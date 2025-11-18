@@ -3,9 +3,9 @@
 import { SpacesDetailsProps } from "@/db/spaces/spacesData";
 import SlideUp from "@/utils/animations/slideUp";
 import Link from "next/link";
-import AboutCounter from "../about/aboutCounter";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import SpaceCounter from "./spaceCounter";
 
 // Import Swiper styles
 import "swiper/css";
@@ -70,7 +70,7 @@ const SpaceDetails = ({
           </div>
         </div>
         <div className="mt-5">
-          <AboutCounter counterBox={counterBox} />
+          <SpaceCounter counterBox={counterBox} />
         </div>
       </div>
     </section>

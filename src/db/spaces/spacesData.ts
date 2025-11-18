@@ -12,55 +12,15 @@ export interface SpacesDetailsProps {
   title: string;
   description: string;
   subDescription: string;
-  imgSrc: [
-    {
-      id: number;
-      img: string;
-    },
-    {
-      id: number;
-      img: string;
-    },
-    {
-      id: number;
-      img: string;
-    },
-    {
-      id?: number;
-      img?: string;
-    },
-    {
-      id?: number;
-      img?: string;
-    },
-    {
-      id?: number | null;
-      img?: string | null;
-    }
-  ];
-
-  counterBox: [
-    {
-      id: number;
-      number: string;
-      box: string;
-    },
-    {
-      id: number;
-      number: string;
-      box: string;
-    },
-    {
-      id: number;
-      number: string;
-      box: string;
-    },
-    {
-      id: number;
-      number: string;
-      box: string;
-    }
-  ];
+  imgSrc: Array<{
+    id: number;
+    img: string;
+  }>;
+  counterBox: Array<{
+    id: number;
+    number: string;
+    box: string;
+  }>;
 }
 
 export const spacesData: Spaces[] = [
