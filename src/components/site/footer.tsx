@@ -28,8 +28,9 @@ const Footer = () => {
       "/project-details",
       "/services",
       "/service-details",
+      "/spaces",
       "/concept",
-      "/espaces",
+      // "/espaces",
       "/tarifs",
       "/menu",
       "/professionnels",
@@ -132,10 +133,10 @@ const Footer = () => {
                   <Link href={"#"}>Réserver</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Fonctionnement</Link>
+                  <Link href={"/concept#concept"}>Fonctionnement</Link>
                 </li>
                 <li>
-                  <Link href={"/tarifs"}>Tarifs</Link>
+                  <Link href={"/price"}>Tarifs</Link>
                 </li>
               </ul>
             </div>
@@ -145,13 +146,15 @@ const Footer = () => {
               <h3 className="footer__info_group">???</h3>
               <ul>
                 <li>
-                  <Link href={"#"}>Mentions légales</Link>
+                  <Link href={"/mentions-legales"}>Mentions légales</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Conditions générales de vente</Link>
+                  <Link href={"/CGU"}>Conditions générales de vente</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Politique de confidentialité</Link>
+                  <Link href={"confidentiality"}>
+                    Politique de confidentialité
+                  </Link>
                 </li>
               </ul>
             </div>

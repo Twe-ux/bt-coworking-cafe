@@ -1,4 +1,4 @@
-import Concept from "@/components/site/concept/concept";
+import ConceptDetails from "@/components/site/concept/conceptDetails";
 import PageTitle from "@/components/site/pageTitle";
 import SlideUp from "@/utils/animations/slideUp";
 import { Metadata } from "next";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-const ServiceDetails = () => {
+const Concept = () => {
   return (
     <>
       <PageTitle title={"Concept"} currentPage={"Concept"} />
@@ -163,9 +163,9 @@ const ServiceDetails = () => {
           </div>
         </div>
       </article>
-      <Concept />
+      <ConceptDetails />
     </>
   );
 };
 
-export default ServiceDetails;
+export default Concept;

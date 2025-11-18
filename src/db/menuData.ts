@@ -15,7 +15,7 @@ export const menuData: MenuItem[] = [
   },
   {
     title: "Espaces",
-    link: "/espaces",
+    link: "/spaces",
   },
   {
     title: "Tarifs",
