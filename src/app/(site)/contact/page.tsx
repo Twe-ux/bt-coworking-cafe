@@ -5,7 +5,7 @@ import PageTitle from "@/components/site/pageTitle";
 const Contact = () => {
   return (
     <>
-      <PageTitle title={"Contact Us"} currentPage={"Contact Us"} />
+      <PageTitle title={"Contactez-nous"} currentPage={"Contactez-nous"} />
       <ContactInfo />
       <GoogleMap />
     </>

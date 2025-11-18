@@ -17,12 +17,14 @@ const SpaceCard = ({
 }: SpaceCardProps) => {
   return (
     <div className={`service__card services__2_card ${className}`}>
-      <img src={imgSrc} alt={title} />
-      <h3 className="t__28">{title}</h3>
-      <p>{description}</p>
-      <Link href={link} className="d-flex align-items-center">
-        <span>Plus de détails</span>
-        <i className="fa-solid fa-arrow-right"></i>
+      <Link href={link}>
+        <img src={imgSrc} alt={title} />
+        <h3 className="t__28">{title}</h3>
+        <p>{description}</p>
+        <div className="d-flex align-items-center">
+          <span>Plus de détails</span>
+          <i className="fa-solid fa-arrow-right"></i>
+        </div>
       </Link>
     </div>
   );

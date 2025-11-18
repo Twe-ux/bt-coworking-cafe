@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useEffect, useRef } from "react";
 
 interface CustomDropdownProps {
@@ -7,7 +7,11 @@ interface CustomDropdownProps {
   placeholder?: string;
 }
 
-const CustomDropdown = ({ options, onSelect, placeholder = "Select an option" }: CustomDropdownProps) => {
+const CustomDropdown = ({
+  options,
+  onSelect,
+  placeholder = "Sélectionnez une option",
+}: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -22,7 +26,10 @@ const CustomDropdown = ({ options, onSelect, placeholder = "Select an option" }:
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -31,13 +38,13 @@ const CustomDropdown = ({ options, onSelect, placeholder = "Select an option" }:
   }, []);
 
   return (
-    <div className={'dropdown'} ref={dropdownRef}>
-      <div className={'selectBox'} onClick={() => setIsOpen(!isOpen)}>
+    <div className={"dropdown"} ref={dropdownRef}>
+      <div className={"selectBox"} onClick={() => setIsOpen(!isOpen)}>
         <span>{selected || placeholder}</span>
-        <span className={'arrow'}>&#9662;</span>
+        <span className={"arrow"}>&#9662;</span>
       </div>
       {isOpen && (
-        <ul className={'optionsList'}>
+        <ul className={"optionsList"}>
           {options.map((option, index) => (
             <li key={index} onClick={() => handleSelect(option)}>
               {option}

@@ -5,23 +5,28 @@ import { NextResponse } from "next/server";
 // Public routes that don't require authentication
 const publicRoutes = [
   "/",
-  "/about",
-  "/blog",
-  "/blog-details",
+  "/CGU",
+  "/confidentiality",
+  "/mention-legales",
   "/contact",
-  "/faq",
-  "/home-2",
-  "/pricing",
-  "/projects",
-  "/project-details",
-  "/services",
-  "/service-details",
+
   "/concept",
-  "/espaces",
+  "/spaces",
   "/tarifs",
   "/menu",
   "/professionnels",
-  "/mag",
+  "/blog",
+
+  // "/about",
+  // "/blog-details",
+
+  // "/faq",
+  // "/home-2",
+  // "/pricing",
+  // "/projects",
+  // "/project-details",
+  // "/services",
+  // "/service-details",
 ];
 
 // Auth routes
@@ -61,7 +66,7 @@ export async function middleware(req: NextRequest) {
   });
 
   // 1. Public routes - allow everyone
-  if (publicRoutes.includes(pathname) || pathname.startsWith('/blog/')) {
+  if (publicRoutes.includes(pathname) || pathname.startsWith("/blog/")) {
     console.log("✅ Public route, allowing access");
     return NextResponse.next();
   }

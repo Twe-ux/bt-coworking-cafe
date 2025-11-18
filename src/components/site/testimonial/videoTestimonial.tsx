@@ -9,7 +9,7 @@ const VideoTestimonial = () => {
     <>
       <div className="video">
         <h1 className="title text-center mb-5">
-          Pourquoi venir à Anticafé Strasbourg ? Pour ça!
+          Pourquoi venir à Anticafé Strasbourg ? Pour ça !
         </h1>
 
         <div className="position-relative">

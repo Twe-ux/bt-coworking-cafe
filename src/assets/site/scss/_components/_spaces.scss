@@ -98,6 +98,11 @@
     @include breakpoint(md) {
       padding: 20px;
     }
+
+    p {
+      text-align: justify;
+    }
+
     img {
       width: 100%;
       height: 150px;
@@ -294,6 +299,10 @@
 
   .projects__usecase {
     margin-top: 0;
+  }
+
+  p {
+    text-align: justify;
   }
 
   .counter {

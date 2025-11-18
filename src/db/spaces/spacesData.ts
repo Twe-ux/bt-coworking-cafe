@@ -8,7 +8,7 @@ export interface Spaces {
 }
 
 export interface SpacesDetailsProps {
-  id: number;
+  id: string;
   title: string;
   description: string;
   subDescription: string;
@@ -52,7 +52,7 @@ export const spacesData: Spaces[] = [
 
 export const spacesDetailsData: SpacesDetailsProps[] = [
   {
-    id: 1,
+    id: "open-space",
     title: "L’open-space",
     description: `Ici, le placement est libre : pas de bureau attitré, vous vous
     installez où vous voulez. Nous accueillons avec ou sans
@@ -107,7 +107,7 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     ],
   },
   {
-    id: 2,
+    id: "verriere",
     title: "La verrière",
     description:
       "La Verrière accueille jusqu’à 4 personnes autour d’une table haute. Il est possible d’ajouter un ou deux tabourets pour un court moment, même si l’espace devient un peu plus étroit. Elle est équipée d’un écran LCD pour vos projections, d’un paperboard et d’une connexion wifi très haut débit, évidemment.",
@@ -143,7 +143,7 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     ],
   },
   {
-    id: 3,
+    id: "etage",
     title: "L’étage",
     description:
       "À l’étage, vous disposez d’un espace complet : un petit salon d’accueil, des WC privés et une grande salle d’environ 35 à 40 m². En configuration réunion en U, elle convient parfaitement à des groupes de 8 à 12 personnes. Nous pouvons aller jusqu’à 15 participants, même si l’espace devient plus serré. En format conférence, sans tables, la salle accueille jusqu’à 20 personnes. Elle est équipée d’un écran-vidéoprojecteur, d’un grand whiteboard, d’un paperboard et d’une connexion wifi très haut débit pour travailler confortablement.",

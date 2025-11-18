@@ -13,6 +13,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const SpaceDetails = ({
+  id,
   title,
   description,
   subDescription,
@@ -25,7 +26,7 @@ const SpaceDetails = ({
   );
 
   return (
-    <section className="tools__concept py__130" id="open-space">
+    <section className="tools__concept py__130" id={id}>
       <div className="container">
         <div className="projects__usecase">
           <div className="row align-items-center">
