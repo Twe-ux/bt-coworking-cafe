@@ -53,6 +53,9 @@
     top: 0;
     z-index: 1000;
     transition: all 0.3s ease-in-out;
+    @include breakpoint(lg) {
+      position: relative;
+    }
     &_logo {
       h5 {
         font-size: 34px;
@@ -162,5 +165,12 @@
         cursor: pointer;
       }
     }
+  }
+}
+
+.hidden {
+  display: none;
+  @include breakpoint(xl) {
+    display: block;
   }
 }
