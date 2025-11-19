@@ -12,21 +12,11 @@ const publicRoutes = [
 
   "/concept",
   "/spaces",
-  "/tarifs",
-  "/menu",
-  "/professionnels",
+  "/pricing",
   "/blog",
 
-  // "/about",
-  // "/blog-details",
-
-  // "/faq",
-  // "/home-2",
-  // "/pricing",
-  // "/projects",
-  // "/project-details",
-  // "/services",
-  // "/service-details",
+  "/menu",
+  "/professionnels",
 ];
 
 // Auth routes

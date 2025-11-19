@@ -1,10 +1,49 @@
 .pricing {
   margin-bottom: 181px;
+  &__title {
+    margin-bottom: 10px;
+    font-family: "Kanit";
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  &__band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 1px 1px 1px;
+    background-color: var(--main-clr);
+    border-radius: 10px;
+    color: white;
+    transition: all 0.5s;
+
+    h3 {
+      padding: 5px 0;
+    }
+    &:hover {
+      background-color: white;
+      color: var(--main-clr);
+      border: solid 0px var(--main-clr);
+    }
+  }
+
   &__card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     border-radius: 10px;
     background-color: white;
-    padding: 30px;
+    padding: 35px;
     transition: all 0.5s;
+    height: 730px;
+    @include breakpoint(lg) {
+      padding: 20px;
+    }
+
+    p {
+      color: #6e6f75;
+    }
 
     &_title {
       h1 {
@@ -24,6 +63,11 @@
         transition: all 0.5s;
         margin-top: 5px;
       }
+      sup {
+        font-size: 8px;
+        margin-top: 8px;
+        transition: all 0.5s;
+      }
     }
 
     .border__full {
@@ -35,10 +79,11 @@
     }
 
     ul {
+      height: 392px;
       li {
         display: flex;
         align-items: center;
-        gap: 9px;
+        gap: 12px;
         margin-bottom: 30px;
 
         span {
@@ -51,6 +96,7 @@
         }
 
         p {
+          max-width: 215px;
           color: #6e6f75;
           transition: all 0.5s;
         }
@@ -66,8 +112,14 @@
     &:hover {
       background-color: var(--main-clr);
 
+      p {
+        color: var(--grayWhite-clr);
+      }
       .pricing__card_title {
         h1 {
+          color: var(--btn-clr);
+        }
+        sup {
           color: var(--btn-clr);
         }
 

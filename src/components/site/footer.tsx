@@ -20,13 +20,15 @@ const Footer = () => {
       "/blog",
       "/concept",
       "/spaces",
-      "/menu",
+      "/pricing",
       "/contact",
-      "/professionnels",
-      "/booking",
       "/signin",
       "/signup",
-      "/tarifs",
+
+      "/menu",
+      "/professionnels",
+
+      "/booking",
 
       // "/pricing",
       // "/about",
@@ -137,7 +139,7 @@ const Footer = () => {
                   <Link href={"/concept#concept"}>Fonctionnement</Link>
                 </li>
                 <li>
-                  <Link href={"/price"}>Tarifs</Link>
+                  <Link href={"/pricing"}>Tarifs</Link>
                 </li>
               </ul>
             </div>

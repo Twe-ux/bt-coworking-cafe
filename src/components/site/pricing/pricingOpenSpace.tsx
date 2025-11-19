@@ -1,11 +1,12 @@
-import { pricingData } from "@/db/pricingData";
+import { pricingDataOpenSpace } from "@/db/pricingData";
 import SlideUp from "@/utils/animations/slideUp";
 import Link from "next/link";
 
-const PricingTable = () => {
+const PricingOpenSpace = () => {
   return (
     <div className="row pt__50">
-      {pricingData.map((plan, index) => (
+      <h2 className="pricing__title">Tarifs de l’open-space</h2>
+      {pricingDataOpenSpace.map((plan, index) => (
         <SlideUp
           key={index}
           className="col-xl-3 col-md-6 mb-4 mb-xl-0"
@@ -14,8 +15,12 @@ const PricingTable = () => {
           <div className="pricing__card">
             <div className="text-center pricing__card_title">
               <h6>{plan.title}</h6>
-              <h1 className="t__54">{plan.price}</h1>
-              <p>Per year</p>
+              <div className="d-flex justify-content-center">
+                <h1 className="t__54">{plan.priceTTC}</h1>
+                <sup>TTC</sup>
+              </div>
+
+              <p>{plan.duration}</p>
             </div>
             <span className="border__full" />
             <ul>
@@ -26,8 +31,9 @@ const PricingTable = () => {
                 </li>
               ))}
             </ul>
-            <Link href={"/pricing"} className="common__btn">
-              <span>Get Started</span>
+            <p>{plan.condition}</p>
+            <Link href={"/booking"} className="common__btn">
+              <span>Réserver</span>
               <i className="fa-solid fa-arrow-right"></i>
             </Link>
           </div>
@@ -37,4 +43,4 @@ const PricingTable = () => {
   );
 };
 
-export default PricingTable;
+export default PricingOpenSpace;
