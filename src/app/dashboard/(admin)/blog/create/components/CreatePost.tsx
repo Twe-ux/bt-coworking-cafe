@@ -22,7 +22,11 @@ import {
 } from "react-bootstrap";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
-import { useCreateArticleMutation, useGetCategoriesQuery, useGetTagsQuery } from "@/store/api/blogApi";
+import {
+  useCreateArticleMutation,
+  useGetCategoriesQuery,
+  useGetTagsQuery,
+} from "@/store/api/blogApi";
 import { useNotification } from "@/hooks/useNotification";
 import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
 
@@ -36,20 +40,54 @@ const CreatePost = () => {
   const [showPreview, setShowPreview] = useState(false);
 
   const articleSchema = yup.object({
-    title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères").defined(),
-    excerpt: yup.string().max(300, "L'extrait ne peut pas dépasser 300 caractères").defined().default(""),
-    content: yup.string().required("Le contenu est obligatoire").min(50, "Le contenu doit contenir au moins 50 caractères").defined(),
-    featuredImage: yup.string().url("L'URL de l'image doit être valide").defined().default(""),
+    title: yup
+      .string()
+      .required("Le titre est obligatoire")
+      .min(5, "Le titre doit contenir au moins 5 caractères")
+      .defined(),
+    excerpt: yup
+      .string()
+      .max(300, "L'extrait ne peut pas dépasser 300 caractères")
+      .defined()
+      .default(""),
+    content: yup
+      .string()
+      .required("Le contenu est obligatoire")
+      .min(50, "Le contenu doit contenir au moins 50 caractères")
+      .defined(),
+    featuredImage: yup
+      .string()
+      .url("L'URL de l'image doit être valide")
+      .defined()
+      .default(""),
     categoryId: yup.string().defined().default(""),
     tagIds: yup.array().of(yup.string()).defined().default([]),
     scheduledFor: yup.date().nullable().default(null),
-    seoMetaTitle: yup.string().max(60, "Le meta titre ne peut pas dépasser 60 caractères").defined().default(""),
-    seoMetaDescription: yup.string().max(160, "La meta description ne peut pas dépasser 160 caractères").defined().default(""),
+    seoMetaTitle: yup
+      .string()
+      .max(60, "Le meta titre ne peut pas dépasser 60 caractères")
+      .defined()
+      .default(""),
+    seoMetaDescription: yup
+      .string()
+      .max(160, "La meta description ne peut pas dépasser 160 caractères")
+      .defined()
+      .default(""),
     seoMetaKeywords: yup.array().of(yup.string()).defined().default([]),
-    seoOgImage: yup.string().url("L'URL de l'image OG doit être valide").defined().default(""),
+    seoOgImage: yup
+      .string()
+      .url("L'URL de l'image OG doit être valide")
+      .defined()
+      .default(""),
   });
 
-  const { handleSubmit, control, formState: { errors }, watch, setValue } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm({
     resolver: yupResolver(articleSchema),
     defaultValues: {
       title: "",
@@ -111,7 +149,7 @@ const CreatePost = () => {
       success("Article créé avec succès");
 
       // Redirect to the edit page or post list
-      router.push(`/dashboard/post/edit/${result._id}`);
+      router.push(`/dashboard/blog/edit/${result._id}`);
     } catch (err: any) {
       console.error("Error creating article:", err);
       showError(err?.data?.error || "Erreur lors de la création de l'article");
@@ -150,7 +188,9 @@ const CreatePost = () => {
                   placeholder="Un court résumé de l'article..."
                 />
                 {errors.excerpt && (
-                  <small className="text-danger">{errors.excerpt.message}</small>
+                  <small className="text-danger">
+                    {errors.excerpt.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -168,7 +208,9 @@ const CreatePost = () => {
                       placeholder="Écrivez votre article en Markdown..."
                     />
                     {errors.content && (
-                      <small className="text-danger">{errors.content.message}</small>
+                      <small className="text-danger">
+                        {errors.content.message}
+                      </small>
                     )}
                   </>
                 )}
@@ -189,7 +231,9 @@ const CreatePost = () => {
                 )}
               />
               {errors.featuredImage && (
-                <small className="text-danger">{errors.featuredImage.message}</small>
+                <small className="text-danger">
+                  {errors.featuredImage.message}
+                </small>
               )}
             </Col>
 
@@ -213,7 +257,9 @@ const CreatePost = () => {
                   )}
                 />
                 {errors.categoryId && (
-                  <small className="text-danger">{errors.categoryId.message}</small>
+                  <small className="text-danger">
+                    {errors.categoryId.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -234,10 +280,19 @@ const CreatePost = () => {
                       size={5}
                       className="form-select"
                       onChange={(e) => {
-                        const selected = Array.from(e.target.selectedOptions, option => option.value);
+                        const selected = Array.from(
+                          e.target.selectedOptions,
+                          (option) => option.value
+                        );
                         field.onChange(selected);
                       }}
-                      value={Array.isArray(field.value) ? field.value.filter((v): v is string => typeof v === 'string') : []}
+                      value={
+                        Array.isArray(field.value)
+                          ? field.value.filter(
+                              (v): v is string => typeof v === "string"
+                            )
+                          : []
+                      }
                     >
                       {tagsData?.tags.map((tag) => (
                         <option key={tag._id} value={tag._id}>
@@ -251,7 +306,9 @@ const CreatePost = () => {
                   Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs tags
                 </small>
                 {errors.tagIds && (
-                  <small className="text-danger d-block">{errors.tagIds.message}</small>
+                  <small className="text-danger d-block">
+                    {errors.tagIds.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -290,8 +347,16 @@ const CreatePost = () => {
                           type="datetime-local"
                           id="scheduledFor"
                           className="form-control"
-                          value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                          onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                          value={
+                            field.value
+                              ? new Date(field.value).toISOString().slice(0, 16)
+                              : ""
+                          }
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value ? new Date(e.target.value) : null
+                            )
+                          }
                         />
                       </>
                     )}
@@ -330,7 +395,9 @@ const CreatePost = () => {
                   label=""
                 />
                 {errors.seoMetaTitle && (
-                  <small className="text-danger">{errors.seoMetaTitle.message}</small>
+                  <small className="text-danger">
+                    {errors.seoMetaTitle.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -357,7 +424,9 @@ const CreatePost = () => {
                   placeholder="Description pour les moteurs de recherche..."
                 />
                 {errors.seoMetaDescription && (
-                  <small className="text-danger">{errors.seoMetaDescription.message}</small>
+                  <small className="text-danger">
+                    {errors.seoMetaDescription.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -376,7 +445,9 @@ const CreatePost = () => {
                 )}
               />
               {errors.seoOgImage && (
-                <small className="text-danger">{errors.seoOgImage.message}</small>
+                <small className="text-danger">
+                  {errors.seoOgImage.message}
+                </small>
               )}
             </Col>
           </Row>
@@ -440,7 +511,9 @@ const CreatePost = () => {
             name: "Vous",
           },
           tags: [],
-          category: categoriesData?.categories.find(c => c._id === watch("categoryId")),
+          category: categoriesData?.categories.find(
+            (c) => c._id === watch("categoryId")
+          ),
         }}
       />
     </form>

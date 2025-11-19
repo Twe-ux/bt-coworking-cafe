@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Types } from 'mongoose';
 import { createUser } from '@/lib/auth-helpers';
+import { Newsletter } from '@/models/newsletter';
+import dbConnect from '@/lib/mongodb';
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = 'force-dynamic';
@@ -12,7 +14,7 @@ interface MongoError extends Error {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password, username, givenName, roleSlug } = body;
+    const { email, password, username, givenName, roleSlug, newsletter } = body;
 
     // Validation
     if (!email || !password) {
@@ -49,7 +51,25 @@ export async function POST(request: NextRequest) {
       username,
       givenName,
       roleSlug: allowedRoleSlug,
+      newsletter: newsletter ?? false,
     });
+
+    // If user subscribed to newsletter, create/update newsletter entry
+    if (newsletter) {
+      await dbConnect();
+      await Newsletter.findOneAndUpdate(
+        { email: email.toLowerCase() },
+        {
+          email: email.toLowerCase(),
+          userId: user._id,
+          isSubscribed: true,
+          subscribedAt: new Date(),
+          source: 'registration',
+          $unset: { unsubscribedAt: '' },
+        },
+        { upsert: true, new: true }
+      );
+    }
 
     return NextResponse.json(
       {

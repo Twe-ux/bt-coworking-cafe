@@ -62,7 +62,7 @@ const Footer = () => {
         <div className="row footer__lo_co ">
           <div
             className={
-              !isClientDashboard || !showBookingHelper ? "col-12" : " mt-5"
+              !isClientDashboard || !showBookingHelper ? "col-12" : "mt-5"
             }
           >
             <div className="d-flex justify-content-center">

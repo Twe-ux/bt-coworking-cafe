@@ -2,6 +2,9 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { options } from '@/lib/auth-options';
 import Link from 'next/link';
+import dbConnect from '@/lib/mongodb';
+import { User } from '@/models/user';
+import SettingsClient from './SettingsClient';
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = 'force-dynamic';
@@ -31,6 +34,11 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
 
   const username = session.user.username;
 
+  // Fetch user's current newsletter preference
+  await dbConnect();
+  const user = await User.findOne({ email: session.user.email }).select('newsletter');
+  const newsletterSubscribed = user?.newsletter ?? false;
+
   return (
     <section className="client-dashboard py__130">
       <div className="container">
@@ -59,57 +67,45 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
               <div className="card-body p-4">
                 <h3 className="mb-4">Notifications</h3>
 
-                <form>
-                  <div className="mb-3 form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="emailNotifications"
-                      defaultChecked
-                    />
-                    <label className="form-check-label" htmlFor="emailNotifications">
-                      Recevoir les notifications par email
-                    </label>
-                  </div>
+                <SettingsClient initialNewsletter={newsletterSubscribed} />
 
-                  <div className="mb-3 form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="reservationReminders"
-                      defaultChecked
-                    />
-                    <label className="form-check-label" htmlFor="reservationReminders">
-                      Rappels de réservation
-                    </label>
-                  </div>
+                <div className="mb-3 form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="emailNotifications"
+                    defaultChecked
+                    disabled
+                  />
+                  <label className="form-check-label text-muted" htmlFor="emailNotifications">
+                    Recevoir les notifications par email (bientôt disponible)
+                  </label>
+                </div>
 
-                  <div className="mb-3 form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="promotionalEmails"
-                    />
-                    <label className="form-check-label" htmlFor="promotionalEmails">
-                      Recevoir les offres promotionnelles
-                    </label>
-                  </div>
+                <div className="mb-3 form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="reservationReminders"
+                    defaultChecked
+                    disabled
+                  />
+                  <label className="form-check-label text-muted" htmlFor="reservationReminders">
+                    Rappels de réservation (bientôt disponible)
+                  </label>
+                </div>
 
-                  <div className="mb-3 form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="newsletter"
-                    />
-                    <label className="form-check-label" htmlFor="newsletter">
-                      Newsletter mensuelle
-                    </label>
-                  </div>
-
-                  <button type="submit" className="btn btn-primary">
-                    Enregistrer les préférences
-                  </button>
-                </form>
+                <div className="mb-3 form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="promotionalEmails"
+                    disabled
+                  />
+                  <label className="form-check-label text-muted" htmlFor="promotionalEmails">
+                    Recevoir les offres promotionnelles (bientôt disponible)
+                  </label>
+                </div>
               </div>
             </div>
 

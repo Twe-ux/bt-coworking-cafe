@@ -55,6 +55,7 @@ export async function createUser(data: {
   username?: string;
   givenName?: string;
   roleSlug?: 'dev' | 'admin' | 'staff' | 'client';
+  newsletter?: boolean;
 }) {
   await connectDB();
 
@@ -73,6 +74,7 @@ export async function createUser(data: {
     username: data.username,
     givenName: data.givenName,
     role: role._id,
+    newsletter: data.newsletter ?? false,
   });
 
   return user;

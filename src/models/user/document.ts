@@ -10,6 +10,7 @@ export interface UserDocument extends Document {
   emailVerifiedAt?: Date;
   lastLoginAt?: Date;
   passwordChangedAt?: Date;
+  newsletter: boolean;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -46,6 +47,10 @@ export const UserSchema = new Schema<UserDocument>(
     },
     passwordChangedAt: {
       type: Date,
+    },
+    newsletter: {
+      type: Boolean,
+      default: false,
     },
     deletedAt: {
       type: Date,

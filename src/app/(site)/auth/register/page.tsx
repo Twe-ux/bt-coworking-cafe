@@ -14,14 +14,16 @@ export default function RegisterPage() {
     confirmPassword: '',
     givenName: '',
     username: '',
+    newsletter: true,
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -55,6 +57,7 @@ export default function RegisterPage() {
           givenName: formData.givenName,
           username: formData.username || undefined,
           roleSlug: 'client', // Default role for public registration
+          newsletter: formData.newsletter,
         }),
       });
 
@@ -180,7 +183,7 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                <div className="mb-4">
+                <div className="mb-3">
                   <label htmlFor="confirmPassword" className="form-label">
                     Confirmer le mot de passe *
                   </label>
@@ -195,6 +198,23 @@ export default function RegisterPage() {
                     required
                     disabled={isLoading}
                   />
+                </div>
+
+                <div className="mb-4">
+                  <div className="form-check">
+                    <input
+                      type="checkbox"
+                      id="newsletter"
+                      name="newsletter"
+                      className="form-check-input"
+                      checked={formData.newsletter}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                    />
+                    <label htmlFor="newsletter" className="form-check-label">
+                      Je souhaite recevoir la newsletter
+                    </label>
+                  </div>
                 </div>
 
                 <button

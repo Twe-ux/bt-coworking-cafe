@@ -1,16 +1,24 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Card, CardBody, Col, Badge, Button, Spinner, Dropdown } from 'react-bootstrap';
-import IconifyIcon from '@/components/dashboard/wrappers/IconifyIcon';
+import { useState } from "react";
+import Link from "next/link";
+import {
+  Card,
+  CardBody,
+  Col,
+  Badge,
+  Button,
+  Spinner,
+  Dropdown,
+} from "react-bootstrap";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import {
   useGetArticlesQuery,
   useDeleteArticleMutation,
-  useTogglePublishMutation
-} from '@/store/api/blogApi';
-import { useNotification } from '@/hooks/useNotification';
-import type { Article } from '@/store/api/blogApi';
+  useTogglePublishMutation,
+} from "@/store/api/blogApi";
+import { useNotification } from "@/hooks/useNotification";
+import type { Article } from "@/store/api/blogApi";
 
 interface PostCardProps {
   article: Article;
@@ -20,19 +28,25 @@ interface PostCardProps {
   isToggling: boolean;
 }
 
-const PostCard = ({ article, onDelete, onTogglePublish, isDeleting, isToggling }: PostCardProps) => {
+const PostCard = ({
+  article,
+  onDelete,
+  onTogglePublish,
+  isDeleting,
+  isToggling,
+}: PostCardProps) => {
   const statusColor = {
-    published: 'success',
-    draft: 'warning',
-    archived: 'secondary',
-    scheduled: 'info',
+    published: "success",
+    draft: "warning",
+    archived: "secondary",
+    scheduled: "info",
   }[article.status];
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return new Date(date).toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -53,7 +67,7 @@ const PostCard = ({ article, onDelete, onTogglePublish, isDeleting, isToggling }
         {/* Title & Status */}
         <div className="d-flex align-items-start gap-2 mb-2">
           <Link
-            href={`/dashboard/post/edit/${article._id}`}
+            href={`/dashboard/blog/edit/${article._id}`}
             className="text-dark fs-16 fw-medium flex-grow-1"
           >
             {article.title}
@@ -65,12 +79,7 @@ const PostCard = ({ article, onDelete, onTogglePublish, isDeleting, isToggling }
         {article.tags && article.tags.length > 0 && (
           <div className="mb-2">
             {article.tags.map((tag) => (
-              <Badge
-                key={tag._id}
-                bg="light"
-                text="dark"
-                className="me-1"
-              >
+              <Badge key={tag._id} bg="light" text="dark" className="me-1">
                 {tag.name}
               </Badge>
             ))}
@@ -114,18 +123,14 @@ const PostCard = ({ article, onDelete, onTogglePublish, isDeleting, isToggling }
 
           {/* Actions Dropdown */}
           <Dropdown>
-            <Dropdown.Toggle
-              variant="light"
-              size="sm"
-              className="btn-icon"
-            >
+            <Dropdown.Toggle variant="light" size="sm" className="btn-icon">
               <IconifyIcon icon="solar:menu-dots-bold" />
             </Dropdown.Toggle>
 
             <Dropdown.Menu align="end">
               <Dropdown.Item
                 as={Link}
-                href={`/dashboard/post/edit/${article._id}`}
+                href={`/dashboard/blog/edit/${article._id}`}
               >
                 <IconifyIcon icon="solar:pen-outline" className="me-2" />
                 Éditer
@@ -147,10 +152,14 @@ const PostCard = ({ article, onDelete, onTogglePublish, isDeleting, isToggling }
                 disabled={isToggling}
               >
                 <IconifyIcon
-                  icon={article.status === 'published' ? 'solar:archive-outline' : 'solar:upload-outline'}
+                  icon={
+                    article.status === "published"
+                      ? "solar:archive-outline"
+                      : "solar:upload-outline"
+                  }
                   className="me-2"
                 />
-                {article.status === 'published' ? 'Dépublier' : 'Publier'}
+                {article.status === "published" ? "Dépublier" : "Publier"}
               </Dropdown.Item>
 
               <Dropdown.Divider />
@@ -174,8 +183,8 @@ const PostCard = ({ article, onDelete, onTogglePublish, isDeleting, isToggling }
 const Posts = () => {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
-    status: '',
-    search: '',
+    status: "",
+    search: "",
   });
 
   const { data, isLoading, isFetching, error } = useGetArticlesQuery({
@@ -189,24 +198,24 @@ const Posts = () => {
   const { success, error: showError } = useNotification();
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cet article ?")) {
       return;
     }
 
     try {
       await deleteArticle(id).unwrap();
-      success('Article supprimé avec succès');
+      success("Article supprimé avec succès");
     } catch (err) {
-      showError('Erreur lors de la suppression de l\'article');
+      showError("Erreur lors de la suppression de l'article");
     }
   };
 
   const handleTogglePublish = async (id: string) => {
     try {
       await togglePublish(id).unwrap();
-      success('Statut de publication modifié');
+      success("Statut de publication modifié");
     } catch (err) {
-      showError('Erreur lors de la modification du statut');
+      showError("Erreur lors de la modification du statut");
     }
   };
 
