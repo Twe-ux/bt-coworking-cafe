@@ -11,7 +11,7 @@
   color: var(--primary-clr);
   transition: all 0.5s;
   @include breakpoint(md) {
-    padding: 13px 27px;
+    padding: 13px 25px;
     height: 40px;
   }
   &:hover {
