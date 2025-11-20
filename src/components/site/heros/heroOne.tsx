@@ -28,12 +28,15 @@ const HeroOne = () => {
                 delay={3}
                 className="buttons d-sm-flex align-items-center"
               >
-                <Link href={"/spaces"} className="common__btn buttons_file">
+                <Link
+                  href={"/spaces#spaces"}
+                  className="common__btn buttons_file"
+                >
                   <span>Voir les espaces</span>
                   <i className="fa-solid fa-arrow-right"></i>
                 </Link>
                 <Link
-                  href={"/price"}
+                  href={"/pricing#pricing"}
                   className="common__btn buttons_outline mt-4 mt-sm-0"
                 >
                   <span>Nos tarifs</span>

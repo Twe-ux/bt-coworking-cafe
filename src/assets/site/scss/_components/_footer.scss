@@ -12,6 +12,11 @@
     @include breakpoint(lg) {
       padding: 60px 35px;
     }
+
+    div > form > div {
+      width: 600px;
+    }
+
     h2 {
       color: var(--grayWhite-clr);
       font-size: 40px;

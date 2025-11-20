@@ -17,12 +17,10 @@ const PricingMeetingRoom = () => {
             <div className="pricing__card">
               <div className="text-center pricing__card_title">
                 <h6>{plan.title}</h6>
-
                 <div className="d-flex justify-content-center">
                   <h1 className="t__54">{plan.priceTTC}</h1>
                   <sup>TTC</sup>
                 </div>
-
                 <p>{plan.duration}</p>
               </div>
               <span className="border__full" />

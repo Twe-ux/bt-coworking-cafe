@@ -8,7 +8,7 @@ import SpaceDetails from "./spaceDetails";
 const Spaces = () => {
   return (
     <>
-      <section className="spaces spaces__2 py__130">
+      <section className="spaces spaces__2 py__130" id="spaces">
         <div className="container position-relative">
           <SlideDown className="d-lg-flex justify-content-between align-items-center spaces__title spaces__2_title">
             <h1 className="title text-white">

@@ -37,7 +37,7 @@ const AboutOne = () => {
                   télétravailleurs et équipes en quête d’un lieu où travailler
                   comme à la maison, mais en mieux.
                 </p>
-                <Link href="/concept" className="circle">
+                <Link href="/concept#concept" className="circle">
                   <i className="fa-solid fa-arrow-right"></i>
                   <span>En savoir plus</span>
                 </Link>

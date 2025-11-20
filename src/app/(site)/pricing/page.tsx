@@ -5,8 +5,8 @@ import PricingOpenSpace from "@/components/site/pricing/pricingOpenSpace";
 const Pricing = () => {
   return (
     <>
-      <PageTitle title={"Tarifs"} currentPage={"Tarifs"} />
-      <section className="pricing py__130">
+      <PageTitle title={"Nos tarifs"} currentPage={"Tarifs"} />
+      <section className="pricing py__130" id="pricing">
         <div className="container">
           <PricingOpenSpace />
           <PricingMeetingRoom />

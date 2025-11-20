@@ -1,8 +1,7 @@
 import { Metadata } from 'next'
 import Maintenance from './components/Maintenance'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Maintenance' }
 
 const MaintenancePage = () => {
   return <Maintenance />

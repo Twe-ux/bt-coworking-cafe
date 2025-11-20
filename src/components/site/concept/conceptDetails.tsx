@@ -11,11 +11,14 @@ const ConceptDetails = () => {
         <SlideDown className="d-lg-flex justify-content-between align-items-center concept__title">
           <h5 className="title">Comment ça marche ?</h5>
           <div className="d-flex gap-3">
-            <Link href={"/spaces"} className="common__btn mt-4 mt-lg-0">
+            <Link href={"/spaces#spaces"} className="common__btn mt-4 mt-lg-0">
               <span>Nos espaces</span>
               <i className="fa-solid fa-arrow-right"></i>
             </Link>
-            <Link href={"/price"} className="common__btn mt-4 mt-lg-0">
+            <Link
+              href={"/pricing#pricing"}
+              className="common__btn mt-4 mt-lg-0"
+            >
               <span>Nos tarifs</span>
               <i className="fa-solid fa-arrow-right"></i>
             </Link>

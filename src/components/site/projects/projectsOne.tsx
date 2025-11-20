@@ -17,7 +17,7 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
           <h1 className="title">
             Des espaces pour favoriser votre créativité et votre productivité !
           </h1>
-          <Link href="/" className="circle mt-5 mt-lg-0">
+          <Link href="/spaces#spaces" className="circle mt-5 mt-lg-0">
             <i className="fa-solid fa-arrow-right"></i>
             <span>En savoir plus</span>
           </Link>
@@ -25,22 +25,22 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
         {/* title End */}
         <div className="projects__wapper">
           {projectsOneData.map(
-            ({ categories, subCategories, id, imgSrc, title }) => {
+            ({ categories, subCategories, id, imgSrc, title, link }) => {
               return (
                 <SlideUp delay={id} key={id} className="projects__wapper_card">
-                  <Link href="/project-details">
+                  <Link href={`/spaces#${link}`}>
                     <img src={imgSrc} alt="photos des salles de réunion" />
                   </Link>
                   <div>
                     <div className="d-flex align-items-center">
                       <Link
-                        href="/project-details"
+                        href={`/spaces#${link}`}
                         className="prj__title t__28"
                       >
                         {title}
                       </Link>
                       <Link
-                        href="/"
+                        href={`/spaces#${link}`}
                         className="projects__wapper_card_circle mt-3"
                       >
                         <i className="fa-solid fa-arrow-right"></i>

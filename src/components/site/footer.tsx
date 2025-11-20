@@ -99,7 +99,9 @@ const Footer = () => {
           <div className="col-lg-4 col-md-6 mb-5 mb-lg-0">
             <div className="footer__info_address">
               <h3 className="footer__info_group">Où nous trouver ?</h3>
+
               <p>
+                Cow or King Café <br />
                 1 rue de la Division leclerc <br /> 67000 Strasbourg
               </p>
             </div>
@@ -133,20 +135,20 @@ const Footer = () => {
               <h3 className="footer__info_group">Liens rapides</h3>
               <ul>
                 <li>
-                  <Link href={"#"}>Réserver</Link>
+                  <Link href={"/booking"}>Réserver</Link>
                 </li>
                 <li>
                   <Link href={"/concept#concept"}>Fonctionnement</Link>
                 </li>
                 <li>
-                  <Link href={"/pricing"}>Tarifs</Link>
+                  <Link href={"/pricing#pricing"}>Tarifs</Link>
                 </li>
               </ul>
             </div>
           </div>
           <div className="col-lg-2 col-md-6 mb-5 mb-lg-0">
             <div>
-              <h3 className="footer__info_group">???</h3>
+              <h3 className="footer__info_group">À propos</h3>
               <ul>
                 <li>
                   <Link href={"/mentions-legales"}>Mentions légales</Link>
@@ -155,7 +157,7 @@ const Footer = () => {
                   <Link href={"/CGU"}>Conditions générales de vente</Link>
                 </li>
                 <li>
-                  <Link href={"confidentiality"}>
+                  <Link href={"/confidentiality"}>
                     Politique de confidentialité
                   </Link>
                 </li>
@@ -168,8 +170,8 @@ const Footer = () => {
           <div className="col-12">
             <hr className="footer__border" />
             <p className="text-center">
-              © Copyright 2025 All Rights Reserved by{" "}
-              <Link href={"#"}>digiv</Link>
+              © Copyright 2025 Tous droits réservés{" "}
+              <Link href={"#"}>Twe-Ux</Link>
             </p>
           </div>
         </div>

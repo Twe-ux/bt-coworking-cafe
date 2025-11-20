@@ -19,7 +19,6 @@ const PricingOpenSpace = () => {
                 <h1 className="t__54">{plan.priceTTC}</h1>
                 <sup>TTC</sup>
               </div>
-
               <p>{plan.duration}</p>
             </div>
             <span className="border__full" />

@@ -47,7 +47,11 @@
     }
 
     .w-380 {
-      width: 380px;
+      width: 350px;
+
+      &.swiper-pagination-custom {
+        width: 0;
+      }
     }
 
     .slide {
