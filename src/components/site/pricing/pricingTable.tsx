@@ -14,7 +14,7 @@ const PricingTable = () => {
           <div className="pricing__card">
             <div className="text-center pricing__card_title">
               <h6>{plan.title}</h6>
-              <h1 className="t__54">{plan.price}</h1>
+              <h1 className="t__54">{plan.priceTTC}</h1>
               <p>Per year</p>
             </div>
             <span className="border__full" />

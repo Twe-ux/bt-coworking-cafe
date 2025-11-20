@@ -74,6 +74,9 @@ export const pricingDataOpenSpace: PricingPlan[] = [
   },
 ];
 
+// Legacy export for old components
+export const pricingData = pricingDataOpenSpace;
+
 export const pricingDataMeetingRoom: PricingPlan[] = [
   {
     space: "Verrière",

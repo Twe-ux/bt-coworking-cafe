@@ -38,12 +38,6 @@ export const MENU_ITEMS: MenuItemType[] = [
         url: "/dashboard/blog/create",
         parentKey: "blog",
       },
-      // {
-      //   key: "edit",
-      //   label: "Edit",
-      //   url: "/dashboard/blog/edit",
-      //   parentKey: "blog",
-      // },
       {
         key: "details",
         label: "Details",

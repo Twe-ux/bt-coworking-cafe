@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { Types } from "mongoose";
 import dbConnect from "@/lib/mongodb";
 import { User } from "@/models/user";
 import { Newsletter } from "@/models/newsletter";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { options } from "@/lib/auth-options";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(options);
 
     if (!session?.user) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
     // Add all users
     users.forEach((user) => {
       usersMap.set(user.email.toLowerCase(), {
-        id: user._id.toString(),
+        id: (user._id as Types.ObjectId).toString(),
         email: user.email,
         username: user.username || "-",
         givenName: user.givenName || "-",
@@ -61,7 +62,7 @@ export async function GET(request: NextRequest) {
       const email = newsletter.email.toLowerCase();
       if (!usersMap.has(email)) {
         usersMap.set(email, {
-          id: newsletter._id.toString(),
+          id: (newsletter._id as Types.ObjectId).toString(),
           email: newsletter.email,
           username: "-",
           givenName: "-",

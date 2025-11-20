@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import dbConnect from "@/lib/mongodb";
 import { User } from "@/models/user";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { options } from "@/lib/auth-options";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(options);
 
     if (!session?.user?.email) {
       return NextResponse.json(
