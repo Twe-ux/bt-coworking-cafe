@@ -9,6 +9,7 @@ const publicRoutes = [
   "/confidentiality",
   "/mention-legales",
   "/contact",
+  "/scan",
 
   "/concept",
   "/spaces",
@@ -17,6 +18,11 @@ const publicRoutes = [
 
   "/menu",
   "/professionnels",
+];
+
+// Public route patterns (dynamic routes)
+const publicRoutePatterns = [
+  /^\/promo\/[^\/]+$/, // /promo/[token]
 ];
 
 // Auth routes
@@ -56,7 +62,13 @@ export async function middleware(req: NextRequest) {
   });
 
   // 1. Public routes - allow everyone
-  if (publicRoutes.includes(pathname) || pathname.startsWith("/blog/")) {
+  const isPublicRoute =
+    publicRoutes.includes(pathname) ||
+    pathname.startsWith("/blog/") ||
+    pathname.startsWith("/promo/") ||
+    publicRoutePatterns.some(pattern => pattern.test(pathname));
+
+  if (isPublicRoute) {
     console.log("✅ Public route, allowing access");
     return NextResponse.next();
   }
@@ -114,9 +126,13 @@ export async function middleware(req: NextRequest) {
   }
 
   // 4. Client dashboard routes (/{username}/...)
+  // Skip if it's a public route pattern (like /promo/[token])
+  const isPublicPattern = publicRoutePatterns.some(pattern => pattern.test(pathname));
+
   if (
     clientDashboardPattern.test(pathname) &&
-    !publicRoutes.includes(pathname)
+    !publicRoutes.includes(pathname) &&
+    !isPublicPattern
   ) {
     // Extract username from path
     const pathUsername = pathname.split("/")[1];

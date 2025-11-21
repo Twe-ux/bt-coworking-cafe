@@ -1,10 +1,4 @@
-import type { Metadata } from 'next';
-import { ReduxProvider } from '@/components/providers/ReduxProvider';
-
-export const metadata: Metadata = {
-  title: 'Coworking Café',
-  description: 'Coworking space and café in Strasbourg',
-};
+import { ReduxProvider } from "@/components/providers/ReduxProvider";
 
 export default function RootLayout({
   children,
@@ -14,9 +8,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        <ReduxProvider>
-          {children}
-        </ReduxProvider>
+        <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>
   );

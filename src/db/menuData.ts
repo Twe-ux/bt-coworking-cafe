@@ -33,14 +33,15 @@ export const menuData: MenuItem[] = [
     title: "Le Mag'",
     link: "/blog",
   },
-  // {
-  //   title: "Services",
-  //   link: "#",
-  //   submenu: [
-  //     { title: "Services", link: "/services" },
-  //     { title: "Service Details", link: "/service-details" },
-  //   ],
-  // },
+
+  {
+    title: "admin",
+    link: "#",
+    submenu: [
+      { title: "Promo'", link: "/scan" },
+      { title: "dashboard", link: "/dashboard" },
+    ],
+  },
   // {
   //   title: "Pages",
   //   link: "#",

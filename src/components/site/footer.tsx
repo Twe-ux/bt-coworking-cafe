@@ -24,6 +24,7 @@ const Footer = () => {
       "/contact",
       "/signin",
       "/signup",
+      // "/scan",
 
       "/menu",
       "/professionnels",

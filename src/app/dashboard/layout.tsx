@@ -1,26 +1,15 @@
-import logoDark from "@/assets/dashboard/images/logo-dark.png";
 import "@/assets/dashboard/scss/app.scss";
 import AppProvidersWrapper from "@/components/dashboard/wrappers/AppProvidersWrapper";
-import { DEFAULT_PAGE_TITLE } from "@/context/constants";
-import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import Image from "next/image";
 import NextTopLoader from "nextjs-toploader";
+import logoDark from "/public/images/logo-black.svg";
 
 const figtree = Figtree({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
-
-export const metadata: Metadata = {
-  title: {
-    template: "%s | Lahomes Nextjs - Real Estate Management Admin Template",
-    default: DEFAULT_PAGE_TITLE,
-  },
-  description:
-    "A fully responsive premium admin dashboard template, Real Estate Management Admin Template",
-};
 
 const splashScreenStyles = `
 #splash-screen {
@@ -67,10 +56,8 @@ export default function RootLayout({
         <div id="splash-screen">
           <Image
             alt="Logo"
-            width={112}
-            height={24}
             src={logoDark}
-            style={{ height: "6%", width: "auto" }}
+            style={{ height: "50%", width: "auto" }}
             priority
           />
         </div>
