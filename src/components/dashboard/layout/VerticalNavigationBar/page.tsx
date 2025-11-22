@@ -1,15 +1,20 @@
-'use client';
+"use client";
 
-import { useSession } from "next-auth/react";
-import HoverMenuToggle from "./components/HoverMenuToggle";
 import { getMenuItems } from "@/helpers/Manu";
+import { useSession } from "next-auth/react";
 import LogoBox from "../../LogoBox";
 import SimplebarReactClient from "../../wrappers/SimplebarReactClient";
 import AppMenu from "./components/AppMenu";
+import HoverMenuToggle from "./components/HoverMenuToggle";
 
 const VerticalNavigationBar = () => {
   const { data: session } = useSession();
-  const userRole = session?.user?.role?.slug as 'dev' | 'admin' | 'staff' | 'client' | undefined;
+  const userRole = session?.user?.role?.slug as
+    | "dev"
+    | "admin"
+    | "staff"
+    | "client"
+    | undefined;
 
   // Get filtered menu items based on user role
   const menuItems = getMenuItems(userRole);

@@ -11,7 +11,11 @@ const AuthProtectionWrapper = ({ children }: ChildrenType) => {
   const { push } = useRouter();
   const pathname = usePathname();
 
-  if (status == "unauthenticated") {
+  if (status === "loading") {
+    return <FallbackLoading />;
+  }
+
+  if (status === "unauthenticated") {
     push(`/auth/login?callbackUrl=${pathname}`);
     return <FallbackLoading />;
   }

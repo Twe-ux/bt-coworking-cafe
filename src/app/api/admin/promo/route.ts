@@ -14,7 +14,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
-    if (session.user.role.level < 80) {
+    // Allow staff (level 50+), admin (level 80+), dev (level 100)
+    if (session.user.role.level < 50) {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
 
@@ -49,7 +50,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
-    if (session.user.role.level < 80) {
+    // Allow staff (level 50+), admin (level 80+), dev (level 100)
+    if (session.user.role.level < 50) {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
 

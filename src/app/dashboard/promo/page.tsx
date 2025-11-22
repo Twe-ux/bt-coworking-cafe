@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import DashboardPageTitle from '@/components/dashboard/DashboardPageTitle';
 import {
   Card,
@@ -35,6 +36,10 @@ interface PromoData {
 }
 
 export default function PromoDashboardPage() {
+  const { data: session } = useSession();
+  const userRole = session?.user?.role?.slug;
+  const isStaff = userRole === 'staff';
+
   const [data, setData] = useState<PromoData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -158,6 +163,87 @@ export default function PromoDashboardPage() {
 
   const { scan_stats, weekly_stats, top_hours } = data;
 
+  // Vue simplifiée pour le staff
+  if (isStaff) {
+    return (
+      <>
+        <DashboardPageTitle subName="Marketing" title="Code Promo en cours" />
+
+        <Row className="justify-content-center">
+          <Col lg={6}>
+            <Card className="mb-4">
+              <CardHeader className="text-center">
+                <CardTitle as="h4">Code promo actuel</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <div className="text-center p-4 bg-light rounded mb-3">
+                  <code className="fs-1 fw-bold text-primary">{data.current.code}</code>
+                </div>
+                <p className="text-muted text-center mb-4">{data.current.description}</p>
+
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <span className="text-muted">Réduction :</span>
+                  <Badge bg="success" className="fs-6">
+                    {data.current.discount_type === 'percentage'
+                      ? `-${data.current.discount_value}%`
+                      : data.current.discount_type === 'fixed'
+                        ? `-${data.current.discount_value}€`
+                        : `${data.current.discount_value}€ offerts`}
+                  </Badge>
+                </div>
+
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <span className="text-muted">Utilisations :</span>
+                  <span className="fw-bold">
+                    {data.current.current_uses} / {data.current.max_uses || '∞'}
+                  </span>
+                </div>
+
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <span className="text-muted">Valide jusqu'au :</span>
+                  <span className="fw-bold">
+                    {new Date(data.current.valid_until).toLocaleDateString('fr-FR')}
+                  </span>
+                </div>
+
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="text-muted">Statut :</span>
+                  <Badge bg={data.current.is_active ? 'success' : 'danger'}>
+                    {data.current.is_active ? 'Actif' : 'Inactif'}
+                  </Badge>
+                </div>
+              </CardBody>
+            </Card>
+
+            {/* Stats simples */}
+            <Card>
+              <CardHeader>
+                <CardTitle as="h4">Statistiques</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <Row className="text-center">
+                  <Col xs={4}>
+                    <h3 className="mb-0 text-primary">{scan_stats.total_scans}</h3>
+                    <small className="text-muted">Scans</small>
+                  </Col>
+                  <Col xs={4}>
+                    <h3 className="mb-0 text-info">{scan_stats.total_reveals}</h3>
+                    <small className="text-muted">Révélations</small>
+                  </Col>
+                  <Col xs={4}>
+                    <h3 className="mb-0 text-success">{scan_stats.total_copies}</h3>
+                    <small className="text-muted">Copies</small>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </>
+    );
+  }
+
+  // Vue complète pour admin/dev
   return (
     <>
       <DashboardPageTitle subName="Marketing" title="Codes Promo" />

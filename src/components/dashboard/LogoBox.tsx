@@ -1,11 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import logoDark from "/public/images/logo-black.svg";
 import logoLight from "/public/images/logo_white.svg";
 
 const LogoBox = () => {
   return (
-    <Link href={"/"}>
+    <a href={"/"}>
       <div className="logo-box">
         <div className="logo-dark">
           <Image
@@ -41,7 +40,7 @@ const LogoBox = () => {
         </div>
         <h4>Cow or King Café</h4>
       </div>
-    </Link>
+    </a>
   );
 };
 

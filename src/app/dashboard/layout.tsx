@@ -1,9 +1,22 @@
 import "@/assets/dashboard/scss/app.scss";
+
+import Footer from "@/components/dashboard/layout/Footer";
 import AppProvidersWrapper from "@/components/dashboard/wrappers/AppProvidersWrapper";
+import AuthProtectionWrapper from "@/components/dashboard/wrappers/AuthProtectionWrapper";
+import dynamic from "next/dynamic";
 import { Figtree } from "next/font/google";
 import Image from "next/image";
 import NextTopLoader from "nextjs-toploader";
+import { Suspense } from "react";
+import { Container } from "react-bootstrap";
 import logoDark from "/public/images/logo-black.svg";
+
+const TopNavigationBar = dynamic(
+  () => import("@/components/dashboard/layout/TopNavigationBar/page")
+);
+const VerticalNavigationBar = dynamic(
+  () => import("@/components/dashboard/layout/VerticalNavigationBar/page")
+);
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -42,7 +55,7 @@ const splashScreenStyles = `
 }
 `;
 
-export default function RootLayout({
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -63,7 +76,20 @@ export default function RootLayout({
         </div>
         <NextTopLoader color="#604ae3" showSpinner={false} />
         <div id="__next_splash">
-          <AppProvidersWrapper>{children}</AppProvidersWrapper>
+          <AppProvidersWrapper>
+            <AuthProtectionWrapper>
+              <div className="wrapper">
+                <Suspense>
+                  <TopNavigationBar />
+                </Suspense>
+                <VerticalNavigationBar />
+                <div className="page-content">
+                  <Container fluid>{children}</Container>
+                  <Footer />
+                </div>
+              </div>
+            </AuthProtectionWrapper>
+          </AppProvidersWrapper>
         </div>
       </body>
     </html>

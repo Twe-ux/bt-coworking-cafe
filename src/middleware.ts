@@ -66,7 +66,7 @@ export async function middleware(req: NextRequest) {
     publicRoutes.includes(pathname) ||
     pathname.startsWith("/blog/") ||
     pathname.startsWith("/promo/") ||
-    publicRoutePatterns.some(pattern => pattern.test(pathname));
+    publicRoutePatterns.some((pattern) => pattern.test(pathname));
 
   if (isPublicRoute) {
     console.log("✅ Public route, allowing access");
@@ -88,9 +88,7 @@ export async function middleware(req: NextRequest) {
         userRole === "staff"
       ) {
         console.log("🔒 Admin/Staff/Dev redirect to /dashboard/analytics");
-        return NextResponse.redirect(
-          new URL("/dashboard/dashboards/analytics", req.url)
-        );
+        return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     }
     // Not authenticated, allow access to auth pages
@@ -127,7 +125,9 @@ export async function middleware(req: NextRequest) {
 
   // 4. Client dashboard routes (/{username}/...)
   // Skip if it's a public route pattern (like /promo/[token])
-  const isPublicPattern = publicRoutePatterns.some(pattern => pattern.test(pathname));
+  const isPublicPattern = publicRoutePatterns.some((pattern) =>
+    pattern.test(pathname)
+  );
 
   if (
     clientDashboardPattern.test(pathname) &&

@@ -10,39 +10,34 @@ const Footer = () => {
   const pathname = usePathname();
 
   // Check if we're on a client dashboard page (/{username}/...)
-  const isClientDashboard =
-    pathname &&
-    /^\/[^\/]+(?:\/(?:profile|reservations|settings))?(?:\/.*)?$/.test(
-      pathname
-    ) &&
-    ![
+  // Exclude public routes that start with known patterns
+  const isPublicRoute = pathname && (
+    pathname.startsWith("/blog") ||
+    pathname.startsWith("/promo") ||
+    pathname.startsWith("/booking") ||
+    [
       "/",
-      "/blog",
       "/concept",
       "/spaces",
       "/pricing",
       "/contact",
       "/signin",
       "/signup",
-      // "/scan",
-
+      "/scan",
       "/menu",
       "/professionnels",
+      "/CGU",
+      "/confidentiality",
+      "/mentions-legales",
+    ].includes(pathname)
+  );
 
-      "/booking",
-
-      // "/pricing",
-      // "/about",
-      // "/blog-details",
-      // "/faq",
-      // "/home-2",
-      // "/projects",
-      // "/project-details",
-      // "/services",
-      // "/service-details",
-      // "/mag",
-      // "/espaces",
-    ].includes(pathname);
+  const isClientDashboard =
+    pathname &&
+    /^\/[^\/]+(?:\/(?:profile|reservations|settings))?(?:\/.*)?$/.test(
+      pathname
+    ) &&
+    !isPublicRoute;
 
   // Check if we're on a booking page
   const isBookingPage = pathname && pathname.startsWith("/booking");

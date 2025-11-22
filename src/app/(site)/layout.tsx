@@ -15,7 +15,7 @@ export const metadata = {
   description: "Le meilleur café coworking pour travailler à Strasbourg",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

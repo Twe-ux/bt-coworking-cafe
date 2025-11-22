@@ -9,7 +9,7 @@ export const MENU_ITEMS: MenuItemType[] = [
   {
     key: "dashboard",
     label: "Dashboard",
-    icon: "ri:dashboard-2-line",
+    icon: "ri:dashboard-line",
     url: "/dashboard",
   },
   {
@@ -22,9 +22,8 @@ export const MENU_ITEMS: MenuItemType[] = [
   {
     key: "blog",
     label: "Blog",
-    icon: "ri:pages-line",
+    icon: "ri:news-line",
     roles: ["dev", "admin"],
-
     children: [
       {
         key: "post",
@@ -38,12 +37,12 @@ export const MENU_ITEMS: MenuItemType[] = [
         url: "/dashboard/blog/create",
         parentKey: "blog",
       },
-      {
-        key: "details",
-        label: "Details",
-        url: "/dashboard/blog/details",
-        parentKey: "blog",
-      },
+      // {
+      //   key: "details",
+      //   label: "Details",
+      //   url: "/dashboard/blog/details",
+      //   parentKey: "blog",
+      // },
       {
         key: "comments",
         label: "Comments",
@@ -56,15 +55,21 @@ export const MENU_ITEMS: MenuItemType[] = [
         url: "/dashboard/blog/categories",
         parentKey: "blog",
       },
-      {
-        key: "tags",
-        label: "Tags",
-        url: "/dashboard/blog/tags",
-        parentKey: "blog",
-      },
+      // {
+      //   key: "tags",
+      //   label: "Tags",
+      //   url: "/dashboard/blog/tags",
+      //   parentKey: "blog",
+      // },
     ],
   },
-
+  {
+    key: "promo",
+    label: "Promo",
+    icon: "ri-coupon-line",
+    roles: ["dev", "admin", "staff"],
+    url: "/dashboard/promo",
+  },
   // {
   //   key: "dashboards",
   //   label: "Dashboards",

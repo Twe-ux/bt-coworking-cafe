@@ -1,64 +1,118 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import crypto from 'crypto';
+import connectDB from '@/lib/db';
+import PromoConfig from '@/models/promo';
 import {
-  PromoConfig,
+  PromoConfig as PromoConfigType,
   PromoCode,
   MarketingContent,
   ScanStats,
-  ScanEvent,
   DEFAULT_PROMO_CONFIG
 } from '@/types/promo';
 
-// Chemin vers le fichier de configuration
-const CONFIG_PATH = path.join(process.cwd(), 'src', 'data', 'promo-config.json');
-
 class PromoService {
-  private config: PromoConfig | null = null;
-
-  // Charger la configuration depuis le fichier
-  private async loadConfig(): Promise<PromoConfig> {
-    try {
-      const data = await fs.readFile(CONFIG_PATH, 'utf-8');
-      this.config = JSON.parse(data);
-      return this.config!;
-    } catch (error) {
-      // Si le fichier n'existe pas, créer avec la config par défaut
-      console.log('📁 Création du fichier de configuration promo...');
-      const defaultConfig = {
-        ...DEFAULT_PROMO_CONFIG,
-        current: {
-          ...DEFAULT_PROMO_CONFIG.current,
-          token: this.generateToken()
-        }
-      };
-      await this.saveConfig(defaultConfig);
-      this.config = defaultConfig;
-      return defaultConfig;
-    }
-  }
-
-  // Sauvegarder la configuration
-  private async saveConfig(config: PromoConfig): Promise<void> {
-    // Créer le dossier data s'il n'existe pas
-    const dataDir = path.dirname(CONFIG_PATH);
-    await fs.mkdir(dataDir, { recursive: true });
-
-    await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2));
-    this.config = config;
-  }
-
   // Générer un token unique
   private generateToken(): string {
     return crypto.randomBytes(16).toString('hex');
   }
 
-  // Obtenir la configuration complète
-  async getConfig(): Promise<PromoConfig> {
-    if (!this.config) {
-      return this.loadConfig();
+  // Convertir le document MongoDB en type PromoConfig
+  private toPromoConfig(doc: any): PromoConfigType {
+    const config: PromoConfigType = {
+      current: {
+        code: doc.current.code,
+        token: doc.current.token,
+        description: doc.current.description,
+        discount_type: doc.current.discount_type,
+        discount_value: doc.current.discount_value,
+        valid_from: doc.current.valid_from.toISOString(),
+        valid_until: doc.current.valid_until.toISOString(),
+        max_uses: doc.current.max_uses,
+        current_uses: doc.current.current_uses,
+        is_active: doc.current.is_active,
+        created_at: doc.current.created_at.toISOString()
+      },
+      history: doc.history.map((h: any) => ({
+        code: h.code,
+        token: h.token,
+        description: h.description,
+        discount_type: h.discount_type,
+        discount_value: h.discount_value,
+        valid_from: h.valid_from.toISOString(),
+        valid_until: h.valid_until.toISOString(),
+        total_uses: h.total_uses,
+        deactivated_at: h.deactivated_at.toISOString()
+      })),
+      stats: {
+        total_views: doc.stats.total_views,
+        total_copies: doc.stats.total_copies,
+        views_today: doc.stats.views_today,
+        copies_today: doc.stats.copies_today
+      },
+      scan_stats: {
+        total_scans: doc.scan_stats.total_scans,
+        total_reveals: doc.scan_stats.total_reveals,
+        total_copies: doc.scan_stats.total_copies,
+        conversion_rate_reveal: doc.scan_stats.conversion_rate_reveal,
+        conversion_rate_copy: doc.scan_stats.conversion_rate_copy,
+        scans_by_day: doc.scan_stats.scans_by_day instanceof Map
+          ? Object.fromEntries(doc.scan_stats.scans_by_day)
+          : doc.scan_stats.scans_by_day || {},
+        scans_by_hour: doc.scan_stats.scans_by_hour instanceof Map
+          ? Object.fromEntries(doc.scan_stats.scans_by_hour)
+          : doc.scan_stats.scans_by_hour || {},
+        average_time_to_reveal: doc.scan_stats.average_time_to_reveal
+      },
+      marketing: {
+        title: doc.marketing.title,
+        message: doc.marketing.message,
+        image_url: doc.marketing.image_url,
+        cta_text: doc.marketing.cta_text
+      },
+      events: doc.events.map((e: any) => ({
+        timestamp: e.timestamp.toISOString(),
+        type: e.type,
+        session_id: e.session_id
+      }))
+    };
+    return config;
+  }
+
+  // Obtenir ou créer la configuration
+  private async getOrCreateConfig() {
+    await connectDB();
+
+    let doc = await PromoConfig.findOne();
+
+    if (!doc) {
+      // Créer la configuration par défaut
+      const defaultConfig = {
+        ...DEFAULT_PROMO_CONFIG,
+        current: {
+          ...DEFAULT_PROMO_CONFIG.current,
+          token: this.generateToken(),
+          valid_from: new Date(DEFAULT_PROMO_CONFIG.current.valid_from),
+          valid_until: new Date(DEFAULT_PROMO_CONFIG.current.valid_until),
+          created_at: new Date(DEFAULT_PROMO_CONFIG.current.created_at)
+        },
+        scan_stats: {
+          ...DEFAULT_PROMO_CONFIG.scan_stats,
+          scans_by_day: new Map(),
+          scans_by_hour: new Map()
+        },
+        events: []
+      };
+
+      doc = await PromoConfig.create(defaultConfig);
+      console.log('📁 Configuration promo créée en base de données');
     }
-    return this.config;
+
+    return doc;
+  }
+
+  // Obtenir la configuration complète
+  async getConfig(): Promise<PromoConfigType> {
+    const doc = await this.getOrCreateConfig();
+    return this.toPromoConfig(doc);
   }
 
   // Obtenir le code promo actuel
@@ -67,7 +121,7 @@ class PromoService {
     return config.current;
   }
 
-  // Obtenir le token actuel (sans incrémenter les stats)
+  // Obtenir le token actuel
   async getCurrentToken(): Promise<string> {
     const config = await this.getConfig();
     return config.current.token;
@@ -84,162 +138,191 @@ class PromoService {
 
   // Créer un nouveau code promo
   async createPromo(promo: Omit<PromoCode, 'token' | 'current_uses' | 'created_at'>): Promise<PromoCode> {
-    const config = await this.getConfig();
+    await connectDB();
+    const doc = await this.getOrCreateConfig();
 
     // Archiver l'ancien code si actif
-    if (config.current.is_active && config.current.current_uses > 0) {
-      config.history.push({
-        code: config.current.code,
-        token: config.current.token,
-        description: config.current.description,
-        discount_type: config.current.discount_type,
-        discount_value: config.current.discount_value,
-        valid_from: config.current.valid_from,
-        valid_until: config.current.valid_until,
-        total_uses: config.current.current_uses,
-        deactivated_at: new Date().toISOString()
+    if (doc.current.is_active && doc.current.current_uses > 0) {
+      doc.history.push({
+        code: doc.current.code,
+        token: doc.current.token,
+        description: doc.current.description,
+        discount_type: doc.current.discount_type,
+        discount_value: doc.current.discount_value,
+        valid_from: doc.current.valid_from,
+        valid_until: doc.current.valid_until,
+        total_uses: doc.current.current_uses,
+        deactivated_at: new Date()
       });
     }
 
     // Créer le nouveau code
-    const newPromo: PromoCode = {
-      ...promo,
-      token: this.generateToken(),
+    const newToken = this.generateToken();
+    doc.current = {
+      code: promo.code,
+      token: newToken,
+      description: promo.description,
+      discount_type: promo.discount_type,
+      discount_value: promo.discount_value,
+      valid_from: new Date(promo.valid_from),
+      valid_until: new Date(promo.valid_until),
+      max_uses: promo.max_uses,
       current_uses: 0,
-      created_at: new Date().toISOString()
+      is_active: promo.is_active,
+      created_at: new Date()
     };
 
-    config.current = newPromo;
-
-    // Réinitialiser les stats de scan pour le nouveau code
-    config.scan_stats = {
+    // Réinitialiser les stats de scan
+    doc.scan_stats = {
       total_scans: 0,
       total_reveals: 0,
       total_copies: 0,
       conversion_rate_reveal: 0,
       conversion_rate_copy: 0,
-      scans_by_day: {},
-      scans_by_hour: {},
+      scans_by_day: new Map(),
+      scans_by_hour: new Map(),
       average_time_to_reveal: 0
     };
-    config.events = [];
+    doc.events = [];
 
-    await this.saveConfig(config);
-    return newPromo;
+    await doc.save();
+
+    return {
+      ...promo,
+      token: newToken,
+      current_uses: 0,
+      created_at: new Date().toISOString()
+    };
   }
 
   // Incrémenter les vues
   async incrementViews(): Promise<void> {
-    const config = await this.getConfig();
-    config.stats.total_views++;
-    config.stats.views_today++;
-    await this.saveConfig(config);
+    await connectDB();
+    await PromoConfig.updateOne(
+      {},
+      {
+        $inc: {
+          'stats.total_views': 1,
+          'stats.views_today': 1
+        }
+      }
+    );
   }
 
   // Incrémenter les copies
   async incrementCopies(): Promise<void> {
-    const config = await this.getConfig();
-    config.stats.total_copies++;
-    config.stats.copies_today++;
-    config.current.current_uses++;
-    await this.saveConfig(config);
+    await connectDB();
+    await PromoConfig.updateOne(
+      {},
+      {
+        $inc: {
+          'stats.total_copies': 1,
+          'stats.copies_today': 1,
+          'current.current_uses': 1
+        }
+      }
+    );
   }
 
   // === MÉTHODES DE TRACKING ===
 
-  // Tracker un scan (visite sur /scan)
+  // Tracker un scan
   async trackScan(sessionId: string): Promise<void> {
-    const config = await this.getConfig();
+    await connectDB();
+    const doc = await this.getOrCreateConfig();
 
     const now = new Date();
     const dateKey = now.toISOString().split('T')[0];
     const hourKey = `${now.getHours()}h`;
 
     // Ajouter l'événement
-    config.events.push({
-      timestamp: now.toISOString(),
+    doc.events.push({
+      timestamp: now,
       type: 'scan',
       session_id: sessionId
     });
 
     // Mettre à jour les stats
-    config.scan_stats.total_scans++;
-    config.scan_stats.scans_by_day[dateKey] = (config.scan_stats.scans_by_day[dateKey] || 0) + 1;
-    config.scan_stats.scans_by_hour[hourKey] = (config.scan_stats.scans_by_hour[hourKey] || 0) + 1;
+    doc.scan_stats.total_scans++;
+
+    const currentDayCount = doc.scan_stats.scans_by_day.get(dateKey) || 0;
+    doc.scan_stats.scans_by_day.set(dateKey, currentDayCount + 1);
+
+    const currentHourCount = doc.scan_stats.scans_by_hour.get(hourKey) || 0;
+    doc.scan_stats.scans_by_hour.set(hourKey, currentHourCount + 1);
 
     // Recalculer les taux de conversion
-    this.recalculateConversionRates(config);
+    this.recalculateConversionRates(doc);
 
-    await this.saveConfig(config);
+    await doc.save();
   }
 
-  // Tracker une révélation (clic sur le bouton CTA)
+  // Tracker une révélation
   async trackReveal(sessionId: string): Promise<void> {
-    const config = await this.getConfig();
-
-    const now = new Date();
+    await connectDB();
+    const doc = await this.getOrCreateConfig();
 
     // Ajouter l'événement
-    config.events.push({
-      timestamp: now.toISOString(),
+    doc.events.push({
+      timestamp: new Date(),
       type: 'reveal',
       session_id: sessionId
     });
 
     // Mettre à jour les stats
-    config.scan_stats.total_reveals++;
+    doc.scan_stats.total_reveals++;
 
     // Calculer le temps moyen jusqu'à la révélation
-    this.calculateAverageTimeToReveal(config);
+    this.calculateAverageTimeToReveal(doc);
 
     // Recalculer les taux de conversion
-    this.recalculateConversionRates(config);
+    this.recalculateConversionRates(doc);
 
-    await this.saveConfig(config);
+    await doc.save();
   }
 
-  // Tracker une copie du code
+  // Tracker une copie
   async trackCopy(sessionId: string): Promise<void> {
-    const config = await this.getConfig();
+    await connectDB();
+    const doc = await this.getOrCreateConfig();
 
     // Ajouter l'événement
-    config.events.push({
-      timestamp: new Date().toISOString(),
+    doc.events.push({
+      timestamp: new Date(),
       type: 'copy',
       session_id: sessionId
     });
 
     // Mettre à jour les stats
-    config.scan_stats.total_copies++;
-    config.stats.total_copies++;
-    config.stats.copies_today++;
-    config.current.current_uses++;
+    doc.scan_stats.total_copies++;
+    doc.stats.total_copies++;
+    doc.stats.copies_today++;
+    doc.current.current_uses++;
 
     // Recalculer les taux de conversion
-    this.recalculateConversionRates(config);
+    this.recalculateConversionRates(doc);
 
-    await this.saveConfig(config);
+    await doc.save();
   }
 
   // Recalculer les taux de conversion
-  private recalculateConversionRates(config: PromoConfig): void {
-    const { total_scans, total_reveals, total_copies } = config.scan_stats;
+  private recalculateConversionRates(doc: any): void {
+    const { total_scans, total_reveals, total_copies } = doc.scan_stats;
 
-    config.scan_stats.conversion_rate_reveal = total_scans > 0
+    doc.scan_stats.conversion_rate_reveal = total_scans > 0
       ? Math.round((total_reveals / total_scans) * 100 * 10) / 10
       : 0;
 
-    config.scan_stats.conversion_rate_copy = total_reveals > 0
+    doc.scan_stats.conversion_rate_copy = total_reveals > 0
       ? Math.round((total_copies / total_reveals) * 100 * 10) / 10
       : 0;
   }
 
   // Calculer le temps moyen jusqu'à la révélation
-  private calculateAverageTimeToReveal(config: PromoConfig): void {
+  private calculateAverageTimeToReveal(doc: any): void {
     const sessionTimes: { [sessionId: string]: { scan?: number; reveal?: number } } = {};
 
-    // Grouper les événements par session
-    for (const event of config.events) {
+    for (const event of doc.events) {
       if (!sessionTimes[event.session_id]) {
         sessionTimes[event.session_id] = {};
       }
@@ -252,15 +335,14 @@ class PromoService {
       }
     }
 
-    // Calculer le temps moyen
     const times: number[] = [];
     for (const session of Object.values(sessionTimes)) {
       if (session.scan && session.reveal) {
-        times.push((session.reveal - session.scan) / 1000); // en secondes
+        times.push((session.reveal - session.scan) / 1000);
       }
     }
 
-    config.scan_stats.average_time_to_reveal = times.length > 0
+    doc.scan_stats.average_time_to_reveal = times.length > 0
       ? Math.round(times.reduce((a, b) => a + b, 0) / times.length)
       : 0;
   }
@@ -276,9 +358,11 @@ class PromoService {
   // Mettre à jour le contenu marketing
   async updateMarketingContent(content: MarketingContent): Promise<boolean> {
     try {
-      const config = await this.getConfig();
-      config.marketing = content;
-      await this.saveConfig(config);
+      await connectDB();
+      await PromoConfig.updateOne(
+        {},
+        { $set: { marketing: content } }
+      );
       return true;
     } catch (error) {
       console.error('Erreur lors de la mise à jour du marketing:', error);
@@ -330,29 +414,36 @@ class PromoService {
 
   // Nettoyer les anciens événements (> 30 jours)
   async cleanupOldEvents(): Promise<number> {
-    const config = await this.getConfig();
+    await connectDB();
+    const doc = await this.getOrCreateConfig();
     const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
 
-    const initialCount = config.events.length;
-    config.events = config.events.filter(
-      event => new Date(event.timestamp).getTime() > thirtyDaysAgo
+    const initialCount = doc.events.length;
+    doc.events = doc.events.filter(
+      (event: any) => new Date(event.timestamp).getTime() > thirtyDaysAgo
     );
 
-    const removedCount = initialCount - config.events.length;
+    const removedCount = initialCount - doc.events.length;
 
     if (removedCount > 0) {
-      await this.saveConfig(config);
+      await doc.save();
     }
 
     return removedCount;
   }
 
-  // Réinitialiser les stats quotidiennes (à appeler via un cron)
+  // Réinitialiser les stats quotidiennes
   async resetDailyStats(): Promise<void> {
-    const config = await this.getConfig();
-    config.stats.views_today = 0;
-    config.stats.copies_today = 0;
-    await this.saveConfig(config);
+    await connectDB();
+    await PromoConfig.updateOne(
+      {},
+      {
+        $set: {
+          'stats.views_today': 0,
+          'stats.copies_today': 0
+        }
+      }
+    );
   }
 }
 
