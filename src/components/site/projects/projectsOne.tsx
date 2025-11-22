@@ -55,7 +55,6 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
             }
           )}
         </div>
-        {/* {isProjectUseCaseShow && <ProjectsUseCase />} */}
       </div>
     </section>
   );

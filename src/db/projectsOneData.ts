@@ -15,20 +15,20 @@ export const projectsOneData: ProjectOne[] = [
     categories: "Zones variées et confortables, jusqu'à 60 places.",
     subCategories:
       "Venez directement ou réservez en avance, nous aurons toujours un espace et un sourire pour vous accueillir.",
-    imgSrc: "/images/projects/espaces-coworking-strasbourg.png",
+    imgSrc: "/images/projects/espaces-coworking-strasbourg.webp",
   },
   {
     id: 2,
     title: "La verrière",
     link: "verriere",
     categories: "Petite salle de réunion équipée jusqu'à 4/5 personnes.",
-    imgSrc: "/images/projects/salle-réunion-verrière-strasbourg.png",
+    imgSrc: "/images/projects/salle-réunion-verrière-strasbourg.webp",
   },
   {
     id: 3,
     title: "L'étage",
     link: "etage",
     categories: "Salle de réunion équipée (10 à 15 personnes).",
-    imgSrc: "/images/projects/salle-réunion-étage-strasbourg.png",
+    imgSrc: "/images/projects/salle-réunion-étage-strasbourg.webp",
   },
 ];
