@@ -1,6 +1,5 @@
 import SlideUp from "@/utils/animations/slideUp";
 import Link from "next/link";
-import React from "react";
 
 interface PageTitleProps {
   title: string;

@@ -1,11 +1,11 @@
-export interface ProjectTwo {
+export interface Menu {
   id: number;
   title: string;
   categories: string[];
   imgSrc: string;
 }
 
-export const projectsTwoData: ProjectTwo[] = [
+export const menuData: Menu[] = [
   {
     id: 1,
     title: "Paid Media Solution",

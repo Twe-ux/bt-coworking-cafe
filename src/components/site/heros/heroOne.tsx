@@ -71,7 +71,7 @@ const HeroOne = () => {
               />
               <div>
                 <img
-                  src="/images/banner/coworking-café.jpg"
+                  src="/images/banner/coworking-café.webp"
                   alt="coworking-café"
                   className="bg__img"
                 />

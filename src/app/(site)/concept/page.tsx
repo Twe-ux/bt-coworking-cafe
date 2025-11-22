@@ -21,7 +21,7 @@ const Concept = () => {
       <article className="concept py__130">
         <div className="container">
           <img
-            src="/images/concept/anticafe-paris-strasbourg.jpg"
+            src="/images/concept/anticafe-paris-strasbourg.webp"
             alt="anticafe-paris-strasbourg"
             className="w-100 thumb__img"
           />
@@ -127,7 +127,7 @@ const Concept = () => {
             <div className="row justify-content-between align-items-center">
               <SlideUp className="col-md-6">
                 <img
-                  src="/images/concept/cafe-coworking-strasbourg.jpg"
+                  src="/images/concept/cafe-coworking-strasbourg.webp"
                   alt="cafe-coworking-strasbourg"
                   className="w-100 thumb__img"
                 />

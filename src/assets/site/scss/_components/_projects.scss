@@ -353,4 +353,41 @@
   .custom__pagination {
     margin-top: 0;
   }
+
+  // Menu pagination styles
+  .w-380 {
+    width: 380px;
+    align-items: center;
+
+    @include breakpoint(sm) {
+      width: 280px;
+    }
+  }
+
+  .menu-slide-dots {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    @include center();
+    border: 1px solid var(--grayWhite-clr);
+    color: var(--grayWhite-clr);
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: var(--btn-clr);
+      color: var(--secondary-clr);
+    }
+  }
+
+  .menu-slide-dots-active {
+    background-color: var(--btn-clr);
+    color: var(--secondary-clr);
+  }
+
+  .menu-slide-dots-ellipsis {
+    border: none;
+    width: auto;
+    height: auto;
+  }
 }

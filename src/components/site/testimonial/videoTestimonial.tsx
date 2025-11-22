@@ -14,7 +14,7 @@ const VideoTestimonial = () => {
 
         <div className="position-relative">
           <img
-            src="/images/testimonail/anticafé-strasbourg.png"
+            src="/images/testimonail/anticafé-strasbourg.webp"
             alt="anticafé-strasbourg"
             className="video_thumb"
           />

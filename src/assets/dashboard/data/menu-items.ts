@@ -70,6 +70,13 @@ export const MENU_ITEMS: MenuItemType[] = [
     roles: ["dev", "admin", "staff"],
     url: "/dashboard/promo",
   },
+  {
+    key: "drinks",
+    label: "Drinks",
+    icon: "ri-drinks-line",
+    roles: ["dev", "admin"],
+    url: "/dashboard/drinks",
+  },
   // {
   //   key: "dashboards",
   //   label: "Dashboards",

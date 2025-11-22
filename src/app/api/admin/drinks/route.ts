@@ -1,0 +1,90 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { options } from '@/lib/auth-options';
+import connectDB from '@/lib/db';
+import { Drink, DrinkCategory } from '@/models/drink';
+
+export const dynamic = 'force-dynamic';
+
+// GET - Récupérer toutes les boissons avec leurs catégories
+export async function GET() {
+  try {
+    const session = await getServerSession(options);
+
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
+    }
+
+    if (session.user.role.level < 50) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
+
+    await connectDB();
+
+    const categories = await DrinkCategory.find()
+      .sort({ order: 1 })
+      .lean();
+
+    const drinks = await Drink.find()
+      .populate('category', 'name slug')
+      .sort({ order: 1 })
+      .lean();
+
+    return NextResponse.json({ categories, drinks }, { status: 200 });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des boissons:', error);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  }
+}
+
+// POST - Créer une nouvelle boisson
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(options);
+
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
+    }
+
+    if (session.user.role.level < 80) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
+
+    await connectDB();
+
+    const body = await request.json();
+    const { name, description, image, category } = body;
+
+    if (!name || !category) {
+      return NextResponse.json(
+        { error: 'Nom et catégorie requis' },
+        { status: 400 }
+      );
+    }
+
+    // Obtenir le prochain ordre
+    const lastDrink = await Drink.findOne({ category }).sort({ order: -1 });
+    const order = lastDrink ? lastDrink.order + 1 : 0;
+
+    const drink = await Drink.create({
+      name,
+      description,
+      image,
+      category,
+      order,
+      isActive: true
+    });
+
+    const populatedDrink = await Drink.findById(drink._id)
+      .populate('category', 'name slug')
+      .lean();
+
+    return NextResponse.json({
+      message: 'Boisson créée avec succès',
+      drink: populatedDrink
+    }, { status: 201 });
+  } catch (error) {
+    console.error('Erreur lors de la création de la boisson:', error);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  }
+}

@@ -28,7 +28,7 @@ export const spacesData: Spaces[] = [
     id: 1,
     title: "L’open-space",
     description: `Un espace lumineux et convivial, avec des zones variées pour travailler,réviser ou créer à votre rythme — toujours accessible au tarif au temps`,
-    imgSrc: "/images/spaces/openSpace/cowork-cafe-strasbourg.jpg",
+    imgSrc: "/images/spaces/openSpace/cowork-cafe-strasbourg.webp",
     link: "#open-space",
     delay: 100,
   },
@@ -36,7 +36,7 @@ export const spacesData: Spaces[] = [
     id: 2,
     title: "La verrière",
     description: `Une petite salle lumineuse et apaisante, parfaite pour les petites réunions, ateliers ou sessions d’équipe.`,
-    imgSrc: "/images/spaces/verriere/salle-reunion-coworking-strasbourg.jpg",
+    imgSrc: "/images/spaces/verriere/salle-reunion-coworking-strasbourg.webp",
     link: "#verriere",
     delay: 200,
   },
@@ -44,7 +44,7 @@ export const spacesData: Spaces[] = [
     id: 3,
     title: "L’étage",
     description: `Un espace plus calme et confidentiel, idéal pour les réunions, conférences, formations ou projets de groupe. Disponible sur réservation.`,
-    imgSrc: "/images/spaces/etage/salle-reunion-anticafe-cafecoworking.jpg",
+    imgSrc: "/images/spaces/etage/salle-reunion-anticafe-cafecoworking.webp",
     link: "#etage",
     delay: 300,
   },
@@ -68,27 +68,27 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     imgSrc: [
       {
         id: 1,
-        img: "/images/spaces/openSpace/cafecoworking-strasbourg-1.jpg",
+        img: "/images/spaces/openSpace/cafecoworking-strasbourg.webp",
       },
       {
         id: 2,
-        img: "/images/spaces/openSpace/cowork-cafe-strasbourg.jpg",
+        img: "/images/spaces/openSpace/cowork-cafe-strasbourg.webp",
       },
       {
         id: 3,
-        img: "/images/spaces/openSpace/coworking-anticafe-cafe-strasbourg.jpg",
+        img: "/images/spaces/openSpace/coworking-anticafe-cafe-strasbourg.webp",
       },
       {
         id: 4,
-        img: "/images/spaces/openSpace/coworking-cafe-strasbourg.jpg",
+        img: "/images/spaces/openSpace/coworking-cafe-strasbourg.webp",
       },
       {
         id: 5,
-        img: "/images/spaces/openSpace/espace-cafe-coworking-strasbourg.jpg",
+        img: "/images/spaces/openSpace/espace-cafe-coworking-strasbourg.webp",
       },
       {
         id: 6,
-        img: "/images/spaces/openSpace/espace-coworking-strasbourg-anticafe.jpg",
+        img: "/images/spaces/openSpace/espace-coworking-strasbourg-anticafe.webp",
       },
     ],
     counterBox: [
@@ -116,23 +116,23 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     imgSrc: [
       {
         id: 1,
-        img: "/images/spaces/verriere/cafecoworking-reunion-anticafe-strasbourg.jpg",
+        img: "/images/spaces/verriere/cafecoworking-reunion-anticafe-strasbourg.webp",
       },
       {
         id: 2,
-        img: "/images/spaces/verriere/petite-salle-de-reunion-strasbourg.jpg",
+        img: "/images/spaces/verriere/petite-salle-de-reunion-strasbourg.webp",
       },
       {
         id: 3,
-        img: "/images/spaces/verriere/salle-reunion-coworking-strasbourg.jpg",
+        img: "/images/spaces/verriere/salle-reunion-coworking-strasbourg.webp",
       },
       {
         id: 4,
-        img: "/images/spaces/verriere/verriere-petite-salle-reunion-strasbourg.jpg",
+        img: "/images/spaces/verriere/verriere-petite-salle-reunion-strasbourg.webp",
       },
       {
         id: 5,
-        img: "/images/spaces/verriere/verriere-reunion-anticafe-strasbourg.jpg",
+        img: "/images/spaces/verriere/verriere-reunion-anticafe-strasbourg.webp",
       },
     ],
     counterBox: [
@@ -152,15 +152,15 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     imgSrc: [
       {
         id: 1,
-        img: "/images/spaces/etage/anticafe-salle-reunion-strasbourg.jpg",
+        img: "/images/spaces/etage/anticafe-salle-reunion-strasbourg.webp",
       },
       {
         id: 2,
-        img: "/images/spaces/etage/coworking-reunion-strasbourg.jpg",
+        img: "/images/spaces/etage/coworking-reunion-strasbourg.webp",
       },
       {
         id: 3,
-        img: "/images/spaces/etage/salle-reunion-anticafe-cafecoworking.jpg",
+        img: "/images/spaces/etage/salle-reunion-anticafe-cafecoworking.webp",
       },
     ],
     counterBox: [
