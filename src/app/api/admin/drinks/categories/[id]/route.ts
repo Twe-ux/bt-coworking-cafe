@@ -26,7 +26,7 @@ export async function PUT(
 
     const { id } = params;
     const body = await request.json();
-    const { name, order, isActive } = body;
+    const { name, order, isActive, showOnSite } = body;
 
     const updateData: any = {};
 
@@ -43,6 +43,7 @@ export async function PUT(
 
     if (order !== undefined) updateData.order = order;
     if (isActive !== undefined) updateData.isActive = isActive;
+    if (showOnSite !== undefined) updateData.showOnSite = showOnSite;
 
     const category = await DrinkCategory.findByIdAndUpdate(
       id,

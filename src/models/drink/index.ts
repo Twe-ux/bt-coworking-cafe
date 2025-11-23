@@ -6,8 +6,10 @@ const DrinkCategorySchema = new Schema<DrinkCategoryDocument>(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
+    type: { type: String, enum: ['drink', 'food'], default: 'drink' },
     order: { type: Number, default: 0 },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    showOnSite: { type: Boolean, default: true }
   },
   {
     timestamps: true,
@@ -20,8 +22,10 @@ const DrinkSchema = new Schema<DrinkDocument>(
   {
     name: { type: String, required: true },
     description: { type: String },
+    recipe: { type: String },
     image: { type: String },
     category: { type: Schema.Types.ObjectId, ref: 'DrinkCategory', required: true },
+    type: { type: String, enum: ['drink', 'food'], default: 'drink' },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true }
   },

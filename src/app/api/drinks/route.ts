@@ -1,24 +1,32 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Drink, DrinkCategory } from '@/models/drink';
 
 export const dynamic = 'force-dynamic';
 
 // GET - Récupérer toutes les boissons actives groupées par catégorie
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const categories = await DrinkCategory.find({ isActive: true })
+    // Get type from query params (drink or food)
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type') || 'drink';
+
+    const categories = await DrinkCategory.find({
+      isActive: true,
+      showOnSite: { $ne: false },
+      type
+    })
       .sort({ order: 1 })
       .lean();
 
-    const drinks = await Drink.find({ isActive: true })
-      .populate('category', 'name slug')
+    const drinks = await Drink.find({ isActive: true, type })
+      .populate('category', 'name slug type')
       .sort({ order: 1 })
       .lean();
 
-    // Grouper les boissons par catégorie
+    // Grouper les boissons par catégorie (seulement celles visibles sur le site)
     const menu = categories.map(category => ({
       _id: category._id,
       name: category.name,

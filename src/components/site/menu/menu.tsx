@@ -18,14 +18,20 @@ interface MenuCategory {
   drinks: Drink[];
 }
 
-const Menu = () => {
+interface MenuProps {
+  type?: 'drink' | 'food';
+  title?: string;
+  subtitle?: string;
+}
+
+const Menu = ({ type = 'drink', title = 'Nos Boissons', subtitle = 'Découvrez notre sélection de boissons, toutes incluses dans votre forfait temps.' }: MenuProps) => {
   const [menu, setMenu] = useState<MenuCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await fetch("/api/drinks");
+        const res = await fetch(`/api/drinks?type=${type}`);
         if (res.ok) {
           const data = await res.json();
           setMenu(data.menu);
@@ -38,7 +44,7 @@ const Menu = () => {
     };
 
     fetchMenu();
-  }, []);
+  }, [type]);
 
   if (loading) {
     return (
@@ -66,11 +72,8 @@ const Menu = () => {
     <section className="menu__section py__130">
       <div className="container">
         <SlideDown className="text-center mb-5">
-          <h1 className="title">Nos Boissons</h1>
-          <p className="mt-3">
-            Découvrez notre sélection de boissons, toutes incluses dans votre
-            forfait temps.
-          </p>
+          <h1 className="title">{title}</h1>
+          <p className="mt-3">{subtitle}</p>
         </SlideDown>
 
         {menu.map((category, categoryIndex) => (

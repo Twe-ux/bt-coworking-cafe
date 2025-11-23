@@ -38,7 +38,7 @@
   gap: 20px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 15px;
+  padding: 20px 10px 30px 10px;
   scrollbar-width: thin;
   scrollbar-color: var(--btn-clr) transparent;
 
@@ -69,8 +69,13 @@
   height: 100%;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+    h3,
+    p {
+      color: var(--btn-clr);
+    }
+
+    // box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
 }
 

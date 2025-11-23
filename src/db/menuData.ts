@@ -21,9 +21,17 @@ export const menuData: MenuItem[] = [
     title: "Tarifs",
     link: "/pricing",
   },
+  // {
+  //   title: "Menu",
+  //   link: "/boissons",
+  // },
   {
     title: "Menu",
-    link: "/menu",
+    link: "#",
+    submenu: [
+      { title: "Boissons", link: "/boissons" },
+      { title: "Foods", link: "/food" },
+    ],
   },
   {
     title: "Professionnels",

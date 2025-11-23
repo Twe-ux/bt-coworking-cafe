@@ -15,6 +15,14 @@
 
     div > form > div {
       width: 60%;
+      @include breakpoint(lg) {
+        width: 75%;
+      }
+      @include breakpoint(sm) {
+        width: 100%;
+        flex-direction: column;
+        gap: 0 !important;
+      }
     }
 
     h2 {

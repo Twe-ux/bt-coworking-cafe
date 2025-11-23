@@ -7,7 +7,7 @@ import { Drink, DrinkCategory } from '@/models/drink';
 export const dynamic = 'force-dynamic';
 
 // GET - Récupérer toutes les boissons avec leurs catégories
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(options);
 
@@ -21,12 +21,16 @@ export async function GET() {
 
     await connectDB();
 
-    const categories = await DrinkCategory.find()
+    // Get type from query params (drink or food)
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type') || 'drink';
+
+    const categories = await DrinkCategory.find({ type })
       .sort({ order: 1 })
       .lean();
 
-    const drinks = await Drink.find()
-      .populate('category', 'name slug')
+    const drinks = await Drink.find({ type })
+      .populate('category', 'name slug type')
       .sort({ order: 1 })
       .lean();
 
@@ -53,7 +57,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const { name, description, image, category } = body;
+    const { name, description, recipe, image, category, type = 'drink' } = body;
 
     if (!name || !category) {
       return NextResponse.json(
@@ -69,8 +73,10 @@ export async function POST(request: NextRequest) {
     const drink = await Drink.create({
       name,
       description,
+      recipe,
       image,
       category,
+      type,
       order,
       isActive: true
     });

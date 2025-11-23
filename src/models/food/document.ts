@@ -1,25 +1,22 @@
-import { Document, Types } from 'mongoose';
+import { Document, Types } from "mongoose";
 
-export interface DrinkDocument extends Document {
+export interface FoodDocument extends Document {
   name: string;
   description?: string;
   recipe?: string;
   image?: string;
   category: Types.ObjectId;
-  type: 'drink' | 'food';
   order: number;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface DrinkCategoryDocument extends Document {
+export interface FoodCategoryDocument extends Document {
   name: string;
   slug: string;
-  type: 'drink' | 'food';
   order: number;
   isActive: boolean;
-  showOnSite: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

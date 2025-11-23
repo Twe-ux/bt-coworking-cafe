@@ -26,13 +26,14 @@ export async function PUT(
 
     const { id } = params;
     const body = await request.json();
-    const { name, description, image, category, order, isActive } = body;
+    const { name, description, recipe, image, category, order, isActive } = body;
 
     const drink = await Drink.findByIdAndUpdate(
       id,
       {
         ...(name !== undefined && { name }),
         ...(description !== undefined && { description }),
+        ...(recipe !== undefined && { recipe }),
         ...(image !== undefined && { image }),
         ...(category !== undefined && { category }),
         ...(order !== undefined && { order }),

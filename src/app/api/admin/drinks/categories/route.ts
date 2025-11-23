@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const { name } = body;
+    const { name, type = 'drink' } = body;
 
     if (!name) {
       return NextResponse.json({ error: 'Nom requis' }, { status: 400 });
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-    // Vérifier si le slug existe déjà
-    const existing = await DrinkCategory.findOne({ slug });
+    // Vérifier si le slug existe déjà pour ce type
+    const existing = await DrinkCategory.findOne({ slug, type });
     if (existing) {
       return NextResponse.json(
         { error: 'Une catégorie avec ce nom existe déjà' },
@@ -72,12 +72,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Obtenir le prochain ordre
-    const lastCategory = await DrinkCategory.findOne().sort({ order: -1 });
+    const lastCategory = await DrinkCategory.findOne({ type }).sort({ order: -1 });
     const order = lastCategory ? lastCategory.order + 1 : 0;
 
     const category = await DrinkCategory.create({
       name,
       slug,
+      type,
       order,
       isActive: true
     });
