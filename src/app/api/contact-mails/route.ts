@@ -3,7 +3,9 @@ import { ContactMail } from "@/models/contactMail";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResendClient = () => {
+  return new Resend(process.env.RESEND_API_KEY);
+};
 
 // POST - Create new message (public)
 export async function POST(request: NextRequest) {
@@ -33,6 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Send notification email to admin
     try {
+      const resend = getResendClient();
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
         to: "strasbourg@coworkingcafe.fr",
