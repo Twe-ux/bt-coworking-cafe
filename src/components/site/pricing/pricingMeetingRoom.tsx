@@ -32,7 +32,12 @@ const PricingMeetingRoom = () => {
                   </li>
                 ))}
               </ul>
-              <Link href={"/booking"} className="common__btn">
+              <Link
+                href={
+                  "https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1/69b4d325-23e8-416b-9aa1-b11b00d496ee"
+                }
+                className="common__btn"
+              >
                 <span>Réserver</span>
                 <i className="fa-solid fa-arrow-right"></i>
               </Link>

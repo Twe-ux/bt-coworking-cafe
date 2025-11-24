@@ -11,26 +11,28 @@ const Footer = () => {
 
   // Check if we're on a client dashboard page (/{username}/...)
   // Exclude public routes that start with known patterns
-  const isPublicRoute = pathname && (
-    pathname.startsWith("/blog") ||
-    pathname.startsWith("/promo") ||
-    pathname.startsWith("/booking") ||
-    [
-      "/",
-      "/concept",
-      "/spaces",
-      "/pricing",
-      "/contact",
-      "/signin",
-      "/signup",
-      "/scan",
-      "/menu",
-      "/professionnels",
-      "/CGU",
-      "/confidentiality",
-      "/mentions-legales",
-    ].includes(pathname)
-  );
+  const isPublicRoute =
+    pathname &&
+    (pathname.startsWith("/blog") ||
+      pathname.startsWith("/promo") ||
+      pathname.startsWith("/booking") ||
+      [
+        "/",
+        "/concept",
+        "/spaces",
+        "/pricing",
+        "/contact",
+        "/signin",
+        "/signup",
+        "/scan",
+        "/menu",
+        "/menu/boissons",
+        "/menu/food",
+        "/professionnels",
+        "/CGU",
+        "/confidentiality",
+        "/mentions-legales",
+      ].includes(pathname));
 
   const isClientDashboard =
     pathname &&
@@ -95,11 +97,12 @@ const Footer = () => {
           <div className="col-lg-4 col-md-6 mb-5 mb-lg-0">
             <div className="footer__info_address">
               <h3 className="footer__info_group">Où nous trouver ?</h3>
-
-              <p>
-                Cow or King Café <br />
-                1 rue de la Division leclerc <br /> 67000 Strasbourg
-              </p>
+              <Link href={"/contact#emplacement"}>
+                <p>
+                  Cow or King Café <br />
+                  1 rue de la Division leclerc <br /> 67000 Strasbourg
+                </p>
+              </Link>
             </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-5 mb-lg-0">
@@ -131,7 +134,13 @@ const Footer = () => {
               <h3 className="footer__info_group">Liens rapides</h3>
               <ul>
                 <li>
-                  <Link href={"/booking"}>Réserver</Link>
+                  <Link
+                    href={
+                      "https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1"
+                    }
+                  >
+                    Réserver
+                  </Link>
                 </li>
                 <li>
                   <Link href={"/concept#concept"}>Fonctionnement</Link>

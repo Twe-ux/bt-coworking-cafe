@@ -11,22 +11,14 @@ const ContactInfo = () => {
     <section className="contact">
       <div className="container">
         <div className="row justify-content-between align-items-center">
-          <SlideUp className="col-lg-4">
+          <SlideUp className="col-lg-5">
             <div className="location">
               <h3 className="t__54">Contactez-nous</h3>
               <p className="location__disc">
                 N'hésitez pas à nous contacter dès aujourd'hui pour discuter de
-                vos besoins en matière de bien-être des employés.
+                vos besoins.
               </p>
               <ul>
-                <li>
-                  <img src="/icons/location.svg" alt="img" />
-                  <div>
-                    <b>Emplacement:</b>
-                    <p>1 rue de la Division Leclerc</p>
-                    <p>67000 STRASBOURG</p>
-                  </div>
-                </li>
                 <li>
                   <img src="/icons/phone.svg" alt="img" />
                   <div>
@@ -47,10 +39,32 @@ const ContactInfo = () => {
                     </p>
                   </div>
                 </li>
+                <li>
+                  <img src="/icons/location.svg" alt="img" />
+                  <div className="d-flex flex-column gap-4 " id="emplacement">
+                    <div>
+                      <b>Emplacement:</b>
+                      <p>1 rue de la Division Leclerc</p>
+                      <p>67000 STRASBOURG</p>
+                    </div>
+                    <div className="d-flex gap-5">
+                      <div>
+                        <b>Tram:</b>
+                        <p>Arrêt Langstross - Grand'Rue</p>
+                        <p>Ligne A - D</p>
+                      </div>
+                      <div>
+                        <b>Parking:</b>
+                        <p>Place Gutemberg</p>
+                        <p>5 min à pieds</p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </SlideUp>
-          <SlideUp className="col-lg-8 mt-5 mt-lg-0">
+          <SlideUp className="col-lg-6 mt-5 mt-lg-0">
             <div className="contact__form">
               <h5 className="t__28">Contactez-nous ici</h5>
               <form>

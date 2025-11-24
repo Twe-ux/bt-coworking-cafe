@@ -12,6 +12,7 @@ export interface SpacesDetailsProps {
   title: string;
   description: string;
   subDescription: string;
+  url: string;
   imgSrc: Array<{
     id: number;
     img: string;
@@ -65,6 +66,7 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     subDescription: `Côté boissons, tout est préparé à la demande comme dans un
     vrai coffee shop. Et pour combler les petites faims, nous avons
     une sélection d’encas variés.`,
+    url: "https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1/8dbfad66-4c97-437a-882f-b11b00d46f32/6091955d-706f-47c5-a33f-b11c010b89d7",
     imgSrc: [
       {
         id: 1,
@@ -113,6 +115,7 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
       "La Verrière accueille jusqu’à 4 personnes autour d’une table haute. Il est possible d’ajouter un ou deux tabourets pour un court moment, même si l’espace devient un peu plus étroit. Elle est équipée d’un écran LCD pour vos projections, d’un paperboard et d’une connexion wifi très haut débit, évidemment.",
     subDescription:
       "Les boissons chaudes et fraîches sont préparées à la demande, comme dans un coffee shop, et servies à volonté. Des encas variés sont également disponibles.",
+    url: "https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1/69b4d325-23e8-416b-9aa1-b11b00d496ee",
     imgSrc: [
       {
         id: 1,
@@ -149,6 +152,8 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
       "À l’étage, vous disposez d’un espace complet : un petit salon d’accueil, des WC privés et une grande salle d’environ 35 à 40 m². En configuration réunion en U, elle convient parfaitement à des groupes de 8 à 12 personnes. Nous pouvons aller jusqu’à 15 participants, même si l’espace devient plus serré. En format conférence, sans tables, la salle accueille jusqu’à 20 personnes. Elle est équipée d’un écran-vidéoprojecteur, d’un grand whiteboard, d’un paperboard et d’une connexion wifi très haut débit pour travailler confortablement.",
     subDescription:
       "Les boissons chaudes et fraîches sont préparées à la demande et servies à volonté. Un encas sucré par personne est inclus, et nous pouvons également proposer des formules petit-déjeuner ou déjeuner selon vos besoins.",
+    url: "https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1/69b4d325-23e8-416b-9aa1-b11b00d496ee",
+
     imgSrc: [
       {
         id: 1,

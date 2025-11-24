@@ -68,6 +68,7 @@ const Spaces = () => {
                 subDescription,
                 imgSrc,
                 counterBox,
+                url,
               }) => {
                 return (
                   <SpaceDetails
@@ -78,6 +79,7 @@ const Spaces = () => {
                     subDescription={subDescription}
                     imgSrc={imgSrc}
                     counterBox={counterBox}
+                    url={url}
                   />
                 );
               }

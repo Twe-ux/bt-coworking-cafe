@@ -21,22 +21,22 @@ export const menuData: MenuItem[] = [
     title: "Tarifs",
     link: "/pricing",
   },
-  // {
-  //   title: "Menu",
-  //   link: "/boissons",
-  // },
   {
     title: "Menu",
-    link: "#",
-    submenu: [
-      { title: "Boissons", link: "/boissons" },
-      { title: "Foods", link: "/food" },
-    ],
+    link: "/boissons",
   },
-  {
-    title: "Professionnels",
-    link: "/professionnels",
-  },
+  // {
+  //   title: "Menu",
+  //   link: "#",
+  //   submenu: [
+  //     { title: "Boissons", link: "/boissons" },
+  //     { title: "Foods", link: "/food" },
+  //   ],
+  // },
+  // {
+  //   title: "Professionnels",
+  //   link: "/professionnels",
+  // },
   {
     title: "Le Mag'",
     link: "/blog",

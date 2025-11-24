@@ -19,6 +19,7 @@ const SpaceDetails = ({
   subDescription,
   imgSrc,
   counterBox,
+  url,
 }: SpacesDetailsProps) => {
   // Filtrer les images valides (qui ont un img défini)
   const validImages = imgSrc.filter(
@@ -35,7 +36,7 @@ const SpaceDetails = ({
                 <h3 className="t__54">{title}</h3>
                 <p className="pt__50">{description}</p>
                 <p className="para2">{subDescription}</p>
-                <Link href={"/booking"} className="common__btn">
+                <Link href={url} className="common__btn">
                   <span>Réserver</span>
                   <img src="/icons/arrow-up-rignt-black.svg" alt="img" />
                 </Link>

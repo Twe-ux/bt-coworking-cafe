@@ -39,6 +39,7 @@ const Header = () => {
                   <img src="/icons/arrow-up-right.svg" alt="img" />
                 </Link>
               </div>
+              <div>users</div>
             </div>
             <div
               className="menu__icon d-block d-xl-none"
