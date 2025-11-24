@@ -70,6 +70,13 @@ export const MENU_ITEMS: MenuItemType[] = [
     roles: ["dev", "admin", "staff"],
     url: "/dashboard/promo",
   },
+  {
+    key: "messages",
+    label: "Messages",
+    icon: "ri:mail-line",
+    roles: ["dev", "admin"],
+    url: "/dashboard/messages",
+  },
   // {
   //   key: "drinks",
   //   label: "Drinks",
@@ -104,6 +111,14 @@ export const MENU_ITEMS: MenuItemType[] = [
       },
     ],
   },
+  {
+    key: "contact-mails",
+    label: "Contact-mails",
+    icon: "ri:mail-line",
+    roles: ["dev", "admin"],
+    url: "/dashboard/contact-mails",
+  },
+
   // {
   //   key: "dashboards",
   //   label: "Dashboards",

@@ -15,8 +15,8 @@ const LogoBox = () => {
             alt="logo sm"
           />
           <Image
-            width={40}
-            height={40}
+            width={30}
+            height={30}
             src={logoDark}
             className="logo-lg"
             alt="logo dark"
@@ -31,14 +31,14 @@ const LogoBox = () => {
             alt="logo sm"
           />
           <Image
-            width={40}
-            height={40}
+            width={30}
+            height={30}
             src={logoLight}
             className="logo-lg"
             alt="logo light"
           />
         </div>
-        <h4>Cow or King Café</h4>
+        <h4 className="d-none">Cow or King Café</h4>
       </div>
     </a>
   );

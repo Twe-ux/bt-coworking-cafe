@@ -1,11 +1,58 @@
 "use client";
 import SlideUp from "@/utils/animations/slideUp";
 import ProtectedEmail from "../common/ProtectedEmail";
-import CustomDropdown from "./customDropdown";
+import { useState } from "react";
 
 const ContactInfo = () => {
-  const handleSelect = (option: string) => {
-    console.log("Selected:", option);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const subjects = [
+    "Renseignements généraux",
+    "Réservation",
+    "Tarifs et abonnements",
+    "Événements privés",
+    "Partenariat",
+    "Autre",
+  ];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    try {
+      const res = await fetch("/api/contact-mails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setSuccess(true);
+        setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+      } else {
+        const data = await res.json();
+        setError(data.error || "Erreur lors de l'envoi");
+      }
+    } catch {
+      setError("Erreur lors de l'envoi du message");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <section className="contact" id="contact">
@@ -67,27 +114,76 @@ const ContactInfo = () => {
           <SlideUp className="col-lg-6 mt-5 mt-lg-0">
             <div className="contact__form">
               <h5 className="t__28">Contactez-nous ici</h5>
-              <form>
+              {success && (
+                <div className="alert alert-success mb-3">
+                  Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.
+                </div>
+              )}
+              {error && (
+                <div className="alert alert-danger mb-3">
+                  {error}
+                </div>
+              )}
+              <form onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="col-md-6">
-                    <input type="text" placeholder="Votre nom" />
-                  </div>
-                  <div className="col-md-6">
-                    <input type="email" placeholder="Votre Email" />
-                  </div>
-                  <div className="col-12">
-                    <CustomDropdown
-                      options={["Option 1", "Option 2", "Option 3"]}
-                      onSelect={handleSelect}
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Votre nom *"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
+                  <div className="col-md-6">
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Votre Email *"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Votre téléphone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <select
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                      className="form-select"
+                    >
+                      <option value="">Sujet *</option>
+                      {subjects.map((subject) => (
+                        <option key={subject} value={subject}>
+                          {subject}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <div className="col-12">
-                    <textarea placeholder="Votre message" />
+                    <textarea
+                      name="message"
+                      placeholder="Votre message *"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                   <div>
-                    <button className="common__btn">
-                      Envoyez votre message
-                      <img src="/icons/arrow-up-right.svg" alt="img" />
+                    <button type="submit" className="common__btn" disabled={loading}>
+                      {loading ? "Envoi en cours..." : "Envoyez votre message"}
+                      {!loading && <img src="/icons/arrow-up-right.svg" alt="img" />}
                     </button>
                   </div>
                 </div>

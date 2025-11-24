@@ -68,6 +68,7 @@
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
+    "resend": "^6.5.2",
     "sass": "^1.83.4",
     "scss": "^0.2.4",
     "sharp": "^0.34.5",
