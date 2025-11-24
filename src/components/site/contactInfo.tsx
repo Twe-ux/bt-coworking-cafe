@@ -8,7 +8,7 @@ const ContactInfo = () => {
     console.log("Selected:", option);
   };
   return (
-    <section className="contact">
+    <section className="contact" id="contact">
       <div className="container">
         <div className="row justify-content-between align-items-center">
           <SlideUp className="col-lg-5">

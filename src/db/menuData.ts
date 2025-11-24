@@ -42,14 +42,14 @@ export const menuData: MenuItem[] = [
     link: "/blog",
   },
 
-  {
-    title: "admin",
-    link: "#",
-    submenu: [
-      { title: "Promo'", link: "/scan" },
-      { title: "dashboard", link: "/dashboard" },
-    ],
-  },
+  // {
+  //   title: "admin",
+  //   link: "#",
+  //   submenu: [
+  //     { title: "Promo'", link: "/scan" },
+  //     { title: "dashboard", link: "/dashboard" },
+  //   ],
+  // },
   // {
   //   title: "Pages",
   //   link: "#",
