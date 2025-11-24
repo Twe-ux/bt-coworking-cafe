@@ -50,6 +50,8 @@ export async function PUT(
     const body = await request.json();
     const { status, reply } = body;
 
+    console.log("📝 [Update Message] ID:", id, "Status:", status, "Has reply:", !!reply);
+
     const updateData: Record<string, unknown> = {};
 
     if (status) {
@@ -67,9 +69,13 @@ export async function PUT(
       // Get original message to send reply
       const originalMessage = await ContactMail.findById(id);
       if (originalMessage) {
+        console.log("📧 [Send Reply] To:", originalMessage.email);
+        console.log("📧 [Send Reply] API Key configured:", !!process.env.RESEND_API_KEY);
+        console.log("📧 [Send Reply] From email:", process.env.RESEND_FROM_EMAIL);
+
         try {
           const resend = getResendClient();
-          await resend.emails.send({
+          const result = await resend.emails.send({
             from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
             to: originalMessage.email,
             subject: `Re: ${originalMessage.subject}`,
@@ -86,8 +92,14 @@ export async function PUT(
               <p>L'équipe Cow-or-King Café</p>
             `,
           });
-        } catch (emailError) {
-          console.error("Erreur envoi réponse email:", emailError);
+          console.log("✅ [Send Reply] Email sent successfully:", result);
+        } catch (emailError: any) {
+          console.error("❌ [Send Reply] Error:", emailError);
+          console.error("❌ [Send Reply] Error details:", emailError?.message, emailError?.statusCode);
+          // Continue even if email fails, but let's not hide the error completely
+          if (emailError?.statusCode === 403 || emailError?.message?.includes("API key")) {
+            console.error("❌ [Send Reply] RESEND API KEY ISSUE - Check your configuration!");
+          }
         }
       }
     }

@@ -27,21 +27,35 @@ const VerticalNavigationBar = () => {
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
+        console.log("🔄 [Menu Badge] Fetching unread count...");
         const response = await fetch("/api/contact-mails/unread-count");
+        console.log("🔄 [Menu Badge] Response status:", response.status);
+
         if (response.ok) {
           const data = await response.json();
-          setUnreadCount(data.count || 0);
+          console.log("🔄 [Menu Badge] Received data:", data);
+          const count = data.count || 0;
+          console.log("🔄 [Menu Badge] Setting unread count to:", count);
+          setUnreadCount(count);
+        } else {
+          const errorData = await response.json().catch(() => ({}));
+          console.error("❌ [Menu Badge] Error response:", errorData);
         }
       } catch (error) {
-        console.error("Error fetching unread count:", error);
+        console.error("❌ [Menu Badge] Fetch error:", error);
       }
     };
 
+    console.log("🎯 [Menu Badge] User role:", userRole);
     if (userRole === "dev" || userRole === "admin") {
+      console.log("✅ [Menu Badge] Setting up badge polling for admin/dev");
       fetchUnreadCount();
 
       // Listen for custom event to refresh count
-      const handleRefresh = () => fetchUnreadCount();
+      const handleRefresh = () => {
+        console.log("🔔 [Menu Badge] Refresh event triggered");
+        fetchUnreadCount();
+      };
       window.addEventListener("refreshUnreadCount", handleRefresh);
 
       // Refresh every 30 seconds
@@ -51,6 +65,8 @@ const VerticalNavigationBar = () => {
         clearInterval(interval);
         window.removeEventListener("refreshUnreadCount", handleRefresh);
       };
+    } else {
+      console.log("⏭️ [Menu Badge] Skipping badge setup - user is not admin/dev");
     }
   }, [userRole]);
 
