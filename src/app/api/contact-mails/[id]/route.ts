@@ -43,6 +43,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    console.log("📝 [Update Message] Starting PUT request...");
     await connectDB();
     const session = await getServerSession(authOptions);
     const { id } = await params;
@@ -51,6 +52,7 @@ export async function PUT(
     const { status, reply } = body;
 
     console.log("📝 [Update Message] ID:", id, "Status:", status, "Has reply:", !!reply);
+    console.log("📝 [Update Message] Current user:", session?.user?.username || "anonymous");
 
     const updateData: Record<string, unknown> = {};
 
@@ -111,15 +113,17 @@ export async function PUT(
     ).lean();
 
     if (!message) {
+      console.error("❌ [Update Message] Message not found:", id);
       return NextResponse.json(
         { error: "Message non trouvé" },
         { status: 404 }
       );
     }
 
+    console.log("✅ [Update Message] Successfully updated to:", message.status);
     return NextResponse.json({ message });
   } catch (error) {
-    console.error("Erreur mise à jour message:", error);
+    console.error("❌ [Update Message] Error:", error);
     return NextResponse.json(
       { error: "Erreur lors de la mise à jour du message" },
       { status: 500 }
