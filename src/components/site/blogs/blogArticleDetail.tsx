@@ -4,7 +4,6 @@ import MarkdownRenderer from "@/components/site/blogs/MarkdownRenderer";
 import type { Article } from "@/store/api/blogApi";
 import { useToggleLikeMutation } from "@/store/api/blogApi";
 import SlideUp from "@/utils/animations/slideUp";
-import Link from "next/link";
 import { useState } from "react";
 
 interface BlogArticleDetailProps {
@@ -51,14 +50,6 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
       <div className="first__para">
         <ul className="d-flex flex-wrap gap-4">
           <li>
-            <img src="/icons/user-black.svg" alt="author" />
-            <span>{article.author.name || article.author.username}</span>
-          </li>
-          <li>
-            <img src="/icons/comments-black.svg" alt="comments" />
-            <span>0 Comments</span>
-          </li>
-          <li>
             <img src="/icons/clender.svg" alt="date" />
             <span>{formatDate(article.publishedAt || article.createdAt)}</span>
           </li>
@@ -87,6 +78,7 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
               liked ? "btn-danger" : "btn-outline-danger"
             }`}
             style={{
+              marginTop: 33,
               border: liked ? "none" : "1px solid #dc3545",
               padding: "0.25rem 0.75rem",
             }}
@@ -103,21 +95,9 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
         </div>
       </div>
 
-      {/* Tags and Share */}
-      <SlideUp className="d-flex justify-content-between flex-wrap align-items-center share__option">
+      {/* Share */}
+      {/* <SlideUp className="d-flex justify-content-end flex-wrap align-items-center share__option">
         <div className="d-flex align-items-center gap-4">
-          <h6>Tags:</h6>
-          {article.tags && article.tags.length > 0 ? (
-            article.tags.map((tag) => (
-              <button key={tag._id} className="active">
-                {tag.name}
-              </button>
-            ))
-          ) : (
-            <span className="text-muted">Aucun tag</span>
-          )}
-        </div>
-        <div className="d-flex align-items-center gap-4 mt-3 mt-sm-0">
           <h6>Share:</h6>
           <ul className="d-flex justify-content-center gap-3">
             <li>
@@ -157,7 +137,7 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
             </li>
           </ul>
         </div>
-      </SlideUp>
+      </SlideUp> */}
     </article>
   );
 };

@@ -23,7 +23,7 @@ import {
 } from "react-bootstrap";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
-import { useGetArticleByIdQuery, useUpdateArticleMutation, useGetCategoriesQuery, useGetTagsQuery } from "@/store/api/blogApi";
+import { useGetArticleByIdQuery, useUpdateArticleMutation, useGetCategoriesQuery } from "@/store/api/blogApi";
 import { useNotification } from "@/hooks/useNotification";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
@@ -37,7 +37,6 @@ const EditPost = ({ articleId }: EditPostProps) => {
   const { data: article, isLoading: isFetching, error: fetchError } = useGetArticleByIdQuery(articleId);
   const [updateArticle, { isLoading: isUpdating }] = useUpdateArticleMutation();
   const { data: categoriesData } = useGetCategoriesQuery({ limit: 100 });
-  const { data: tagsData } = useGetTagsQuery({ limit: 100 });
   const { success, error: showError } = useNotification();
   const [selectedStatus, setSelectedStatus] = useState<string>("draft");
   const [showPreview, setShowPreview] = useState(false);
@@ -48,7 +47,6 @@ const EditPost = ({ articleId }: EditPostProps) => {
     content: yup.string().required("Le contenu est obligatoire").min(50, "Le contenu doit contenir au moins 50 caractères").defined(),
     featuredImage: yup.string().url("L'URL de l'image doit être valide").defined().default(""),
     categoryId: yup.string().defined().default(""),
-    tagIds: yup.array().of(yup.string()).defined().default([]),
     scheduledFor: yup.date().nullable().default(null),
     seoMetaTitle: yup.string().max(60, "Le meta titre ne peut pas dépasser 60 caractères").defined().default(""),
     seoMetaDescription: yup.string().max(160, "La meta description ne peut pas dépasser 160 caractères").defined().default(""),
@@ -64,7 +62,6 @@ const EditPost = ({ articleId }: EditPostProps) => {
       content: "",
       featuredImage: "",
       categoryId: "",
-      tagIds: [],
       scheduledFor: null,
       seoMetaTitle: "",
       seoMetaDescription: "",
@@ -106,7 +103,6 @@ const EditPost = ({ articleId }: EditPostProps) => {
         content: article.content || "",
         featuredImage: article.featuredImage || "",
         categoryId: article.category?._id || "",
-        tagIds: article.tags?.map((tag: any) => tag._id) || [],
         scheduledFor: article.scheduledFor ? new Date(article.scheduledFor) : null,
         seoMetaTitle: article.metaTitle || "",
         seoMetaDescription: article.metaDescription || "",
@@ -125,7 +121,6 @@ const EditPost = ({ articleId }: EditPostProps) => {
         excerpt: data.excerpt || undefined,
         featuredImage: data.featuredImage || undefined,
         categoryId: data.categoryId || undefined,
-        tagIds: data.tagIds?.filter(Boolean) || [],
         status: selectedStatus,
         scheduledFor: data.scheduledFor || undefined,
         // SEO fields as separate properties
@@ -290,45 +285,7 @@ const EditPost = ({ articleId }: EditPostProps) => {
               </div>
             </Col>
 
-            <Col lg={6}>
-              <div className="mb-3">
-                <label htmlFor="tagIds" className="form-label">
-                  Tags
-                </label>
-                <Controller
-                  name="tagIds"
-                  control={control}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      id="tagIds"
-                      multiple
-                      size={5}
-                      className="form-select"
-                      onChange={(e) => {
-                        const selected = Array.from(e.target.selectedOptions, option => option.value);
-                        field.onChange(selected);
-                      }}
-                      value={Array.isArray(field.value) ? field.value.filter((v): v is string => typeof v === 'string') : []}
-                    >
-                      {tagsData?.tags.map((tag) => (
-                        <option key={tag._id} value={tag._id}>
-                          {tag.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                />
-                <small className="text-muted d-block mt-1">
-                  Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs tags
-                </small>
-                {errors.tagIds && (
-                  <small className="text-danger d-block">{errors.tagIds.message}</small>
-                )}
-              </div>
-            </Col>
-
-            <Col lg={6}>
+            <Col lg={12}>
               <div className="mb-3">
                 <label htmlFor="status" className="form-label">
                   Statut *

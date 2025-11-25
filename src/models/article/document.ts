@@ -10,7 +10,6 @@ export interface ArticleDocument extends Document {
   featuredImageAlt?: string;
   author: ObjectId;
   category: ObjectId;
-  tags: ObjectId[];
   metaTitle?: string;
   metaDescription?: string;
   metaKeywords: string[];
@@ -19,9 +18,7 @@ export interface ArticleDocument extends Document {
   scheduledFor?: Date;
   viewCount: number;
   likeCount: number;
-  commentCount: number;
   isFeatured: boolean;
-  allowComments: boolean;
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -70,12 +67,6 @@ export const ArticleSchema = new Schema<ArticleDocument>(
       ref: "Category",
       required: false, // Category is optional
     },
-    tags: [
-      {
-        type: Types.ObjectId,
-        ref: "Tag",
-      },
-    ],
     metaTitle: {
       type: String,
       trim: true,
@@ -113,18 +104,9 @@ export const ArticleSchema = new Schema<ArticleDocument>(
       default: 0,
       min: 0,
     },
-    commentCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
     isFeatured: {
       type: Boolean,
       default: false,
-    },
-    allowComments: {
-      type: Boolean,
-      default: true,
     },
     isDeleted: {
       type: Boolean,
@@ -145,7 +127,6 @@ export const ArticleSchema = new Schema<ArticleDocument>(
 // Note: slug already has a unique index from the unique: true constraint
 ArticleSchema.index({ author: 1 });
 ArticleSchema.index({ category: 1 });
-ArticleSchema.index({ tags: 1 });
 ArticleSchema.index({ status: 1, publishedAt: -1 });
 ArticleSchema.index({ isFeatured: 1, status: 1 });
 ArticleSchema.index({ isDeleted: 1 });

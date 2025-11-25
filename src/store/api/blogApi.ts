@@ -18,11 +18,6 @@ export interface Article {
     name: string;
     slug: string;
   };
-  tags?: Array<{
-    _id: string;
-    name: string;
-    slug: string;
-  }>;
   status: 'draft' | 'published' | 'archived' | 'scheduled';
   publishedAt?: string;
   scheduledFor?: string;
@@ -32,7 +27,6 @@ export interface Article {
   metaKeywords?: string[];
   viewCount: number;
   likeCount: number;
-  commentCount: number;
   readingTime: number;
   createdAt: string;
   updatedAt: string;
@@ -44,7 +38,6 @@ export interface CreateArticleDto {
   excerpt?: string;
   featuredImage?: string;
   categoryId?: string;
-  tagIds?: string[];
   status?: 'draft' | 'published';
   scheduledFor?: string;
   // SEO fields as separate properties to match database schema

@@ -25,7 +25,6 @@ import * as yup from "yup";
 import {
   useCreateArticleMutation,
   useGetCategoriesQuery,
-  useGetTagsQuery,
 } from "@/store/api/blogApi";
 import { useNotification } from "@/hooks/useNotification";
 import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
@@ -34,7 +33,6 @@ const CreatePost = () => {
   const router = useRouter();
   const [createArticle, { isLoading }] = useCreateArticleMutation();
   const { data: categoriesData } = useGetCategoriesQuery({ limit: 100 });
-  const { data: tagsData } = useGetTagsQuery({ limit: 100 });
   const { success, error: showError } = useNotification();
   const [selectedStatus, setSelectedStatus] = useState<string>("draft");
   const [showPreview, setShowPreview] = useState(false);
@@ -61,7 +59,6 @@ const CreatePost = () => {
       .defined()
       .default(""),
     categoryId: yup.string().defined().default(""),
-    tagIds: yup.array().of(yup.string()).defined().default([]),
     scheduledFor: yup.date().nullable().default(null),
     seoMetaTitle: yup
       .string()
@@ -95,7 +92,6 @@ const CreatePost = () => {
       content: "",
       featuredImage: "",
       categoryId: "",
-      tagIds: [],
       scheduledFor: null,
       seoMetaTitle: "",
       seoMetaDescription: "",
@@ -136,7 +132,6 @@ const CreatePost = () => {
         excerpt: data.excerpt || undefined,
         featuredImage: data.featuredImage || undefined,
         categoryId: data.categoryId || undefined,
-        tagIds: data.tagIds?.filter(Boolean) || [],
         status: selectedStatus,
         scheduledFor: data.scheduledFor || undefined,
         // SEO fields as separate properties
@@ -264,56 +259,7 @@ const CreatePost = () => {
               </div>
             </Col>
 
-            <Col lg={6}>
-              <div className="mb-3">
-                <label htmlFor="tagIds" className="form-label">
-                  Tags
-                </label>
-                <Controller
-                  name="tagIds"
-                  control={control}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      id="tagIds"
-                      multiple
-                      size={5}
-                      className="form-select"
-                      onChange={(e) => {
-                        const selected = Array.from(
-                          e.target.selectedOptions,
-                          (option) => option.value
-                        );
-                        field.onChange(selected);
-                      }}
-                      value={
-                        Array.isArray(field.value)
-                          ? field.value.filter(
-                              (v): v is string => typeof v === "string"
-                            )
-                          : []
-                      }
-                    >
-                      {tagsData?.tags.map((tag) => (
-                        <option key={tag._id} value={tag._id}>
-                          {tag.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                />
-                <small className="text-muted d-block mt-1">
-                  Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs tags
-                </small>
-                {errors.tagIds && (
-                  <small className="text-danger d-block">
-                    {errors.tagIds.message}
-                  </small>
-                )}
-              </div>
-            </Col>
-
-            <Col lg={6}>
+            <Col lg={12}>
               <div className="mb-3">
                 <label htmlFor="status" className="form-label">
                   Statut *
@@ -510,7 +456,6 @@ const CreatePost = () => {
           author: {
             name: "Vous",
           },
-          tags: [],
           category: categoriesData?.categories.find(
             (c) => c._id === watch("categoryId")
           ),

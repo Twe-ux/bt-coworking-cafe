@@ -3,22 +3,18 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import React from 'react';
-import { useGetArticlesQuery, useGetCategoriesQuery, useGetTagsQuery } from '@/store/api/blogApi';
+import { useGetArticlesQuery, useGetCategoriesQuery } from '@/store/api/blogApi';
 
 interface BlogSidebarProps {
     onSearch?: (query: string) => void;
     onCategorySelect?: (categoryId: string) => void;
-    onTagSelect?: (tagId: string) => void;
     selectedCategory?: string;
-    selectedTag?: string;
 }
 
 const BlogSidebar = ({
     onSearch,
     onCategorySelect,
-    onTagSelect,
-    selectedCategory,
-    selectedTag
+    selectedCategory
 }: BlogSidebarProps) => {
     const [searchValue, setSearchValue] = useState("");
 
@@ -34,13 +30,14 @@ const BlogSidebar = ({
     // Fetch categories with article count
     const { data: categoriesData } = useGetCategoriesQuery({ limit: 100 });
 
-    // Fetch tags
-    const { data: tagsData } = useGetTagsQuery({ limit: 100 });
-
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
+    };
+
+    const handleSearchChange = (value: string) => {
+        setSearchValue(value);
         if (onSearch) {
-            onSearch(searchValue);
+            onSearch(value);
         }
     };
 
@@ -48,13 +45,6 @@ const BlogSidebar = ({
         e.preventDefault();
         if (onCategorySelect) {
             onCategorySelect(categoryId);
-        }
-    };
-
-    const handleTagClick = (e: React.MouseEvent, tagId: string) => {
-        e.preventDefault();
-        if (onTagSelect) {
-            onTagSelect(tagId);
         }
     };
 
@@ -68,11 +58,11 @@ const BlogSidebar = ({
                         type="text"
                         placeholder="Search Now"
                         value={searchValue}
-                        onChange={(e) => setSearchValue(e.target.value)}
+                        onChange={(e) => handleSearchChange(e.target.value)}
                     />
-                    <button type="submit" style={{ background: 'none', border: 'none', position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}>
+                    <span style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
                         <i className="fa-solid fa-magnifying-glass" />
-                    </button>
+                    </span>
                 </form>
             </div>
 
@@ -162,34 +152,6 @@ const BlogSidebar = ({
                 </ul>
             </div>
             {/* -- latest post */}
-
-            {/* -- Tags */}
-            <div className="tags pt__60">
-                <h5 className="t__22">Tags:</h5>
-                <ul>
-                    {tagsData?.tags && tagsData.tags.length > 0 ? (
-                        tagsData.tags.map((tag) => (
-                            <li key={tag._id}>
-                                <Link
-                                    href="#"
-                                    onClick={(e) => handleTagClick(e, tag._id)}
-                                    className={selectedTag === tag._id ? "active" : ""}
-                                    style={{
-                                        backgroundColor: selectedTag === tag._id ? (tag.color || '#007bff') : 'transparent',
-                                        color: selectedTag === tag._id ? '#fff' : 'inherit'
-                                    }}
-                                >
-                                    {tag.name}
-                                </Link>
-                            </li>
-                        ))
-                    ) : (
-                        <li>
-                            <p className="text-muted">Aucun tag</p>
-                        </li>
-                    )}
-                </ul>
-            </div>
         </aside>
     );
 };

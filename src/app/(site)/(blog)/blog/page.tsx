@@ -1,35 +1,28 @@
 "use client";
 
-import { useState } from "react";
 import BlogCard from "@/components/site/blogs/blogCard";
 import BlogSidebar from "@/components/site/blogs/blogSidebar";
 import PageTitle from "@/components/site/pageTitle";
-import SlideDown from "@/utils/animations/slideDown";
 import { useGetArticlesQuery } from "@/store/api/blogApi";
+import SlideDown from "@/utils/animations/slideDown";
+import { useState } from "react";
 
 const Blog = () => {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedTag, setSelectedTag] = useState("");
 
   const { data, isLoading, error } = useGetArticlesQuery({
     page,
     limit: 6,
     search: searchQuery || undefined,
     category: selectedCategory || undefined,
-    tag: selectedTag || undefined,
     status: "published",
   });
 
   // Reset page when filters change
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    setPage(1);
-  };
-
-  const handleTagSelect = (tagId: string) => {
-    setSelectedTag(tagId);
     setPage(1);
   };
 
@@ -76,10 +69,10 @@ const Blog = () => {
                       >
                         <BlogCard
                           slug={article.slug}
-                          author={
-                            article.author.name || article.author.username
-                          }
-                          comments={0} // À remplacer quand les commentaires seront implémentés
+                          // author={
+                          //   article.author.name || article.author.username
+                          // }
+                          // comments={0} // À remplacer quand les commentaires seront implémentés
                           imgSrc={
                             article.featuredImage || "/images/blogs/blog-1.png"
                           }
@@ -118,9 +111,7 @@ const Blog = () => {
               <BlogSidebar
                 onSearch={handleSearch}
                 onCategorySelect={handleCategorySelect}
-                onTagSelect={handleTagSelect}
                 selectedCategory={selectedCategory}
-                selectedTag={selectedTag}
               />
             </div>
           </div>

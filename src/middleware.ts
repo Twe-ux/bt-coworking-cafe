@@ -41,7 +41,7 @@ const clientDashboardPattern =
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  console.log("🔒 MIDDLEWARE:", pathname);
+  // console.log("🔒 MIDDLEWARE:", pathname);
 
   // Get the session token
   const token = await getToken({
@@ -58,11 +58,11 @@ export async function middleware(req: NextRequest) {
     | undefined;
   const username = token?.username as string | undefined;
 
-  console.log("🔒 Auth status:", {
-    authenticated: isAuthenticated,
-    role: userRole,
-    username: username,
-  });
+  // console.log("🔒 Auth status:", {
+  //   authenticated: isAuthenticated,
+  //   role: userRole,
+  //   username: username,
+  // });
 
   // 1. Public routes - allow everyone
   const isPublicRoute =
@@ -72,37 +72,37 @@ export async function middleware(req: NextRequest) {
     publicRoutePatterns.some((pattern) => pattern.test(pathname));
 
   if (isPublicRoute) {
-    console.log("✅ Public route, allowing access");
+    // console.log("✅ Public route, allowing access");
     return NextResponse.next();
   }
 
   // 2. Auth routes (login, register, etc.)
   if (authRoutes.includes(pathname)) {
     if (isAuthenticated) {
-      console.log("🔒 Already authenticated, redirecting based on role");
+      // console.log("🔒 Already authenticated, redirecting based on role");
 
       // Redirect authenticated users based on their role
       if (userRole === "client" && username) {
-        console.log(`🔒 Client redirect to /${username}`);
+        // console.log(`🔒 Client redirect to /${username}`);
         return NextResponse.redirect(new URL(`/${username}`, req.url));
       } else if (
         userRole === "dev" ||
         userRole === "admin" ||
         userRole === "staff"
       ) {
-        console.log("🔒 Admin/Staff/Dev redirect to /dashboard/analytics");
+        // console.log("🔒 Admin/Staff/Dev redirect to /dashboard");
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     }
     // Not authenticated, allow access to auth pages
-    console.log("✅ Auth route, allowing access");
+    // console.log("✅ Auth route, allowing access");
     return NextResponse.next();
   }
 
   // 3. Admin dashboard routes
   if (adminDashboardPattern.test(pathname)) {
     if (!isAuthenticated) {
-      console.log("❌ Admin dashboard requires auth, redirecting to login");
+      // console.log("❌ Admin dashboard requires auth, redirecting to login");
       return NextResponse.redirect(
         new URL(
           `/auth/login?callbackUrl=${encodeURIComponent(pathname)}`,
@@ -113,16 +113,16 @@ export async function middleware(req: NextRequest) {
 
     // Check if user has admin/staff/dev role
     if (userRole === "client") {
-      console.log(
-        "❌ Client trying to access admin dashboard, redirecting to client dashboard"
-      );
+      // console.log(
+      //   "❌ Client trying to access admin dashboard, redirecting to client dashboard"
+      // );
       if (username) {
         return NextResponse.redirect(new URL(`/${username}`, req.url));
       }
       return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 
-    console.log("✅ Admin/Staff/Dev accessing dashboard");
+    // console.log("✅ Admin/Staff/Dev accessing dashboard");
     return NextResponse.next();
   }
 
@@ -135,38 +135,36 @@ export async function middleware(req: NextRequest) {
   if (
     clientDashboardPattern.test(pathname) &&
     !publicRoutes.includes(pathname) &&
-    !isPublicPattern
+    !isPublicPattern &&
+    isAuthenticated // Only treat as client dashboard if authenticated
   ) {
     // Extract username from path
     const pathUsername = pathname.split("/")[1];
 
-    if (!isAuthenticated) {
-      console.log("❌ Client dashboard requires auth, redirecting to login");
-      return NextResponse.redirect(
-        new URL(
-          `/auth/login?callbackUrl=${encodeURIComponent(pathname)}`,
-          req.url
-        )
-      );
-    }
-
     // If it's a client, verify they can only access their own dashboard
     if (userRole === "client") {
       if (pathUsername !== username) {
-        console.log(
-          `❌ Client trying to access another user's dashboard (${pathUsername} != ${username})`
-        );
+        // console.log(
+        //   `❌ Client trying to access another user's dashboard (${pathUsername} != ${username})`
+        // );
         return NextResponse.redirect(new URL(`/${username}`, req.url));
       }
     }
 
     // Admin/Staff/Dev can access any client dashboard
-    console.log("✅ Authorized access to client dashboard");
+    // console.log("✅ Authorized access to client dashboard");
     return NextResponse.next();
   }
 
-  // 5. Default: allow access
-  console.log("✅ Default allow");
+  // 5. Unknown routes - redirect to home for unauthenticated users
+  // If we reach here, it's likely an unknown route
+  if (!isAuthenticated) {
+    // console.log("❌ Unknown route, redirecting to home");
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // 6. Default: allow access for authenticated users
+  // console.log("✅ Default allow");
   return NextResponse.next();
 }
 

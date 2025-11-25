@@ -25,7 +25,7 @@ const Footer = () => {
         "/signin",
         "/signup",
         "/scan",
-        "/menu",
+        "/boissons",
         "/menu/boissons",
         "/menu/food",
         "/professionnels",
@@ -60,7 +60,7 @@ const Footer = () => {
         <div className="row footer__lo_co ">
           <div
             className={
-              !isClientDashboard || !showBookingHelper ? "col-12" : "mt-5"
+              showSubscribeForm || showBookingHelper ? "col-12" : "mt-5"
             }
           >
             <div className="d-flex justify-content-center">

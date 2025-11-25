@@ -4,8 +4,6 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import BlogArticleDetail from "@/components/site/blogs/blogArticleDetail";
 import BlogSidebar from "@/components/site/blogs/blogSidebar";
-import Comments from "@/components/site/blogs/comments";
-import LeaveReply from "@/components/site/blogs/leaveReply";
 import PageTitle from "@/components/site/pageTitle";
 import { useGetArticleBySlugQuery } from "@/store/api/blogApi";
 
@@ -70,8 +68,6 @@ const BlogDetails = () => {
           <div className="row">
             <div className="col-lg-8">
               <BlogArticleDetail article={article} />
-              <Comments articleId={article._id} />
-              <LeaveReply articleId={article._id} />
             </div>
             <div className="col-lg-4 mt-5 mt-lg-0">
               <BlogSidebar />
