@@ -51,7 +51,7 @@ async function connectDB(): Promise<typeof mongoose> {
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      const dbName = mongoose.connection.db?.databaseName;
+      const dbName = mongoose.connection.db?.databaseName || mongoose.connection.name;
       const host = mongoose.connection.host;
       console.log('✅ MongoDB connected successfully');
       console.log('📊 Database:', dbName, '@ Host:', host);

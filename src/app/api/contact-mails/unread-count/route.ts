@@ -10,7 +10,7 @@ export async function GET() {
 
     // Debug: Log collection name and database
     const collectionName = ContactMail.collection.name;
-    const dbName = ContactMail.db.databaseName;
+    const dbName = ContactMail.db.name;
     console.log("🔢 [Unread Count] Using collection:", collectionName, "in database:", dbName);
 
     // Debug: Count all messages
