@@ -16,7 +16,10 @@ const publicRoutes = [
   "/pricing",
   "/blog",
 
-  "/menu",
+  "/boissons",
+  "/menu/boissons",
+  "/menu/food",
+
   "/professionnels",
 ];
 
