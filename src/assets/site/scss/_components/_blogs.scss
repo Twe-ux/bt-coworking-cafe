@@ -27,6 +27,7 @@
 
   @include breakpoint(sm) {
     margin-top: 70px;
+    margin-bottom: 50px;
   }
 
   &__title {
@@ -37,7 +38,12 @@
   .subtitle {
     color: var(--grayWhite-clr);
     margin-top: 10px;
-    font-size: 27px;
+    font-size: 22px;
+    @include breakpoint(md) {
+      text-align: center;
+      font-size: 20px;
+      padding: 0 10px;
+    }
   }
 
   &__wapper {
@@ -46,21 +52,17 @@
     &_card {
       .card__thumb {
         border-radius: 10px;
-        margin-bottom: 34px;
+        margin-bottom: 15px;
         width: 100%;
         // max-width: 356px;
         height: 235px;
         object-fit: cover;
-
-        @include breakpoint(md) {
-          margin-bottom: 28px;
-        }
       }
 
       .card__title {
         font-family: Kanit;
         color: var(--grayWhite-clr);
-        margin-bottom: 29px;
+        margin-bottom: 5px;
         transition: all 0.5s;
 
         &:hover {
