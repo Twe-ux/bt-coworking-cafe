@@ -4,7 +4,7 @@ import PageTitle from "@/components/site/pageTitle";
 const BoissonsPage = () => {
   return (
     <>
-      <PageTitle title={"Nos Boissons"} currentPage={"Boissons"} />
+      <PageTitle title={"Nos Boissons"} />
       <Menu
         type="drink"
         title="Nos Boissons"

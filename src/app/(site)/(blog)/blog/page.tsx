@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import BlogCard from "@/components/site/blogs/blogCard";
@@ -19,7 +19,7 @@ const Blog = () => {
     search: searchQuery || undefined,
     category: selectedCategory || undefined,
     tag: selectedTag || undefined,
-    status: 'published',
+    status: "published",
   });
 
   // Reset page when filters change
@@ -40,7 +40,7 @@ const Blog = () => {
 
   return (
     <>
-      <PageTitle title={"Blog"} currentPage={"Blog"} />
+      <PageTitle title={"Blog"} />
       <section className="all__blog py__130">
         <div className="container">
           <div className="row">
@@ -55,7 +55,10 @@ const Blog = () => {
               ) : error ? (
                 <div className="alert alert-danger">
                   <h5>Erreur de chargement</h5>
-                  <p>Impossible de charger les articles. Veuillez réessayer plus tard.</p>
+                  <p>
+                    Impossible de charger les articles. Veuillez réessayer plus
+                    tard.
+                  </p>
                 </div>
               ) : !data?.articles || data.articles.length === 0 ? (
                 <div className="text-center py-5">
@@ -66,12 +69,20 @@ const Blog = () => {
                 <>
                   <div className="row">
                     {data.articles.map((article, index) => (
-                      <SlideDown key={article._id} className="col-md-6" delay={index + 1}>
+                      <SlideDown
+                        key={article._id}
+                        className="col-md-6"
+                        delay={index + 1}
+                      >
                         <BlogCard
                           slug={article.slug}
-                          author={article.author.name || article.author.username}
+                          author={
+                            article.author.name || article.author.username
+                          }
                           comments={0} // À remplacer quand les commentaires seront implémentés
-                          imgSrc={article.featuredImage || "/images/blogs/blog-1.png"}
+                          imgSrc={
+                            article.featuredImage || "/images/blogs/blog-1.png"
+                          }
                           title={article.title}
                         />
                       </SlideDown>

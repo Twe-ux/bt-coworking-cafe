@@ -7,7 +7,7 @@ import TestimonialTwo from "@/components/site/testimonial/testimonialTwo";
 const About = () => {
   return (
     <>
-      <PageTitle title={"About Us"} currentPage={"About Us"} />
+      <PageTitle title={"About Us"} />
       <AboutOne />
       <ProjectsOne />
       <TestimonialTwo />

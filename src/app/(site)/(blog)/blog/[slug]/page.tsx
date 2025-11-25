@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
 import BlogArticleDetail from "@/components/site/blogs/blogArticleDetail";
 import BlogSidebar from "@/components/site/blogs/blogSidebar";
 import Comments from "@/components/site/blogs/comments";
 import LeaveReply from "@/components/site/blogs/leaveReply";
 import PageTitle from "@/components/site/pageTitle";
-import { useGetArticleBySlugQuery } from '@/store/api/blogApi';
+import { useGetArticleBySlugQuery } from "@/store/api/blogApi";
 
 const BlogDetails = () => {
   const params = useParams();
@@ -20,15 +20,15 @@ const BlogDetails = () => {
     if (article?._id) {
       // Call the view endpoint
       fetch(`/api/articles/${slug}/view`, {
-        method: 'POST',
-      }).catch((err) => console.error('Failed to increment view count:', err));
+        method: "POST",
+      }).catch((err) => console.error("Failed to increment view count:", err));
     }
   }, [article?._id, slug]);
 
   if (isLoading) {
     return (
       <>
-        <PageTitle title={"Chargement..."} currentPage={"Blog"} />
+        <PageTitle title={"Chargement..."} />
         <section className="blog__details py__130">
           <div className="container">
             <div className="text-center py-5">
@@ -46,7 +46,7 @@ const BlogDetails = () => {
   if (error || !article) {
     return (
       <>
-        <PageTitle title={"Article introuvable"} currentPage={"Blog"} />
+        <PageTitle title={"Article introuvable"} />
         <section className="blog__details py__130">
           <div className="container">
             <div className="alert alert-danger">
@@ -64,7 +64,7 @@ const BlogDetails = () => {
 
   return (
     <>
-      <PageTitle title={article.title} currentPage={"Blog Details"} />
+      <PageTitle title={article.title} />
       <section className="blog__details py__130">
         <div className="container">
           <div className="row">

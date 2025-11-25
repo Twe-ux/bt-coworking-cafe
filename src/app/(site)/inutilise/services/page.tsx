@@ -4,7 +4,7 @@ import ServiceThree from "@/components/site/services/serviceThree";
 const Services = () => {
   return (
     <>
-      <PageTitle title={"Services"} currentPage={"Services"} />
+      <PageTitle title={"Services"} />
       <ServiceThree />
     </>
   );

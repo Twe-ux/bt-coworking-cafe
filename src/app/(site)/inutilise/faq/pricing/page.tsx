@@ -6,7 +6,7 @@ import { partnerTwoLogos } from "@/db/partnerOneLogos";
 const Pricing = () => {
   return (
     <>
-      <PageTitle title={"Pricing Plan"} currentPage={"Pricing Plan"} />
+      <PageTitle title={"Pricing Plan"} />
       <section className="pricing py__130">
         <div className="container">
           <PricingTable />
