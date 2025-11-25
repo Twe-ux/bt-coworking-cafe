@@ -39,11 +39,12 @@ export async function GET() {
 
     return NextResponse.json({
       count: unreadCount,
-      debug: {
-        total: totalCount,
-        byStatus: statusCounts,
-        samples: allMessages
-      }
+      // Uncomment below for debugging
+      // debug: {
+      //   total: totalCount,
+      //   byStatus: statusCounts,
+      //   samples: allMessages
+      // }
     });
   } catch (error) {
     console.error("❌ [Unread Count] Error:", error);
