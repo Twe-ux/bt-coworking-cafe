@@ -80,24 +80,33 @@ export async function POST(request: NextRequest) {
 // GET - List messages (admin only)
 export async function GET(request: NextRequest) {
   try {
+    console.log("📋 [List Messages] Starting GET request...");
     await connectDB();
+    console.log("📋 [List Messages] DB connected");
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
 
+    console.log("📋 [List Messages] Query params - status:", status, "page:", page, "limit:", limit);
+
     const query: Record<string, unknown> = {};
     if (status && status !== "all") {
       query.status = status;
     }
 
+    console.log("📋 [List Messages] Counting documents...");
     const total = await ContactMail.countDocuments(query);
+    console.log("📋 [List Messages] Total documents:", total);
+
+    console.log("📋 [List Messages] Fetching messages...");
     const messages = await ContactMail.find(query)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
+    console.log("📋 [List Messages] Found", messages.length, "messages");
 
     return NextResponse.json({
       messages,
@@ -108,11 +117,15 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit),
       },
     });
-  } catch (error) {
-    console.error("Erreur récupération messages:", error);
+  } catch (error: any) {
+    console.error("❌ [List Messages] Error:", error);
+    console.error("❌ [List Messages] Error stack:", error?.stack);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération des messages" },
+      { error: "Erreur lors de la récupération des messages", details: error?.message },
       { status: 500 }
     );
   }
 }
+
+// Add maxDuration for Vercel/Serverless platforms
+export const maxDuration = 30; // 30 seconds timeout
