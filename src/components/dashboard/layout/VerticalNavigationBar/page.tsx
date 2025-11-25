@@ -28,7 +28,14 @@ const VerticalNavigationBar = () => {
     const fetchUnreadCount = async () => {
       try {
         console.log("🔄 [Menu Badge] Fetching unread count...");
-        const response = await fetch("/api/contact-mails/unread-count");
+        // Add timestamp to bypass cache
+        const response = await fetch(`/api/contact-mails/unread-count?t=${Date.now()}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
         console.log("🔄 [Menu Badge] Response status:", response.status);
 
         if (response.ok) {
