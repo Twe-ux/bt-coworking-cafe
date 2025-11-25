@@ -18,6 +18,22 @@
       @include breakpoint(xl) {
         max-width: 750px;
       }
+      @include breakpoint(md) {
+        max-width: 260px;
+      }
+    }
+
+    .circle {
+      @include breakpoint(md) {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 5px;
+      }
+      span {
+        @include breakpoint(md) {
+          font-size: 10px;
+        }
+      }
     }
   }
 

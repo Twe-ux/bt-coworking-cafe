@@ -1,8 +1,16 @@
 .about {
+  @include breakpoint(sm) {
+    padding-top: 65px !important;
+  }
+
   &__title {
     .title {
       // max-width: 900px;
       font-size: 45px;
+
+      @include breakpoint(sm) {
+        font-size: 26px;
+      }
     }
 
     &_shap {

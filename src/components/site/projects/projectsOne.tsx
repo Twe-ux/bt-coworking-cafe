@@ -13,7 +13,7 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
     <section className="projects pt__120 pb__130">
       <div className="container">
         {/* title Start */}
-        <SlideDown className="d-lg-flex justify-content-between align-items-center projects__title">
+        <SlideDown className="d-flex justify-content-between align-items-center projects__title">
           <h1 className="title">
             Des espaces pour favoriser votre créativité et votre productivité !
           </h1>
