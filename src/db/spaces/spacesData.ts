@@ -28,7 +28,7 @@ export const spacesData: Spaces[] = [
   {
     id: 1,
     title: "L’open-space",
-    description: `Un espace lumineux et convivial, avec des zones variées pour travailler,réviser ou créer à votre rythme — toujours accessible au tarif au temps`,
+    description: `Un espace lumineux et convivial, avec des zones variées pour travailler, réviser ou créer à votre rythme — toujours accessible au tarif au temps`,
     imgSrc: "/images/spaces/openSpace/cowork-cafe-strasbourg.webp",
     link: "#open-space",
     delay: 100,
