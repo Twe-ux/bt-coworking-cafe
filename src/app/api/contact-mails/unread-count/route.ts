@@ -8,12 +8,35 @@ export async function GET() {
     console.log("🔢 [Unread Count] Fetching unread messages count...");
     await connectDB();
 
+    // Debug: Count all messages
+    const totalCount = await ContactMail.countDocuments({});
+    console.log("🔢 [Unread Count] Total messages in DB:", totalCount);
+
+    // Debug: Get all statuses
+    const allMessages = await ContactMail.find({}, { status: 1, _id: 1 }).limit(20).lean();
+    console.log("🔢 [Unread Count] Sample messages statuses:", allMessages);
+
+    // Count unread
     const unreadCount = await ContactMail.countDocuments({
       status: "unread",
     });
 
-    console.log("🔢 [Unread Count] Found", unreadCount, "unread messages");
-    return NextResponse.json({ count: unreadCount });
+    console.log("🔢 [Unread Count] Found", unreadCount, "unread messages out of", totalCount);
+
+    // Also count by each status
+    const statusCounts = await ContactMail.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } }
+    ]);
+    console.log("🔢 [Unread Count] Status breakdown:", statusCounts);
+
+    return NextResponse.json({
+      count: unreadCount,
+      debug: {
+        total: totalCount,
+        byStatus: statusCounts,
+        samples: allMessages
+      }
+    });
   } catch (error) {
     console.error("❌ [Unread Count] Error:", error);
     return NextResponse.json(
