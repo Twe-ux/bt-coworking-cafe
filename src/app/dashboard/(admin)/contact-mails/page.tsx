@@ -28,6 +28,7 @@ const MessagesPage = () => {
 
   const refreshUnreadCount = () => {
     // Dispatch custom event to refresh unread count
+    console.log("🔔 [Contact Mails] Dispatching refreshUnreadCount event");
     window.dispatchEvent(new Event("refreshUnreadCount"));
   };
 
@@ -56,13 +57,18 @@ const MessagesPage = () => {
     // Mark as read if unread
     if (message.status === "unread") {
       try {
-        await fetch(`/api/contact-mails/${message._id}`, {
+        const response = await fetch(`/api/contact-mails/${message._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "read" }),
         });
-        fetchMessages();
-        refreshUnreadCount();
+
+        if (response.ok) {
+          console.log("✅ [Contact Mails] Message marked as read");
+          await fetchMessages();
+          // Small delay to ensure DB is updated
+          setTimeout(() => refreshUnreadCount(), 100);
+        }
       } catch (error) {
         console.error("Erreur:", error);
       }
@@ -71,14 +77,18 @@ const MessagesPage = () => {
 
   const handleUpdateStatus = async (id: string, status: string) => {
     try {
-      await fetch(`/api/contact-mails/${id}`, {
+      const response = await fetch(`/api/contact-mails/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      fetchMessages();
-      refreshUnreadCount();
-      setShowModal(false);
+
+      if (response.ok) {
+        console.log("✅ [Contact Mails] Status updated to:", status);
+        await fetchMessages();
+        setTimeout(() => refreshUnreadCount(), 100);
+        setShowModal(false);
+      }
     } catch (error) {
       console.error("Erreur:", error);
     }
@@ -89,16 +99,20 @@ const MessagesPage = () => {
 
     setSending(true);
     try {
-      await fetch(`/api/contact-mails/${selectedMessage._id}`, {
+      const response = await fetch(`/api/contact-mails/${selectedMessage._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reply: replyText }),
       });
-      setShowReplyModal(false);
-      setReplyText("");
-      fetchMessages();
-      refreshUnreadCount();
-      setShowModal(false);
+
+      if (response.ok) {
+        console.log("✅ [Contact Mails] Reply sent successfully");
+        setShowReplyModal(false);
+        setReplyText("");
+        await fetchMessages();
+        setTimeout(() => refreshUnreadCount(), 100);
+        setShowModal(false);
+      }
     } catch (error) {
       console.error("Erreur:", error);
     } finally {
@@ -110,10 +124,14 @@ const MessagesPage = () => {
     if (!confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) return;
 
     try {
-      await fetch(`/api/contact-mails/${id}`, { method: "DELETE" });
-      fetchMessages();
-      refreshUnreadCount();
-      setShowModal(false);
+      const response = await fetch(`/api/contact-mails/${id}`, { method: "DELETE" });
+
+      if (response.ok) {
+        console.log("✅ [Contact Mails] Message deleted successfully");
+        await fetchMessages();
+        setTimeout(() => refreshUnreadCount(), 100);
+        setShowModal(false);
+      }
     } catch (error) {
       console.error("Erreur:", error);
     }
