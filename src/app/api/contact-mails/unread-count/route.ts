@@ -2,6 +2,10 @@ import { connectDB } from "@/lib/mongodb";
 import { ContactMail } from "@/models/contactMail";
 import { NextResponse } from "next/server";
 
+// Disable all caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET - Count unread messages
 export async function GET() {
   try {
