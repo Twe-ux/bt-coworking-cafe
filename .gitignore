@@ -35,3 +35,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 build-test.log
+
+
+CHECK_PROD_DB.md

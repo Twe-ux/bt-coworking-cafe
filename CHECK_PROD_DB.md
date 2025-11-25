@@ -1,6 +1,7 @@
 # Vérification Base de Données Production
 
 ## Problème
+
 - **Dev** : API retourne `{count: 1}` ✅
 - **Prod** : API retourne `{count: 0}` ❌
 - **Même base de données normalement** mais résultats différents
@@ -18,6 +19,7 @@ Cherchez dans vos logs de production (Heroku/Railway/Northflank) :
 ```
 
 Et lors de l'appel API :
+
 ```
 🔢 [Unread Count] Using collection: XXXX in database: YYYY
 🔢 [Unread Count] Total messages in DB: X
@@ -27,6 +29,7 @@ Et lors de l'appel API :
 ### 2. Comparer avec les logs de dev
 
 **En dev, vous devriez avoir :**
+
 ```
 📊 Database: coworking-cafe
 🔢 [Unread Count] Total messages in DB: 6
@@ -34,6 +37,7 @@ Et lors de l'appel API :
 ```
 
 **Si en prod c'est différent :**
+
 - Nom de database différent → Variable `MONGODB_URI` incorrecte
 - Total = 0 → Base de données vide
 - Total > 0 mais unread = 0 → Les messages ont des statuts différents
@@ -45,13 +49,13 @@ Et lors de l'appel API :
 Dans votre plateforme de déploiement, vérifiez la variable `MONGODB_URI`.
 
 Elle devrait être **identique** à celle de `.env.local` :
+
 ```
-mongodb+srv://dev:2Sz748OACxL7TvP5@coworking.jhxdixz.mongodb.net/coworking-cafe?retryWrites=true&w=majority
-                                                                              ^^^^^^^^^^^^^^
-                                                                              Doit être le même nom !
+
 ```
 
 **Vérifier spécifiquement :**
+
 1. Le nom de la database : `coworking-cafe`
 2. Le cluster : `coworking.jhxdixz.mongodb.net`
 3. Les credentials
@@ -59,23 +63,27 @@ mongodb+srv://dev:2Sz748OACxL7TvP5@coworking.jhxdixz.mongodb.net/coworking-cafe?
 #### B. Si la variable est correcte mais les résultats différents
 
 Cela peut signifier que :
+
 1. **Cache de connexion** : Redémarrez l'application en prod
 2. **Connexion persistante** : L'app est connectée à une vieille DB
 
 #### C. Comment corriger
 
 **Sur Heroku :**
+
 ```bash
 heroku config:set MONGODB_URI="mongodb+srv://dev:2Sz748OACxL7TvP5@coworking.jhxdixz.mongodb.net/coworking-cafe?retryWrites=true&w=majority"
 heroku restart
 ```
 
 **Sur Railway/Render :**
+
 1. Dashboard → Variables
 2. Éditer `MONGODB_URI`
 3. Redéployer
 
 **Sur Northflank :**
+
 1. Settings → Environment Variables
 2. Éditer `MONGODB_URI`
 3. Restart
@@ -96,6 +104,7 @@ Devrait retourner : `{"count": 1}` (ou le bon nombre de messages non lus)
 Ajoutez temporairement un endpoint de debug :
 
 Créer `/src/app/api/debug-db/route.ts` :
+
 ```typescript
 import { connectDB } from "@/lib/mongodb";
 import mongoose from "mongoose";
@@ -108,7 +117,7 @@ export async function GET() {
     database: mongoose.connection.db?.databaseName || mongoose.connection.name,
     host: mongoose.connection.host,
     collections: await mongoose.connection.db?.listCollections().toArray(),
-    mongoUri: process.env.MONGODB_URI?.substring(0, 50) + "..."
+    mongoUri: process.env.MONGODB_URI?.substring(0, 50) + "...",
   });
 }
 ```
@@ -124,6 +133,7 @@ Cela vous montrera exactement quelle DB est utilisée et quelles collections exi
 Le problème est **100% une différence de base de données** entre dev et prod.
 
 **Action immédiate :**
+
 1. ✅ Vérifier les logs serveur prod (chercher "Database:")
 2. ✅ Comparer `MONGODB_URI` entre `.env.local` et les variables de prod
 3. ✅ Corriger la variable en prod si nécessaire
