@@ -51,7 +51,11 @@ async function connectDB(): Promise<typeof mongoose> {
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      const dbName = mongoose.connection.db?.databaseName;
+      const host = mongoose.connection.host;
       console.log('✅ MongoDB connected successfully');
+      console.log('📊 Database:', dbName, '@ Host:', host);
+      console.log('🔗 Connection string preview:', MONGODB_URI.substring(0, 50) + '...');
       return mongoose;
     });
   }

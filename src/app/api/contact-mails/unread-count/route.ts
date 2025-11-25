@@ -8,12 +8,20 @@ export async function GET() {
     console.log("🔢 [Unread Count] Fetching unread messages count...");
     await connectDB();
 
+    // Debug: Log collection name and database
+    const collectionName = ContactMail.collection.name;
+    const dbName = ContactMail.db.databaseName;
+    console.log("🔢 [Unread Count] Using collection:", collectionName, "in database:", dbName);
+
     // Debug: Count all messages
     const totalCount = await ContactMail.countDocuments({});
     console.log("🔢 [Unread Count] Total messages in DB:", totalCount);
 
     // Debug: Get all statuses
-    const allMessages = await ContactMail.find({}, { status: 1, _id: 1 }).limit(20).lean();
+    const allMessages = await ContactMail.find({})
+      .select("status _id")
+      .limit(20)
+      .lean();
     console.log("🔢 [Unread Count] Sample messages statuses:", allMessages);
 
     // Count unread
