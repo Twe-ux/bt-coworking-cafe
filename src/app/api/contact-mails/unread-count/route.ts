@@ -37,8 +37,9 @@ export async function GET() {
     ]);
     console.log("🔢 [Unread Count] Status breakdown:", statusCounts);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       count: unreadCount,
+      timestamp: new Date().toISOString(),
       // Uncomment below for debugging
       // debug: {
       //   total: totalCount,
@@ -46,6 +47,13 @@ export async function GET() {
       //   samples: allMessages
       // }
     });
+
+    // Prevent caching
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+
+    return response;
   } catch (error) {
     console.error("❌ [Unread Count] Error:", error);
     return NextResponse.json(

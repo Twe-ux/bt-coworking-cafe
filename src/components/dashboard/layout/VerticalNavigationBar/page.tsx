@@ -29,11 +29,14 @@ const VerticalNavigationBar = () => {
       try {
         console.log("🔄 [Menu Badge] Fetching unread count...");
         // Add timestamp to bypass cache
-        const response = await fetch(`/api/contact-mails/unread-count?t=${Date.now()}`, {
-          cache: 'no-store',
+        const cacheBuster = `${Date.now()}-${Math.random()}`;
+        console.log("🔄 [Menu Badge] Cache buster:", cacheBuster);
+        const response = await fetch(`/api/contact-mails/unread-count?_=${cacheBuster}`, {
+          cache: 'reload',
           headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
+            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'Expires': '0'
           }
         });
         console.log("🔄 [Menu Badge] Response status:", response.status);
