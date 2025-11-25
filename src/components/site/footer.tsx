@@ -124,7 +124,10 @@ const Footer = () => {
                 </li>
                 <li>
                   <img src="/icons/Frame7.svg" alt="img" />
-                  <p>L-V: 09h-20h | S-D & JF: 10h-20h</p>
+                  <p>
+                    Lun-Ven: 09h-20h <br />
+                    Sam-Dim & Fériés: 10h-20h
+                  </p>
                 </li>
               </ul>
             </div>

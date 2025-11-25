@@ -94,6 +94,10 @@
   }
   &__logo {
     margin-bottom: 50px;
+
+    @include breakpoint(md) {
+      margin-bottom: 25px;
+    }
     h5 {
       font-size: 34px;
       font-weight: 600;
