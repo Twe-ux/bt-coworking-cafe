@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const SpacesPage = () => {
   return (
     <>
-      <PageTitle title={"Espaces"} currentPage={"Espaces"} />
+      <PageTitle title={"Espaces"} />
       <Spaces />
     </>
   );

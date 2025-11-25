@@ -10,7 +10,7 @@ const Spaces = () => {
     <>
       <section className="spaces spaces__2 py__130" id="spaces">
         <div className="container position-relative">
-          <SlideDown className="d-lg-flex justify-content-between align-items-center spaces__title spaces__2_title">
+          <SlideDown className="d-flex flex-column gap-5 spaces__title spaces__2_title">
             <h1 className="title text-white">
               Des espaces et des atmosphères en fonction de vos besoins
             </h1>

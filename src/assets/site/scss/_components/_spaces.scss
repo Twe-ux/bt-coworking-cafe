@@ -3,8 +3,14 @@
 
   &__title {
     .title {
-      max-width: 555px;
+      max-width: 850px;
     }
+
+    p {
+      font-size: 20px;
+      text-align: justify;
+    }
+
     .common__btn {
       background-color: var(--btn-clr);
       color: var(--secondary-clr);
@@ -224,11 +230,7 @@
   @include breakpoint(sm) {
     padding-bottom: 240px;
   }
-  &_title {
-    p {
-      max-width: 536px;
-    }
-  }
+
   &_wapper {
     margin-top: 60px;
 
