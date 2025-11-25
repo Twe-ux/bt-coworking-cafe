@@ -2,6 +2,14 @@
   background-color: #0f1b19;
   padding-top: 107px;
   padding-bottom: 108px;
+
+  @include breakpoint(lg) {
+    padding-top: 30px;
+  }
+
+  @include breakpoint(sm) {
+    padding-top: 60px;
+  }
   &__content {
     position: relative;
     z-index: 10;
@@ -20,8 +28,8 @@
           line-height: 60px;
         }
         @include breakpoint(sm) {
-          font-size: 50px;
-          line-height: 53px;
+          font-size: 26px;
+          line-height: 45px;
         }
       }
       p {
