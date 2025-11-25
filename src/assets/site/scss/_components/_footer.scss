@@ -159,6 +159,9 @@
 
   &__copyright {
     margin-top: 133px;
+    @include breakpoint(md) {
+      margin-top: 0;
+    }
     p {
       padding: 25px 0;
       a {

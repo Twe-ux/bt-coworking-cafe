@@ -94,7 +94,7 @@ const Footer = () => {
         <hr className="footer__border" />
         {/* ---- Info */}
         <div className="row footer__info">
-          <div className="col-lg-4 col-md-6 mb-5 mb-lg-0">
+          <div className="col-lg-3 col-md-6 mb-5 mb-lg-0">
             <div className="footer__info_address">
               <h3 className="footer__info_group">Où nous trouver ?</h3>
               <Link href={"/contact#emplacement"}>
@@ -105,7 +105,7 @@ const Footer = () => {
               </Link>
             </div>
           </div>
-          <div className="col-lg-3 col-md-6 mb-5 mb-lg-0">
+          <div className="col-lg-4 col-md-6 mb-5 mb-lg-0">
             <div>
               <h3 className="footer__info_group">Nous contacter</h3>
               <ul className="footer__info_contact">
