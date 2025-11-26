@@ -236,7 +236,7 @@
 
 // ---------------- spaces_2 for home page 2 and it exteds home page one service code
 .spaces__2 {
-  padding-bottom: 480px;
+  padding-bottom: 300px;
   @include breakpoint(xl) {
     padding-bottom: 266px;
   }
@@ -312,6 +312,11 @@
   }
 }
 
+.py__110 {
+  padding-top: 110px;
+  padding-bottom: 110px;
+}
+
 .tools__concept {
   background-color: var(--main-clr);
 
@@ -324,7 +329,7 @@
   }
 
   .counter {
-    padding: 55px 80px;
+    padding: 30px 80px;
     background-color: #588983;
     border-radius: 10px;
     width: 100%;
@@ -349,7 +354,7 @@
     }
 
     &__box {
-      margin-bottom: 25px;
+      margin-bottom: 0px;
 
       @include breakpoint(lg) {
         width: 50%;
@@ -368,9 +373,9 @@
       -webkit-text-stroke-color: var(--grayWhite-clr);
       color: transparent;
       font-weight: 700;
-      font-size: 60px;
-      line-height: 90px;
-      margin-bottom: 15px;
+      font-size: 50px;
+      line-height: 60px;
+      margin-bottom: 0px;
       transition: all 0.5s;
 
       @include breakpoint(xl) {
@@ -385,6 +390,7 @@
     }
 
     &__text {
+      font-weight: normal;
       font-size: 25px;
       color: var(--grayWhite-clr);
     }

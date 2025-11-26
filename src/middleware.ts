@@ -7,7 +7,7 @@ const publicRoutes = [
   "/",
   "/CGU",
   "/confidentiality",
-  "/mention-legales",
+  "/mentions-legales",
   "/contact",
   "/scan",
 

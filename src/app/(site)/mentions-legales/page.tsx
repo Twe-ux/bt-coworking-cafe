@@ -165,9 +165,7 @@ export default function MentionsLegalesPage() {
                         <h4 className="h6 fw-semibold mb-2">
                           Vercel Inc. (Hébergement web)
                         </h4>
-                        <p className="mb-1 small">
-                          440 N Barranca Ave #4133
-                        </p>
+                        <p className="mb-1 small">440 N Barranca Ave #4133</p>
                         <p className="mb-1 small">
                           Covina, CA 91723, États-Unis
                         </p>
@@ -191,9 +189,7 @@ export default function MentionsLegalesPage() {
                         <h4 className="h6 fw-semibold mb-2">
                           MongoDB, Inc. (Base de données)
                         </h4>
-                        <p className="mb-1 small">
-                          1633 Broadway, 38th Floor
-                        </p>
+                        <p className="mb-1 small">1633 Broadway, 38th Floor</p>
                         <p className="mb-1 small">
                           New York, NY 10019, États-Unis
                         </p>
@@ -254,11 +250,11 @@ export default function MentionsLegalesPage() {
                   4.1 Droits d&apos;auteur
                 </h3>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  L&apos;ensemble du contenu de ce site (textes, images,
-                  vidéos, logos, icônes, mise en page, code source, etc.) est
-                  la propriété exclusive de ILY SARL ou de ses partenaires et
-                  est protégé par les lois françaises et internationales
-                  relatives à la propriété intellectuelle.
+                  L&apos;ensemble du contenu de ce site (textes, images, vidéos,
+                  logos, icônes, mise en page, code source, etc.) est la
+                  propriété exclusive de ILY SARL ou de ses partenaires et est
+                  protégé par les lois françaises et internationales relatives à
+                  la propriété intellectuelle.
                 </p>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
@@ -272,8 +268,9 @@ export default function MentionsLegalesPage() {
                   }}
                 >
                   <p className="mb-2" style={{ color: "#e65100" }}>
-                    <strong>Toute reproduction est interdite sans
-                    autorisation :</strong>
+                    <strong>
+                      Toute reproduction est interdite sans autorisation :
+                    </strong>
                   </p>
                   <ul className="mb-0" style={{ color: "#f57c00" }}>
                     <li className="mb-2">
@@ -293,10 +290,10 @@ export default function MentionsLegalesPage() {
                   4.3 Marques et logos
                 </h3>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  Les marques &quot;Cow or King Café&quot; et &quot;Cow or King&quot;
-                  ainsi que les logos associés sont des marques déposées. Toute
-                  utilisation non autorisée constitue une contrefaçon passible
-                  de sanctions pénales.
+                  Les marques &quot;Cow or King Café&quot; et &quot;Cow or
+                  King&quot; ainsi que les logos associés sont des marques
+                  déposées. Toute utilisation non autorisée constitue une
+                  contrefaçon passible de sanctions pénales.
                 </p>
               </section>
 
@@ -368,8 +365,8 @@ export default function MentionsLegalesPage() {
                     </a>
                   </li>
                   <li className="mb-2">
-                    <strong>Courrier :</strong> DPO - Cow or King Café, 1 rue
-                    de la Division Leclerc, 67000 Strasbourg
+                    <strong>Courrier :</strong> DPO - Cow or King Café, 1 rue de
+                    la Division Leclerc, 67000 Strasbourg
                   </li>
                 </ul>
               </section>
@@ -381,8 +378,8 @@ export default function MentionsLegalesPage() {
                 </h2>
 
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  Ce site utilise des cookies pour améliorer votre expérience
-                  de navigation et analyser l&apos;utilisation du site.
+                  Ce site utilise des cookies pour améliorer votre expérience de
+                  navigation et analyser l&apos;utilisation du site.
                 </p>
 
                 <div className="row g-3 mb-4">
@@ -646,8 +643,8 @@ export default function MentionsLegalesPage() {
                     </div>
                     <div className="col-md-6">
                       <p className="mb-2">
-                        <strong>Adresse :</strong> 1 rue de la Division
-                        Leclerc, 67000 Strasbourg
+                        <strong>Adresse :</strong> 1 rue de la Division Leclerc,
+                        67000 Strasbourg
                       </p>
                       <p className="mb-0">
                         <strong>Horaires :</strong> Lun-Ven 9h00-18h00

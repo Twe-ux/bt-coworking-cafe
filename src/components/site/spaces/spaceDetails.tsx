@@ -27,7 +27,7 @@ const SpaceDetails = ({
   );
 
   return (
-    <section className="tools__concept py__130" id={id}>
+    <section className="tools__concept py__110 " id={id}>
       <div className="container">
         <div className="projects__usecase">
           <div className="row align-items-center">
@@ -71,7 +71,7 @@ const SpaceDetails = ({
             </SlideUp>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="">
           <SpaceCounter counterBox={counterBox} />
         </div>
       </div>
