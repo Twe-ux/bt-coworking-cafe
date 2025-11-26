@@ -32,7 +32,6 @@ export async function GET(
     const article = await Article.findOne({ _id: id, isDeleted: false })
       .populate('author', 'username name email')
       .populate('category', 'name slug')
-      .populate('tags', 'name slug')
       .lean();
 
     if (!article) {

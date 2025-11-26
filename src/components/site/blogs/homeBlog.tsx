@@ -53,12 +53,6 @@ const HomeBlog: React.FC<HomeBlogProps> = ({ className = "" }) => {
                   delay={index + 1}
                 >
                   <BlogCard
-                    author={
-                      article.author?.name ||
-                      article.author?.username ||
-                      "Auteur inconnu"
-                    }
-                    comments={article.commentCount || 0}
                     imgSrc={article.featuredImage || "/images/blogs/blog-1.png"}
                     title={article.title}
                     slug={article.slug}

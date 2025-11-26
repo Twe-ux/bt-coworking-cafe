@@ -136,17 +136,6 @@ const Articles = () => {
                   {featuredArticle.category.name}
                 </Badge>
               )}
-              &nbsp;
-              {featuredArticle.tags && featuredArticle.tags.slice(0, 2).map((tag) => (
-                <Badge
-                  key={tag._id}
-                  bg={`${getBadgeColor(tag.name)}-subtle`}
-                  text={getBadgeColor(tag.name)}
-                  className="ms-1"
-                >
-                  {tag.name}
-                </Badge>
-              ))}
             </span>
             <Row className="my-2 align-items-center">
               {featuredArticle.featuredImage && (

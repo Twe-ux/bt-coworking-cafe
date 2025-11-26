@@ -68,7 +68,6 @@ export async function GET(request: NextRequest) {
       Article.find(query)
         .populate('author', 'username name email')
         .populate('category', 'name slug')
-        .populate('tags', 'name slug')
         .sort({ [sortBy]: sortOrder })
         .skip(skip)
         .limit(limit)
@@ -114,7 +113,6 @@ export async function POST(request: NextRequest) {
       excerpt,
       featuredImage,
       categoryId,
-      tagIds,
       status = 'draft',
       scheduledFor,
       metaTitle,
@@ -151,7 +149,6 @@ export async function POST(request: NextRequest) {
       featuredImage,
       author: user.id,
       category: categoryId || undefined,
-      tags: tagIds || [],
       status,
       publishedAt: status === 'published' ? new Date() : undefined,
       scheduledFor: scheduledFor ? new Date(scheduledFor) : undefined,
@@ -168,7 +165,6 @@ export async function POST(request: NextRequest) {
     await article.populate([
       { path: 'author', select: 'username name email' },
       { path: 'category', select: 'name slug' },
-      { path: 'tags', select: 'name slug' },
     ]);
 
     return NextResponse.json(article, { status: 201 });

@@ -34,7 +34,6 @@ export async function GET(
         .limit(limit)
         .populate('author', 'username name email')
         .populate('category', 'name slug')
-        .populate('tags', 'name slug')
         .lean(),
       ArticleRevision.countDocuments({ article: id }),
     ]);

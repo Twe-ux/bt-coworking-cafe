@@ -52,14 +52,6 @@ export function attachHooks() {
           $inc: { articleCount: -1 },
         });
       }
-
-      // Decrement articleCount in tags
-      if (doc.tags && doc.tags.length > 0) {
-        await mongoose.models.Tag.updateMany(
-          { _id: { $in: doc.tags } },
-          { $inc: { articleCount: -1 } }
-        );
-      }
     }
 
     next();

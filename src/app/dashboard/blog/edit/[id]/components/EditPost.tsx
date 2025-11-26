@@ -521,7 +521,6 @@ const EditPost = ({ articleId }: EditPostProps) => {
           content: watch("content") || "Pas de contenu",
           featuredImage: watch("featuredImage"),
           author: article?.author || { name: "Vous" },
-          tags: article?.tags || [],
           category: article?.category || categoriesData?.categories.find(c => c._id === watch("categoryId")),
         }}
       />

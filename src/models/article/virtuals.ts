@@ -33,13 +33,6 @@ export type VirtualArticle =
   | VirtualArchivedArticle
   | VirtualScheduledArticle;
 
-// Virtual for comments reference
-ArticleSchema.virtual("comments", {
-  ref: "Comment",
-  localField: "_id",
-  foreignField: "article",
-});
-
 // Virtual to check if published
 ArticleSchema.virtual("isPublished").get(function (this: ArticleDocument) {
   return this.status === "published";
@@ -60,5 +53,5 @@ ArticleSchema.virtual("readingTime").get(function (this: ArticleDocument) {
 // Virtual for engagement rate
 ArticleSchema.virtual("engagementRate").get(function (this: ArticleDocument) {
   if (this.viewCount === 0) return 0;
-  return ((this.likeCount + this.commentCount) / this.viewCount) * 100;
+  return (this.likeCount / this.viewCount) * 100;
 });
