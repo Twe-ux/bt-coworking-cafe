@@ -72,7 +72,6 @@ export async function PATCH(
       excerpt,
       featuredImage,
       categoryId,
-      tagIds,
       status,
       scheduledFor,
       metaTitle,
@@ -126,7 +125,6 @@ export async function PATCH(
     if (excerpt !== undefined) article.excerpt = excerpt;
     if (featuredImage !== undefined) article.featuredImage = featuredImage;
     if (categoryId !== undefined) article.category = categoryId || undefined;
-    if (tagIds !== undefined) article.tags = tagIds;
 
     // Handle SEO fields as separate properties
     if (metaTitle !== undefined) article.metaTitle = metaTitle;
