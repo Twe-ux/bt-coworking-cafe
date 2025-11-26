@@ -228,6 +228,7 @@
         line-height: 55px;
       }
     }
+
     &__text {
       color: var(--grayWhite-clr);
     }
@@ -327,6 +328,12 @@
   p {
     text-align: justify;
   }
+  .p {
+    position: absolute;
+    margin: 85px 0 0 25px;
+    font-size: 20px;
+    font-style: italic;
+  }
 
   .counter {
     padding: 30px 80px;
@@ -361,7 +368,8 @@
       }
 
       &:hover {
-        .counter__number {
+        .counter__number,
+        sup {
           color: var(--btn-clr);
           -webkit-text-stroke-color: var(--btn-clr);
         }
@@ -384,6 +392,27 @@
 
       @include breakpoint(md) {
         font-size: 40px;
+        margin-bottom: 0px;
+        line-height: 55px;
+      }
+    }
+    sup {
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: var(--grayWhite-clr);
+      color: transparent;
+      font-weight: 700;
+      // vertical-align: super;
+      font-size: 30px;
+      line-height: 60px;
+      margin-bottom: 0px;
+      transition: all 0.5s;
+
+      @include breakpoint(xl) {
+        font-size: 40px;
+      }
+
+      @include breakpoint(md) {
+        font-size: 20px;
         margin-bottom: 0px;
         line-height: 55px;
       }

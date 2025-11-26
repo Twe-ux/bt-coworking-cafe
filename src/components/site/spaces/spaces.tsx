@@ -8,7 +8,7 @@ import SpaceDetails from "./spaceDetails";
 const Spaces = () => {
   return (
     <>
-      <section className="spaces spaces__2 py__110" id="spaces">
+      <section className="spaces spaces__2 py__130" id="spaces">
         <div className="container position-relative">
           <SlideDown className="d-flex flex-column gap-5 spaces__title spaces__2_title">
             <h1 className="title text-white">

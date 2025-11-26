@@ -11,12 +11,19 @@ const SpaceCounter = ({ counterBox }: SpaceCounterProps) => {
         {counterBox.map((item) => {
           return (
             <div key={item.id} className="counter__box">
-              <h1 className="counter__number">{item.number}</h1>
+              <div className="d-flex ">
+                <h1 className="counter__number">{item.number}</h1>
+                <sup>{item.stars}</sup>
+              </div>
+
               <p className="counter__text">{item.box}</p>
             </div>
           );
         })}
       </div>
+      <p className="p">
+        <sup>*</sup> à partir de. Tarifs en TTC.
+      </p>
     </div>
   );
 };

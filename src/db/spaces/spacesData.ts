@@ -20,6 +20,7 @@ export interface SpacesDetailsProps {
   counterBox: Array<{
     id: number;
     number: string;
+    stars: string;
     box: string;
   }>;
 }
@@ -96,16 +97,28 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     counterBox: [
       {
         id: 1,
-        number: "6€",
-        box: "heure",
+        number: "6",
+        stars: "€*",
+        box: "l'heure",
       },
       {
         id: 2,
-        number: "29€",
-        box: "jours",
+        number: "29",
+        stars: "€*",
+        box: "la journée",
       },
-      { id: 3, number: "30/40", box: "places" },
-      { id: 4, number: "130", box: "m²" },
+      {
+        id: 3,
+        number: "30/40",
+        stars: "",
+        box: "places",
+      },
+      {
+        id: 4,
+        number: "130",
+        stars: "",
+        box: "m²",
+      },
     ],
   },
   {
@@ -139,10 +152,30 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
       },
     ],
     counterBox: [
-      { id: 1, number: "24€﹡", box: "heure" },
-      { id: 2, number: "120€﹡", box: "jours" },
-      { id: 3, number: "4/5", box: "places" },
-      { id: 4, number: "7", box: "m²" },
+      {
+        id: 1,
+        number: "24",
+        stars: "€*",
+        box: "l'heure",
+      },
+      {
+        id: 2,
+        number: "120",
+        stars: "€*",
+        box: "la journée",
+      },
+      {
+        id: 3,
+        number: "4/5",
+        stars: "",
+        box: "places",
+      },
+      {
+        id: 4,
+        number: "7",
+        stars: "",
+        box: "m²",
+      },
     ],
   },
   {
@@ -169,10 +202,10 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
       },
     ],
     counterBox: [
-      { id: 1, number: "60€﹡", box: "heure" },
-      { id: 2, number: "300€﹡", box: "jours" },
-      { id: 3, number: "10", box: "places" },
-      { id: 4, number: "35/40", box: "m²" },
+      { id: 1, number: "60", stars: "€*", box: "l'heure" },
+      { id: 2, number: "300", stars: "€*", box: "la journée" },
+      { id: 3, number: "15", stars: "", box: "places" },
+      { id: 4, number: "35/40", stars: "", box: "m²" },
     ],
   },
 ];
