@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/models/user';
 import SettingsClient from './SettingsClient';
+import '../profile/profile.scss';
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = 'force-dynamic';
@@ -42,30 +43,22 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
   return (
     <section className="client-dashboard py__130">
       <div className="container">
-        {/* Breadcrumb */}
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <Link href={`/${username}`}>Dashboard</Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              Paramètres
-            </li>
-          </ol>
-        </nav>
-
-        {/* Page Title */}
-        <div className="mb-5">
-          <h1 className="section-title">Paramètres</h1>
-          <p className="text-muted">Gérez vos préférences et paramètres de compte</p>
+        {/* Welcome Card */}
+        <div className="welcome-card">
+          <h1 className="welcome-title">Paramètres</h1>
+          <p className="welcome-text">
+            Personnalisez votre expérience et gérez vos préférences
+          </p>
         </div>
 
         <div className="row">
           <div className="col-lg-8">
             {/* Notification Settings */}
-            <div className="card shadow-sm mb-4">
+            <div className="mb-4">
+              <h2 className="section-title">Notifications</h2>
+            </div>
+            <div className="card shadow-sm border-0 mb-4" style={{ borderRadius: '12px' }}>
               <div className="card-body p-4">
-                <h3 className="mb-4">Notifications</h3>
 
                 <SettingsClient initialNewsletter={newsletterSubscribed} />
 
@@ -110,94 +103,76 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
             </div>
 
             {/* Privacy Settings */}
-            <div className="card shadow-sm mb-4">
-              <div className="card-body p-4">
-                <h3 className="mb-4">Confidentialité</h3>
-
-                <form>
-                  <div className="mb-3 form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="profilePublic"
-                    />
-                    <label className="form-check-label" htmlFor="profilePublic">
-                      Profil public
-                    </label>
-                    <small className="d-block text-muted">
-                      Permettre aux autres utilisateurs de voir votre profil
-                    </small>
-                  </div>
-
-                  <div className="mb-3 form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="showEmail"
-                    />
-                    <label className="form-check-label" htmlFor="showEmail">
-                      Afficher mon email
-                    </label>
-                  </div>
-
-                  <button type="submit" className="btn btn-primary">
-                    Enregistrer les paramètres
-                  </button>
-                </form>
-              </div>
+            <div className="mb-4">
+              <h2 className="section-title">Confidentialité</h2>
+              <span
+                className="badge ms-3"
+                style={{
+                  backgroundColor: '#f2d381',
+                  color: '#142220',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '0.75rem',
+                  fontWeight: '600',
+                }}
+              >
+                Bientôt disponible
+              </span>
             </div>
-
-            {/* Language & Region */}
-            <div className="card shadow-sm mb-4">
+            <div className="card shadow-sm border-0 mb-4" style={{ borderRadius: '12px' }}>
               <div className="card-body p-4">
-                <h3 className="mb-4">Langue et région</h3>
 
-                <form>
-                  <div className="mb-3">
-                    <label htmlFor="language" className="form-label">
-                      Langue
-                    </label>
-                    <select className="form-select" id="language">
-                      <option value="fr" selected>
-                        Français
-                      </option>
-                      <option value="en">English</option>
-                      <option value="de">Deutsch</option>
-                    </select>
-                  </div>
+                <div className="mb-3 form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="profilePublic"
+                    disabled
+                  />
+                  <label className="form-check-label text-muted" htmlFor="profilePublic">
+                    Profil public
+                  </label>
+                  <small className="d-block text-muted">
+                    Permettre aux autres utilisateurs de voir votre profil
+                  </small>
+                </div>
 
-                  <div className="mb-3">
-                    <label htmlFor="timezone" className="form-label">
-                      Fuseau horaire
-                    </label>
-                    <select className="form-select" id="timezone">
-                      <option value="Europe/Paris" selected>
-                        Europe/Paris (GMT+1)
-                      </option>
-                      <option value="Europe/London">Europe/London (GMT+0)</option>
-                      <option value="America/New_York">America/New York (GMT-5)</option>
-                    </select>
-                  </div>
-
-                  <button type="submit" className="btn btn-primary">
-                    Enregistrer
-                  </button>
-                </form>
+                <div className="mb-3 form-check form-switch">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="showEmail"
+                    disabled
+                  />
+                  <label className="form-check-label text-muted" htmlFor="showEmail">
+                    Afficher mon email
+                  </label>
+                </div>
               </div>
             </div>
 
             {/* Danger Zone */}
-            <div className="card shadow-sm border-danger mb-4">
+            <div className="mb-4">
+              <h2 className="section-title" style={{ borderBottomColor: '#dc3545', color: '#dc3545' }}>
+                <i className="bi bi-exclamation-triangle me-2"></i>
+                Zone de danger
+              </h2>
+            </div>
+            <div className="card shadow-sm border-0 mb-4" style={{ borderRadius: '12px' }}>
               <div className="card-body p-4">
-                <h3 className="mb-4 text-danger">Zone de danger</h3>
 
-                <div className="mb-3">
-                  <h5>Supprimer le compte</h5>
-                  <p className="text-muted">
+                <div className="border-start border-3 border-danger p-3 rounded" style={{ backgroundColor: 'rgba(220, 53, 69, 0.05)' }}>
+                  <h6 className="fw-semibold mb-2">Supprimer le compte</h6>
+                  <p className="text-muted mb-3">
                     Une fois votre compte supprimé, toutes vos données seront définitivement
                     effacées. Cette action est irréversible.
                   </p>
-                  <button type="button" className="btn btn-danger">
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    style={{ borderRadius: '8px', padding: '10px 24px' }}
+                  >
+                    <i className="bi bi-trash me-2"></i>
                     Supprimer mon compte
                   </button>
                 </div>
@@ -207,48 +182,134 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
 
           <div className="col-lg-4">
             {/* Quick Info */}
-            <div className="card shadow-sm mb-4">
+            <div className="mb-4">
+              <h3 className="section-title">Informations</h3>
+            </div>
+            <div className="card shadow-sm border-0 mb-4" style={{ borderRadius: '12px' }}>
               <div className="card-body p-4">
-                <h5 className="mb-3">Informations du compte</h5>
-                <div className="mb-2">
-                  <small className="text-muted">Nom d'utilisateur</small>
-                  <p className="mb-0">@{username}</p>
+                <div className="mb-3 pb-3 border-bottom">
+                  <small style={{ color: '#6e6f75', fontSize: '0.85rem' }}>Nom d'utilisateur</small>
+                  <p className="mb-0 fw-semibold" style={{ color: '#142220' }}>@{username}</p>
                 </div>
-                <div className="mb-2">
-                  <small className="text-muted">Email</small>
-                  <p className="mb-0">{session.user.email}</p>
+                <div className="mb-3 pb-3 border-bottom">
+                  <small style={{ color: '#6e6f75', fontSize: '0.85rem' }}>Email</small>
+                  <p className="mb-0 fw-semibold" style={{ color: '#142220' }}>{session.user.email}</p>
                 </div>
-                <div className="mb-2">
-                  <small className="text-muted">Rôle</small>
+                <div>
+                  <small style={{ color: '#6e6f75', fontSize: '0.85rem' }}>Rôle</small>
                   <p className="mb-0">
-                    <span className="badge bg-primary">{session.user.role.name}</span>
+                    <span
+                      className="badge"
+                      style={{
+                        backgroundColor: '#417972',
+                        color: '#fff',
+                        padding: '8px 14px',
+                        borderRadius: '6px',
+                        fontWeight: '600',
+                      }}
+                    >
+                      {session.user.role.name}
+                    </span>
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="card shadow-sm">
-              <div className="card-body p-4">
-                <h5 className="mb-3">Actions rapides</h5>
-                <div className="d-grid gap-2">
-                  <Link href={`/${username}`} className="btn btn-outline-primary">
-                    <i className="bi bi-house me-2"></i>
-                    Dashboard
-                  </Link>
-                  <Link href={`/${username}/profile`} className="btn btn-outline-primary">
-                    <i className="bi bi-person me-2"></i>
-                    Mon profil
-                  </Link>
-                  <Link
-                    href={`/${username}/reservations`}
-                    className="btn btn-outline-primary"
-                  >
-                    <i className="bi bi-calendar-check me-2"></i>
-                    Réservations
-                  </Link>
+            <div className="mb-4">
+              <h3 className="section-title">Actions rapides</h3>
+            </div>
+            <div className="d-grid gap-3">
+              <Link
+                href={`/${username}`}
+                className="btn d-flex align-items-center justify-content-start gap-3"
+                style={{
+                  backgroundColor: '#e3ece7',
+                  color: '#142220',
+                  borderRadius: '12px',
+                  padding: '1rem 1.25rem',
+                  border: 'none',
+                  textAlign: 'left',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: '#417972',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff'
+                }}>
+                  <i className="bi bi-house" style={{ fontSize: '1.25rem' }}></i>
                 </div>
-              </div>
+                <div>
+                  <div style={{ fontWeight: '600', fontSize: '1rem' }}>Dashboard</div>
+                  <small style={{ color: '#6e6f75' }}>Retour à l'accueil</small>
+                </div>
+              </Link>
+              <Link
+                href={`/${username}/profile`}
+                className="btn d-flex align-items-center justify-content-start gap-3"
+                style={{
+                  backgroundColor: '#e3ece7',
+                  color: '#142220',
+                  borderRadius: '12px',
+                  padding: '1rem 1.25rem',
+                  border: 'none',
+                  textAlign: 'left',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: '#417972',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff'
+                }}>
+                  <i className="bi bi-person" style={{ fontSize: '1.25rem' }}></i>
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', fontSize: '1rem' }}>Mon profil</div>
+                  <small style={{ color: '#6e6f75' }}>Modifier mes informations</small>
+                </div>
+              </Link>
+              <Link
+                href={`/${username}/reservations`}
+                className="btn d-flex align-items-center justify-content-start gap-3"
+                style={{
+                  backgroundColor: '#e3ece7',
+                  color: '#142220',
+                  borderRadius: '12px',
+                  padding: '1rem 1.25rem',
+                  border: 'none',
+                  textAlign: 'left',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: '#417972',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff'
+                }}>
+                  <i className="bi bi-calendar-check" style={{ fontSize: '1.25rem' }}></i>
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', fontSize: '1rem' }}>Réservations</div>
+                  <small style={{ color: '#6e6f75' }}>Gérer mes réservations</small>
+                </div>
+              </Link>
             </div>
           </div>
         </div>

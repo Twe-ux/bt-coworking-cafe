@@ -7,6 +7,8 @@ import {
   getRedirectPathByRole,
   initializeRoles,
 } from '@/lib/auth-helpers';
+import { User } from '@/models/user';
+import dbConnect from '@/lib/mongodb';
 
 interface PopulatedRole {
   _id: Types.ObjectId;
@@ -141,9 +143,34 @@ export const options: NextAuthOptions = {
         token.role = (user as any).role;
       }
 
-      // Handle session update
-      if (trigger === 'update' && session) {
-        token = { ...token, ...session };
+      // Handle session update - reload user data from database
+      if (trigger === 'update') {
+        if (token.id) {
+          try {
+            await dbConnect();
+            // Use findById instead of findByEmail to handle email changes
+            const updatedUser = await User.findById(token.id).populate('role');
+            if (updatedUser) {
+              const role = updatedUser.role as unknown as PopulatedRole;
+              token.id = (updatedUser._id as Types.ObjectId).toString();
+              token.email = updatedUser.email;
+              token.name = updatedUser.givenName || updatedUser.username || updatedUser.email;
+              token.username = updatedUser.username;
+              token.role = {
+                id: role._id.toString(),
+                slug: role.slug,
+                name: role.name,
+                level: role.level,
+              };
+            }
+          } catch (error) {
+            console.error('Failed to refresh user data:', error);
+          }
+        }
+        // Also merge any session data passed
+        if (session) {
+          token = { ...token, ...session };
+        }
       }
 
       return token;
