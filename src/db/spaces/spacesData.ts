@@ -204,7 +204,7 @@ export const spacesDetailsData: SpacesDetailsProps[] = [
     counterBox: [
       { id: 1, number: "60", stars: "€*", box: "l'heure" },
       { id: 2, number: "300", stars: "€*", box: "la journée" },
-      { id: 3, number: "15", stars: "", box: "places" },
+      { id: 3, number: "10/15", stars: "", box: "places" },
       { id: 4, number: "35/40", stars: "", box: "m²" },
     ],
   },

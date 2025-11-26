@@ -21,7 +21,7 @@ export const pricingDataOpenSpace: PricingPlan[] = [
       "imprimante/scanner",
       "casiers à disposition",
     ],
-    condition: `1ère heure entammée est due; après
+    condition: `1ère heure entamée est due; après
         la 1ère heure, le tarif se calcule au
         prorata.`,
   },
