@@ -15,7 +15,6 @@ interface PreviewModalProps {
       name?: string;
       username?: string;
     };
-    tags?: Array<{ _id: string; name: string }>;
     category?: { _id: string; name: string };
   };
 }
@@ -42,20 +41,12 @@ const PreviewModal = ({ show, onHide, article }: PreviewModalProps) => {
               {/* Article Header */}
               <article>
                 <header className="mb-5">
-                  {/* Category and Tags */}
-                  {(article.category ||
-                    (article.tags && article.tags.length > 0)) && (
+                  {/* Category */}
+                  {article.category && (
                     <div className="mb-3">
-                      {article.category && (
-                        <span className="badge bg-primary me-2">
-                          {article.category.name}
-                        </span>
-                      )}
-                      {article.tags?.map((tag) => (
-                        <span key={tag._id} className="badge bg-secondary me-2">
-                          {tag.name}
-                        </span>
-                      ))}
+                      <span className="badge bg-primary me-2">
+                        {article.category.name}
+                      </span>
                     </div>
                   )}
 

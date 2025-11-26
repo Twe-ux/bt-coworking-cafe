@@ -79,20 +79,6 @@ const Articles = () => {
                   {article.title}
                 </Link>
               </span>
-              <div className="mb-2 mt-1">
-                {article.tags && article.tags.slice(0, 3).map((tag) => (
-                  <span key={tag._id}>
-                    <Badge
-                      bg={`${getBadgeColor(tag.name)}-subtle`}
-                      text={getBadgeColor(tag.name)}
-                      className="ms-1"
-                    >
-                      {tag.name}
-                    </Badge>
-                    &nbsp;
-                  </span>
-                ))}
-              </div>
               <p className="mt-2 text-muted">
                 {article.excerpt
                   ? article.excerpt.substring(0, 150)

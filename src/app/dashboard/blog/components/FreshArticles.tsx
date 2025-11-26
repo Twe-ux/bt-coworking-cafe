@@ -84,17 +84,6 @@ const FreshArticles = () => {
                   {article.category.name}
                 </Badge>
               )}
-              &nbsp;
-              {article.tags && article.tags.slice(0, 2).map((tag) => (
-                <Badge
-                  key={tag._id}
-                  bg="danger-subtle"
-                  text="danger"
-                  className="ms-1"
-                >
-                  {tag.name}
-                </Badge>
-              ))}
             </span>
             <p className="mt-2 text-muted">
               {article.excerpt ? (

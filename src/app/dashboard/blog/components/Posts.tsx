@@ -75,17 +75,6 @@ const PostCard = ({
           <Badge bg={statusColor}>{article.status}</Badge>
         </div>
 
-        {/* Tags */}
-        {article.tags && article.tags.length > 0 && (
-          <div className="mb-2">
-            {article.tags.map((tag) => (
-              <Badge key={tag._id} bg="light" text="dark" className="me-1">
-                {tag.name}
-              </Badge>
-            ))}
-          </div>
-        )}
-
         {/* Excerpt */}
         {article.excerpt && (
           <p className="text-muted small mb-3">

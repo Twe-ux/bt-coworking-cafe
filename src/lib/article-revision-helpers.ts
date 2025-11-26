@@ -31,7 +31,6 @@ export async function createArticleRevision(
       featuredImage: article.featuredImage,
       featuredImageAlt: article.featuredImageAlt,
       category: article.category,
-      tags: article.tags,
       status: article.status,
       publishedAt: article.publishedAt,
       scheduledFor: article.scheduledFor,
@@ -75,7 +74,6 @@ export async function restoreArticleRevision(
     if (revision.category) {
       article.category = revision.category as unknown as ObjectId;
     }
-    article.tags = revision.tags as unknown as ObjectId[];
     article.metaTitle = revision.metaTitle;
     article.metaDescription = revision.metaDescription;
     article.metaKeywords = revision.metaKeywords ?? [];
