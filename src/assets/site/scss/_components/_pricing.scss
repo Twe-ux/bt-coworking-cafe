@@ -76,6 +76,8 @@
       color: var(--main-clr);
       font-weight: 600;
       font-style: italic;
+    }
+    ul li p {
       @include breakpoint(xl) {
         font-size: 12px !important;
         line-height: 20px !important;
