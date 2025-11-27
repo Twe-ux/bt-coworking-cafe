@@ -76,6 +76,10 @@
       color: var(--main-clr);
       font-weight: 600;
       font-style: italic;
+      @include breakpoint(xl) {
+        font-size: 12px !important;
+        line-height: 20px !important;
+      }
     }
 
     &_title {
@@ -103,10 +107,6 @@
         margin-top: 5px;
         font-weight: 500;
         font-style: normal;
-        @include breakpoint(xl) {
-          font-size: 12px !important;
-          line-height: 20px !important;
-        }
       }
       sup {
         font-size: 8px;
