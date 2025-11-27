@@ -142,9 +142,13 @@
           transition: all 0.5s;
           font-weight: 500;
           font-style: normal;
-          @include breakpoint(xl) {
+          @include breakpoint(xxl) {
             font-size: 12px !important;
             line-height: 20px !important;
+          }
+          @include breakpoint(xl) {
+            font-size: 1rem !important;
+            line-height: 26px !important;
           }
         }
       }
