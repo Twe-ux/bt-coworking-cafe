@@ -1,6 +1,19 @@
 .pricing {
   margin-bottom: 181px;
 
+  @include breakpoint(xl) {
+    background-color: red;
+  }
+  @include breakpoint(lg) {
+    background-color: blue;
+  }
+  @include breakpoint(md) {
+    background-color: green;
+  }
+  @include breakpoint(sm) {
+    background-color: yellow;
+  }
+
   &__title {
     // margin-bottom: 10px;
     font-family: "Kanit";
