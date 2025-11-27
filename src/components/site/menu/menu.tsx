@@ -15,16 +15,21 @@ interface MenuCategory {
   _id: string;
   name: string;
   slug: string;
+  description?: string;
   drinks: Drink[];
 }
 
 interface MenuProps {
-  type?: 'drink' | 'food';
+  type?: "drink" | "food";
   title?: string;
   subtitle?: string;
 }
 
-const Menu = ({ type = 'drink', title = 'Nos Boissons', subtitle = 'Découvrez notre sélection de boissons, toutes incluses dans votre forfait temps.' }: MenuProps) => {
+const Menu = ({
+  type = "drink",
+  title = "Nos Boissons",
+  subtitle = "Découvrez notre sélection de boissons, toutes incluses dans votre forfait temps.",
+}: MenuProps) => {
   const [menu, setMenu] = useState<MenuCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,7 +74,7 @@ const Menu = ({ type = 'drink', title = 'Nos Boissons', subtitle = 'Découvrez n
   }
 
   return (
-    <section className="menu__section py__130">
+    <section className="menu__section pb__130 pt__50 ">
       <div className="container">
         <SlideDown className="text-center mb-5">
           <h1 className="title">{title}</h1>
@@ -80,6 +85,9 @@ const Menu = ({ type = 'drink', title = 'Nos Boissons', subtitle = 'Découvrez n
           <div key={category._id} className="menu__category mb-5">
             <SlideUp delay={categoryIndex}>
               <h2 className="menu__category-title mb-4">{category.name}</h2>
+              {category.description && (
+                <p className="cat-p">{category.description}</p>
+              )}
             </SlideUp>
 
             <div className="menu__drinks-scroll">

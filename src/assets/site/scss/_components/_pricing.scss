@@ -1,25 +1,6 @@
 .pricing {
   margin-bottom: 181px;
 
-  @include breakpoint(xxxl) {
-    background-color: purple;
-  }
-  @include breakpoint(xxl) {
-    background-color: orange;
-  }
-  @include breakpoint(xl) {
-    background-color: red;
-  }
-  @include breakpoint(lg) {
-    background-color: blue;
-  }
-  @include breakpoint(md) {
-    background-color: green;
-  }
-  @include breakpoint(sm) {
-    background-color: yellow;
-  }
-
   &__title {
     // margin-bottom: 10px;
     font-family: "Kanit";
@@ -51,7 +32,10 @@
       border: solid 0px var(--main-clr);
     }
   }
-
+  h6 .email {
+    color: var(--main-clr);
+    font-weight: 600;
+  }
   &__card {
     display: flex;
     flex-direction: column;
@@ -63,7 +47,7 @@
     height: 680px;
 
     @include breakpoint(xxl) {
-      height: 600px !important;
+      height: 610px !important;
       padding: 18px !important;
     }
 
@@ -143,12 +127,12 @@
           font-weight: 500;
           font-style: normal;
           @include breakpoint(xxl) {
-            font-size: 12px !important;
-            line-height: 20px !important;
+            font-size: 12px;
+            line-height: 20px;
           }
           @include breakpoint(xl) {
-            font-size: 1rem !important;
-            line-height: 26px !important;
+            font-size: 1rem;
+            line-height: 26px;
           }
         }
       }

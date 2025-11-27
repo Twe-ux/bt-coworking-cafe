@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const { name, type = 'drink' } = body;
+    const { name, description, type = 'drink' } = body;
 
     if (!name) {
       return NextResponse.json({ error: 'Nom requis' }, { status: 400 });
@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
     const category = await DrinkCategory.create({
       name,
       slug,
+      description,
       type,
       order,
       isActive: true

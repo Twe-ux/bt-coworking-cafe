@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
       _id: category._id,
       name: category.name,
       slug: category.slug,
+      description: category.description,
       drinks: drinks.filter(
         (drink: any) => drink.category?._id?.toString() === category._id.toString()
       )

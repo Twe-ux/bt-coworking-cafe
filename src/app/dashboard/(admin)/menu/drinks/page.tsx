@@ -24,6 +24,7 @@ interface DrinkCategory {
   _id: string;
   name: string;
   slug: string;
+  description?: string;
   order: number;
   isActive: boolean;
   showOnSite: boolean;
@@ -64,7 +65,10 @@ export default function DrinksPage() {
   const [selectedDrink, setSelectedDrink] = useState<Drink | null>(null);
 
   // Form states
-  const [categoryName, setCategoryName] = useState('');
+  const [categoryForm, setCategoryForm] = useState({
+    name: '',
+    description: ''
+  });
   const [drinkForm, setDrinkForm] = useState({
     name: '',
     description: '',
@@ -95,7 +99,7 @@ export default function DrinksPage() {
 
   // Category handlers
   const handleSaveCategory = async () => {
-    if (!categoryName.trim()) return;
+    if (!categoryForm.name.trim()) return;
     setSaving(true);
 
     try {
@@ -106,7 +110,7 @@ export default function DrinksPage() {
       const res = await fetch(url, {
         method: editingCategory ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: categoryName })
+        body: JSON.stringify(categoryForm)
       });
 
       if (!res.ok) {
@@ -116,7 +120,7 @@ export default function DrinksPage() {
 
       setMessage({ type: 'success', text: editingCategory ? 'Catégorie mise à jour' : 'Catégorie créée' });
       setShowCategoryModal(false);
-      setCategoryName('');
+      setCategoryForm({ name: '', description: '' });
       setEditingCategory(null);
       fetchData();
     } catch (err) {
@@ -221,7 +225,10 @@ export default function DrinksPage() {
 
   const openEditCategory = (category: DrinkCategory) => {
     setEditingCategory(category);
-    setCategoryName(category.name);
+    setCategoryForm({
+      name: category.name,
+      description: category.description || ''
+    });
     setShowCategoryModal(true);
   };
 
@@ -494,7 +501,7 @@ export default function DrinksPage() {
                   className="me-2"
                   onClick={() => {
                     setEditingCategory(null);
-                    setCategoryName('');
+                    setCategoryForm({ name: '', description: '' });
                     setShowCategoryModal(true);
                   }}
                 >
@@ -673,13 +680,24 @@ export default function DrinksPage() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group>
+          <Form.Group className="mb-3">
             <Form.Label>Nom de la catégorie</Form.Label>
             <Form.Control
               type="text"
-              value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)}
+              value={categoryForm.name}
+              onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
               placeholder="Ex: Boissons chaudes"
+            />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              value={categoryForm.description}
+              onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
+              placeholder="Description de la catégorie (affichée sur le site)"
             />
           </Form.Group>
         </Modal.Body>

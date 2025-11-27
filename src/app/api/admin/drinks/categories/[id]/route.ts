@@ -26,7 +26,7 @@ export async function PUT(
 
     const { id } = params;
     const body = await request.json();
-    const { name, order, isActive, showOnSite } = body;
+    const { name, description, order, isActive, showOnSite } = body;
 
     const updateData: any = {};
 
@@ -41,6 +41,7 @@ export async function PUT(
         .replace(/(^-|-$)/g, '');
     }
 
+    if (description !== undefined) updateData.description = description;
     if (order !== undefined) updateData.order = order;
     if (isActive !== undefined) updateData.isActive = isActive;
     if (showOnSite !== undefined) updateData.showOnSite = showOnSite;

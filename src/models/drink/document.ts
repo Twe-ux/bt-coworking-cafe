@@ -16,6 +16,7 @@ export interface DrinkDocument extends Document {
 export interface DrinkCategoryDocument extends Document {
   name: string;
   slug: string;
+  description?: string;
   type: 'drink' | 'food';
   order: number;
   isActive: boolean;

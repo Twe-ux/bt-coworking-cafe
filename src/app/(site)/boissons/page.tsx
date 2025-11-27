@@ -5,11 +5,7 @@ const BoissonsPage = () => {
   return (
     <>
       <PageTitle title={"Nos Boissons"} />
-      <Menu
-        type="drink"
-        title="Nos Boissons"
-        subtitle="Découvrez notre sélection de boissons, toutes incluses dans votre forfait temps."
-      />
+      <Menu type="drink" title="" subtitle="" />
     </>
   );
 };

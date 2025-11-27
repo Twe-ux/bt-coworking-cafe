@@ -6,6 +6,7 @@ const DrinkCategorySchema = new Schema<DrinkCategoryDocument>(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
+    description: { type: String },
     type: { type: String, enum: ['drink', 'food'], default: 'drink' },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
