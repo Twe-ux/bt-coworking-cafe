@@ -65,11 +65,9 @@
 
     @include breakpoint(xxl) {
       padding: 18px;
-      height: 600px;
     }
 
     @include breakpoint(xl) {
-      height: 680px;
       width: 100%;
       padding: 40px;
     }
