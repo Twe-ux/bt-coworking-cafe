@@ -41,7 +41,7 @@
     background-color: white;
     padding: 35px;
     transition: all 0.5s;
-    height: 750px;
+    height: 680px;
     @include breakpoint(xl) {
       width: 100%;
       padding: 40px;
@@ -103,7 +103,7 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        margin-bottom: 30px;
+        margin-bottom: 18px;
 
         span {
           width: 7px;

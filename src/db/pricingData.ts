@@ -86,8 +86,7 @@ export const pricingDataMeetingRoom: PricingPlan[] = [
     duration: "par heure",
     features: [
       "petite salle de réunion",
-      `capacité : 4 personnes
-      (+1 avec un supplément tarifaire)`,
+      `capacité : 4 personnes (+1 avec un supplément tarifaire)`,
       "wifi très haut débit",
       "boissons à volonté",
       "écran lcd pour projeter",
