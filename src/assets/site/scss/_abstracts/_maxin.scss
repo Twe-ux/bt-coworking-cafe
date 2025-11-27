@@ -1,63 +1,67 @@
 @mixin breakpoint($point) {
-    @if $point==xs {
-      @media (max-width: 450px) {
-        @content;
-      }
-    }
-    @if $point==sm {
-      @media (max-width: 576px) {
-        @content;
-      }
-    }
-    @if $point==md {
-      @media (max-width: 768px) {
-        @content;
-      }
-    }
-    @if $point==lg {
-      @media (max-width: 991px) {
-        @content;
-      }
-    }
-    @if $point==xl {
-      @media (max-width: 1200px) {
-        @content;
-      }
-    }
-    @if $point==xxl {
-      @media (max-width: 1400px) {
-        @content;
-      }
+  @if $point==xs {
+    @media (max-width: 450px) {
+      @content;
     }
   }
-  
-  @mixin justify {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  @if $point==sm {
+    @media (max-width: 576px) {
+      @content;
+    }
   }
-  @mixin wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+  @if $point==md {
+    @media (max-width: 768px) {
+      @content;
+    }
   }
-  @mixin flex {
-    display: flex;
-    align-items: center;
+  @if $point==lg {
+    @media (max-width: 991px) {
+      @content;
+    }
   }
-  @mixin center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  @if $point==xl {
+    @media (max-width: 1200px) {
+      @content;
+    }
   }
-  @mixin end {
-    display: flex;
-    align-items: center;
-    justify-content: end;
+  @if $point==xxl {
+    @media (max-width: 1400px) {
+      @content;
+    }
   }
-  
-  // @mixin bodyfont{
-  //     font-family: 'Kanit', sans-serif;
-  // }
-  
+  @if $point==xxxl {
+    @media (max-width: 1700px) {
+      @content;
+    }
+  }
+}
+
+@mixin justify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+@mixin wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+@mixin flex {
+  display: flex;
+  align-items: center;
+}
+@mixin center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@mixin end {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+// @mixin bodyfont{
+//     font-family: 'Kanit', sans-serif;
+// }

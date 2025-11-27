@@ -1,6 +1,12 @@
 .pricing {
   margin-bottom: 181px;
 
+  @include breakpoint(xxxl) {
+    background-color: purple;
+  }
+  @include breakpoint(xxl) {
+    background-color: orange;
+  }
   @include breakpoint(xl) {
     background-color: red;
   }
