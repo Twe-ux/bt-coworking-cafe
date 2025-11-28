@@ -26,15 +26,15 @@ export const MENU_ITEMS: MenuItemType[] = [
     roles: ["dev", "admin"],
     children: [
       {
-        key: "post",
-        label: "Post",
-        url: "/dashboard/blog",
-        parentKey: "blog",
-      },
-      {
         key: "create",
         label: "Create",
         url: "/dashboard/blog/create",
+        parentKey: "blog",
+      },
+      {
+        key: "post",
+        label: "Post",
+        url: "/dashboard/blog",
         parentKey: "blog",
       },
       // {
@@ -43,12 +43,12 @@ export const MENU_ITEMS: MenuItemType[] = [
       //   url: "/dashboard/blog/details",
       //   parentKey: "blog",
       // },
-      {
-        key: "comments",
-        label: "Comments",
-        url: "/dashboard/blog/comments",
-        parentKey: "blog",
-      },
+      // {
+      //   key: "comments",
+      //   label: "Comments",
+      //   url: "/dashboard/blog/comments",
+      //   parentKey: "blog",
+      // },
       {
         key: "categories",
         label: "Categories",
