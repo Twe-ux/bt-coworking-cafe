@@ -35,7 +35,7 @@
 
 .menu__category .cat-p {
   margin: 0 20px;
-  max-width: 100%;
+  max-width: 100;
 }
 
 .menu__drinks-scroll {
@@ -44,10 +44,10 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding: 20px 10px 30px 10px;
-
+  overflow: scroll;
   // Firefox - force scrollbar to always show
   scrollbar-width: thin;
-  scrollbar-color: var(--btn-clr) rgba(255, 255, 255, 0.1);
+  scrollbar-color: var(--btn-clr) transparent;
   overflow-x: scroll; // Force scrollbar presence
 
   // Webkit browsers (Chrome, Safari, Edge)
@@ -57,7 +57,7 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
     border-radius: 4px;
   }
 

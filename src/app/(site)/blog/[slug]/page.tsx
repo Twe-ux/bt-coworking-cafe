@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
 import BlogArticleDetail from "@/components/site/blogs/blogArticleDetail";
 import BlogSidebar from "@/components/site/blogs/blogSidebar";
 import PageTitle from "@/components/site/pageTitle";
 import { useGetArticleBySlugQuery } from "@/store/api/blogApi";
+import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 const BlogDetails = () => {
   const params = useParams();
@@ -62,7 +62,7 @@ const BlogDetails = () => {
 
   return (
     <>
-      <PageTitle title={article.title} />
+      <PageTitle title={`Le Mag' - ${article?.category?.name}`} />
       <section className="blog__details py__130">
         <div className="container">
           <div className="row">

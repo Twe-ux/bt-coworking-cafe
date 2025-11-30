@@ -1,23 +1,22 @@
 "use client";
 
-import { ContactDPOForm } from "@/components/site/ContactDPOForm";
+import ProtectedEmail from "@/components/common/ProtectedEmail";
 
 export default function ConfidentialityPage() {
-  const lastUpdate = "15 août 2024";
+  const lastUpdate = "1 décembre 2025";
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <main className="min-vh-100 bg-white">
+    <main className="bg-white pb__180">
       {/* Hero Section */}
       <section
         className="pt-5 pb-4 px-3 px-md-4"
         style={{
           background:
             "linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(63, 81, 181, 0.1) 100%)",
-          marginTop: "100px",
         }}
       >
         <div className="container">
@@ -38,8 +37,7 @@ export default function ConfidentialityPage() {
                 Politique de{" "}
                 <span
                   style={{
-                    background:
-                      "linear-gradient(to right, #2196f3, #3f51b5)",
+                    background: "linear-gradient(to right, #2196f3, #3f51b5)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -70,7 +68,7 @@ export default function ConfidentialityPage() {
             <div
               className="position-sticky rounded-3 p-4"
               style={{
-                top: "100px",
+                top: "150px",
                 backgroundColor: "#f8f9fa",
               }}
             >
@@ -116,16 +114,14 @@ export default function ConfidentialityPage() {
             <div className="legal-content">
               {/* Résumé exécutif */}
               <div
-                className="border rounded-3 p-4 mb-5"
+                className="border rounded-3 p-4 mb-5 "
                 style={{
                   backgroundColor: "#e3f2fd",
                   borderColor: "#90caf9 !important",
+                  scrollMarginTop: 150,
                 }}
               >
-                <h2
-                  className="h4 fw-bold mb-4"
-                  style={{ color: "#0d47a1" }}
-                >
+                <h2 className="h4 fw-bold mb-4" style={{ color: "#0d47a1" }}>
                   📋 Résumé de notre engagement
                 </h2>
                 <div className="row g-4">
@@ -186,7 +182,11 @@ export default function ConfidentialityPage() {
               </div>
 
               {/* Article 1 - Identité */}
-              <section id="identite" className="mb-5">
+              <section
+                id="identite"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   1. Identité du responsable de traitement
                 </h2>
@@ -201,30 +201,32 @@ export default function ConfidentialityPage() {
                   </p>
                   <p className="mb-3">
                     <strong>Email :</strong>{" "}
-                    <a
-                      href="mailto:strasbourg@coworkingcafe.fr"
-                      style={{ color: "#417972" }}
-                    >
-                      strasbourg@coworkingcafe.fr
-                    </a>
+                    <ProtectedEmail
+                      user="contact"
+                      domain="coworkingcafe.fr"
+                      className="ml-email"
+                    />
                   </p>
                   <p className="mb-3">
                     <strong>Téléphone :</strong> 09 87 33 45 19
                   </p>
                   <p className="mb-0">
                     <strong>Délégué à la Protection des Données (DPO) :</strong>{" "}
-                    <a
-                      href="mailto:strasbourg@coworkingcafe.fr"
-                      style={{ color: "#417972" }}
-                    >
-                      strasbourg@coworkingcafe.fr
-                    </a>
+                    <ProtectedEmail
+                      user="dpo"
+                      domain="coworkingcafe.fr"
+                      className="ml-email"
+                    />
                   </p>
                 </div>
               </section>
 
               {/* Article 2 - Données collectées */}
-              <section id="donnees-collectees" className="mb-5">
+              <section
+                id="donnees-collectees"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   2. Données personnelles collectées
                 </h2>
@@ -252,13 +254,13 @@ export default function ConfidentialityPage() {
                       <strong>Numéro de téléphone</strong> - Facultatif, pour
                       les communications urgentes
                     </li>
-                    <li className="mb-2">
+                    {/* <li className="mb-2">
                       <strong>Adresse postale</strong> - Obligatoire pour la
                       facturation
-                    </li>
+                    </li> */}
                     <li className="mb-0">
-                      <strong>Date de naissance</strong> - Facultative, pour
-                      les offres spéciales
+                      <strong>Date de naissance</strong> - Facultative, pour les
+                      offres spéciales
                     </li>
                   </ul>
                 </div>
@@ -276,9 +278,7 @@ export default function ConfidentialityPage() {
                   <li className="mb-2">
                     Données de présence et d&apos;accès aux espaces
                   </li>
-                  <li className="mb-2">
-                    Retours et évaluations des services
-                  </li>
+                  {/* <li className="mb-2">Retours et évaluations des services</li> */}
                 </ul>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
@@ -290,7 +290,7 @@ export default function ConfidentialityPage() {
                     Historique des transactions (montants, dates)
                   </li>
                   <li className="mb-2">
-                    Modes de paiement utilisés (type de carte, sans numéros)
+                    Modes de paiement utilisés (règlement en ligne, sur place)
                   </li>
                 </ul>
 
@@ -304,17 +304,21 @@ export default function ConfidentialityPage() {
                   <li className="mb-2">
                     Type de navigateur et système d&apos;exploitation
                   </li>
-                  <li className="mb-2">
+                  {/* <li className="mb-2">
                     Pages visitées et temps de navigation
-                  </li>
-                  <li className="mb-2">
+                  </li> */}
+                  {/* <li className="mb-2">
                     Données de connexion WiFi (avec consentement)
-                  </li>
+                  </li> */}
                 </ul>
               </section>
 
               {/* Article 3 - Finalités */}
-              <section id="finalites" className="mb-5">
+              <section
+                id="finalites"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   3. Finalités du traitement
                 </h2>
@@ -383,7 +387,10 @@ export default function ConfidentialityPage() {
                           </li>
                         ))}
                       </ul>
-                      <p className="mb-0 mt-2" style={{ fontSize: "0.75rem", color: "#1976d2" }}>
+                      <p
+                        className="mb-0 mt-2"
+                        style={{ fontSize: "0.75rem", color: "#1976d2" }}
+                      >
                         *Avec votre consentement explicite
                       </p>
                     </div>
@@ -392,7 +399,11 @@ export default function ConfidentialityPage() {
               </section>
 
               {/* Article 4 - Bases légales - Simplifié pour économiser l'espace */}
-              <section id="bases-legales" className="mb-5">
+              <section
+                id="bases-legales"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   4. Bases légales du traitement
                 </h2>
@@ -420,7 +431,11 @@ export default function ConfidentialityPage() {
               </section>
 
               {/* Article 5 - Destinataires */}
-              <section id="destinataires" className="mb-5">
+              <section
+                id="destinataires"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   5. Destinataires des données
                 </h2>
@@ -456,14 +471,15 @@ export default function ConfidentialityPage() {
                       sécurisés
                     </li>
                     <li className="mb-2">
-                      <strong>Resend</strong> - Envoi d&apos;emails transactionnels
+                      <strong>Resend</strong> - Envoi d&apos;emails
+                      transactionnels
                     </li>
                     <li className="mb-2">
                       <strong>MongoDB Atlas</strong> - Hébergement sécurisé des
                       données
                     </li>
                     <li className="mb-2">
-                      <strong>Vercel</strong> - Hébergement de la plateforme
+                      <strong>Northflank</strong> - Hébergement de la plateforme
                       web
                     </li>
                   </ul>
@@ -471,7 +487,11 @@ export default function ConfidentialityPage() {
               </section>
 
               {/* Article 6 - Conservation */}
-              <section id="conservation" className="mb-5">
+              <section
+                id="conservation"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   6. Durée de conservation
                 </h2>
@@ -512,7 +532,11 @@ export default function ConfidentialityPage() {
               </section>
 
               {/* Article 7 - Vos droits */}
-              <section id="droits" className="mb-5">
+              <section
+                id="droits"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   7. Vos droits sur vos données
                 </h2>
@@ -569,10 +593,16 @@ export default function ConfidentialityPage() {
                     ].map((right, i) => (
                       <div key={i} className="col-md-6">
                         <div className="bg-white rounded-3 p-3">
-                          <h4 className="h6 fw-semibold mb-2" style={{ color: "#1b5e20" }}>
+                          <h4
+                            className="h6 fw-semibold mb-2"
+                            style={{ color: "#1b5e20" }}
+                          >
                             {right.icon} {right.title}
                           </h4>
-                          <p className="mb-0 small" style={{ color: "#2e7d32" }}>
+                          <p
+                            className="mb-0 small"
+                            style={{ color: "#2e7d32" }}
+                          >
                             {right.desc}
                           </p>
                         </div>
@@ -597,9 +627,11 @@ export default function ConfidentialityPage() {
                   <ul className="mb-3" style={{ color: "#1976d2" }}>
                     <li className="mb-2">
                       <strong>Email :</strong>{" "}
-                      <a href="mailto:strasbourg@coworkingcafe.fr" className="text-decoration-underline">
-                        strasbourg@coworkingcafe.fr
-                      </a>
+                      <ProtectedEmail
+                        user="dpo"
+                        domain="coworkingcafe.fr"
+                        className="dp-email"
+                      />
                     </li>
                     <li className="mb-2">
                       <strong>Courrier :</strong> DPO - Cow or King Café, 1 rue
@@ -613,7 +645,11 @@ export default function ConfidentialityPage() {
               </section>
 
               {/* Article 8 - Sécurité */}
-              <section id="securite" className="mb-5">
+              <section
+                id="securite"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   8. Sécurité des données
                 </h2>
@@ -688,7 +724,11 @@ export default function ConfidentialityPage() {
               </section>
 
               {/* Articles simplifiés pour économiser l'espace */}
-              <section id="cookies" className="mb-5">
+              <section
+                id="cookies"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   9. Politique des cookies
                 </h2>
@@ -699,18 +739,27 @@ export default function ConfidentialityPage() {
                 </p>
               </section>
 
-              <section id="transferts" className="mb-5">
+              <section
+                id="transferts"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   10. Transferts internationaux
                 </h2>
                 <p className="text-dark mb-3">
                   Certains prestataires peuvent être situés hors UE (Stripe,
-                  MongoDB). Tous les transferts sont encadrés par des garanties
-                  appropriées (clauses contractuelles types, certifications).
+                  MongoDB, Northflank). Tous les transferts sont encadrés par
+                  des garanties appropriées (clauses contractuelles types,
+                  certifications).
                 </p>
               </section>
 
-              <section id="modifications" className="mb-5">
+              <section
+                id="modifications"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   11. Modifications de la politique
                 </h2>
@@ -722,7 +771,11 @@ export default function ConfidentialityPage() {
               </section>
 
               {/* Article 12 - Contact DPO */}
-              <section id="contact-dpo" className="mb-5">
+              <section
+                id="contact-dpo"
+                className="mb-5 "
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   12. Contact et exercice de vos droits
                 </h2>
@@ -747,16 +800,15 @@ export default function ConfidentialityPage() {
                     <div className="col-md-6">
                       <p className="mb-2">
                         <strong>Email :</strong>{" "}
-                        <a
-                          href="mailto:strasbourg@coworkingcafe.fr"
-                          className="text-decoration-underline"
-                        >
-                          strasbourg@coworkingcafe.fr
-                        </a>
+                        <ProtectedEmail
+                          user="dpo"
+                          domain="coworkingcafe.fr"
+                          className="dpo-email"
+                        />
                       </p>
-                      <p className="mb-2">
+                      {/* <p className="mb-2">
                         <strong>Téléphone :</strong> 09 87 33 45 19
-                      </p>
+                      </p> */}
                     </div>
                     <div className="col-md-6">
                       <p className="mb-2">
@@ -770,7 +822,7 @@ export default function ConfidentialityPage() {
                 </div>
 
                 {/* Formulaire contact DPO */}
-                <ContactDPOForm />
+                {/* <ContactDPOForm /> */}
 
                 <div
                   className="border rounded-3 p-4 mt-4"
@@ -796,6 +848,7 @@ export default function ConfidentialityPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-decoration-underline"
+                        style={{ color: "#e53935" }}
                       >
                         www.cnil.fr/fr/plaintes
                       </a>

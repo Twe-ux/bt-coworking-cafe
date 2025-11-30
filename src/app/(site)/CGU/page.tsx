@@ -1,17 +1,18 @@
 "use client";
 
+import ProtectedEmail from "@/components/common/ProtectedEmail";
+
 export default function CGUPage() {
-  const lastUpdate = "15 août 2024";
+  const lastUpdate = "1 décembre 2025";
 
   return (
-    <main className="min-vh-100 bg-white">
+    <main className="bg-white pb__180">
       {/* Hero Section */}
       <section
         className="pt-5 pb-4 px-3 px-md-4"
         style={{
           background:
             "linear-gradient(135deg, rgba(65, 121, 114, 0.05) 0%, rgba(242, 211, 129, 0.05) 100%)",
-          marginTop: "100px",
         }}
       >
         <div className="container">
@@ -51,7 +52,7 @@ export default function CGUPage() {
             <div
               className="position-sticky rounded-3 p-4"
               style={{
-                top: "100px",
+                top: "150px",
                 backgroundColor: "#f8f9fa",
               }}
             >
@@ -99,41 +100,41 @@ export default function CGUPage() {
                 >
                   7. Règles d&apos;utilisation
                 </a>
-                <a
+                {/* <a
                   href="#article8"
                   className="text-decoration-none text-muted small hover-link"
                 >
                   8. Obligations du client
+                </a> */}
+                <a
+                  href="#article8"
+                  className="text-decoration-none text-muted small hover-link"
+                >
+                  8. Protection des données
                 </a>
                 <a
                   href="#article9"
                   className="text-decoration-none text-muted small hover-link"
                 >
-                  9. Protection des données
+                  9. Responsabilité
                 </a>
                 <a
                   href="#article10"
                   className="text-decoration-none text-muted small hover-link"
                 >
-                  10. Responsabilité
+                  10. Propriété intellectuelle
                 </a>
                 <a
                   href="#article11"
                   className="text-decoration-none text-muted small hover-link"
                 >
-                  11. Propriété intellectuelle
+                  11. Modification des CGU
                 </a>
                 <a
                   href="#article12"
                   className="text-decoration-none text-muted small hover-link"
                 >
-                  12. Modification des CGU
-                </a>
-                <a
-                  href="#article13"
-                  className="text-decoration-none text-muted small hover-link"
-                >
-                  13. Droit applicable et litiges
+                  12. Droit applicable et litiges
                 </a>
                 <a
                   href="#contact"
@@ -149,12 +150,16 @@ export default function CGUPage() {
           <div className="col-lg-9">
             <div className="legal-content">
               {/* Article 1 */}
-              <section id="article1" className="mb-5">
+              <section
+                id="article1"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">1. Définitions</h2>
                 <div className="bg-light rounded-3 p-4">
                   <p className="mb-3">
                     <strong>&quot;Cow or King Café&quot;</strong> : désigne
-                    l&apos;espace de coworking café situé au 1 rue de la
+                    l&apos;espace de café coworking situé au 1 rue de la
                     Division Leclerc, 67000 Strasbourg, exploité par ILY SARL.
                   </p>
                   <p className="mb-3">
@@ -180,7 +185,11 @@ export default function CGUPage() {
               </section>
 
               {/* Article 2 */}
-              <section id="article2" className="mb-5">
+              <section
+                id="article2"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">2. Objet</h2>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Les présentes Conditions Générales d&apos;Utilisation (CGU)
@@ -196,7 +205,11 @@ export default function CGUPage() {
               </section>
 
               {/* Article 3 */}
-              <section id="article3" className="mb-5">
+              <section
+                id="article3"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   3. Acceptation des CGU
                 </h2>
@@ -224,7 +237,11 @@ export default function CGUPage() {
               </section>
 
               {/* Article 4 */}
-              <section id="article4" className="mb-5">
+              <section
+                id="article4"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   4. Accès aux services
                 </h2>
@@ -232,9 +249,9 @@ export default function CGUPage() {
                   4.1 Horaires d&apos;ouverture
                 </h3>
                 <ul className="text-dark mb-4">
-                  <li className="mb-2">Lundi à Vendredi : 8h00 - 20h00</li>
-                  <li className="mb-2">Samedi : 9h00 - 18h00</li>
-                  <li className="mb-2">Dimanche : 10h00 - 17h00</li>
+                  <li className="mb-2">Lundi à Vendredi : 9h00 - 20h00</li>
+                  <li className="mb-2">Samedi - Dimanche : 10h00 - 20h00</li>
+                  <li className="mb-2">Jours fériés : 10h00 - 20h00</li>
                 </ul>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
@@ -251,22 +268,37 @@ export default function CGUPage() {
               </section>
 
               {/* Article 5 */}
-              <section id="article5" className="mb-5">
+              <section
+                id="article5"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">5. Réservations</h2>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
                   5.1 Modalités de réservation
                 </h3>
-                <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
+                <p
+                  className="text-dark mb-3"
+                  style={{ lineHeight: "1.8", fontWeight: "600" }}
+                >
                   Les réservations peuvent être effectuées :
                 </p>
                 <ul className="text-dark mb-4">
                   <li className="mb-2">
                     En ligne via notre plateforme de réservation
                   </li>
-                  <li className="mb-2">Par téléphone au 09 87 33 45 19</li>
                   <li className="mb-2">
-                    Directement sur place, sous réserve de disponibilité
+                    Par téléphone au 09 87 33 45 19 - Uniquement pour le jour
+                    même
+                  </li>
+                  <li className="mb-2">
+                    Par mail à{" "}
+                    <ProtectedEmail
+                      user="strasbourg"
+                      domain="coworkingcafe.fr"
+                      className="ml-email"
+                    />
                   </li>
                 </ul>
 
@@ -291,12 +323,16 @@ export default function CGUPage() {
                 <p className="text-dark" style={{ lineHeight: "1.8" }}>
                   Le paiement s&apos;effectue au moment de la réservation par
                   carte bancaire sécurisée ou sur place par carte bancaire,
-                  espèces ou chèque.
+                  espèces.
                 </p>
               </section>
 
               {/* Article 6 */}
-              <section id="article6" className="mb-5">
+              <section
+                id="article6"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   6. Annulations et remboursements
                 </h2>
@@ -362,13 +398,11 @@ export default function CGUPage() {
                 </h3>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Les annulations doivent être notifiées par email à{" "}
-                  <a
-                    href="mailto:strasbourg@coworkingcafe.fr"
-                    style={{ color: "#417972" }}
-                    className="text-decoration-none"
-                  >
-                    strasbourg@coworkingcafe.fr
-                  </a>{" "}
+                  <ProtectedEmail
+                    user="strasbourg"
+                    domain="coworkingcafe.fr"
+                    className="ml-email"
+                  />{" "}
                   ou via l&apos;espace client de la plateforme.
                 </p>
 
@@ -383,7 +417,11 @@ export default function CGUPage() {
               </section>
 
               {/* Article 7 */}
-              <section id="article7" className="mb-5">
+              <section
+                id="article7"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   7. Règles d&apos;utilisation
                 </h2>
@@ -418,7 +456,6 @@ export default function CGUPage() {
                   <li className="mb-2">
                     Imprimante/scanner accessible moyennant participation
                   </li>
-                  <li className="mb-2">Cuisine équipée en libre-service</li>
                 </ul>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
@@ -439,9 +476,6 @@ export default function CGUPage() {
                       Consommer de l&apos;alcool sauf autorisation expresse
                     </li>
                     <li className="mb-2">
-                      Introduire des animaux (sauf chiens d&apos;assistance)
-                    </li>
-                    <li className="mb-2">
                       Utiliser les espaces à des fins illégales
                     </li>
                     <li className="mb-2">
@@ -452,7 +486,11 @@ export default function CGUPage() {
               </section>
 
               {/* Article 8 */}
-              <section id="article8" className="mb-5">
+              {/* <section
+                id="article8"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   8. Obligations du client
                 </h2>
@@ -488,12 +526,16 @@ export default function CGUPage() {
                   informations auxquelles il pourrait avoir accès concernant les
                   autres utilisateurs ou l&apos;établissement.
                 </p>
-              </section>
+              </section> */}
 
-              {/* Article 9 */}
-              <section id="article9" className="mb-5">
+              {/* Article 8 */}
+              <section
+                id="article8"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
-                  9. Protection des données personnelles
+                  8. Protection des données personnelles
                 </h2>
 
                 <div
@@ -521,9 +563,7 @@ export default function CGUPage() {
                       Informations d&apos;identification (nom, prénom, email,
                       téléphone)
                     </li>
-                    <li className="mb-1">
-                      Données de facturation et de paiement
-                    </li>
+                    <li className="mb-1">Données de facturation</li>
                     <li className="mb-1">
                       Données de connexion et d&apos;utilisation des services
                     </li>
@@ -550,7 +590,7 @@ export default function CGUPage() {
                 </div>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
-                  9.1 Droits des utilisateurs
+                  8.1 Droits des utilisateurs
                 </h3>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Conformément au RGPD, vous disposez des droits suivants :
@@ -573,7 +613,7 @@ export default function CGUPage() {
                 </ul>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
-                  9.2 Conservation des données
+                  8.2 Conservation des données
                 </h3>
                 <p className="text-dark" style={{ lineHeight: "1.8" }}>
                   Les données sont conservées pendant la durée de la relation
@@ -584,13 +624,15 @@ export default function CGUPage() {
               </section>
 
               {/* Article 10 */}
-              <section id="article10" className="mb-5">
-                <h2 className="h3 fw-bold text-dark mb-4">
-                  10. Responsabilité
-                </h2>
+              <section
+                id="article9"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
+                <h2 className="h3 fw-bold text-dark mb-4">9. Responsabilité</h2>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
-                  10.1 Responsabilité de Cow or King Café
+                  9.1 Responsabilité de Cow or King Café
                 </h3>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Cow or King Café s&apos;engage à fournir ses services avec
@@ -611,14 +653,10 @@ export default function CGUPage() {
                     Des dysfonctionnements temporaires d&apos;internet ou
                     d&apos;équipements
                   </li>
-                  <li className="mb-2">
-                    Des dommages indirects (perte d&apos;exploitation, manque à
-                    gagner)
-                  </li>
                 </ul>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
-                  10.2 Responsabilité du client
+                  9.2 Responsabilité du client
                 </h3>
                 <p className="text-dark" style={{ lineHeight: "1.8" }}>
                   Le client est responsable de tous dommages causés aux biens,
@@ -628,9 +666,13 @@ export default function CGUPage() {
               </section>
 
               {/* Article 11 */}
-              <section id="article11" className="mb-5">
+              <section
+                id="article10"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
-                  11. Propriété intellectuelle
+                  10. Propriété intellectuelle
                 </h2>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Tous les éléments du site internet et de la marque &quot;Cow
@@ -645,10 +687,14 @@ export default function CGUPage() {
                 </p>
               </section>
 
-              {/* Article 12 */}
-              <section id="article12" className="mb-5">
+              {/* Article 11 */}
+              <section
+                id="article11"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
-                  12. Modification des CGU
+                  11. Modification des CGU
                 </h2>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Cow or King Café se réserve le droit de modifier les présentes
@@ -662,10 +708,14 @@ export default function CGUPage() {
                 </p>
               </section>
 
-              {/* Article 13 */}
-              <section id="article13" className="mb-5">
+              {/* Article 12 */}
+              <section
+                id="article12"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
-                  13. Droit applicable et litiges
+                  12. Droit applicable et litiges
                 </h2>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Les présentes CGU sont soumises au droit français. En cas de
@@ -701,7 +751,11 @@ export default function CGUPage() {
               </section>
 
               {/* Contact */}
-              <section id="contact" className="mb-5">
+              <section
+                id="contact"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">Contact</h2>
                 <div
                   className="rounded-3 p-4"
@@ -723,13 +777,11 @@ export default function CGUPage() {
                     </p>
                     <p className="mb-2">
                       <strong>Email :</strong>{" "}
-                      <a
-                        href="mailto:strasbourg@coworkingcafe.fr"
-                        className="text-decoration-none"
-                        style={{ color: "#417972" }}
-                      >
-                        strasbourg@coworkingcafe.fr
-                      </a>
+                      <ProtectedEmail
+                        user="contact"
+                        domain="coworkingcafe.fr"
+                        className="ml-email"
+                      />
                     </p>
                     <p className="mb-0">
                       <strong>Horaires d&apos;accueil :</strong> Lundi au

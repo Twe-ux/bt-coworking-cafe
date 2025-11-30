@@ -33,7 +33,7 @@ const Blog = () => {
 
   return (
     <>
-      <PageTitle title={"Blog"} />
+      <PageTitle title={"Le Mag'"} />
       <section className="all__blog py__130">
         <div className="container">
           <div className="row">

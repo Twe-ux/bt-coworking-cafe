@@ -1,17 +1,18 @@
 "use client";
 
+import ProtectedEmail from "@/components/common/ProtectedEmail";
+
 export default function MentionsLegalesPage() {
-  const lastUpdate = "15 août 2024";
+  const lastUpdate = "1 décembre 2025";
 
   return (
-    <main className="min-vh-100 bg-white">
+    <main className="bg-white pb__180">
       {/* Hero Section */}
       <section
         className="pt-5 pb-4 px-3 px-md-4"
         style={{
           background:
             "linear-gradient(135deg, rgba(65, 121, 114, 0.05) 0%, rgba(242, 211, 129, 0.05) 100%)",
-          marginTop: "100px",
         }}
       >
         <div className="container">
@@ -51,7 +52,7 @@ export default function MentionsLegalesPage() {
             <div
               className="position-sticky rounded-3 p-4"
               style={{
-                top: "100px",
+                top: "150px",
                 backgroundColor: "#f8f9fa",
               }}
             >
@@ -59,13 +60,15 @@ export default function MentionsLegalesPage() {
               <nav className="d-flex flex-column gap-2">
                 {[
                   { id: "editeur", label: "1. Éditeur du site" },
-                  { id: "hebergeur", label: "2. Hébergeur" },
+                  { id: "hebergeur", label: "2. Hébergeur du site" },
                   { id: "directeur", label: "3. Directeur de publication" },
                   { id: "propriete", label: "4. Propriété intellectuelle" },
                   { id: "donnees", label: "5. Données personnelles" },
                   { id: "cookies", label: "6. Cookies" },
                   { id: "credits", label: "7. Crédits" },
                   { id: "litiges", label: "8. Litiges" },
+                  { id: "responsabilite", label: "9. Responsabilité" },
+                  { id: "contact", label: "10. Contact" },
                 ].map((item) => (
                   <a
                     key={item.id}
@@ -83,18 +86,16 @@ export default function MentionsLegalesPage() {
           <div className="col-lg-9">
             <div className="legal-content">
               {/* Section 1 - Éditeur */}
-              <section id="editeur" className="mb-5">
+              <section
+                id="editeur"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   1. Éditeur du site
                 </h2>
-                <div
-                  className="rounded-3 p-4"
-                  style={{ backgroundColor: "rgba(65, 121, 114, 0.05)" }}
-                >
-                  <h3
-                    className="h5 fw-semibold mb-3"
-                    style={{ color: "#417972" }}
-                  >
+                <div className="rounded-3 p-4">
+                  <h3 className="h5 fw-semibold mb-3">
                     ILY SARL - Cow or King Café
                   </h3>
                   <div className="row g-3">
@@ -110,7 +111,7 @@ export default function MentionsLegalesPage() {
                         <strong>Capital social :</strong> 11 000 €
                       </p>
                       <p className="mb-2">
-                        <strong>SIRET :</strong> 829 552 264 00019
+                        <strong>SIRET :</strong> 829 552 264 00022
                       </p>
                     </div>
                     <div className="col-md-6">
@@ -118,7 +119,7 @@ export default function MentionsLegalesPage() {
                         <strong>RCS :</strong> Strasbourg B 829 552 264
                       </p>
                       <p className="mb-2">
-                        <strong>N° TVA intracommunautaire :</strong> FR XX 829
+                        <strong>N° TVA intracommunautaire :</strong> FR 69 829
                         552 264
                       </p>
                       <p className="mb-2">
@@ -136,19 +137,21 @@ export default function MentionsLegalesPage() {
                   </p>
                   <p className="mb-0">
                     <strong>Email :</strong>{" "}
-                    <a
-                      href="mailto:strasbourg@coworkingcafe.fr"
-                      style={{ color: "#417972" }}
-                      className="text-decoration-none"
-                    >
-                      strasbourg@coworkingcafe.fr
-                    </a>
+                    <ProtectedEmail
+                      user="contact"
+                      domain="coworkingcafe.fr"
+                      className="ml-email"
+                    />
                   </p>
                 </div>
               </section>
 
               {/* Section 2 - Hébergeur */}
-              <section id="hebergeur" className="mb-5">
+              <section
+                id="hebergeur"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   2. Hébergement du site
                 </h2>
@@ -163,20 +166,18 @@ export default function MentionsLegalesPage() {
                         style={{ borderColor: "#dee2e6" }}
                       >
                         <h4 className="h6 fw-semibold mb-2">
-                          Vercel Inc. (Hébergement web)
+                          Northflank (Hébergement web)
                         </h4>
-                        <p className="mb-1 small">440 N Barranca Ave #4133</p>
-                        <p className="mb-1 small">
-                          Covina, CA 91723, États-Unis
-                        </p>
+                        <p className="mb-1 small">88 Wood St</p>
+                        <p className="mb-1 small">London EC2V 7RS</p>
                         <p className="mb-0 small">
                           <a
-                            href="https://vercel.com"
+                            href="https://northflank.com"
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{ color: "#417972" }}
                           >
-                            www.vercel.com
+                            www.northflank.com
                           </a>
                         </p>
                       </div>
@@ -210,7 +211,11 @@ export default function MentionsLegalesPage() {
               </section>
 
               {/* Section 3 - Directeur de publication */}
-              <section id="directeur" className="mb-5">
+              <section
+                id="directeur"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   3. Directeur de publication
                 </h2>
@@ -229,19 +234,21 @@ export default function MentionsLegalesPage() {
                   </p>
                   <p className="mb-0" style={{ color: "#1565c0" }}>
                     <strong>Contact :</strong>{" "}
-                    <a
-                      href="mailto:strasbourg@coworkingcafe.fr"
-                      className="text-decoration-underline"
-                      style={{ color: "#1565c0" }}
-                    >
-                      strasbourg@coworkingcafe.fr
-                    </a>
+                    <ProtectedEmail
+                      user="contact"
+                      domain="coworkingcafe.fr"
+                      className="dp-email"
+                    />
                   </p>
                 </div>
               </section>
 
               {/* Section 4 - Propriété intellectuelle */}
-              <section id="propriete" className="mb-5">
+              <section
+                id="propriete"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   4. Propriété intellectuelle
                 </h2>
@@ -298,7 +305,11 @@ export default function MentionsLegalesPage() {
               </section>
 
               {/* Section 5 - Données personnelles */}
-              <section id="donnees" className="mb-5">
+              <section
+                id="donnees"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   5. Protection des données personnelles
                 </h2>
@@ -327,7 +338,7 @@ export default function MentionsLegalesPage() {
                     </li>
                     <li className="mb-2">
                       <strong>Finalités :</strong> Gestion des réservations,
-                      facturation, communication
+                      communication
                     </li>
                     <li className="mb-2">
                       <strong>Droits :</strong> Accès, rectification,
@@ -357,12 +368,11 @@ export default function MentionsLegalesPage() {
                 <ul className="text-dark">
                   <li className="mb-2">
                     <strong>Email :</strong>{" "}
-                    <a
-                      href="mailto:strasbourg@coworkingcafe.fr"
-                      style={{ color: "#417972" }}
-                    >
-                      strasbourg@coworkingcafe.fr
-                    </a>
+                    <ProtectedEmail
+                      user="dpo"
+                      domain="coworkingcafe.fr"
+                      className="ml-email"
+                    />
                   </li>
                   <li className="mb-2">
                     <strong>Courrier :</strong> DPO - Cow or King Café, 1 rue de
@@ -372,7 +382,11 @@ export default function MentionsLegalesPage() {
               </section>
 
               {/* Section 6 - Cookies */}
-              <section id="cookies" className="mb-5">
+              <section
+                id="cookies"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   6. Politique des cookies
                 </h2>
@@ -450,7 +464,11 @@ export default function MentionsLegalesPage() {
               </section>
 
               {/* Section 7 - Crédits */}
-              <section id="credits" className="mb-5">
+              <section
+                id="credits"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">7. Crédits</h2>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
@@ -486,7 +504,11 @@ export default function MentionsLegalesPage() {
               </section>
 
               {/* Section 8 - Litiges */}
-              <section id="litiges" className="mb-5">
+              <section
+                id="litiges"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   8. Droit applicable et litiges
                 </h2>
@@ -578,7 +600,11 @@ export default function MentionsLegalesPage() {
               </section>
 
               {/* Limitations de responsabilité */}
-              <section className="mb-5">
+              <section
+                id="responsabilite"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">
                   9. Limitations de responsabilité
                 </h2>
@@ -613,7 +639,11 @@ export default function MentionsLegalesPage() {
               </section>
 
               {/* Contact */}
-              <section className="mb-5">
+              <section
+                id="contact"
+                className="mb-5"
+                style={{ scrollMarginTop: 150 }}
+              >
                 <h2 className="h3 fw-bold text-dark mb-4">10. Contact</h2>
                 <div
                   className="rounded-3 p-4"
@@ -629,23 +659,27 @@ export default function MentionsLegalesPage() {
                     <div className="col-md-6">
                       <p className="mb-2">
                         <strong>Email :</strong>{" "}
-                        <a
-                          href="mailto:strasbourg@coworkingcafe.fr"
-                          style={{ color: "#417972" }}
-                          className="text-decoration-none"
-                        >
-                          strasbourg@coworkingcafe.fr
-                        </a>
+                        <ProtectedEmail
+                          user="contact"
+                          domain="coworkingcafe.fr"
+                          className="ml-email"
+                        />
                       </p>
                       <p className="mb-0">
                         <strong>Téléphone :</strong> 09 87 33 45 19
                       </p>
                     </div>
                     <div className="col-md-6">
-                      <p className="mb-2">
-                        <strong>Adresse :</strong> 1 rue de la Division Leclerc,
-                        67000 Strasbourg
-                      </p>
+                      <div className="mb-2 d-flex gap-1">
+                        <p>
+                          <strong>Adresse :</strong>{" "}
+                        </p>
+                        <p>
+                          1 rue de la Division Leclerc,
+                          <br />
+                          67000 Strasbourg
+                        </p>
+                      </div>
                       <p className="mb-0">
                         <strong>Horaires :</strong> Lun-Ven 9h00-18h00
                       </p>

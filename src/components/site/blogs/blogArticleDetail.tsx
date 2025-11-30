@@ -15,14 +15,6 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(article.likeCount);
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
   const handleLike = async () => {
     if (isLiking || liked) return; // Prevent double-click and already liked
 
@@ -47,15 +39,15 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
           className="w-100 thumb__img"
         />
       )}
-      <div className="first__para">
-        <ul className="d-flex flex-wrap gap-4">
+      <div className="first__para ">
+        {/* <ul className="d-flex flex-wrap gap-4">
           <li>
             <img src="/icons/clender.svg" alt="date" />
             <span>{formatDate(article.publishedAt || article.createdAt)}</span>
           </li>
-        </ul>
+        </ul> */}
         <SlideUp>
-          <h2 className="t__54">{article.title}</h2>
+          <h2 className="t__54 pt__50">{article.title}</h2>
         </SlideUp>
 
         {article.excerpt && <p className="lead">{article.excerpt}</p>}
@@ -88,10 +80,10 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
               {likeCount} {likeCount === 1 ? "like" : "likes"}
             </span>
           </button>
-          <p className="mb-0">
+          {/* <p className="mb-0">
             <i className="fa-solid fa-clock me-2"></i>
             <span>{article.readingTime} min de lecture</span>
-          </p>
+          </p> */}
         </div>
       </div>
 

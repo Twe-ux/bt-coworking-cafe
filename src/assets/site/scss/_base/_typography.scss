@@ -148,6 +148,21 @@ p {
     padding-bottom: 90px;
   }
 }
+.pb__180 {
+  padding-bottom: 180px;
+
+  @include breakpoint(lg) {
+    padding-bottom: 160px;
+  }
+
+  @include breakpoint(md) {
+    padding-bottom: 150px;
+  }
+
+  @include breakpoint(sm) {
+    padding-bottom: 140px;
+  }
+}
 
 .pt__60 {
   padding-top: 60px;
