@@ -13,7 +13,7 @@ import { ReactNode } from "react";
 export const metadata = {
   title: "Cow-or-King Café by Anticafé",
   description:
-    "Cow-or-King Café à Strasbourg : un espace coworking chaleureux avec Wi-Fi rapide, cafés de qualité et ambiance idéale pour travailler, étudier ou télétravailler. Découvrez nos services et réservez votre place.",
+    "Cow-or-King Café à Strasbourg : espace coworking chaleureux avec Wi-Fi rapide, cafés de qualité et ambiance idéale pour travailler.",
 };
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
