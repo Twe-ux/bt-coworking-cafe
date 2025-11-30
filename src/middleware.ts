@@ -21,6 +21,9 @@ const publicRoutes = [
   "/menu/food",
 
   "/professionnels",
+
+  "/robots.txt",
+  "/sitemap.xml",
 ];
 
 // Public route patterns (dynamic routes)
