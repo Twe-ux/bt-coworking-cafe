@@ -77,13 +77,13 @@ const Footer = () => {
             </div>
             <ul className="d-flex justify-content-center gap-3 footer__socal">
               <li>
-                <Link href={"#"}>
+                <Link href="https://www.facebook.com/coworkingbyanticafeStrasbourg">
                   <i className="fa-brands fa-facebook-f" />
                 </Link>
               </li>
 
               <li>
-                <Link href={"#"}>
+                <Link href="https://www.instagram.com/coworking_anticafe">
                   <i className="fa-brands fa-instagram" />
                 </Link>
               </li>
