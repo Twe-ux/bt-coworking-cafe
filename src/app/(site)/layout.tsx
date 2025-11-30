@@ -12,12 +12,13 @@ import { ReactNode } from "react";
 
 export const metadata = {
   title: "Cow-or-King Café by Anticafé",
-  description: "Le meilleur café coworking pour travailler à Strasbourg",
+  description:
+    "Cow-or-King Café à Strasbourg : un espace coworking chaleureux avec Wi-Fi rapide, cafés de qualité et ambiance idéale pour travailler, étudier ou télétravailler. Découvrez nos services et réservez votre place.",
 };
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <AhrefsAnalytics />
       </head>

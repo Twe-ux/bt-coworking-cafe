@@ -5,11 +5,10 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Concept | Cow-or-King Café",
-  description: `Découvrez Coworking Café by Anticafé à Strasbourg : un espace chaleureux né du concept Anticafé, où l’on paie au temps et où l’on travaille comme à la maison, mais en mieux. Parfait pour freelances, étudiants, voyageurs et télétravailleurs.`,
-  keywords: "coworking, café, anticafé, télétravaille, Strasbourg",
+  description: `Découvrez Cow-or-King Café by Anticafé à Strasbourg : un espace chaleureux né du concept Anticafé, où l’on paie au temps et où l’on travaille comme à la maison, mais en mieux. Parfait pour freelances, étudiants, voyageurs et télétravailleurs.`,
   openGraph: {
     title: "Concept - Cow-or-King Café",
-    description: "Découvrez Coworking Café by Anticafé à Strasbourg.",
+    description: "Découvrez Cow-or-King Café by Anticafé à Strasbourg.",
     type: "website",
   },
 };
