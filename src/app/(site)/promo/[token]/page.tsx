@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { PromoCode } from '@/types/promo';
+import { PromoCode } from "@/types/promo";
+import { motion } from "framer-motion";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function PromoPage() {
   const params = useParams();
@@ -22,9 +22,9 @@ export default function PromoPage() {
 
         if (!res.ok) {
           if (res.status === 404) {
-            setError('Code promo non trouvé ou expiré');
+            setError("Code promo non trouvé ou expiré");
           } else {
-            setError('Erreur lors du chargement');
+            setError("Erreur lors du chargement");
           }
           return;
         }
@@ -32,8 +32,8 @@ export default function PromoPage() {
         const data = await res.json();
         setPromo(data);
       } catch (err) {
-        console.error('Erreur:', err);
-        setError('Erreur de connexion');
+        console.error("Erreur:", err);
+        setError("Erreur de connexion");
       } finally {
         setLoading(false);
       }
@@ -52,39 +52,39 @@ export default function PromoPage() {
       setCopied(true);
 
       // Tracker la copie
-      const sessionId = sessionStorage.getItem('promo_session_id');
+      const sessionId = sessionStorage.getItem("promo_session_id");
       if (sessionId) {
-        await fetch('/api/scan/copy', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session_id: sessionId })
+        await fetch("/api/scan/copy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session_id: sessionId }),
         });
       }
 
       setTimeout(() => setCopied(false), 3000);
     } catch (err) {
-      console.error('Erreur lors de la copie:', err);
+      console.error("Erreur lors de la copie:", err);
     }
   };
 
   const formatDiscount = () => {
-    if (!promo) return '';
+    if (!promo) return "";
     switch (promo.discount_type) {
-      case 'percentage':
+      case "percentage":
         return `-${promo.discount_value}%`;
-      case 'fixed':
+      case "fixed":
         return `-${promo.discount_value}€`;
-      case 'free_item':
+      case "free_item":
         return `${promo.discount_value}€ offerts`;
       default:
-        return '';
+        return "";
     }
   };
 
   if (loading) {
     return (
       <section className="py__130">
-        <div className="container">
+        <div className="container ">
           <div className="text-center">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Chargement...</span>
@@ -103,11 +103,16 @@ export default function PromoPage() {
             <div className="col-lg-6">
               <div className="card border-danger">
                 <div className="card-body text-center p-5">
-                  <i className="bi bi-exclamation-circle text-danger" style={{ fontSize: '3rem' }}></i>
+                  <i
+                    className="bi bi-exclamation-circle text-danger"
+                    style={{ fontSize: "3rem" }}
+                  ></i>
                   <h3 className="mt-3">{error}</h3>
-                  <p className="text-muted">Veuillez scanner à nouveau le QR code</p>
+                  <p className="text-muted">
+                    Veuillez scanner à nouveau le QR code
+                  </p>
                   <button
-                    onClick={() => router.push('/scan')}
+                    onClick={() => router.push("/scan")}
                     className="btn btn-primary mt-3"
                   >
                     Retour au scan
@@ -122,15 +127,15 @@ export default function PromoPage() {
   }
 
   return (
-    <section className="py__130">
-      <div className="container">
+    <section className="py__110">
+      <div className="container pb__180">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
           className="row justify-content-center"
         >
-          <div className="col-lg-6 col-md-8">
+          <div className="col-lg-6 col-md-8 card-promo">
             <div className="card shadow-lg border-0">
               <div className="card-body p-4 p-md-5 text-center">
                 {/* Badge de réduction */}
@@ -156,9 +161,7 @@ export default function PromoPage() {
                   transition={{ delay: 0.3 }}
                   className="bg-light rounded p-4 mb-4"
                 >
-                  <code className="fs-2 fw-bold text-primary">
-                    {promo?.code}
-                  </code>
+                  <code className="fs-2 fw-bold ">{promo?.code}</code>
                 </motion.div>
 
                 {/* Bouton copier */}
@@ -166,7 +169,9 @@ export default function PromoPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleCopy}
-                  className={`btn btn-lg px-5 py-3 ${copied ? 'btn-success' : 'btn-primary'}`}
+                  className={`btn btn-scan btn-lg px-5 py-3 ${
+                    copied ? "btn-success" : "btn-scan"
+                  }`}
                 >
                   {copied ? (
                     <>
@@ -184,11 +189,14 @@ export default function PromoPage() {
                 {/* Informations supplémentaires */}
                 <div className="mt-4 pt-4 border-top">
                   <small className="text-muted d-block">
-                    Valable jusqu'au {promo && new Date(promo.valid_until).toLocaleDateString('fr-FR')}
+                    Valable jusqu'au{" "}
+                    {promo &&
+                      new Date(promo.valid_until).toLocaleDateString("fr-FR")}
                   </small>
                   {promo && promo.max_uses > 0 && (
                     <small className="text-muted d-block mt-1">
-                      {promo.max_uses - promo.current_uses} utilisations restantes
+                      {promo.max_uses - promo.current_uses} utilisations
+                      restantes
                     </small>
                   )}
                 </div>
@@ -196,7 +204,8 @@ export default function PromoPage() {
                 {/* Instructions */}
                 <div className="mt-4">
                   <p className="small text-muted">
-                    Présentez ce code à l'accueil ou utilisez-le lors de votre réservation en ligne
+                    Présentez ce code à l'accueil ou utilisez-le lors de votre
+                    réservation en ligne
                   </p>
                 </div>
               </div>

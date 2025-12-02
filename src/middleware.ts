@@ -10,6 +10,7 @@ const publicRoutes = [
   "/mentions-legales",
   "/contact",
   "/scan",
+  "/promo",
 
   "/concept",
   "/spaces",
