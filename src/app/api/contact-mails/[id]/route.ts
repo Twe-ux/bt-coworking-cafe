@@ -51,8 +51,18 @@ export async function PUT(
     const body = await request.json();
     const { status, reply } = body;
 
-    console.log("📝 [Update Message] ID:", id, "Status:", status, "Has reply:", !!reply);
-    console.log("📝 [Update Message] Current user:", session?.user?.username || "anonymous");
+    console.log(
+      "📝 [Update Message] ID:",
+      id,
+      "Status:",
+      status,
+      "Has reply:",
+      !!reply
+    );
+    console.log(
+      "📝 [Update Message] Current user:",
+      session?.user?.username || "anonymous"
+    );
 
     const updateData: Record<string, unknown> = {};
 
@@ -72,8 +82,14 @@ export async function PUT(
       const originalMessage = await ContactMail.findById(id);
       if (originalMessage) {
         console.log("📧 [Send Reply] To:", originalMessage.email);
-        console.log("📧 [Send Reply] API Key configured:", !!process.env.RESEND_API_KEY);
-        console.log("📧 [Send Reply] From email:", process.env.RESEND_FROM_EMAIL);
+        console.log(
+          "📧 [Send Reply] API Key configured:",
+          !!process.env.RESEND_API_KEY
+        );
+        console.log(
+          "📧 [Send Reply] From email:",
+          process.env.RESEND_FROM_EMAIL
+        );
 
         try {
           const resend = getResendClient();
@@ -82,25 +98,110 @@ export async function PUT(
             to: originalMessage.email,
             subject: `Re: ${originalMessage.subject}`,
             html: `
-              <h2>Réponse à votre message</h2>
-              <p>Bonjour ${originalMessage.name},</p>
-              <p>${reply.replace(/\n/g, "<br />")}</p>
-              <hr />
-              <p><small>Votre message original:</small></p>
-              <blockquote style="border-left: 3px solid #ccc; padding-left: 10px; color: #666;">
-                ${originalMessage.message.replace(/\n/g, "<br />")}
-              </blockquote>
-              <hr />
-              <p>L'équipe Cow-or-King Café</p>
+              <!DOCTYPE html>
+              <html lang="fr">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Réponse à votre message</title>
+              </head>
+              <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 40px 20px;">
+                  <tr>
+                    <td align="center">
+                      <!-- Main container -->
+                      <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <!-- Header -->
+                        <tr>
+                          <td style="background: linear-gradient(135deg, #2c5f5d 0%, #3d7d7a 100%); padding: 40px 30px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">
+                              Cow-or-King Café
+                            </h1>
+                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
+                               by Anticafé
+                            </p>
+                          </td>
+                        </tr>
+
+                        <!-- Content -->
+                        <tr>
+                          <td style="padding: 40px 30px;">
+                            <p style="margin: 0 0 20px 0; color: #333333; font-size: 16px; line-height: 1.6;">
+                              Bonjour <strong>${originalMessage.name}</strong>,
+                            </p>
+
+                            <p style="margin: 0 0 20px 0; color: #555555; font-size: 15px; line-height: 1.7;">
+                              Merci pour votre message. Nous sommes ravis de pouvoir vous répondre :
+                            </p>
+
+                            <!-- Reply box -->
+                            <div style="background-color: #f8f9fa; border-left: 4px solid #2c5f5d; padding: 20px; margin: 30px 0; border-radius: 4px;">
+                              <p style="margin: 0; color: #333333; font-size: 15px; line-height: 1.7;">
+                                ${reply.replace(/\n/g, "<br />")}
+                              </p>
+                            </div>
+
+                            <p style="margin: 30px 0 20px 0; color: #555555; font-size: 15px; line-height: 1.7;">
+                              Si vous avez d'autres questions, n'hésitez pas à nous recontacter. Nous serons heureux de vous aider.
+                            </p>
+
+                            <!-- Original message -->
+                            <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e0e0e0;">
+                              <p style="margin: 0 0 15px 0; color: #999999; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Votre message original
+                              </p>
+                              <div style="background-color: #fafafa; padding: 20px; border-radius: 4px; border-left: 3px solid #cccccc;">
+                                <p style="margin: 0 0 10px 0; color: #666666; font-size: 13px;">
+                                  <strong>Sujet :</strong> ${
+                                    originalMessage.subject
+                                  }
+                                </p>
+                                <p style="margin: 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                                  ${originalMessage.message.replace(
+                                    /\n/g,
+                                    "<br />"
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <!-- Footer -->
+                        <tr>
+                          <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e0e0e0;">
+                            <p style="margin: 0 0 5px 0; color: #666666; font-size: 13px;">
+                              Cow-or-King Café by Anticafé • Strasbourg
+                            </p>
+                            <p style="margin: 0; color: #999999; font-size: 12px;">
+                              Cet email est envoyé en réponse à votre demande de contact
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </body>
+              </html>
             `,
           });
           console.log("✅ [Send Reply] Email sent successfully:", result);
         } catch (emailError: any) {
           console.error("❌ [Send Reply] Error:", emailError);
-          console.error("❌ [Send Reply] Error details:", emailError?.message, emailError?.statusCode);
+          console.error(
+            "❌ [Send Reply] Error details:",
+            emailError?.message,
+            emailError?.statusCode
+          );
           // Continue even if email fails, but let's not hide the error completely
-          if (emailError?.statusCode === 403 || emailError?.message?.includes("API key")) {
-            console.error("❌ [Send Reply] RESEND API KEY ISSUE - Check your configuration!");
+          if (
+            emailError?.statusCode === 403 ||
+            emailError?.message?.includes("API key")
+          ) {
+            console.error(
+              "❌ [Send Reply] RESEND API KEY ISSUE - Check your configuration!"
+            );
           }
         }
       }
