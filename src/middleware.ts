@@ -13,6 +13,7 @@ const publicRoutes = [
   "/promo",
 
   "/concept",
+  "/take-away",
   "/spaces",
   "/pricing",
   "/blog",

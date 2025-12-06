@@ -12,6 +12,10 @@ export const menuData: MenuItem[] = [
   {
     title: "Concept",
     link: "/concept",
+    submenu: [
+      { title: "Café Coworking", link: "/concept" },
+      { title: "Take Away", link: "/take-away" },
+    ],
   },
   {
     title: "Espaces",

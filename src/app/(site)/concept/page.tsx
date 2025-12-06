@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const Concept = () => {
   return (
     <>
-      <PageTitle title={"Concept"} />
+      <PageTitle title={"Café Coworking"} />
       <article className="concept py__130">
         <div className="container">
           <img
