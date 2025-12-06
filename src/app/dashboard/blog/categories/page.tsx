@@ -151,22 +151,29 @@ const CategoriesPage = () => {
                     </td>
                     <td>{category.articleCount || 0}</td>
                     <td>
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        className="me-2"
-                        onClick={() => handleOpenModal(category)}
-                      >
-                        <IconifyIcon icon="solar:pen-outline" />
-                      </Button>
-                      <Button
-                        variant="outline-danger"
-                        size="sm"
-                        onClick={() => handleDelete(category._id)}
-                        disabled={isDeleting}
-                      >
-                        <IconifyIcon icon="solar:trash-bin-outline" />
-                      </Button>
+                      <div className="d-flex gap-1 flex-wrap">
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          className="py-0 px-2"
+                          style={{ fontSize: '0.75rem' }}
+                          onClick={() => handleOpenModal(category)}
+                        >
+                          <IconifyIcon icon="solar:pen-outline" width={14} className="me-1" />
+                          Modifier
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          className="py-0 px-2"
+                          style={{ fontSize: '0.75rem' }}
+                          onClick={() => handleDelete(category._id)}
+                          disabled={isDeleting}
+                        >
+                          <IconifyIcon icon="solar:trash-bin-outline" width={14} className="me-1" />
+                          Supprimer
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -226,13 +233,20 @@ const CategoriesPage = () => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleCloseModal}
+              className="py-1 px-3"
+            >
               Annuler
             </Button>
             <Button
               variant="primary"
+              size="sm"
               type="submit"
               disabled={isCreating || isUpdating}
+              className="py-1 px-3"
             >
               {isCreating || isUpdating ? (
                 <>
@@ -240,7 +254,10 @@ const CategoriesPage = () => {
                   Enregistrement...
                 </>
               ) : (
-                'Enregistrer'
+                <>
+                  <IconifyIcon icon="solar:check-circle-outline" width={16} className="me-1" />
+                  Enregistrer
+                </>
               )}
             </Button>
           </Modal.Footer>
