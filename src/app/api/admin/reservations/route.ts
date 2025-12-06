@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectDB from "@/lib/db";
 import { Reservation } from "@/models/reservation";
+import { options } from "@/lib/auth-options";
+import { logger } from "@/lib/logger";
 
 /**
  * GET /api/admin/reservations
@@ -9,14 +11,16 @@ import { Reservation } from "@/models/reservation";
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(options);
 
     if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    // TODO: Check if user is admin
-    // For now, allow any authenticated user
+    // Check if user is admin or higher (level >= 80)
+    if (session.user.role.level < 80) {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+    }
 
     await connectDB();
 
@@ -28,45 +32,37 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "100");
     const skip = parseInt(searchParams.get("skip") || "0");
 
-    const query: Record<string, unknown> = {
-      isDeleted: false,
-    };
+    const query: Record<string, unknown> = {};
 
     if (status) {
       query.status = status;
     }
 
+    if (spaceType) {
+      query.spaceType = spaceType;
+    }
+
     if (startDate || endDate) {
-      query.startDate = {};
+      query.date = {};
       if (startDate) {
-        (query.startDate as Record<string, unknown>).$gte = new Date(startDate);
+        (query.date as Record<string, unknown>).$gte = new Date(startDate);
       }
       if (endDate) {
-        (query.startDate as Record<string, unknown>).$lte = new Date(endDate);
+        (query.date as Record<string, unknown>).$lte = new Date(endDate);
       }
     }
 
     const reservations = await Reservation.find(query)
       .populate("user", "name email username")
-      .populate("space", "name slug spaceType")
-      .sort({ startDate: -1 })
+      .sort({ date: -1, startTime: -1 })
       .limit(limit)
       .skip(skip);
-
-    // Filter by spaceType if specified (after populate)
-    let filteredReservations = reservations;
-    if (spaceType) {
-      filteredReservations = reservations.filter(
-        (r) =>
-          ((r.space as unknown as Record<string, unknown>)?.spaceType === spaceType)
-      );
-    }
 
     const total = await Reservation.countDocuments(query);
 
     return NextResponse.json({
       success: true,
-      data: filteredReservations,
+      data: reservations,
       pagination: {
         total,
         limit,
@@ -75,7 +71,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching reservations:", error);
+    logger.error("Error fetching reservations", { component: "API /admin/reservations", data: error });
     return NextResponse.json(
       { error: "Failed to fetch reservations" },
       { status: 500 }

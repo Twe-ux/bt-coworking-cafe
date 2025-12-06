@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectDB from "@/lib/db";
 import { Reservation } from "@/models/reservation";
+import { options } from "@/lib/auth-options";
+import { logger } from "@/lib/logger";
 
 /**
  * PATCH /api/admin/reservations/[id]
@@ -12,10 +14,15 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(options);
 
     if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+
+    // Check if user is admin or higher (level >= 80)
+    if (session.user.role.level < 80) {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
 
     await connectDB();
@@ -31,9 +38,7 @@ export async function PATCH(
       params.id,
       updateData,
       { new: true }
-    )
-      .populate("user", "name email")
-      .populate("space", "name slug");
+    ).populate("user", "name email username");
 
     if (!reservation) {
       return NextResponse.json(
@@ -47,7 +52,7 @@ export async function PATCH(
       data: reservation,
     });
   } catch (error) {
-    console.error("Error updating reservation:", error);
+    logger.error("Error updating reservation", { component: "API /admin/reservations/[id] PATCH", data: error });
     return NextResponse.json(
       { error: "Failed to update reservation" },
       { status: 500 }
@@ -57,24 +62,29 @@ export async function PATCH(
 
 /**
  * DELETE /api/admin/reservations/[id]
- * Soft delete reservation (admin only)
+ * Cancel reservation (admin only)
  */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(options);
 
     if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+
+    // Check if user is admin or higher (level >= 80)
+    if (session.user.role.level < 80) {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
 
     await connectDB();
 
     const reservation = await Reservation.findByIdAndUpdate(
       params.id,
-      { isDeleted: true, status: "cancelled" },
+      { status: "cancelled", cancelledAt: new Date() },
       { new: true }
     );
 
@@ -90,7 +100,7 @@ export async function DELETE(
       message: "Reservation cancelled successfully",
     });
   } catch (error) {
-    console.error("Error deleting reservation:", error);
+    logger.error("Error cancelling reservation", { component: "API /admin/reservations/[id] DELETE", data: error });
     return NextResponse.json(
       { error: "Failed to delete reservation" },
       { status: 500 }

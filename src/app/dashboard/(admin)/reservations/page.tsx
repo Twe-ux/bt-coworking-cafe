@@ -10,22 +10,27 @@ interface Reservation {
     email: string;
     username?: string;
   };
-  space: {
-    name: string;
-    slug: string;
-    spaceType: string;
-  };
-  startDate: string;
-  endDate: string;
-  reservationType: string;
+  spaceType: "open-space" | "salle-verriere" | "salle-etage" | "evenementiel";
+  date: string;
+  startTime: string;
+  endTime: string;
+  reservationType?: "hourly" | "daily" | "weekly" | "monthly";
   numberOfPeople: number;
+  basePrice: number;
+  servicesPrice: number;
   totalPrice: number;
-  status: string;
-  paymentStatus: string;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  paymentStatus: "pending" | "paid" | "refunded" | "failed";
   requiresPayment: boolean;
   contactName?: string;
   contactEmail?: string;
   contactPhone?: string;
+  confirmationNumber?: string;
+  additionalServices?: Array<{
+    name: string;
+    quantity: number;
+    totalPrice: number;
+  }>;
 }
 
 const statusColors: Record<string, string> = {
@@ -56,6 +61,13 @@ const paymentStatusLabels: Record<string, string> = {
   refunded: "Remboursé",
 };
 
+const spaceTypeLabels: Record<string, string> = {
+  "open-space": "Open-space",
+  "salle-verriere": "Salle Verrière",
+  "salle-etage": "Salle Étage",
+  "evenementiel": "Événementiel",
+};
+
 export default function AdminReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,9 +91,10 @@ export default function AdminReservationsPage() {
 
       if (data.success) {
         setReservations(data.data);
+      } else {
+        setMessage({ type: "error", text: data.error || "Erreur lors du chargement des réservations" });
       }
     } catch (error) {
-      console.error("Error fetching reservations:", error);
       setMessage({ type: "error", text: "Erreur lors du chargement des réservations" });
     } finally {
       setLoading(false);
@@ -107,7 +120,6 @@ export default function AdminReservationsPage() {
         setMessage({ type: "error", text: data.error || "Erreur lors de la mise à jour" });
       }
     } catch (error) {
-      console.error("Error updating status:", error);
       setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
     }
   };
@@ -131,18 +143,15 @@ export default function AdminReservationsPage() {
         setMessage({ type: "error", text: data.error || "Erreur lors de l'annulation" });
       }
     } catch (error) {
-      console.error("Error cancelling reservation:", error);
       setMessage({ type: "error", text: "Erreur lors de l'annulation" });
     }
   };
 
-  const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString("fr-FR", {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("fr-FR", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
@@ -251,16 +260,21 @@ export default function AdminReservationsPage() {
                           {reservation.contactEmail || reservation.user.email}
                         </small>
                       </td>
-                      <td>{reservation.space.name}</td>
+                      <td>{spaceTypeLabels[reservation.spaceType] || reservation.spaceType}</td>
                       <td>
-                        <div>{formatDateTime(reservation.startDate)}</div>
+                        <div>{formatDate(reservation.date)}</div>
                         <small className="text-muted">
-                          au {formatDateTime(reservation.endDate)}
+                          {reservation.startTime} - {reservation.endTime}
                         </small>
                       </td>
                       <td>{reservation.numberOfPeople}</td>
                       <td>
                         <strong>{reservation.totalPrice.toFixed(2)}€</strong>
+                        {reservation.servicesPrice > 0 && (
+                          <small className="d-block text-muted">
+                            +{reservation.servicesPrice.toFixed(2)}€ services
+                          </small>
+                        )}
                       </td>
                       <td>
                         <Badge bg={statusColors[reservation.status] || "secondary"}>
