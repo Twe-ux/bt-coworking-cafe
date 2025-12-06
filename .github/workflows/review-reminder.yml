@@ -1,0 +1,65 @@
+name: Review Reminder
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+    branches: [main]
+
+jobs:
+  add-review-checklist:
+    name: Add Review Checklist
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Add checklist comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            // Read the review checklist
+            let checklistContent = '';
+            try {
+              checklistContent = fs.readFileSync('.claude/review-checklist.md', 'utf8');
+            } catch (error) {
+              checklistContent = `## Review Checklist
+
+              Please review according to the checklist in \`.claude/review-checklist.md\`
+
+              ### Quick Checklist:
+              - [ ] No TypeScript \`any\`
+              - [ ] No console.log (except console.error)
+              - [ ] All errors handled in try/catch
+              - [ ] API routes have validation
+              - [ ] Tests added (if applicable)
+              - [ ] No security issues
+              - [ ] Performance optimized
+              `;
+            }
+
+            const comment = `## 🔍 Ready for Review
+
+            This PR is ready for review by **Opus**.
+
+            ### Review Process:
+            1. **Human** asks Opus: \`Review la branche ${context.payload.pull_request.head.ref}\`
+            2. **Opus** analyzes the code against the checklist
+            3. **Opus** provides a score /25 and recommendations
+            4. **Human** decides: Merge / Fix / Reject
+
+            ### Checklist
+            ${checklistContent.split('\n').slice(0, 50).join('\n')}
+
+            [See full checklist](.claude/review-checklist.md)
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

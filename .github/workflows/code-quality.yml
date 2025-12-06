@@ -1,0 +1,96 @@
+name: Code Quality Check
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+        continue-on-error: false
+
+      - name: Build check
+        run: npm run build
+        env:
+          # Add necessary env vars for build
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+  code-quality-report:
+    name: Code Quality Report
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Count TypeScript 'any' usage
+        id: count_any
+        run: |
+          any_count=$(grep -r "\bany\b" src --include="*.ts" --include="*.tsx" | wc -l || echo "0")
+          echo "count=$any_count" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with stats
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const anyCount = '${{ steps.count_any.outputs.count }}';
+
+            const comment = `## 📊 Code Quality Report
+
+            - **TypeScript \`any\` usage**: ${anyCount} occurrences
+            - **Target**: < 10 occurrences
+
+            ${anyCount > 10 ? '⚠️ Please reduce \`any\` usage for better type safety' : '✅ Good job on type safety!'}
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
