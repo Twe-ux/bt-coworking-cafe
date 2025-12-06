@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/components/AhrefsWebAnalytics.js"
+    "src/components/site/AhrefsWebAnalytics.js"
   ],
   "exclude": ["node_modules"]
 }

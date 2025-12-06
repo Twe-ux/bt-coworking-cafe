@@ -1,0 +1,33 @@
+.page__header {
+  background-color: #1f4038;
+  padding: 40px 0;
+  @include breakpoint(xl) {
+    padding: 40px 0;
+  }
+
+  h2 {
+    color: var(--grayWhite-clr);
+    font-size: 54px;
+    font-weight: 500;
+
+    @include breakpoint(xl) {
+      font-size: 45px;
+    }
+    @include breakpoint(lg) {
+      font-size: 40px;
+    }
+    @include breakpoint(md) {
+      font-size: 35px;
+    }
+  }
+  a {
+    color: var(--btn-clr);
+    font-weight: 600;
+  }
+  span {
+    color: #6e6f75;
+  }
+  p {
+    color: var(--grayWhite-clr);
+  }
+}

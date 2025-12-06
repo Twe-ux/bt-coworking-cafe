@@ -4,6 +4,7 @@ export interface BlogPost {
   author: string;
   comments: number;
   imgSrc: string;
+  slug: string;
 }
 
 export const blogOneData: BlogPost[] = [
@@ -13,6 +14,7 @@ export const blogOneData: BlogPost[] = [
     author: 'Danuel Stone',
     comments: 34,
     imgSrc: '/images/blogs/blog-1.png',
+    slug: 'change-your-life-to-a-get-09-thing-with-the-lifestyle',
   },
   {
     id: 2,
@@ -20,6 +22,7 @@ export const blogOneData: BlogPost[] = [
     author: 'William Dalton',
     comments: 34,
     imgSrc: '/images/blogs/blog-2.png',
+    slug: 'how-to-increase-your-business-policy-for-next-generation',
   },
   {
     id: 3,
@@ -27,6 +30,7 @@ export const blogOneData: BlogPost[] = [
     author: 'Sojol Saiful',
     comments: 3,
     imgSrc: '/images/blogs/blog-3.png',
+    slug: 'how-to-increase-in-app-purchase-why-lead-generation-is-key-for',
   },
   {
     id: 4,
@@ -34,6 +38,7 @@ export const blogOneData: BlogPost[] = [
     author: 'Danuel Stone',
     comments: 34,
     imgSrc: '/images/blogs/blog-4.png',
+    slug: 'beauty-queens-need-beauty-material-and-products',
   },
   {
     id: 5,
@@ -41,6 +46,7 @@ export const blogOneData: BlogPost[] = [
     author: 'William Dalton',
     comments: 34,
     imgSrc: '/images/blogs/blog-5.png',
+    slug: 'life-health-continues-to-spread-rapidly-are-many-people',
   },
   {
     id: 6,
@@ -48,5 +54,6 @@ export const blogOneData: BlogPost[] = [
     author: 'Sojol Saiful',
     comments: 3,
     imgSrc: '/images/blogs/blog-6.png',
+    slug: 'the-secret-math-behind-mind-reading-magic-tricks',
   },
 ];

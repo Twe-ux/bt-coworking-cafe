@@ -12,33 +12,46 @@ export const menuData: MenuItem[] = [
   {
     title: "Concept",
     link: "/concept",
+    submenu: [
+      { title: "Café Coworking", link: "/concept" },
+      { title: "Take Away", link: "/take-away" },
+    ],
   },
   {
     title: "Espaces",
-    link: "/espaces",
+    link: "/spaces",
   },
   {
     title: "Tarifs",
-    link: "/tarifs",
+    link: "/pricing",
   },
   {
     title: "Menu",
-    link: "/menu",
-  },
-  {
-    title: "Professionnels",
-    link: "/professionnels",
-  },
-  {
-    title: "Le Mag'",
-    link: "/mag",
+    link: "/boissons",
   },
   // {
-  //   title: "Services",
+  //   title: "Menu",
   //   link: "#",
   //   submenu: [
-  //     { title: "Services", link: "/services" },
-  //     { title: "Service Details", link: "/service-details" },
+  //     { title: "Boissons", link: "/boissons" },
+  //     { title: "Foods", link: "/food" },
+  //   ],
+  // },
+  // {
+  //   title: "Professionnels",
+  //   link: "/professionnels",
+  // },
+  {
+    title: "Le Mag'",
+    link: "/blog",
+  },
+
+  // {
+  //   title: "admin",
+  //   link: "#",
+  //   submenu: [
+  //     { title: "Promo'", link: "/scan" },
+  //     { title: "dashboard", link: "/dashboard" },
   //   ],
   // },
   // {

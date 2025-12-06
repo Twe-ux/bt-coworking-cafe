@@ -1,0 +1,84 @@
+import { ReservationSchema, ReservationDocument } from "./document";
+import type { ReservationMethods } from "./methods";
+import { HydratedDocument } from "mongoose";
+
+type HydratedReservation = HydratedDocument<ReservationDocument> & ReservationMethods;
+
+export function attachHooks(): void {
+  // Add methods to schema
+  ReservationSchema.methods.calculateDuration = function (
+    this: HydratedReservation
+  ): number {
+    const [startHour, startMinute] = this.startTime.split(":").map(Number);
+    const [endHour, endMinute] = this.endTime.split(":").map(Number);
+    const startInMinutes = startHour * 60 + startMinute;
+    const endInMinutes = endHour * 60 + endMinute;
+    return endInMinutes - startInMinutes;
+  };
+
+  ReservationSchema.methods.canCancel = function (
+    this: HydratedReservation
+  ): boolean {
+    const now = new Date();
+    const reservationDate = new Date(this.date);
+
+    // Cannot cancel if already cancelled or completed
+    if (this.status === "cancelled" || this.status === "completed") {
+      return false;
+    }
+
+    // Cannot cancel if reservation date is in the past
+    if (reservationDate < now) {
+      return false;
+    }
+
+    return true;
+  };
+
+  ReservationSchema.methods.cancel = async function (
+    this: HydratedReservation
+  ): Promise<void> {
+    if (!this.canCancel()) {
+      throw new Error("This reservation cannot be cancelled");
+    }
+
+    this.status = "cancelled";
+    this.cancelledAt = new Date();
+    await this.save();
+  };
+
+  // Add virtuals
+  ReservationSchema.virtual("duration").get(function (this: HydratedReservation) {
+    return this.calculateDuration();
+  });
+
+  ReservationSchema.virtual("isUpcoming").get(function (this: HydratedReservation) {
+    const now = new Date();
+    const reservationDate = new Date(this.date);
+    return reservationDate > now && this.status !== "cancelled" && this.status !== "completed";
+  });
+
+  ReservationSchema.virtual("isPast").get(function (this: HydratedReservation) {
+    const now = new Date();
+    const reservationDate = new Date(this.date);
+    return reservationDate < now;
+  });
+
+  ReservationSchema.virtual("canBeCancelled").get(function (this: HydratedReservation) {
+    return this.canCancel();
+  });
+
+  // Pre-save hook to validate times
+  ReservationSchema.pre("save", function (next) {
+    const [startHour, startMinute] = this.startTime.split(":").map(Number);
+    const [endHour, endMinute] = this.endTime.split(":").map(Number);
+    const startInMinutes = startHour * 60 + startMinute;
+    const endInMinutes = endHour * 60 + endMinute;
+
+    if (endInMinutes <= startInMinutes) {
+      next(new Error("End time must be after start time"));
+    } else {
+      next();
+    }
+  });
+}
