@@ -36,6 +36,9 @@ const publicRoutePatterns = [
 // Auth routes
 const authRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password"];
 
+// Protected routes that require authentication but are accessible to all authenticated users
+const protectedRoutes = ["/messages", "/booking", "/mes-reservations", "/horaires"];
+
 // Admin dashboard routes
 const adminDashboardPattern = /^\/dashboard(\/.*)?$/;
 
@@ -81,7 +84,22 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Auth routes (login, register, etc.)
+  // 2. Protected routes - require authentication but accessible to all authenticated users
+  if (protectedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+    if (!isAuthenticated) {
+      console.log("❌ Protected route requires auth, redirecting to login");
+      return NextResponse.redirect(
+        new URL(
+          `/auth/login?callbackUrl=${encodeURIComponent(pathname)}`,
+          req.url
+        )
+      );
+    }
+    console.log("✅ Protected route, user authenticated, allowing access");
+    return NextResponse.next();
+  }
+
+  // 3. Auth routes (login, register, etc.)
   if (authRoutes.includes(pathname)) {
     if (isAuthenticated) {
       // console.log("🔒 Already authenticated, redirecting based on role");
@@ -104,7 +122,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. Admin dashboard routes
+  // 4. Admin dashboard routes
   if (adminDashboardPattern.test(pathname)) {
     if (!isAuthenticated) {
       // console.log("❌ Admin dashboard requires auth, redirecting to login");
@@ -131,7 +149,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 4. Client dashboard routes (/{username}/...)
+  // 5. Client dashboard routes (/{username}/...)
   // Skip if it's a public route pattern (like /promo/[token])
   const isPublicPattern = publicRoutePatterns.some((pattern) =>
     pattern.test(pathname)
@@ -161,14 +179,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 5. Unknown routes - redirect to home for unauthenticated users
+  // 6. Unknown routes - redirect to home for unauthenticated users
   // If we reach here, it's likely an unknown route
   if (!isAuthenticated) {
     // console.log("❌ Unknown route, redirecting to home");
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // 6. Default: allow access for authenticated users
+  // 7. Default: allow access for authenticated users
   // console.log("✅ Default allow");
   return NextResponse.next();
 }
