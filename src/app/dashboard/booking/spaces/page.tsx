@@ -256,31 +256,34 @@ const SpacesManagementPage = () => {
                         </Badge>
                       </td>
                       <td>
-                        <div className="d-flex gap-1">
+                        <div className="d-flex gap-2 flex-wrap">
                           <Link
                             href={`/dashboard/booking/spaces-edit/${space._id}`}
                             className="btn btn-sm btn-primary"
-                            title="Modifier"
                           >
-                            <Icon icon="ri:edit-line" />
+                            <Icon icon="ri:edit-line" className="me-1" />
+                            <span className="d-none d-lg-inline">Modifier</span>
                           </Link>
                           <Button
                             size="sm"
                             variant={space.isActive ? "warning" : "success"}
                             onClick={() => handleToggleActive(space._id, space.isActive)}
-                            title={space.isActive ? "Désactiver" : "Activer"}
                           >
                             <Icon
                               icon={space.isActive ? "ri:pause-circle-line" : "ri:play-circle-line"}
+                              className="me-1"
                             />
+                            <span className="d-none d-xl-inline">
+                              {space.isActive ? "Désactiver" : "Activer"}
+                            </span>
                           </Button>
                           <Button
                             size="sm"
                             variant="danger"
                             onClick={() => handleDelete(space._id, space.name)}
-                            title="Supprimer"
                           >
-                            <Icon icon="ri:delete-bin-line" />
+                            <Icon icon="ri:delete-bin-line" className="me-1" />
+                            <span className="d-none d-lg-inline">Supprimer</span>
                           </Button>
                         </div>
                       </td>
