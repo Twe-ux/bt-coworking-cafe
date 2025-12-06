@@ -101,24 +101,31 @@ const CalendarPage = () => {
     const end = new Date(date);
     end.setHours(parseInt(endHour), parseInt(endMin));
 
+    // Title enrichi avec plus d'informations
+    const title = `${spaceTypeLabels[reservation.spaceType]} • ${
+      reservation.contactName || reservation.user.name
+    } (${reservation.numberOfPeople}p)`;
+
     return {
       id: reservation._id,
-      title: `${spaceTypeLabels[reservation.spaceType] || reservation.spaceType} - ${
-        reservation.contactName || reservation.user.name
-      }`,
+      title,
       start: start.toISOString(),
       end: end.toISOString(),
-      backgroundColor: spaceTypeColors[reservation.spaceType] || "#6b7280",
+      backgroundColor:
+        reservation.status === "cancelled"
+          ? "#cbd5e1"
+          : reservation.status === "pending"
+          ? `${spaceTypeColors[reservation.spaceType]}80`
+          : spaceTypeColors[reservation.spaceType] || "#6b7280",
       borderColor: spaceTypeColors[reservation.spaceType] || "#6b7280",
+      textColor: reservation.status === "cancelled" ? "#64748b" : "#ffffff",
       extendedProps: {
         reservation,
       },
-      className:
-        reservation.status === "cancelled"
-          ? "opacity-50"
-          : reservation.status === "pending"
-          ? "border-dashed"
-          : "",
+      classNames: [
+        reservation.status === "cancelled" ? "event-cancelled" : "",
+        reservation.status === "pending" ? "event-pending" : "",
+      ].filter(Boolean),
     };
   });
 
@@ -166,21 +173,45 @@ const CalendarPage = () => {
       {/* Legend */}
       <Card className="border-0 shadow-sm mb-4">
         <Card.Body>
-          <h6 className="mb-3">Légende des espaces</h6>
-          <div className="d-flex flex-wrap gap-3">
-            {Object.entries(spaceTypeColors).map(([type, color]) => (
-              <div key={type} className="d-flex align-items-center">
-                <div
-                  className="rounded me-2"
-                  style={{
-                    width: "16px",
-                    height: "16px",
-                    backgroundColor: color,
-                  }}
-                ></div>
-                <small>{spaceTypeLabels[type] || type}</small>
+          <div className="row">
+            <div className="col-md-8">
+              <h6 className="mb-3">Types d'espaces</h6>
+              <div className="d-flex flex-wrap gap-2">
+                {Object.entries(spaceTypeColors).map(([type, color]) => (
+                  <Badge
+                    key={type}
+                    bg="light"
+                    text="dark"
+                    className="px-3 py-2"
+                    style={{
+                      borderLeft: `4px solid ${color}`,
+                      fontSize: '0.875rem',
+                    }}
+                  >
+                    {spaceTypeLabels[type] || type}
+                  </Badge>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="col-md-4">
+              <h6 className="mb-3">Statuts</h6>
+              <div className="d-flex flex-wrap gap-2">
+                <Badge bg="success" className="px-3 py-2" style={{ fontSize: '0.875rem' }}>
+                  Confirmée
+                </Badge>
+                <Badge
+                  bg="light"
+                  text="dark"
+                  className="px-3 py-2"
+                  style={{ fontSize: '0.875rem', opacity: 0.7 }}
+                >
+                  En attente
+                </Badge>
+                <Badge bg="secondary" className="px-3 py-2" style={{ fontSize: '0.875rem' }}>
+                  Annulée
+                </Badge>
+              </div>
+            </div>
           </div>
         </Card.Body>
       </Card>
@@ -188,6 +219,52 @@ const CalendarPage = () => {
       {/* Calendar */}
       <Card className="border-0 shadow-sm">
         <Card.Body>
+          <style jsx global>{`
+            .fc {
+              font-size: 0.95rem;
+            }
+            .fc-toolbar-title {
+              font-size: 1.5rem !important;
+              font-weight: 600;
+            }
+            .fc-button {
+              padding: 0.5rem 1rem !important;
+              font-size: 0.9rem !important;
+            }
+            .fc-event {
+              padding: 4px 6px;
+              cursor: pointer;
+              border-radius: 4px;
+              font-size: 0.85rem;
+              font-weight: 500;
+            }
+            .fc-event:hover {
+              opacity: 0.85;
+            }
+            .fc-event.event-pending {
+              border-style: dashed !important;
+              border-width: 2px !important;
+            }
+            .fc-event.event-cancelled {
+              text-decoration: line-through;
+            }
+            .fc-timegrid-slot {
+              height: 3rem;
+            }
+            .fc-col-header-cell {
+              padding: 1rem 0;
+              font-weight: 600;
+              font-size: 0.9rem;
+              background-color: #f8f9fa;
+            }
+            .fc-daygrid-day-number {
+              font-size: 0.95rem;
+              font-weight: 600;
+            }
+            .fc-timegrid-slot-label {
+              font-size: 0.85rem;
+            }
+          `}</style>
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -197,12 +274,19 @@ const CalendarPage = () => {
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
+            buttonText={{
+              today: "Aujourd'hui",
+              month: "Mois",
+              week: "Semaine",
+              day: "Jour",
+            }}
             locale={frLocale}
             events={events}
             eventClick={handleEventClick}
             height="auto"
             slotMinTime="08:00:00"
             slotMaxTime="20:00:00"
+            slotDuration="00:30:00"
             allDaySlot={false}
             nowIndicator={true}
             weekends={true}
@@ -215,97 +299,143 @@ const CalendarPage = () => {
               minute: "2-digit",
               meridiem: false,
             }}
+            slotLabelFormat={{
+              hour: "2-digit",
+              minute: "2-digit",
+              meridiem: false,
+            }}
+            eventContent={(arg) => {
+              return {
+                html: `
+                  <div style="padding: 2px 4px; overflow: hidden; text-overflow: ellipsis;">
+                    <div style="font-weight: 600; font-size: 0.85rem;">${arg.timeText}</div>
+                    <div style="font-size: 0.8rem; line-height: 1.3;">${arg.event.title}</div>
+                  </div>
+                `,
+              };
+            }}
           />
         </Card.Body>
       </Card>
 
       {/* Event Details Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
-        <Modal.Header closeButton>
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
+        <Modal.Header closeButton className="border-0 pb-0">
           <Modal.Title>Détails de la réservation</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="px-4 py-3">
           {selectedEvent && (
             <div>
-              <div className="mb-3">
-                <h6 className="text-muted mb-2">Client</h6>
-                <div className="fw-medium">{selectedEvent.contactName || selectedEvent.user.name}</div>
-                <div className="text-muted small">
-                  {selectedEvent.contactEmail || selectedEvent.user.email}
+              <Card className="border-0 bg-light mb-3">
+                <Card.Body className="p-3">
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h5 className="mb-1">{selectedEvent.contactName || selectedEvent.user.name}</h5>
+                      <div className="text-muted">
+                        <Icon icon="ri:mail-line" width={14} className="me-1" />
+                        {selectedEvent.contactEmail || selectedEvent.user.email}
+                      </div>
+                    </div>
+                    <Badge
+                      bg="light"
+                      text="dark"
+                      className="px-3 py-2"
+                      style={{
+                        borderLeft: `4px solid ${spaceTypeColors[selectedEvent.spaceType]}`,
+                        fontSize: '0.9rem',
+                      }}
+                    >
+                      {spaceTypeLabels[selectedEvent.spaceType] || selectedEvent.spaceType}
+                    </Badge>
+                  </div>
+                </Card.Body>
+              </Card>
+
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <Card className="border h-100">
+                    <Card.Body className="p-3">
+                      <div className="d-flex align-items-center mb-2">
+                        <Icon icon="ri:calendar-line" width={20} className="me-2 text-primary" />
+                        <h6 className="mb-0">Date et heure</h6>
+                      </div>
+                      <div className="fw-medium">{formatDate(selectedEvent.date)}</div>
+                      <div className="text-muted">
+                        {selectedEvent.startTime} - {selectedEvent.endTime}
+                      </div>
+                    </Card.Body>
+                  </Card>
                 </div>
-              </div>
 
-              <div className="mb-3">
-                <h6 className="text-muted mb-2">Espace</h6>
-                <Badge
-                  bg="light"
-                  text="dark"
-                  style={{
-                    borderLeft: `4px solid ${spaceTypeColors[selectedEvent.spaceType]}`,
-                  }}
-                >
-                  {spaceTypeLabels[selectedEvent.spaceType] || selectedEvent.spaceType}
-                </Badge>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="text-muted mb-2">Date et heure</h6>
-                <div className="d-flex align-items-center mb-1">
-                  <Icon icon="ri:calendar-line" className="me-2" />
-                  {formatDate(selectedEvent.date)}
+                <div className="col-md-6">
+                  <Card className="border h-100">
+                    <Card.Body className="p-3">
+                      <div className="d-flex align-items-center mb-2">
+                        <Icon icon="ri:user-line" width={20} className="me-2 text-primary" />
+                        <h6 className="mb-0">Participants</h6>
+                      </div>
+                      <div className="fw-medium">{selectedEvent.numberOfPeople} personne(s)</div>
+                    </Card.Body>
+                  </Card>
                 </div>
-                <div className="d-flex align-items-center">
-                  <Icon icon="ri:time-line" className="me-2" />
-                  {selectedEvent.startTime} - {selectedEvent.endTime}
+
+                <div className="col-md-6">
+                  <Card className="border h-100">
+                    <Card.Body className="p-3">
+                      <div className="d-flex align-items-center mb-2">
+                        <Icon icon="ri:money-euro-circle-line" width={20} className="me-2 text-success" />
+                        <h6 className="mb-0">Prix</h6>
+                      </div>
+                      <div className="fs-4 fw-semibold text-success">
+                        {selectedEvent.totalPrice.toFixed(2)}€
+                      </div>
+                    </Card.Body>
+                  </Card>
                 </div>
-              </div>
 
-              <div className="mb-3">
-                <h6 className="text-muted mb-2">Participants</h6>
-                <div className="d-flex align-items-center">
-                  <Icon icon="ri:user-line" className="me-2" />
-                  {selectedEvent.numberOfPeople} personne(s)
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="text-muted mb-2">Prix</h6>
-                <div className="fw-semibold">{selectedEvent.totalPrice.toFixed(2)}€</div>
-              </div>
-
-              <div className="mb-3">
-                <h6 className="text-muted mb-2">Statut</h6>
-                <div className="d-flex gap-2">
-                  <Badge
-                    bg={
-                      selectedEvent.status === "confirmed"
-                        ? "success"
-                        : selectedEvent.status === "pending"
-                        ? "warning"
-                        : selectedEvent.status === "cancelled"
-                        ? "danger"
-                        : "secondary"
-                    }
-                  >
-                    {statusLabels[selectedEvent.status]}
-                  </Badge>
-                  <Badge
-                    bg={
-                      selectedEvent.paymentStatus === "paid"
-                        ? "success"
-                        : selectedEvent.paymentStatus === "pending"
-                        ? "warning"
-                        : "danger"
-                    }
-                  >
-                    Paiement: {selectedEvent.paymentStatus}
-                  </Badge>
+                <div className="col-md-6">
+                  <Card className="border h-100">
+                    <Card.Body className="p-3">
+                      <div className="d-flex align-items-center mb-2">
+                        <Icon icon="ri:shield-check-line" width={20} className="me-2 text-info" />
+                        <h6 className="mb-0">Statut</h6>
+                      </div>
+                      <div className="d-flex gap-2">
+                        <Badge
+                          bg={
+                            selectedEvent.status === "confirmed"
+                              ? "success"
+                              : selectedEvent.status === "pending"
+                              ? "warning"
+                              : selectedEvent.status === "cancelled"
+                              ? "danger"
+                              : "secondary"
+                          }
+                          className="px-2 py-1"
+                        >
+                          {statusLabels[selectedEvent.status]}
+                        </Badge>
+                        <Badge
+                          bg={
+                            selectedEvent.paymentStatus === "paid"
+                              ? "success"
+                              : selectedEvent.paymentStatus === "pending"
+                              ? "warning"
+                              : "danger"
+                          }
+                          className="px-2 py-1"
+                        >
+                          {selectedEvent.paymentStatus}
+                        </Badge>
+                      </div>
+                    </Card.Body>
+                  </Card>
                 </div>
               </div>
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="border-0">
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Fermer
           </Button>

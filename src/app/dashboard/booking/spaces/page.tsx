@@ -256,21 +256,25 @@ const SpacesManagementPage = () => {
                         </Badge>
                       </td>
                       <td>
-                        <div className="d-flex gap-2 flex-wrap">
+                        <div className="d-flex gap-1 flex-wrap">
                           <Link
                             href={`/dashboard/booking/spaces-edit/${space._id}`}
-                            className="btn btn-sm btn-primary"
+                            className="btn btn-sm btn-primary py-0 px-2"
+                            style={{ fontSize: '0.75rem' }}
                           >
-                            <Icon icon="ri:edit-line" className="me-1" />
+                            <Icon icon="ri:edit-line" width={14} className="me-1" />
                             <span className="d-none d-lg-inline">Modifier</span>
                           </Link>
                           <Button
                             size="sm"
                             variant={space.isActive ? "warning" : "success"}
                             onClick={() => handleToggleActive(space._id, space.isActive)}
+                            className="py-0 px-2"
+                            style={{ fontSize: '0.75rem' }}
                           >
                             <Icon
                               icon={space.isActive ? "ri:pause-circle-line" : "ri:play-circle-line"}
+                              width={14}
                               className="me-1"
                             />
                             <span className="d-none d-xl-inline">
@@ -281,8 +285,10 @@ const SpacesManagementPage = () => {
                             size="sm"
                             variant="danger"
                             onClick={() => handleDelete(space._id, space.name)}
+                            className="py-0 px-2"
+                            style={{ fontSize: '0.75rem' }}
                           >
-                            <Icon icon="ri:delete-bin-line" className="me-1" />
+                            <Icon icon="ri:delete-bin-line" width={14} className="me-1" />
                             <span className="d-none d-lg-inline">Supprimer</span>
                           </Button>
                         </div>

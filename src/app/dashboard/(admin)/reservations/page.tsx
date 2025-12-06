@@ -294,14 +294,16 @@ export default function AdminReservationsPage() {
                         )}
                       </td>
                       <td>
-                        <div className="d-flex gap-2 flex-wrap">
+                        <div className="d-flex gap-1 flex-wrap">
                           {reservation.status === "pending" && (
                             <Button
                               size="sm"
                               variant="success"
                               onClick={() => handleUpdateStatus(reservation._id, "confirmed")}
+                              className="py-0 px-2"
+                              style={{ fontSize: '0.75rem' }}
                             >
-                              <i className="bi bi-check-circle me-1"></i>
+                              <i className="bi bi-check-circle me-1" style={{ fontSize: '0.875rem' }}></i>
                               Confirmer
                             </Button>
                           )}
@@ -310,8 +312,10 @@ export default function AdminReservationsPage() {
                               size="sm"
                               variant="danger"
                               onClick={() => handleCancelReservation(reservation._id)}
+                              className="py-0 px-2"
+                              style={{ fontSize: '0.75rem' }}
                             >
-                              <i className="bi bi-x-circle me-1"></i>
+                              <i className="bi bi-x-circle me-1" style={{ fontSize: '0.875rem' }}></i>
                               Annuler
                             </Button>
                           )}
