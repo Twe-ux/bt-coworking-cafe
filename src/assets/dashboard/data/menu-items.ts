@@ -118,6 +118,38 @@ export const MENU_ITEMS: MenuItemType[] = [
     roles: ["dev", "admin"],
     url: "/dashboard/contact-mails",
   },
+  {
+    key: "booking",
+    label: "Booking",
+    icon: "ri:calendar-check-line",
+    roles: ["dev", "admin", "staff"],
+    children: [
+      {
+        key: "booking-overview",
+        label: "Overview",
+        url: "/dashboard/booking",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-spaces",
+        label: "Spaces",
+        url: "/dashboard/booking/spaces",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-reservations",
+        label: "Reservations",
+        url: "/dashboard/booking/reservations",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-calendar",
+        label: "Calendar",
+        url: "/dashboard/booking/calendar",
+        parentKey: "booking",
+      },
+    ],
+  },
 
   // {
   //   key: "dashboards",
