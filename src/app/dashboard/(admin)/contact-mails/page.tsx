@@ -28,7 +28,6 @@ const MessagesPage = () => {
 
   const refreshUnreadCount = () => {
     // Dispatch custom event to refresh unread count
-    console.log("🔔 [Contact Mails] Dispatching refreshUnreadCount event");
     window.dispatchEvent(new Event("refreshUnreadCount"));
   };
 
@@ -64,7 +63,6 @@ const MessagesPage = () => {
         });
 
         if (response.ok) {
-          console.log("✅ [Contact Mails] Message marked as read");
           await fetchMessages();
           // Small delay to ensure DB is updated
           setTimeout(() => refreshUnreadCount(), 100);
@@ -84,7 +82,6 @@ const MessagesPage = () => {
       });
 
       if (response.ok) {
-        console.log("✅ [Contact Mails] Status updated to:", status);
         await fetchMessages();
         setTimeout(() => refreshUnreadCount(), 100);
         setShowModal(false);
@@ -106,7 +103,6 @@ const MessagesPage = () => {
       });
 
       if (response.ok) {
-        console.log("✅ [Contact Mails] Reply sent successfully");
         setShowReplyModal(false);
         setReplyText("");
         await fetchMessages();
@@ -127,7 +123,6 @@ const MessagesPage = () => {
       const response = await fetch(`/api/contact-mails/${id}`, { method: "DELETE" });
 
       if (response.ok) {
-        console.log("✅ [Contact Mails] Message deleted successfully");
         await fetchMessages();
         setTimeout(() => refreshUnreadCount(), 100);
         setShowModal(false);

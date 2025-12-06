@@ -43,26 +43,12 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    console.log("📝 [Update Message] Starting PUT request...");
     await connectDB();
     const session = await getServerSession(authOptions);
     const { id } = await params;
 
     const body = await request.json();
     const { status, reply } = body;
-
-    console.log(
-      "📝 [Update Message] ID:",
-      id,
-      "Status:",
-      status,
-      "Has reply:",
-      !!reply
-    );
-    console.log(
-      "📝 [Update Message] Current user:",
-      session?.user?.username || "anonymous"
-    );
 
     const updateData: Record<string, unknown> = {};
 
@@ -81,16 +67,6 @@ export async function PUT(
       // Get original message to send reply
       const originalMessage = await ContactMail.findById(id);
       if (originalMessage) {
-        console.log("📧 [Send Reply] To:", originalMessage.email);
-        console.log(
-          "📧 [Send Reply] API Key configured:",
-          !!process.env.RESEND_API_KEY
-        );
-        console.log(
-          "📧 [Send Reply] From email:",
-          process.env.RESEND_FROM_EMAIL
-        );
-
         try {
           const resend = getResendClient();
           const result = await resend.emails.send({
@@ -186,23 +162,8 @@ export async function PUT(
               </html>
             `,
           });
-          console.log("✅ [Send Reply] Email sent successfully:", result);
         } catch (emailError: any) {
-          console.error("❌ [Send Reply] Error:", emailError);
-          console.error(
-            "❌ [Send Reply] Error details:",
-            emailError?.message,
-            emailError?.statusCode
-          );
-          // Continue even if email fails, but let's not hide the error completely
-          if (
-            emailError?.statusCode === 403 ||
-            emailError?.message?.includes("API key")
-          ) {
-            console.error(
-              "❌ [Send Reply] RESEND API KEY ISSUE - Check your configuration!"
-            );
-          }
+          console.error("Error sending reply email:", emailError);
         }
       }
     }
@@ -214,17 +175,15 @@ export async function PUT(
     ).lean();
 
     if (!message) {
-      console.error("❌ [Update Message] Message not found:", id);
       return NextResponse.json(
         { error: "Message non trouvé" },
         { status: 404 }
       );
     }
 
-    console.log("✅ [Update Message] Successfully updated to:", message.status);
     return NextResponse.json({ message });
   } catch (error) {
-    console.error("❌ [Update Message] Error:", error);
+    console.error("Error updating message:", error);
     return NextResponse.json(
       { error: "Erreur lors de la mise à jour du message" },
       { status: 500 }
