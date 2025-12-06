@@ -8,6 +8,7 @@ const LayoutProvider = dynamic(() => import('@/context/useLayoutContext').then((
   ssr: false,
 })
 import { NotificationProvider } from '@/context/useNotificationContext'
+import { TopbarProvider } from '@/context/useTopbarContext'
 import { ChildrenType } from '@/types/component-props'
 
 const AppProvidersWrapper = ({ children }: ChildrenType) => {
@@ -38,10 +39,12 @@ const AppProvidersWrapper = ({ children }: ChildrenType) => {
   return (
     <SessionProvider>
       <LayoutProvider>
-        <NotificationProvider>
-          {children}
-          <ToastContainer theme="colored" />
-        </NotificationProvider>
+        <TopbarProvider>
+          <NotificationProvider>
+            {children}
+            <ToastContainer theme="colored" />
+          </NotificationProvider>
+        </TopbarProvider>
       </LayoutProvider>
     </SessionProvider>
   )

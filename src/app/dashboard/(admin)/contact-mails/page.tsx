@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardBody, CardHeader, Table, Badge, Button, Modal, Form, ButtonGroup } from "react-bootstrap";
+import {
+  Card,
+  CardBody,
+  Table,
+  Badge,
+  Button,
+  Modal,
+  Form,
+} from "react-bootstrap";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { useTopbarContext } from "@/context/useTopbarContext";
 
 interface Message {
   _id: string;
@@ -25,6 +35,195 @@ const MessagesPage = () => {
   const [showReplyModal, setShowReplyModal] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
+  const { setPageTitle, setPageActions } = useTopbarContext();
+
+  useEffect(() => {
+    const unreadCount = messages.filter((m) => m.status === "unread").length;
+    const title = unreadCount > 0
+      ? `Messages de contact (${unreadCount})`
+      : "Messages de contact";
+
+    setPageTitle(title);
+    setPageActions(
+      <>
+        <button
+          onClick={() => setFilter("all")}
+          style={{
+            padding: "8px 16px",
+            background: filter === "all" ? "#667eea" : "white",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: filter === "all" ? "white" : "#374151",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            if (filter !== "all") {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            } else {
+              e.currentTarget.style.background = "#5568d3";
+              e.currentTarget.style.borderColor = "#5568d3";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (filter !== "all") {
+              e.currentTarget.style.background = "white";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            } else {
+              e.currentTarget.style.background = "#667eea";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }
+          }}
+        >
+          Tous
+        </button>
+        <button
+          onClick={() => setFilter("unread")}
+          style={{
+            padding: "8px 16px",
+            background: filter === "unread" ? "#667eea" : "white",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: filter === "unread" ? "white" : "#374151",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            if (filter !== "unread") {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            } else {
+              e.currentTarget.style.background = "#5568d3";
+              e.currentTarget.style.borderColor = "#5568d3";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (filter !== "unread") {
+              e.currentTarget.style.background = "white";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            } else {
+              e.currentTarget.style.background = "#667eea";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }
+          }}
+        >
+          Non lus
+        </button>
+        <button
+          onClick={() => setFilter("read")}
+          style={{
+            padding: "8px 16px",
+            background: filter === "read" ? "#667eea" : "white",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: filter === "read" ? "white" : "#374151",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            if (filter !== "read") {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            } else {
+              e.currentTarget.style.background = "#5568d3";
+              e.currentTarget.style.borderColor = "#5568d3";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (filter !== "read") {
+              e.currentTarget.style.background = "white";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            } else {
+              e.currentTarget.style.background = "#667eea";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }
+          }}
+        >
+          Lus
+        </button>
+        <button
+          onClick={() => setFilter("replied")}
+          style={{
+            padding: "8px 16px",
+            background: filter === "replied" ? "#667eea" : "white",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: filter === "replied" ? "white" : "#374151",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            if (filter !== "replied") {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            } else {
+              e.currentTarget.style.background = "#5568d3";
+              e.currentTarget.style.borderColor = "#5568d3";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (filter !== "replied") {
+              e.currentTarget.style.background = "white";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            } else {
+              e.currentTarget.style.background = "#667eea";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }
+          }}
+        >
+          Répondus
+        </button>
+        <button
+          onClick={() => setFilter("archived")}
+          style={{
+            padding: "8px 16px",
+            background: filter === "archived" ? "#667eea" : "white",
+            border: "1px solid #e5e7eb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: filter === "archived" ? "white" : "#374151",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            if (filter !== "archived") {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            } else {
+              e.currentTarget.style.background = "#5568d3";
+              e.currentTarget.style.borderColor = "#5568d3";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (filter !== "archived") {
+              e.currentTarget.style.background = "white";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            } else {
+              e.currentTarget.style.background = "#667eea";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }
+          }}
+        >
+          Archivés
+        </button>
+      </>
+    );
+
+    return () => {
+      setPageTitle("Dashboard");
+      setPageActions(null);
+    };
+  }, [filter, messages, setPageTitle, setPageActions]);
 
   const refreshUnreadCount = () => {
     // Dispatch custom event to refresh unread count
@@ -96,11 +295,14 @@ const MessagesPage = () => {
 
     setSending(true);
     try {
-      const response = await fetch(`/api/contact-mails/${selectedMessage._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reply: replyText }),
-      });
+      const response = await fetch(
+        `/api/contact-mails/${selectedMessage._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reply: replyText }),
+        }
+      );
 
       if (response.ok) {
         setShowReplyModal(false);
@@ -120,7 +322,9 @@ const MessagesPage = () => {
     if (!confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) return;
 
     try {
-      const response = await fetch(`/api/contact-mails/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/contact-mails/${id}`, {
+        method: "DELETE",
+      });
 
       if (response.ok) {
         await fetchMessages();
@@ -163,53 +367,6 @@ const MessagesPage = () => {
   return (
     <div className="container-fluid">
       <Card>
-        <CardHeader className="d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">
-            Messages de contact
-            {unreadCount > 0 && (
-              <Badge bg="danger" className="ms-2">
-                {unreadCount} nouveau{unreadCount > 1 ? "x" : ""}
-              </Badge>
-            )}
-          </h5>
-          <ButtonGroup>
-            <Button
-              variant={filter === "all" ? "primary" : "outline-primary"}
-              size="sm"
-              onClick={() => setFilter("all")}
-            >
-              Tous
-            </Button>
-            <Button
-              variant={filter === "unread" ? "primary" : "outline-primary"}
-              size="sm"
-              onClick={() => setFilter("unread")}
-            >
-              Non lus
-            </Button>
-            <Button
-              variant={filter === "read" ? "primary" : "outline-primary"}
-              size="sm"
-              onClick={() => setFilter("read")}
-            >
-              Lus
-            </Button>
-            <Button
-              variant={filter === "replied" ? "primary" : "outline-primary"}
-              size="sm"
-              onClick={() => setFilter("replied")}
-            >
-              Répondus
-            </Button>
-            <Button
-              variant={filter === "archived" ? "primary" : "outline-primary"}
-              size="sm"
-              onClick={() => setFilter("archived")}
-            >
-              Archivés
-            </Button>
-          </ButtonGroup>
-        </CardHeader>
         <CardBody>
           {loading ? (
             <div className="text-center py-4">
@@ -237,7 +394,8 @@ const MessagesPage = () => {
                     key={message._id}
                     style={{
                       cursor: "pointer",
-                      fontWeight: message.status === "unread" ? "bold" : "normal",
+                      fontWeight:
+                        message.status === "unread" ? "bold" : "normal",
                     }}
                     onClick={() => handleViewMessage(message)}
                   >
@@ -248,14 +406,11 @@ const MessagesPage = () => {
                     <td>{message.subject}</td>
                     <td onClick={(e) => e.stopPropagation()}>
                       <Button
-                        variant="primary"
+                        variant="outline-primary"
                         size="sm"
                         onClick={() => handleViewMessage(message)}
-                        className="py-0 px-2"
-                        style={{ fontSize: '0.75rem' }}
                       >
-                        <i className="bi bi-eye me-1" style={{ fontSize: '0.875rem' }}></i>
-                        Voir
+                        <IconifyIcon icon="ri:eye-line" />
                       </Button>
                     </td>
                   </tr>
@@ -279,7 +434,8 @@ const MessagesPage = () => {
                   <strong>Email:</strong> {selectedMessage.email}
                 </div>
                 <div className="col-md-6">
-                  <strong>Téléphone:</strong> {selectedMessage.phone || "Non renseigné"}
+                  <strong>Téléphone:</strong>{" "}
+                  {selectedMessage.phone || "Non renseigné"}
                 </div>
               </div>
               <div className="mb-3">
@@ -289,7 +445,8 @@ const MessagesPage = () => {
                 <strong>Date:</strong> {formatDate(selectedMessage.createdAt)}
               </div>
               <div className="mb-3">
-                <strong>Statut:</strong> {getStatusBadge(selectedMessage.status)}
+                <strong>Statut:</strong>{" "}
+                {getStatusBadge(selectedMessage.status)}
               </div>
               <hr />
               <div className="mb-3">
@@ -303,7 +460,10 @@ const MessagesPage = () => {
                   <hr />
                   <div className="mb-3">
                     <strong>Réponse envoyée:</strong>
-                    <p className="mt-2 text-muted" style={{ whiteSpace: "pre-wrap" }}>
+                    <p
+                      className="mt-2 text-muted"
+                      style={{ whiteSpace: "pre-wrap" }}
+                    >
                       {selectedMessage.reply}
                     </p>
                     {selectedMessage.repliedAt && (
@@ -322,36 +482,37 @@ const MessagesPage = () => {
             variant="outline-secondary"
             size="sm"
             onClick={() => handleUpdateStatus(selectedMessage!._id, "archived")}
-            className="py-1 px-3"
           >
-            <i className="bi bi-archive me-1"></i> Archiver
+            <IconifyIcon icon="ri:archive-line" />
           </Button>
           {selectedMessage?.status !== "replied" && (
             <Button
-              variant="primary"
+              variant="outline-primary"
               size="sm"
               onClick={() => {
                 setShowReplyModal(true);
                 setShowModal(false);
               }}
-              className="py-1 px-3"
             >
-              <i className="bi bi-reply me-1"></i> Répondre
+              <IconifyIcon icon="ri:reply-line" />
             </Button>
           )}
           <Button
-            variant="danger"
+            variant="outline-danger"
             size="sm"
             onClick={() => handleDelete(selectedMessage!._id)}
-            className="py-1 px-3"
           >
-            <i className="bi bi-trash me-1"></i> Supprimer
+            <IconifyIcon icon="ri:delete-bin-line" />
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Reply Modal */}
-      <Modal show={showReplyModal} onHide={() => setShowReplyModal(false)} size="lg">
+      <Modal
+        show={showReplyModal}
+        onHide={() => setShowReplyModal(false)}
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Répondre à {selectedMessage?.name}</Modal.Title>
         </Modal.Header>
@@ -382,22 +543,19 @@ const MessagesPage = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant="secondary"
+            variant="outline-secondary"
             size="sm"
             onClick={() => setShowReplyModal(false)}
-            className="py-1 px-3"
           >
-            Annuler
+            <IconifyIcon icon="ri:close-line" />
           </Button>
           <Button
-            variant="primary"
+            variant="outline-primary"
             size="sm"
             onClick={handleReply}
             disabled={sending || !replyText.trim()}
-            className="py-1 px-3"
           >
-            <i className="bi bi-send me-1"></i>
-            {sending ? "Envoi..." : "Envoyer"}
+            <IconifyIcon icon="ri:send-plane-line" />
           </Button>
         </Modal.Footer>
       </Modal>

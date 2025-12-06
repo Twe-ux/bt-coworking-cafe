@@ -45,7 +45,16 @@ const LayoutProvider = ({ children }: ChildrenType) => {
 
   // update theme mode
   const changeTheme = (newTheme: ThemeType) => {
+    // Désactiver temporairement les transitions pour un changement instantané
+    const htmlTag = document.getElementsByTagName('html')[0]
+    htmlTag.classList.add('theme-changing')
+
     updateSettings({ theme: newTheme })
+
+    // Réactiver les transitions après un court délai
+    setTimeout(() => {
+      htmlTag.classList.remove('theme-changing')
+    }, 50)
   }
 
   // change topbar theme

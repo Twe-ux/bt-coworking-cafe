@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, Table, Badge, Button, Form, Row, Col, Alert } from "react-bootstrap";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 
 interface Reservation {
   _id: string;
@@ -298,25 +299,19 @@ export default function AdminReservationsPage() {
                           {reservation.status === "pending" && (
                             <Button
                               size="sm"
-                              variant="success"
+                              variant="outline-success"
                               onClick={() => handleUpdateStatus(reservation._id, "confirmed")}
-                              className="py-0 px-2"
-                              style={{ fontSize: '0.75rem' }}
                             >
-                              <i className="bi bi-check-circle me-1" style={{ fontSize: '0.875rem' }}></i>
-                              Confirmer
+                              <IconifyIcon icon="ri:check-line" />
                             </Button>
                           )}
                           {reservation.status !== "cancelled" && (
                             <Button
                               size="sm"
-                              variant="danger"
+                              variant="outline-danger"
                               onClick={() => handleCancelReservation(reservation._id)}
-                              className="py-0 px-2"
-                              style={{ fontSize: '0.75rem' }}
                             >
-                              <i className="bi bi-x-circle me-1" style={{ fontSize: '0.875rem' }}></i>
-                              Annuler
+                              <IconifyIcon icon="ri:close-line" />
                             </Button>
                           )}
                         </div>

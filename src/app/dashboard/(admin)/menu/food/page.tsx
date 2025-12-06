@@ -1,6 +1,6 @@
 "use client";
 
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { useTopbarContext } from "@/context/useTopbarContext";
 import DropzoneImageUpload from "@/components/dashboard/DropzoneImageUpload";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import { useSession } from "next-auth/react";
@@ -11,8 +11,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardHeader,
-  CardTitle,
   Col,
   Form,
   Modal,
@@ -41,6 +39,7 @@ interface Food {
 }
 
 export default function FoodsPage() {
+  const { setPageTitle, setPageActions } = useTopbarContext();
   const { data: session } = useSession();
   const userRole = session?.user?.role?.slug;
   const canEdit = userRole === "dev" || userRole === "admin";
@@ -79,6 +78,104 @@ export default function FoodsPage() {
   });
 
   const [saving, setSaving] = useState(false);
+
+  const openNewCategory = () => {
+    setEditingCategory(null);
+    setCategoryName("");
+    setShowCategoryModal(true);
+  };
+
+  const openNewFood = (categoryId?: string) => {
+    setEditingFood(null);
+    setFoodForm({
+      name: "",
+      description: "",
+      recipe: "",
+      image: "",
+      category: categoryId || (categories.length > 0 ? categories[0]._id : ""),
+    });
+    setShowFoodModal(true);
+  };
+
+  useEffect(() => {
+    setPageTitle(isStaff ? 'Produits alimentaires' : 'Gestion des produits alimentaires');
+
+    if (canEdit) {
+      setPageActions(
+        <>
+          <button
+            onClick={openNewCategory}
+            style={{
+              padding: '8px 16px',
+              background: '#667eea',
+              border: '1px solid #667eea',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 500,
+              color: 'white',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#5568d3';
+              e.currentTarget.style.borderColor = '#5568d3';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#667eea';
+              e.currentTarget.style.borderColor = '#667eea';
+            }}
+          >
+            <IconifyIcon icon="ri:add-line" />
+            Nouvelle catégorie
+          </button>
+          <button
+            onClick={() => openNewFood()}
+            disabled={categories.length === 0}
+            style={{
+              padding: '8px 16px',
+              background: categories.length === 0 ? '#e5e7eb' : '#14b8a6',
+              border: `1px solid ${categories.length === 0 ? '#e5e7eb' : '#14b8a6'}`,
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 500,
+              color: categories.length === 0 ? '#9ca3af' : 'white',
+              cursor: categories.length === 0 ? 'not-allowed' : 'pointer',
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginLeft: '8px',
+            }}
+            onMouseEnter={(e) => {
+              if (categories.length > 0) {
+                e.currentTarget.style.background = '#0d9488';
+                e.currentTarget.style.borderColor = '#0d9488';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (categories.length > 0) {
+                e.currentTarget.style.background = '#14b8a6';
+                e.currentTarget.style.borderColor = '#14b8a6';
+              }
+            }}
+          >
+            <IconifyIcon icon="ri:add-line" />
+            Nouveau produit
+          </button>
+        </>
+      );
+    } else {
+      setPageActions(null);
+    }
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions, isStaff, canEdit, categories.length]);
 
   useEffect(() => {
     fetchData();
@@ -271,18 +368,6 @@ export default function FoodsPage() {
     setShowFoodModal(true);
   };
 
-  const openNewFood = (categoryId?: string) => {
-    setEditingFood(null);
-    setFoodForm({
-      name: "",
-      description: "",
-      recipe: "",
-      image: "",
-      category: categoryId || categories[0]?._id || "",
-    });
-    setShowFoodModal(true);
-  };
-
   const openRecipeModal = (food: Food) => {
     setSelectedFood(food);
     setShowRecipeModal(true);
@@ -301,14 +386,11 @@ export default function FoodsPage() {
 
   if (loading) {
     return (
-      <>
-        <DashboardPageTitle subName="Menu" title="Gestion des produits alimentaires" />
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Chargement...</span>
-          </div>
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Chargement...</span>
         </div>
-      </>
+      </div>
     );
   }
 
@@ -319,11 +401,6 @@ export default function FoodsPage() {
 
   return (
     <>
-      <DashboardPageTitle
-        subName="Menu"
-        title={isStaff ? "Produits alimentaires" : "Gestion des produits alimentaires"}
-      />
-
       {message && (
         <Alert
           variant={message.type === "success" ? "success" : "danger"}
@@ -610,33 +687,6 @@ export default function FoodsPage() {
       ) : (
         /* Admin/Dev View */
         <>
-          {canEdit && (
-            <Row className="mb-4">
-              <Col>
-                <Button
-                  variant="primary"
-                  className="me-2"
-                  onClick={() => {
-                    setEditingCategory(null);
-                    setCategoryName("");
-                    setShowCategoryModal(true);
-                  }}
-                >
-                  <IconifyIcon icon="ri:add-line" className="me-1" />
-                  Nouvelle catégorie
-                </Button>
-                <Button
-                  variant="success"
-                  onClick={() => openNewFood()}
-                  disabled={categories.length === 0}
-                >
-                  <IconifyIcon icon="ri:add-line" className="me-1" />
-                  Nouveau produit
-                </Button>
-              </Col>
-            </Row>
-          )}
-
           {categories.length === 0 ? (
             <Card>
               <CardBody className="text-center py-5">
@@ -649,52 +699,52 @@ export default function FoodsPage() {
           ) : (
             categories.map((category) => (
               <Card key={category._id} className="mb-4">
-                <CardHeader className="d-flex justify-content-between align-items-center">
-                  <CardTitle as="h4" className="mb-0 d-flex align-items-center gap-2">
-                    {category.name}
-                    {!category.isActive && (
-                      <Badge bg="secondary">Inactif</Badge>
-                    )}
-                    {canEdit && (
-                      <Form.Check
-                        type="switch"
-                        id={`showOnSite-${category._id}`}
-                        label={<small className="text-muted">Afficher sur le site</small>}
-                        checked={category.showOnSite !== false}
-                        onChange={() => handleToggleShowOnSite(category._id, category.showOnSite !== false)}
-                        className="ms-3"
-                      />
-                    )}
-                  </CardTitle>
-                  {canEdit && (
-                    <div>
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        className="me-2"
-                        onClick={() => openNewFood(category._id)}
-                      >
-                        <IconifyIcon icon="ri:add-line" />
-                      </Button>
-                      <Button
-                        variant="outline-secondary"
-                        size="sm"
-                        className="me-2"
-                        onClick={() => openEditCategory(category)}
-                      >
-                        <IconifyIcon icon="ri:edit-line" />
-                      </Button>
-                      <Button
-                        variant="outline-danger"
-                        size="sm"
-                        onClick={() => handleDeleteCategory(category._id)}
-                      >
-                        <IconifyIcon icon="ri:delete-bin-line" />
-                      </Button>
-                    </div>
-                  )}
-                </CardHeader>
                 <CardBody>
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <div className="d-flex align-items-center gap-2">
+                      <h5 className="mb-0">{category.name}</h5>
+                      {!category.isActive && (
+                        <Badge bg="secondary">Inactif</Badge>
+                      )}
+                      {canEdit && (
+                        <Form.Check
+                          type="switch"
+                          id={`showOnSite-${category._id}`}
+                          label={<small className="text-muted">Afficher sur le site</small>}
+                          checked={category.showOnSite !== false}
+                          onChange={() => handleToggleShowOnSite(category._id, category.showOnSite !== false)}
+                          className="ms-3"
+                        />
+                      )}
+                    </div>
+                    {canEdit && (
+                      <div>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => openNewFood(category._id)}
+                        >
+                          <IconifyIcon icon="ri:add-line" />
+                        </Button>
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => openEditCategory(category)}
+                        >
+                          <IconifyIcon icon="ri:edit-line" />
+                        </Button>
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={() => handleDeleteCategory(category._id)}
+                        >
+                          <IconifyIcon icon="ri:delete-bin-line" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                   {foods.filter((d) => d.category._id === category._id)
                     .length === 0 ? (
                     <p className="text-muted mb-0">

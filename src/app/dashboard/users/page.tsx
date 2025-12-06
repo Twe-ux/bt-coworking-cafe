@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import DashboardPageTitle from '@/components/dashboard/DashboardPageTitle';
+import { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -14,8 +13,10 @@ import {
   Alert,
   Form,
   InputGroup,
-} from 'react-bootstrap';
-import IconifyIcon from '@/components/dashboard/wrappers/IconifyIcon';
+  Button,
+} from "react-bootstrap";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { useTopbarContext } from "@/context/useTopbarContext";
 
 interface UserData {
   id: string;
@@ -41,11 +42,27 @@ export default function UsersPage() {
   const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState<string>('all');
-  const [newsletterFilter, setNewsletterFilter] = useState<string>('all');
-  const [accountFilter, setAccountFilter] = useState<string>('all');
-  const [stats, setStats] = useState({ total: 0, withAccount: 0, active: 0, newsletter: 0 });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [newsletterFilter, setNewsletterFilter] = useState<string>("all");
+  const [accountFilter, setAccountFilter] = useState<string>("all");
+  const [stats, setStats] = useState({
+    total: 0,
+    withAccount: 0,
+    active: 0,
+    newsletter: 0,
+  });
+  const { setPageTitle, setPageActions } = useTopbarContext();
+
+  useEffect(() => {
+    setPageTitle('Gestion des utilisateurs');
+    setPageActions(null);
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
 
   useEffect(() => {
     fetchUsers();
@@ -57,10 +74,10 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/admin/users');
+      const response = await fetch("/api/admin/users");
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la récupération des utilisateurs');
+        throw new Error("Erreur lors de la récupération des utilisateurs");
       }
 
       const data = await response.json();
@@ -72,7 +89,7 @@ export default function UsersPage() {
         newsletter: data.newsletter || 0,
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      setError(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {
       setLoading(false);
     }
@@ -93,21 +110,21 @@ export default function UsersPage() {
     }
 
     // Role filter
-    if (roleFilter !== 'all') {
+    if (roleFilter !== "all") {
       filtered = filtered.filter((user) => user.role.slug === roleFilter);
     }
 
     // Newsletter filter
-    if (newsletterFilter === 'subscribed') {
+    if (newsletterFilter === "subscribed") {
       filtered = filtered.filter((user) => user.newsletter);
-    } else if (newsletterFilter === 'not-subscribed') {
+    } else if (newsletterFilter === "not-subscribed") {
       filtered = filtered.filter((user) => !user.newsletter);
     }
 
     // Account filter
-    if (accountFilter === 'with-account') {
+    if (accountFilter === "with-account") {
       filtered = filtered.filter((user) => user.hasAccount);
-    } else if (accountFilter === 'email-only') {
+    } else if (accountFilter === "email-only") {
       filtered = filtered.filter((user) => !user.hasAccount);
     }
 
@@ -115,31 +132,57 @@ export default function UsersPage() {
   };
 
   const formatDate = (date?: Date) => {
-    if (!date) return '-';
-    return new Date(date).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
   const getRoleBadgeColor = (slug: string) => {
     switch (slug) {
-      case 'dev':
-        return 'danger';
-      case 'admin':
-        return 'warning';
-      case 'staff':
-        return 'info';
+      case "dev":
+        return "danger";
+      case "admin":
+        return "warning";
+      case "staff":
+        return "info";
       default:
-        return 'primary';
+        return "primary";
+    }
+  };
+
+  const handleDelete = async (userId: string, userEmail: string) => {
+    if (
+      !confirm(
+        `Êtes-vous sûr de vouloir supprimer l'utilisateur "${userEmail}" ?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression");
+      }
+
+      // Refresh the users list
+      await fetchUsers();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Erreur lors de la suppression"
+      );
     }
   };
 
   if (loading) {
     return (
       <>
-        <DashboardPageTitle subName="Admin" title="Gestion des utilisateurs" />
         <Row>
           <Col xl={12}>
             <Card>
@@ -156,7 +199,6 @@ export default function UsersPage() {
   if (error) {
     return (
       <>
-        <DashboardPageTitle subName="Admin" title="Gestion des utilisateurs" />
         <Row>
           <Col xl={12}>
             <Alert variant="danger">{error}</Alert>
@@ -168,8 +210,6 @@ export default function UsersPage() {
 
   return (
     <>
-      <DashboardPageTitle subName="Admin" title="Gestion des utilisateurs" />
-
       {/* Stats Cards */}
       <Row className="mb-3">
         <Col md={3}>
@@ -322,12 +362,13 @@ export default function UsersPage() {
                       <th>Rôle</th>
                       <th>Newsletter</th>
                       <th>Date création</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="text-center py-4">
+                        <td colSpan={8} className="text-center py-4">
                           Aucun résultat
                         </td>
                       </tr>
@@ -337,21 +378,27 @@ export default function UsersPage() {
                           <td>{user.givenName}</td>
                           <td>{user.email}</td>
                           <td>
-                            {user.username !== '-' ? (
+                            {user.username !== "-" ? (
                               <code>@{user.username}</code>
                             ) : (
-                              '-'
+                              "-"
                             )}
                           </td>
                           <td>
                             {user.hasAccount ? (
                               <Badge bg="primary">
-                                <IconifyIcon icon="ri:user-line" className="me-1" />
+                                <IconifyIcon
+                                  icon="ri:user-line"
+                                  className="me-1"
+                                />
                                 Compte
                               </Badge>
                             ) : (
                               <Badge bg="warning">
-                                <IconifyIcon icon="ri:mail-line" className="me-1" />
+                                <IconifyIcon
+                                  icon="ri:mail-line"
+                                  className="me-1"
+                                />
                                 Email
                               </Badge>
                             )}
@@ -362,7 +409,7 @@ export default function UsersPage() {
                                 {user.role.name}
                               </Badge>
                             ) : (
-                              '-'
+                              "-"
                             )}
                           </td>
                           <td>
@@ -379,6 +426,15 @@ export default function UsersPage() {
                             )}
                           </td>
                           <td>{formatDate(user.createdAt)}</td>
+                          <td>
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => handleDelete(user.id, user.email)}
+                            >
+                              <IconifyIcon icon="ri:delete-bin-line" />
+                            </Button>
+                          </td>
                         </tr>
                       ))
                     )}
@@ -388,7 +444,7 @@ export default function UsersPage() {
 
               <div className="mt-3 text-muted">
                 {filteredUsers.length} résultat
-                {filteredUsers.length > 1 ? 's' : ''}
+                {filteredUsers.length > 1 ? "s" : ""}
               </div>
             </CardBody>
           </Card>

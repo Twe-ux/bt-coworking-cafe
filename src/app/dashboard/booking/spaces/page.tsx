@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTopbarContext } from "@/context/useTopbarContext";
 import { Card, Table, Badge, Button, Alert } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 
 interface SpaceConfiguration {
   _id: string;
@@ -44,9 +44,50 @@ const spaceTypeLabels: Record<string, string> = {
 export const dynamic = "force-dynamic";
 
 const SpacesManagementPage = () => {
+  const { setPageTitle, setPageActions } = useTopbarContext();
   const [spaces, setSpaces] = useState<SpaceConfiguration[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    setPageTitle('Gestion des Espaces');
+    setPageActions(
+      <Link
+        href="/dashboard/booking/spaces-new"
+        style={{
+          padding: '8px 16px',
+          background: '#667eea',
+          border: '1px solid #667eea',
+          borderRadius: '8px',
+          fontSize: '14px',
+          fontWeight: 500,
+          color: 'white',
+          cursor: 'pointer',
+          transition: 'all 0.3s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          textDecoration: 'none',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#5568d3';
+          e.currentTarget.style.borderColor = '#5568d3';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = '#667eea';
+          e.currentTarget.style.borderColor = '#667eea';
+        }}
+      >
+        <Icon icon="ri:add-line" />
+        Ajouter un espace
+      </Link>
+    );
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
 
   useEffect(() => {
     fetchSpaces();
@@ -143,7 +184,6 @@ const SpacesManagementPage = () => {
   if (loading) {
     return (
       <div className="container-fluid">
-        <DashboardPageTitle title="Gestion des Espaces" subName="Booking" />
         <div className="text-center mt-5">
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Chargement...</span>
@@ -155,7 +195,6 @@ const SpacesManagementPage = () => {
 
   return (
     <div className="container-fluid">
-      <DashboardPageTitle title="Gestion des Espaces" subName="Booking" />
 
       {message && (
         <Alert
@@ -169,14 +208,6 @@ const SpacesManagementPage = () => {
 
       <Card className="border-0 shadow-sm">
         <Card.Body>
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h5 className="card-title mb-0">Liste des espaces</h5>
-            <Link href="/dashboard/booking/spaces-new" className="btn btn-primary">
-              <Icon icon="ri:add-line" className="me-1" />
-              Ajouter un espace
-            </Link>
-          </div>
-
           <div className="table-responsive">
             <Table hover className="align-middle mb-0">
               <thead className="table-light">
@@ -259,37 +290,25 @@ const SpacesManagementPage = () => {
                         <div className="d-flex gap-1 flex-wrap">
                           <Link
                             href={`/dashboard/booking/spaces-edit/${space._id}`}
-                            className="btn btn-sm btn-primary py-0 px-2"
-                            style={{ fontSize: '0.75rem' }}
+                            className="btn btn-sm btn-outline-primary"
                           >
-                            <Icon icon="ri:edit-line" width={14} className="me-1" />
-                            <span className="d-none d-lg-inline">Modifier</span>
+                            <Icon icon="ri:edit-line" />
                           </Link>
                           <Button
                             size="sm"
-                            variant={space.isActive ? "warning" : "success"}
+                            variant={space.isActive ? "outline-warning" : "outline-success"}
                             onClick={() => handleToggleActive(space._id, space.isActive)}
-                            className="py-0 px-2"
-                            style={{ fontSize: '0.75rem' }}
                           >
                             <Icon
                               icon={space.isActive ? "ri:pause-circle-line" : "ri:play-circle-line"}
-                              width={14}
-                              className="me-1"
                             />
-                            <span className="d-none d-xl-inline">
-                              {space.isActive ? "Désactiver" : "Activer"}
-                            </span>
                           </Button>
                           <Button
                             size="sm"
-                            variant="danger"
+                            variant="outline-danger"
                             onClick={() => handleDelete(space._id, space.name)}
-                            className="py-0 px-2"
-                            style={{ fontSize: '0.75rem' }}
                           >
-                            <Icon icon="ri:delete-bin-line" width={14} className="me-1" />
-                            <span className="d-none d-lg-inline">Supprimer</span>
+                            <Icon icon="ri:delete-bin-line" />
                           </Button>
                         </div>
                       </td>

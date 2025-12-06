@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 1 - Sans Topbar (Full Screen)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .wrapper {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: #1e293b;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s;
+    }
+
+    .sidebar.collapsed {
+      width: 70px;
+    }
+
+    /* Sidebar Header */
+    .sidebar-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      min-height: 70px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      font-size: 18px;
+      white-space: nowrap;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar.collapsed .logo-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .toggle-sidebar {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .toggle-sidebar:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Sidebar Menu */
+    .sidebar-menu {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 0;
+    }
+
+    .menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .menu-item.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .menu-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .menu-text {
+      white-space: nowrap;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar.collapsed .menu-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    /* Sidebar Footer */
+    .sidebar-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 16px;
+    }
+
+    .user-menu {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .user-menu:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-details {
+      flex: 1;
+      min-width: 0;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar.collapsed .user-details {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .settings-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar.collapsed .settings-row {
+      opacity: 0;
+      height: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .settings-btn {
+      flex: 1;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+
+    .settings-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f8f9fa;
+      overflow: hidden;
+    }
+
+    /* Page Header (contextuel par page) */
+    .page-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .page-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .action-btn.active {
+      background: white;
+      color: #667eea;
+    }
+
+    /* Page Content */
+    .page-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    .demo-card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+    }
+
+    .demo-card h3 {
+      margin-bottom: 12px;
+      color: #1e293b;
+    }
+
+    .demo-card p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <!-- Header avec Logo + Toggle -->
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-img">BT</div>
+          <span class="logo-text">BT Café</span>
+        </div>
+        <button class="toggle-sidebar" onclick="toggleSidebar()">
+          ☰
+        </button>
+      </div>
+
+      <!-- Menu -->
+      <div class="sidebar-menu">
+        <a href="#" class="menu-item">
+          <span class="menu-icon">📊</span>
+          <span class="menu-text">Dashboard</span>
+        </a>
+        <a href="#" class="menu-item active">
+          <span class="menu-icon">📅</span>
+          <span class="menu-text">Calendrier</span>
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">📋</span>
+          <span class="menu-text">Réservations</span>
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">🏢</span>
+          <span class="menu-text">Espaces</span>
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">📧</span>
+          <span class="menu-text">Messages</span>
+        </a>
+        <a href="#" class="menu-item">
+          <span class="menu-icon">📝</span>
+          <span class="menu-text">Blog</span>
+        </a>
+      </div>
+
+      <!-- Footer avec User + Settings -->
+      <div class="sidebar-footer">
+        <div class="user-menu">
+          <div class="user-info">
+            <div class="user-avatar">TW</div>
+            <div class="user-details">
+              <div class="user-name">Thierry</div>
+              <div class="user-role">Admin</div>
+            </div>
+          </div>
+          <div class="settings-row">
+            <button class="settings-btn" title="Mode sombre">🌙</button>
+            <button class="settings-btn" title="Notifications">🔔</button>
+            <button class="settings-btn" title="Paramètres">⚙️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- Page Header (varie selon la page) -->
+      <div class="page-header">
+        <h1 class="page-title">Calendrier des Réservations</h1>
+        <div class="page-actions">
+          <button class="action-btn">Jour</button>
+          <button class="action-btn active">Semaine</button>
+          <button class="action-btn">Mois</button>
+        </div>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="demo-card">
+          <h3>✨ Avantages de ce layout</h3>
+          <p>
+            ✅ <strong>Plein écran</strong> : Tout l'espace vertical est utilisé pour le contenu<br>
+            ✅ <strong>Toggle dans sidebar</strong> : Hamburger menu à côté du logo<br>
+            ✅ <strong>Settings en bas</strong> : Mode dark, notifications et paramètres en bas de la sidebar<br>
+            ✅ <strong>Header contextuel</strong> : Les actions de la page (Jour/Semaine/Mois) dans le header coloré<br>
+            ✅ <strong>Sidebar collapse</strong> : Peut se réduire pour gagner de l'espace horizontal
+          </p>
+        </div>
+
+        <div class="demo-card">
+          <h3>📋 Exemple d'autres pages</h3>
+          <p>
+            <strong>Dashboard</strong> : Header avec filtres de date<br>
+            <strong>Réservations</strong> : Header avec boutons Filtrer, Exporter<br>
+            <strong>Blog</strong> : Header avec bouton Nouvel Article<br>
+            <strong>Messages</strong> : Header avec onglets Tous/Non lus/Archivés
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('collapsed');
+    }
+  </script>
+</body>
+</html>

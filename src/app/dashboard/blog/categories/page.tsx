@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { Card, CardBody, CardHeader, CardTitle, Button, Table, Modal, Form, Spinner, Badge } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { useTopbarContext } from '@/context/useTopbarContext';
+import { Card, CardBody, Button, Table, Modal, Form, Spinner, Badge } from 'react-bootstrap';
 import {
   useGetCategoriesQuery,
   useCreateCategoryMutation,
@@ -12,6 +13,7 @@ import { useNotification } from '@/hooks/useNotification';
 import IconifyIcon from '@/components/dashboard/wrappers/IconifyIcon';
 
 const CategoriesPage = () => {
+  const { setPageTitle, setPageActions } = useTopbarContext();
   const { data, isLoading, error } = useGetCategoriesQuery({ limit: 100 });
   const [createCategory, { isLoading: isCreating }] = useCreateCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] = useUpdateCategoryMutation();
@@ -50,6 +52,45 @@ const CategoriesPage = () => {
     setEditingCategory(null);
     setFormData({ name: '', description: '', color: '#007bff' });
   };
+
+  useEffect(() => {
+    setPageTitle('Gestion des Catégories');
+    setPageActions(
+      <button
+        onClick={() => handleOpenModal()}
+        style={{
+          padding: '8px 16px',
+          background: '#667eea',
+          border: '1px solid #667eea',
+          borderRadius: '8px',
+          fontSize: '14px',
+          fontWeight: 500,
+          color: 'white',
+          cursor: 'pointer',
+          transition: 'all 0.3s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#5568d3';
+          e.currentTarget.style.borderColor = '#5568d3';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = '#667eea';
+          e.currentTarget.style.borderColor = '#667eea';
+        }}
+      >
+        <IconifyIcon icon="solar:add-circle-outline" />
+        Nouvelle Catégorie
+      </button>
+    );
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,13 +139,6 @@ const CategoriesPage = () => {
   return (
     <>
       <Card>
-        <CardHeader className="d-flex justify-content-between align-items-center">
-          <CardTitle as="h4" className="mb-0">Gestion des Catégories</CardTitle>
-          <Button variant="primary" onClick={() => handleOpenModal()}>
-            <IconifyIcon icon="solar:add-circle-outline" className="me-2" />
-            Nouvelle Catégorie
-          </Button>
-        </CardHeader>
         <CardBody>
           {error ? (
             <div className="alert alert-danger">
@@ -153,25 +187,19 @@ const CategoriesPage = () => {
                     <td>
                       <div className="d-flex gap-1 flex-wrap">
                         <Button
-                          variant="primary"
+                          variant="outline-primary"
                           size="sm"
-                          className="py-0 px-2"
-                          style={{ fontSize: '0.75rem' }}
                           onClick={() => handleOpenModal(category)}
                         >
-                          <IconifyIcon icon="solar:pen-outline" width={14} className="me-1" />
-                          Modifier
+                          <IconifyIcon icon="ri:edit-line" />
                         </Button>
                         <Button
-                          variant="danger"
+                          variant="outline-danger"
                           size="sm"
-                          className="py-0 px-2"
-                          style={{ fontSize: '0.75rem' }}
                           onClick={() => handleDelete(category._id)}
                           disabled={isDeleting}
                         >
-                          <IconifyIcon icon="solar:trash-bin-outline" width={14} className="me-1" />
-                          Supprimer
+                          <IconifyIcon icon="ri:delete-bin-line" />
                         </Button>
                       </div>
                     </td>
@@ -234,30 +262,22 @@ const CategoriesPage = () => {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
+              variant="outline-secondary"
               size="sm"
               onClick={handleCloseModal}
-              className="py-1 px-3"
             >
-              Annuler
+              <IconifyIcon icon="ri:close-line" />
             </Button>
             <Button
-              variant="primary"
+              variant="outline-primary"
               size="sm"
               type="submit"
               disabled={isCreating || isUpdating}
-              className="py-1 px-3"
             >
               {isCreating || isUpdating ? (
-                <>
-                  <Spinner animation="border" size="sm" className="me-2" />
-                  Enregistrement...
-                </>
+                <Spinner animation="border" size="sm" />
               ) : (
-                <>
-                  <IconifyIcon icon="solar:check-circle-outline" width={16} className="me-1" />
-                  Enregistrer
-                </>
+                <IconifyIcon icon="ri:check-line" />
               )}
             </Button>
           </Modal.Footer>

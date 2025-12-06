@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { useTopbarContext } from "@/context/useTopbarContext";
 
 interface SpaceFormData {
   spaceType: string;
@@ -37,6 +37,7 @@ export const dynamic = "force-dynamic";
 
 const CreateSpacePage = () => {
   const router = useRouter();
+  const { setPageTitle, setPageActions } = useTopbarContext();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -65,6 +66,16 @@ const CreateSpacePage = () => {
     imageUrl: "",
     displayOrder: 0,
   });
+
+  useEffect(() => {
+    setPageTitle('Créer un Espace');
+    setPageActions(null);
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -163,8 +174,6 @@ const CreateSpacePage = () => {
 
   return (
     <div className="container-fluid">
-      <DashboardPageTitle title="Créer un Espace" subName="Booking" />
-
       {message && (
         <Alert
           variant={message.type === "success" ? "success" : "danger"}

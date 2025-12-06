@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Card, Table, Badge, Button, Form, Row, Col, Alert } from "react-bootstrap";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { useTopbarContext } from "@/context/useTopbarContext";
 
 interface Reservation {
   _id: string;
@@ -74,6 +76,85 @@ export default function AdminReservationsPage() {
   const [filterStatus, setFilterStatus] = useState<string>("");
   const [filterSpaceType, setFilterSpaceType] = useState<string>("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const { setPageTitle, setPageActions } = useTopbarContext();
+
+  useEffect(() => {
+    setPageTitle('Gestion des Réservations');
+    setPageActions(
+      <>
+        <button
+          onClick={() => setFilterStatus('')}
+          style={{
+            padding: '8px 16px',
+            background: filterStatus === '' ? '#667eea' : 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: filterStatus === '' ? 'white' : '#374151',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          Toutes
+        </button>
+        <button
+          onClick={() => setFilterStatus('pending')}
+          style={{
+            padding: '8px 16px',
+            background: filterStatus === 'pending' ? '#667eea' : 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: filterStatus === 'pending' ? 'white' : '#374151',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          En attente
+        </button>
+        <button
+          onClick={() => setFilterStatus('confirmed')}
+          style={{
+            padding: '8px 16px',
+            background: filterStatus === 'confirmed' ? '#667eea' : 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: filterStatus === 'confirmed' ? 'white' : '#374151',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          Confirmées
+        </button>
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          style={{
+            padding: '8px 16px',
+            background: 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: '#374151',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          + Filtrer
+        </button>
+      </>
+    );
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [filterStatus, setPageTitle, setPageActions, showFilters]);
 
   useEffect(() => {
     fetchReservations();
@@ -298,25 +379,19 @@ export default function AdminReservationsPage() {
                           {reservation.status === "pending" && (
                             <Button
                               size="sm"
-                              variant="success"
+                              variant="outline-success"
                               onClick={() => handleUpdateStatus(reservation._id, "confirmed")}
-                              className="py-0 px-2"
-                              style={{ fontSize: '0.75rem' }}
                             >
-                              <i className="bi bi-check-circle me-1" style={{ fontSize: '0.875rem' }}></i>
-                              Confirmer
+                              <IconifyIcon icon="ri:check-line" />
                             </Button>
                           )}
                           {reservation.status !== "cancelled" && (
                             <Button
                               size="sm"
-                              variant="danger"
+                              variant="outline-danger"
                               onClick={() => handleCancelReservation(reservation._id)}
-                              className="py-0 px-2"
-                              style={{ fontSize: '0.75rem' }}
                             >
-                              <i className="bi bi-x-circle me-1" style={{ fontSize: '0.875rem' }}></i>
-                              Annuler
+                              <IconifyIcon icon="ri:close-line" />
                             </Button>
                           )}
                         </div>

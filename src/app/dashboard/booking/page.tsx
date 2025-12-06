@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { useTopbarContext } from "@/context/useTopbarContext";
 import StatisticsCards from "./components/StatisticsCards";
 import ReservationsChart from "./components/ReservationsChart";
 import RevenueChart from "./components/RevenueChart";
@@ -11,10 +12,20 @@ import RecentReservations from "./components/RecentReservations";
 export const dynamic = 'force-dynamic';
 
 const BookingOverviewPage = () => {
+  const { setPageTitle, setPageActions } = useTopbarContext();
+
+  useEffect(() => {
+    setPageTitle('Booking Overview');
+    setPageActions(null);
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
+
   return (
     <>
-      <DashboardPageTitle title="Booking Overview" subName="Booking" />
-
       {/* Statistics Cards */}
       <StatisticsCards />
 

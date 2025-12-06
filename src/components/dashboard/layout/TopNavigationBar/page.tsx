@@ -1,13 +1,12 @@
+"use client";
+
 import { Container } from "react-bootstrap";
-import IconifyIcon from "../../wrappers/IconifyIcon";
 import LeftSideBarToggle from "./components/LeftSideBarToggle";
-import MaximizeScreen from "./components/MaximizeScreen";
-import Notifications from "./components/Notifications";
-import ProfileDropdown from "./components/ProfileDropdown";
-import ThemeCustomizerToggle from "./components/ThemeCustomizerToggle";
-import ThemeModeToggle from "./components/ThemeModeToggle";
+import { useTopbarContext } from "@/context/useTopbarContext";
 
 const page = () => {
+  const { pageTitle, pageActions } = useTopbarContext();
+
   return (
     <header>
       <div className="topbar">
@@ -15,31 +14,18 @@ const page = () => {
           <div className="navbar-header">
             <div className="d-flex align-items-center gap-2">
               <LeftSideBarToggle />
-              <form className="app-search d-none d-md-block me-auto">
-                <div className="position-relative">
-                  <input
-                    type="search"
-                    className="form-control border-0"
-                    placeholder="Search..."
-                    autoComplete="off"
-                  />
-                  <IconifyIcon
-                    icon="ri:search-line"
-                    className=" search-widget-icon"
-                  />
-                </div>
-              </form>
+              <h1
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 600,
+                  margin: 0,
+                }}
+              >
+                {pageTitle}
+              </h1>
             </div>
-            <div className="d-flex align-items-center gap-1">
-              <ThemeModeToggle />
-
-              <MaximizeScreen />
-
-              <Notifications />
-
-              <ThemeCustomizerToggle />
-
-              <ProfileDropdown />
+            <div className="d-flex align-items-center gap-2">
+              {pageActions}
             </div>
           </div>
         </Container>

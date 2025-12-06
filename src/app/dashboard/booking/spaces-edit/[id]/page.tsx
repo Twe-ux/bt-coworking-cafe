@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, Form, Button, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 import { useRouter, useParams } from "next/navigation";
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+import { useTopbarContext } from "@/context/useTopbarContext";
 
 interface SpaceFormData {
   spaceType: string;
@@ -39,6 +39,7 @@ const EditSpacePage = () => {
   const router = useRouter();
   const params = useParams();
   const spaceId = params.id as string;
+  const { setPageTitle, setPageActions } = useTopbarContext();
 
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -69,6 +70,16 @@ const EditSpacePage = () => {
     imageUrl: "",
     displayOrder: 0,
   });
+
+  useEffect(() => {
+    setPageTitle('Modifier un Espace');
+    setPageActions(null);
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
 
   useEffect(() => {
     fetchSpace();
@@ -190,7 +201,6 @@ const EditSpacePage = () => {
   if (loadingData) {
     return (
       <div className="container-fluid">
-        <DashboardPageTitle title="Modifier un Espace" subName="Booking" />
         <div className="text-center mt-5">
           <Spinner animation="border" />
         </div>
@@ -200,8 +210,6 @@ const EditSpacePage = () => {
 
   return (
     <div className="container-fluid">
-      <DashboardPageTitle title="Modifier un Espace" subName="Booking" />
-
       {message && (
         <Alert
           variant={message.type === "success" ? "success" : "danger"}
