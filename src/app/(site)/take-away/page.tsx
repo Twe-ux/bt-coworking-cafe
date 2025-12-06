@@ -1,0 +1,142 @@
+import PageTitle from "@/components/site/pageTitle";
+import Partner from "@/components/site/partner";
+import { partnerTwoLogos } from "@/db/partnerOneLogos";
+import SlideUp from "@/utils/animations/slideUp";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Take Away | Cow-or-King Café",
+  description: `Coffee shop à Strasbourg : boissons à emporter, cafés glacés et frappés, matcha latte, citronnades, smoothies, encas sucrés, pizzas faites maison et petite épicerie. Tout pour une pause gourmande à savourer où vous voulez.`,
+  openGraph: {
+    title: "Take Away - Cow-or-King Café",
+    description: "Découvrez Cow-or-King Café by Anticafé à Strasbourg.",
+    type: "website",
+  },
+};
+
+const TakeAway = () => {
+  return (
+    <>
+      <PageTitle title={"Take Away"} />
+      <article className="concept py__130">
+        <div className="container">
+          <img
+            src="/images/concept/anticafe-paris-strasbourg.webp"
+            alt="anticafe-paris-strasbourg"
+            className="w-100 thumb__img"
+          />
+          <div className="first__para pt__60">
+            <SlideUp>
+              <h2 className="t__54">
+                Plus d’une trentaine de choix de boissons à emporter
+              </h2>
+            </SlideUp>
+            <p>
+              Que vous soyez en télétravail à la maison, en balade dans le
+              centre-ville ou simplement de passage, vous pouvez aussi profiter
+              de tout ce qu’on prépare au comptoir. Plus de 30 boissons à
+              emporter vous attendent : cafés classiques ou plus gourmands,
+              matcha et chai latte, créations glacées, jus frais, thés parfumés,
+              citronnades maison… bref, toute la palette du coffee shop à
+              glisser dans votre journée.
+            </p>
+            <p>
+              Notre offre “à emporter” , c’est la solution parfaite pour celles
+              et ceux qui aiment l’énergie d’Anticafé… mais ont besoin d’avancer
+              ailleurs. Vous passez, vous commandez, vous repartez avec votre
+              boisson préférée — la même qualité qu’ici, mais en version nomade.
+              ✨
+            </p>
+            <img
+              src="/images/concept/anticafe-paris-strasbourg.webp"
+              alt="anticafe-paris-strasbourg"
+              className="w-100 thumb__img"
+            />
+            <p>
+              Seules les boissons “COLD DRINKS” et “HOT DRINKS” sont incluses à
+              volonté sur place.
+            </p>
+          </div>
+          <div className="thred__para pt__50">
+            <img
+              src="/images/concept/anticafe-paris-strasbourg.webp"
+              alt="anticafe-paris-strasbourg"
+              className="w-100 thumb__img"
+            />
+            <h2 className="t__54">🍪 Encas sucrés</h2>
+            <p>
+              Envie d’un petit boost ? On propose une sélection d’encas sucrés :
+              cookies, mini-cakes, gaufres moelleuses, barres aux fruits,
+              madeleines… Les prix varient entre 1,40 € et 2,90 €, et la
+              sélection change au fil de la semaine selon les arrivages et les
+              envies du moment. Simple, gourmand, efficace.
+            </p>
+            <p>
+              Sur place, ils sont inclus pour les forfaits jour, semaine et
+              mois.
+            </p>
+            <h3 className="t__28">🍕 Nos pizzas faites sur place</h3>
+            <p>
+              Préparées et cuites ici même, nos pizzas individuelles sont
+              parfaites pour un déjeuner rapide ou une faim de loup de fin
+              d’après-midi. Classiques, généreuses, toujours fraîches : elles
+              sont proposées au tarif unique de 8,90 €. Pratique, bon, sans
+              chichi — comme on aime.
+            </p>
+            <p>
+              Sur place, elles sont à 6€90 pour les forfaits jour, semaine et
+              mois.
+            </p>
+
+            <h3 className="t__28">
+              🌱 Notre solution écologique : les gobelets Billie
+            </h3>
+            <p>
+              Pour limiter les déchets, nous proposons les gobelets
+              réutilisables Billie. Le principe est simple : vous prenez votre
+              boisson dans un gobelet consigné à 1 €, que vous pouvez ensuite
+              ramener ou échanger dans n’importe quelle boutique partenaire
+              Billie à Strasbourg. Pratique si vous vous déplacez beaucoup en
+              ville ! Les couvercles, eux, sont vendus 1 € (ils ne sont pas
+              consignés), ce qui vous permet d’en garder un propre sous la main
+              et de n’échanger que le gobelet. Une solution green, flexible et
+              super facile à adopter. 🌿
+            </p>
+            <img
+              src="/images/concept/anticafe-paris-strasbourg.webp"
+              alt="anticafe-paris-strasbourg"
+              className="w-100 thumb__img"
+            />
+          </div>
+          <div className="second__para pt__60">
+            <h2 className="t__54">🛒 Notre petite épicerie</h2>
+            <p>
+              Juste à côté du comptoir, vous trouverez une mini-épicerie pensée
+              pour mettre en avant nos partenaires et coups de cœur du moment :
+              cafés de torréfacteurs locaux, thés, sirops, chocolats, granolas,
+              biscuits artisanaux… L’idée ? Vous permettre de ramener chez vous
+              les ingrédients qui font le goût de nos boissons et petites
+              douceurs. Un prolongement naturel de notre comptoir, pour savourer
+              l’expérience à la maison ou au bureau.
+            </p>
+            <SlideUp>
+              <div className="d-flex gap-3 ">
+                <ul className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                  <li>des biscuits... </li>
+                  <li>notre café en grains </li>
+                </ul>
+                <ul className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                  <li>notre matcha et autres préparations de boissons</li>
+                  <li>des boissons fraîches (eau, maté pétillant...)</li>
+                </ul>
+              </div>
+            </SlideUp>
+          </div>
+          <Partner data={partnerTwoLogos} className={"bg-white"} />
+        </div>
+      </article>
+    </>
+  );
+};
+
+export default TakeAway;
