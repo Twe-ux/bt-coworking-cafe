@@ -248,11 +248,14 @@ const MessagesPage = () => {
                     <td>{message.subject}</td>
                     <td onClick={(e) => e.stopPropagation()}>
                       <Button
-                        variant="outline-primary"
+                        variant="primary"
                         size="sm"
                         onClick={() => handleViewMessage(message)}
+                        className="py-0 px-2"
+                        style={{ fontSize: '0.75rem' }}
                       >
-                        <i className="bi bi-eye"></i>
+                        <i className="bi bi-eye me-1" style={{ fontSize: '0.875rem' }}></i>
+                        Voir
                       </Button>
                     </td>
                   </tr>
@@ -317,22 +320,31 @@ const MessagesPage = () => {
         <Modal.Footer>
           <Button
             variant="outline-secondary"
+            size="sm"
             onClick={() => handleUpdateStatus(selectedMessage!._id, "archived")}
+            className="py-1 px-3"
           >
             <i className="bi bi-archive me-1"></i> Archiver
           </Button>
           {selectedMessage?.status !== "replied" && (
             <Button
               variant="primary"
+              size="sm"
               onClick={() => {
                 setShowReplyModal(true);
                 setShowModal(false);
               }}
+              className="py-1 px-3"
             >
               <i className="bi bi-reply me-1"></i> Répondre
             </Button>
           )}
-          <Button variant="danger" onClick={() => handleDelete(selectedMessage!._id)}>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => handleDelete(selectedMessage!._id)}
+            className="py-1 px-3"
+          >
             <i className="bi bi-trash me-1"></i> Supprimer
           </Button>
         </Modal.Footer>
@@ -369,11 +381,23 @@ const MessagesPage = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowReplyModal(false)}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowReplyModal(false)}
+            className="py-1 px-3"
+          >
             Annuler
           </Button>
-          <Button variant="primary" onClick={handleReply} disabled={sending || !replyText.trim()}>
-            {sending ? "Envoi..." : "Envoyer la réponse"}
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleReply}
+            disabled={sending || !replyText.trim()}
+            className="py-1 px-3"
+          >
+            <i className="bi bi-send me-1"></i>
+            {sending ? "Envoi..." : "Envoyer"}
           </Button>
         </Modal.Footer>
       </Modal>
