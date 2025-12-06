@@ -171,7 +171,7 @@ const SpacesManagementPage = () => {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h5 className="card-title mb-0">Liste des espaces</h5>
-            <Link href="/dashboard/booking/spaces/create" className="btn btn-primary">
+            <Link href="/dashboard/booking/spaces-new" className="btn btn-primary">
               <Icon icon="ri:add-line" className="me-1" />
               Ajouter un espace
             </Link>
@@ -258,7 +258,7 @@ const SpacesManagementPage = () => {
                       <td>
                         <div className="d-flex gap-1">
                           <Link
-                            href={`/dashboard/booking/spaces/${space._id}/edit`}
+                            href={`/dashboard/booking/spaces-edit/${space._id}`}
                             className="btn btn-sm btn-primary"
                             title="Modifier"
                           >
