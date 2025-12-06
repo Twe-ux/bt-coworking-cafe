@@ -10,36 +10,34 @@ const Footer = () => {
   const pathname = usePathname();
 
   // Check if we're on a client dashboard page (/{username}/...)
-  // Exclude public routes that start with known patterns
-  const isPublicRoute =
-    pathname &&
-    (pathname.startsWith("/blog") ||
-      pathname.startsWith("/promo") ||
-      pathname.startsWith("/booking") ||
-      [
-        "/",
-        "/concept",
-        "/spaces",
-        "/pricing",
-        "/contact",
-        "/signin",
-        "/signup",
-        "/scan",
-        "/boissons",
-        "/menu/boissons",
-        "/menu/food",
-        "/professionnels",
-        "/CGU",
-        "/confidentiality",
-        "/mentions-legales",
-      ].includes(pathname));
-
   const isClientDashboard =
     pathname &&
     /^\/[^\/]+(?:\/(?:profile|reservations|settings))?(?:\/.*)?$/.test(
       pathname
     ) &&
-    !isPublicRoute;
+    ![
+      "/",
+      "/about",
+      "/blog",
+      "/blog-details",
+      "/contact",
+      "/faq",
+      "/home-2",
+      "/pricing",
+      "/projects",
+      "/project-details",
+      "/services",
+      "/service-details",
+      "/concept",
+      "/espaces",
+      "/tarifs",
+      "/menu",
+      "/professionnels",
+      "/mag",
+      "/booking",
+      "/signin",
+      "/signup",
+    ].includes(pathname);
 
   // Check if we're on a booking page
   const isBookingPage = pathname && pathname.startsWith("/booking");
@@ -60,12 +58,12 @@ const Footer = () => {
         <div className="row footer__lo_co ">
           <div
             className={
-              showSubscribeForm || showBookingHelper ? "col-12" : "mt-5"
+              !isClientDashboard || !showBookingHelper ? "col-12" : " mt-5"
             }
           >
             <div className="d-flex justify-content-center">
               <Link
-                href={"/"}
+                href={"#"}
                 className="d-flex align-items-center footer__logo"
               >
                 <img
@@ -77,13 +75,13 @@ const Footer = () => {
             </div>
             <ul className="d-flex justify-content-center gap-3 footer__socal">
               <li>
-                <Link href="https://www.facebook.com/coworkingbyanticafeStrasbourg">
+                <Link href={"#"}>
                   <i className="fa-brands fa-facebook-f" />
                 </Link>
               </li>
 
               <li>
-                <Link href="https://www.instagram.com/coworking_anticafe">
+                <Link href={"#"}>
                   <i className="fa-brands fa-instagram" />
                 </Link>
               </li>
@@ -94,18 +92,15 @@ const Footer = () => {
         <hr className="footer__border" />
         {/* ---- Info */}
         <div className="row footer__info">
-          <div className="col-lg-3 col-md-6 mb-5 mb-lg-0">
+          <div className="col-lg-4 col-md-6 mb-5 mb-lg-0">
             <div className="footer__info_address">
               <h3 className="footer__info_group">Où nous trouver ?</h3>
-              <Link href={"/contact#emplacement"}>
-                <p>
-                  Cow or King Café <br />
-                  1 rue de la Division leclerc <br /> 67000 Strasbourg
-                </p>
-              </Link>
+              <p>
+                1 rue de la Division leclerc <br /> 67000 Strasbourg
+              </p>
             </div>
           </div>
-          <div className="col-lg-4 col-md-6 mb-5 mb-lg-0">
+          <div className="col-lg-3 col-md-6 mb-5 mb-lg-0">
             <div>
               <h3 className="footer__info_group">Nous contacter</h3>
               <ul className="footer__info_contact">
@@ -124,10 +119,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <img src="/icons/Frame7.svg" alt="img" />
-                  <p>
-                    Lun-Ven: 09h-20h <br />
-                    Sam-Dim & Fériés: 10h-20h
-                  </p>
+                  <p>L-V: 09h-20h | S-D & JF: 10h-20h</p>
                 </li>
               </ul>
             </div>
@@ -137,37 +129,29 @@ const Footer = () => {
               <h3 className="footer__info_group">Liens rapides</h3>
               <ul>
                 <li>
-                  <Link
-                    href={
-                      "https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1"
-                    }
-                  >
-                    Réserver
-                  </Link>
+                  <Link href={"#"}>Réserver</Link>
                 </li>
                 <li>
-                  <Link href={"/concept#concept"}>Fonctionnement</Link>
+                  <Link href={"#"}>Fonctionnement</Link>
                 </li>
                 <li>
-                  <Link href={"/pricing#pricing"}>Tarifs</Link>
+                  <Link href={"/tarifs"}>Tarifs</Link>
                 </li>
               </ul>
             </div>
           </div>
           <div className="col-lg-2 col-md-6 mb-5 mb-lg-0">
             <div>
-              <h3 className="footer__info_group">À propos</h3>
+              <h3 className="footer__info_group">???</h3>
               <ul>
                 <li>
-                  <Link href={"/mentions-legales"}>Mentions légales</Link>
+                  <Link href={"#"}>Mentions légales</Link>
                 </li>
                 <li>
-                  <Link href={"/CGU"}>Conditions générales de vente</Link>
+                  <Link href={"#"}>Conditions générales de vente</Link>
                 </li>
                 <li>
-                  <Link href={"/confidentiality"}>
-                    Politique de confidentialité
-                  </Link>
+                  <Link href={"#"}>Politique de confidentialité</Link>
                 </li>
               </ul>
             </div>
@@ -178,8 +162,8 @@ const Footer = () => {
           <div className="col-12">
             <hr className="footer__border" />
             <p className="text-center">
-              © Copyright 2025 Tous droits réservés{" "}
-              <Link href={"#"}>Twe-Ux</Link>
+              © Copyright 2025 All Rights Reserved by{" "}
+              <Link href={"#"}>digiv</Link>
             </p>
           </div>
         </div>

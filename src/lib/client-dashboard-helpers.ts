@@ -60,6 +60,9 @@ export function isClientDashboardRoute(pathname: string): boolean {
     '/auth/register',
     '/auth/forgot-password',
     '/dashboard',
+    '/booking',
+    '/signin',
+    '/signup',
   ];
 
   // Check if it's a public route

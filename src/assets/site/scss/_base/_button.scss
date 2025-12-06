@@ -11,8 +11,7 @@
   color: var(--primary-clr);
   transition: all 0.5s;
   @include breakpoint(md) {
-    padding: 13px 25px;
-    height: 40px;
+    padding: 13px 27px;
   }
   &:hover {
     opacity: 0.9;
@@ -21,9 +20,6 @@
     transform: rotate(-45deg);
     margin-left: 6px;
     font-size: 18px;
-    @include breakpoint(md) {
-      display: none;
-    }
   }
 }
 
@@ -42,7 +38,6 @@
   transition: all 0.5s;
   @include breakpoint(md) {
     padding: 13px 27px;
-    height: 40px;
   }
   &:hover {
     opacity: 0.9;

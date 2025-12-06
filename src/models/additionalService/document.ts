@@ -1,0 +1,93 @@
+import { Schema, Document } from 'mongoose';
+
+export type ServiceCategory = 'food' | 'beverage' | 'equipment' | 'other';
+
+export interface AdditionalServiceDocument extends Document {
+  name: string;
+  slug: string;
+  description?: string;
+  category: ServiceCategory;
+  price: number;
+  priceUnit: 'per-person' | 'flat-rate';
+  isActive: boolean;
+  isDeleted: boolean;
+  availableForSpaceTypes?: string[]; // desk, meeting-room, event-space, etc.
+  icon?: string;
+  order: number; // Pour l'ordre d'affichage
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
+const AdditionalServiceSchema = new Schema<AdditionalServiceDocument>(
+  {
+    name: {
+      type: String,
+      required: [true, 'Le nom du service est requis'],
+      trim: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    category: {
+      type: String,
+      required: true,
+      enum: ['food', 'beverage', 'equipment', 'other'],
+      default: 'other',
+    },
+    price: {
+      type: Number,
+      required: [true, 'Le prix est requis'],
+      min: [0, 'Le prix doit être positif'],
+    },
+    priceUnit: {
+      type: String,
+      required: true,
+      enum: ['per-person', 'flat-rate'],
+      default: 'flat-rate',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    availableForSpaceTypes: {
+      type: [String],
+      default: [],
+    },
+    icon: {
+      type: String,
+      trim: true,
+    },
+    order: {
+      type: Number,
+      default: 0,
+    },
+    deletedAt: {
+      type: Date,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Indexes
+AdditionalServiceSchema.index({ category: 1, isActive: 1 });
+AdditionalServiceSchema.index({ slug: 1 });
+AdditionalServiceSchema.index({ order: 1 });
+
+export default AdditionalServiceSchema;
