@@ -1407,42 +1407,22 @@ const CalendarPage = () => {
 
                 // Handle reservation events
                 const reservation = arg.event.extendedProps.reservation;
-                const statusIcon =
-                  reservation.status === "confirmed"
-                    ? "✓"
-                    : reservation.status === "pending"
-                    ? "⏱"
-                    : reservation.status === "cancelled"
-                    ? "✕"
-                    : "";
 
                 // Google Calendar style - just time and title on one line
                 return {
                   html: `
                   <div style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 1px 4px;
+                    padding: 1px 4px 1px 8px;
                     overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                     font-size: 11px;
                     line-height: 1.4;
+                    padding-right: 28px;
                   ">
-                    <div style="
-                      overflow: hidden;
-                      text-overflow: ellipsis;
-                      white-space: nowrap;
-                      flex: 1;
-                    ">
-                      <span style="font-weight: 600;">${arg.timeText}</span>
-                      <span style="margin: 0 4px;">•</span>
-                      <span>${arg.event.title}</span>
-                    </div>
-                    ${
-                      statusIcon
-                        ? `<span style="margin-left: 4px; opacity: 0.8; flex-shrink: 0;">${statusIcon}</span>`
-                        : ""
-                    }
+                    <span style="font-weight: 600;">${arg.timeText}</span>
+                    <span style="margin: 0 4px;">•</span>
+                    <span>${arg.event.title}</span>
                   </div>
                 `,
                 };
@@ -1517,7 +1497,12 @@ const CalendarPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  <span className="me-2" style={{ fontSize: "14px", color: "#10B981" }}>✓</span>
+                  <span
+                    className="me-2"
+                    style={{ fontSize: "14px", color: "#10B981" }}
+                  >
+                    ✓
+                  </span>
                   Confirmée
                 </div>
                 <div
@@ -1529,7 +1514,12 @@ const CalendarPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  <span className="me-2" style={{ fontSize: "14px", color: "#F59E0B" }}>⏱</span>
+                  <span
+                    className="me-2"
+                    style={{ fontSize: "14px", color: "#F59E0B" }}
+                  >
+                    ⏱
+                  </span>
                   En attente
                 </div>
                 <div
@@ -1541,7 +1531,12 @@ const CalendarPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  <span className="me-2" style={{ fontSize: "14px", color: "#EF4444" }}>✕</span>
+                  <span
+                    className="me-2"
+                    style={{ fontSize: "14px", color: "#EF4444" }}
+                  >
+                    ✕
+                  </span>
                   Annulée
                 </div>
               </div>
