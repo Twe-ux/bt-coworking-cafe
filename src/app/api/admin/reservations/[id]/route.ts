@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import connectDB from "@/lib/db";
 import { Reservation } from "@/models/reservation";
+import GlobalHoursConfiguration from "@/models/globalHours";
 import { options } from "@/lib/auth-options";
 import { logger } from "@/lib/logger";
 
@@ -45,6 +46,55 @@ export async function PATCH(
         { error: "Reservation not found" },
         { status: 404 }
       );
+    }
+
+    // Si c'est une réservation événementielle confirmée et que ce n'est pas une privatisation partielle,
+    // créer automatiquement une fermeture exceptionnelle
+    if (
+      status === "confirmed" &&
+      reservation.spaceType === "evenementiel" &&
+      !reservation.isPartialPrivatization
+    ) {
+      try {
+        // Récupérer la configuration globale
+        const globalConfig = await GlobalHoursConfiguration.findOne().sort({ createdAt: -1 });
+
+        if (globalConfig) {
+          // Vérifier si une fermeture n'existe pas déjà pour cette date
+          const existingClosure = globalConfig.exceptionalClosures.find((closure: any) => {
+            const closureDate = new Date(closure.date);
+            const reservationDate = new Date(reservation.date);
+            return (
+              closureDate.toISOString().split('T')[0] === reservationDate.toISOString().split('T')[0] &&
+              closure.reason?.includes('Privatisation événementiel')
+            );
+          });
+
+          if (!existingClosure) {
+            // Ajouter la fermeture exceptionnelle
+            globalConfig.exceptionalClosures.push({
+              date: reservation.date,
+              reason: `Privatisation événementiel - ${reservation.confirmationNumber || 'Sans numéro'}`,
+              startTime: reservation.startTime,
+              endTime: reservation.endTime,
+              isFullDay: false,
+            });
+
+            await globalConfig.save();
+            logger.info("Fermeture exceptionnelle créée automatiquement", {
+              reservationId: reservation._id,
+              date: reservation.date,
+              timeRange: `${reservation.startTime} - ${reservation.endTime}`,
+            });
+          }
+        }
+      } catch (closureError) {
+        // Log l'erreur mais ne pas faire échouer la mise à jour de réservation
+        logger.error("Erreur lors de la création de la fermeture exceptionnelle", {
+          error: closureError,
+          reservationId: reservation._id,
+        });
+      }
     }
 
     return NextResponse.json({

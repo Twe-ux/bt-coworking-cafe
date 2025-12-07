@@ -375,8 +375,8 @@ export default function SpacesSettingsPage() {
       formData.append("file", file);
       formData.append("folder", "spaces");
 
-      console.log("🖼️ [Upload] Sending request to /api/upload");
-      const response = await fetch("/api/upload", {
+      console.log("🖼️ [Upload] Sending request to /api/admin/space-configurations/upload");
+      const response = await fetch("/api/admin/space-configurations/upload", {
         method: "POST",
         body: formData,
       });

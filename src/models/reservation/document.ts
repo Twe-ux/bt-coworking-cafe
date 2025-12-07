@@ -38,6 +38,7 @@ export interface ReservationDocument extends Document {
   notes?: string;
   specialRequests?: string;
   confirmationNumber?: string;
+  isPartialPrivatization?: boolean; // Pour événementiel : indique si privatisation partielle (pas de fermeture du café)
   paymentStatus: "unpaid" | "pending" | "paid" | "refunded" | "failed" | "partial";
   paymentMethod?: "card" | "cash" | "bank-transfer";
   amountPaid?: number; // Montant déjà payé (pour paiements partiels)
@@ -194,6 +195,10 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       unique: true,
       sparse: true,
       uppercase: true,
+    },
+    isPartialPrivatization: {
+      type: Boolean,
+      default: false,
     },
     paymentStatus: {
       type: String,
