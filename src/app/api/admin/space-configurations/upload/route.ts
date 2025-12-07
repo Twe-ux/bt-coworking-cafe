@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/lib/api-helpers";
+import { requireAuth, handleApiError } from "@/lib/api-helpers";
 import cloudinary from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
   try {
-    const authError = await requireAuth(["admin", "staff", "dev"]);
-    if (authError) return authError;
+    console.log("🖼️ [API Upload] Request received");
+    await requireAuth(["admin", "staff", "dev"]);
+    console.log("🖼️ [API Upload] Auth successful");
 
     const formData = await request.formData();
     const file = formData.get("file") as File;
@@ -42,15 +43,13 @@ export async function POST(request: NextRequest) {
       resource_type: "auto",
     });
 
+    console.log("🖼️ [API Upload] Upload successful:", result.secure_url);
     return NextResponse.json({
       url: result.secure_url,
       publicId: result.public_id,
     });
   } catch (error: any) {
-    console.error("Upload error:", error);
-    return NextResponse.json(
-      { error: "Échec de l'upload de l'image", details: error.message },
-      { status: 500 }
-    );
+    console.error("🖼️ [API Upload] Error:", error);
+    return handleApiError(error);
   }
 }
