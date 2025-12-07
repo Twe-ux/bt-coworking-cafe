@@ -1134,15 +1134,15 @@ const CalendarPage = () => {
               /* Event status indicators - moved to right */
               .fc-event.event-confirmed {
                 border-right-color: rgba(16, 185, 129, 1) !important;
-                border-right-width: 20px !important;
+                border-right-width: 24px !important;
               }
               .fc-event.event-pending {
                 border-right-color: #ea4335 !important;
-                border-right-width: 20px !important;
+                border-right-width: 24px !important;
               }
               .fc-event.event-completed {
-                border-right-color: rgba(16, 185, 129, 1) !important;
-                border-right-width: 20px !important;
+                border-right-color: transparent !important;
+                border-right-width: 24px !important;
               }
 
               /* Event colors - Google Calendar style (solid colors) */
@@ -1406,7 +1406,7 @@ const CalendarPage = () => {
                 }
 
                 // Handle reservation events
-                const reservation = arg.event.extendedProps.reservation;
+                // const reservation = arg.event.extendedProps.reservation;
 
                 // Google Calendar style - just time and title on one line
                 return {
@@ -1522,7 +1522,7 @@ const CalendarPage = () => {
                   </span>
                   En attente
                 </div>
-                <div
+                {/* <div
                   className="d-inline-flex align-items-center px-3 py-2 rounded-pill"
                   style={{
                     background: "#EF444415",
@@ -1538,7 +1538,7 @@ const CalendarPage = () => {
                     ✕
                   </span>
                   Annulée
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
