@@ -650,7 +650,7 @@ export default function SpacesSettingsPage() {
             </div>
           </Card.Body>
         </Card>
-      ) : (
+      ) : viewMode === "edit" ? (
         <Tab.Container activeKey={activeTab} onSelect={(k) => k && setActiveTab(k)}>
           <Row>
             <Col lg={12}>
