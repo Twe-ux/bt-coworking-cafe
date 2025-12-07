@@ -4,6 +4,7 @@ import connectDB from "@/lib/db";
 import { Reservation } from "@/models/reservation";
 import { options } from "@/lib/auth-options";
 import { logger } from "@/lib/logger";
+import { sendReservationConfirmed, sendReservationCancelled } from "@/lib/email/emailService";
 
 /**
  * GET /api/admin/reservations
@@ -78,3 +79,281 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+/**
+ * POST /api/admin/reservations
+ * Create a new reservation (admin only)
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(options);
+
+    if (!session?.user) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+
+    // Check if user is admin or higher (level >= 80)
+    if (session.user.role.level < 80) {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+    }
+
+    const body = await request.json();
+
+    console.log('Received reservation data:', body);
+    console.log('Session user:', session.user.id);
+
+    await connectDB();
+
+    const reservation = await Reservation.create({
+      user: session.user.id,
+      spaceType: body.spaceType,
+      date: body.date,
+      startTime: body.startTime,
+      endTime: body.endTime,
+      numberOfPeople: body.numberOfPeople,
+      basePrice: body.totalPrice || 0, // Pour l'instant, basePrice = totalPrice (pas de services additionnels)
+      servicesPrice: 0,
+      totalPrice: body.totalPrice,
+      status: body.status || 'pending',
+      paymentStatus: body.paymentStatus || 'unpaid',
+      amountPaid: body.amountPaid || 0,
+      invoiceOption: body.invoiceOption || false,
+      contactName: body.contactName,
+      contactEmail: body.contactEmail,
+    });
+
+    // Send confirmation email if status is "confirmed"
+    if (reservation.status === "confirmed") {
+      try {
+        const spaceTypeLabels: Record<string, string> = {
+          "open-space": "Open-space",
+          "salle-verriere": "Salle Verrière",
+          "salle-etage": "Salle Étage",
+          "evenementiel": "Événementiel",
+          "desk": "Bureau",
+          "meeting-room": "Salle de réunion",
+          "private-office": "Bureau privé",
+          "event-space": "Espace événementiel",
+        };
+
+        const emailTo = reservation.contactEmail || session.user.email;
+
+        if (emailTo) {
+          await sendReservationConfirmed(emailTo, {
+            name: reservation.contactName || session.user.name || "Client",
+            spaceName: spaceTypeLabels[reservation.spaceType] || reservation.spaceType,
+            date: new Date(reservation.date).toLocaleDateString("fr-FR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }),
+            startTime: reservation.startTime,
+            endTime: reservation.endTime,
+            numberOfPeople: reservation.numberOfPeople,
+            totalPrice: reservation.totalPrice,
+            confirmationNumber: reservation.confirmationNumber,
+            paymentStatus: reservation.paymentStatus,
+            invoiceOption: reservation.invoiceOption,
+          });
+
+          logger.info("Confirmation email sent for new reservation", {
+            component: "API /admin/reservations POST",
+            reservationId: reservation._id,
+            email: emailTo,
+          });
+        }
+      } catch (emailError) {
+        logger.error("Failed to send confirmation email for new reservation", {
+          component: "API /admin/reservations POST",
+          error: emailError,
+        });
+        // Don't fail the request if email fails
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: reservation,
+    });
+  } catch (error: any) {
+    logger.error("Error creating reservation", { component: "API /admin/reservations POST", data: error });
+
+    // Return detailed error for debugging
+    const errorMessage = error.message || "Failed to create reservation";
+    const validationErrors = error.errors ? Object.keys(error.errors).map(key => ({
+      field: key,
+      message: error.errors[key].message
+    })) : null;
+
+    return NextResponse.json(
+      {
+        error: errorMessage,
+        validationErrors,
+        details: process.env.NODE_ENV === 'development' ? error.toString() : undefined
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PATCH /api/admin/reservations
+ * Update a reservation (admin only)
+ */
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await getServerSession(options);
+
+    if (!session?.user) {
+      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+    }
+
+    // Check if user is admin or higher (level >= 80)
+    if (session.user.role.level < 80) {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { id, ...updates } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "ID de réservation requis" }, { status: 400 });
+    }
+
+    await connectDB();
+
+    // Get the reservation before update to check status change
+    const oldReservation = await Reservation.findById(id);
+
+    const reservation = await Reservation.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true }
+    ).populate("user", "name email username");
+
+    if (!reservation) {
+      return NextResponse.json({ error: "Réservation non trouvée" }, { status: 404 });
+    }
+
+    // Send confirmation email if status changed to "confirmed"
+    if (
+      oldReservation &&
+      oldReservation.status !== "confirmed" &&
+      reservation.status === "confirmed"
+    ) {
+      try {
+        const spaceTypeLabels: Record<string, string> = {
+          "open-space": "Open-space",
+          "salle-verriere": "Salle Verrière",
+          "salle-etage": "Salle Étage",
+          "evenementiel": "Événementiel",
+          "desk": "Bureau",
+          "meeting-room": "Salle de réunion",
+          "private-office": "Bureau privé",
+          "event-space": "Espace événementiel",
+        };
+
+        const emailTo = reservation.contactEmail || reservation.user?.email;
+
+        if (emailTo) {
+          await sendReservationConfirmed(emailTo, {
+            name: reservation.contactName || reservation.user?.name || "Client",
+            spaceName: spaceTypeLabels[reservation.spaceType] || reservation.spaceType,
+            date: new Date(reservation.date).toLocaleDateString("fr-FR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }),
+            startTime: reservation.startTime,
+            endTime: reservation.endTime,
+            numberOfPeople: reservation.numberOfPeople,
+            totalPrice: reservation.totalPrice,
+            confirmationNumber: reservation.confirmationNumber,
+            paymentStatus: reservation.paymentStatus,
+            invoiceOption: reservation.invoiceOption,
+          });
+
+          logger.info("Confirmation email sent", {
+            component: "API /admin/reservations PATCH",
+            reservationId: reservation._id,
+            email: emailTo,
+          });
+        }
+      } catch (emailError) {
+        logger.error("Failed to send confirmation email", {
+          component: "API /admin/reservations PATCH",
+          error: emailError,
+        });
+        // Don't fail the request if email fails
+      }
+    }
+
+    // Send cancellation email if status changed to "cancelled"
+    if (
+      oldReservation &&
+      oldReservation.status !== "cancelled" &&
+      reservation.status === "cancelled"
+    ) {
+      try {
+        const spaceTypeLabels: Record<string, string> = {
+          "open-space": "Open-space",
+          "salle-verriere": "Salle Verrière",
+          "salle-etage": "Salle Étage",
+          "evenementiel": "Événementiel",
+          "desk": "Bureau",
+          "meeting-room": "Salle de réunion",
+          "private-office": "Bureau privé",
+          "event-space": "Espace événementiel",
+        };
+
+        const emailTo = reservation.contactEmail || reservation.user?.email;
+
+        if (emailTo) {
+          await sendReservationCancelled(emailTo, {
+            name: reservation.contactName || reservation.user?.name || "Client",
+            spaceName: spaceTypeLabels[reservation.spaceType] || reservation.spaceType,
+            date: new Date(reservation.date).toLocaleDateString("fr-FR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }),
+            startTime: reservation.startTime,
+            endTime: reservation.endTime,
+            numberOfPeople: reservation.numberOfPeople,
+            totalPrice: reservation.totalPrice,
+            confirmationNumber: reservation.confirmationNumber,
+          });
+
+          logger.info("Cancellation email sent", {
+            component: "API /admin/reservations PATCH",
+            reservationId: reservation._id,
+            email: emailTo,
+          });
+        }
+      } catch (emailError) {
+        logger.error("Failed to send cancellation email", {
+          component: "API /admin/reservations PATCH",
+          error: emailError,
+        });
+        // Don't fail the request if email fails
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: reservation,
+    });
+  } catch (error: any) {
+    logger.error("Error updating reservation", { component: "API /admin/reservations PATCH", data: error });
+
+    const errorMessage = error.message || "Failed to update reservation";
+    return NextResponse.json(
+      { error: errorMessage },
+      { status: 500 }
+    );
+  }
+}
+

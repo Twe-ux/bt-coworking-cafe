@@ -112,7 +112,7 @@ const RecentReservations = () => {
       <Card.Body>
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h5 className="card-title mb-0">Réservations récentes</h5>
-          <Link href="/dashboard/booking/reservations" className="btn btn-sm btn-primary">
+          <Link href="/dashboard/reservations" className="btn btn-sm btn-primary">
             Voir tout
             <Icon icon="ri:arrow-right-line" className="ms-1" />
           </Link>

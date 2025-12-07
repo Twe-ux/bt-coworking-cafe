@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { options as authOptions } from "@/lib/auth-options";
-import { connectDB } from "@/lib/mongodb";
+import { options } from "@/lib/auth-options";
+import connectDB from "@/lib/db";
 import { Reservation } from "@/models/reservation";
 import { logger } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(options);
 
     if (!session || !session.user) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });

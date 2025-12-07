@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Card, Button, Form, Row, Col, Alert } from "react-bootstrap";
+import { useTopbarContext } from "@/context/useTopbarContext";
+import { Icon } from "@iconify/react";
 
 interface DayHours {
   isOpen: boolean;
@@ -43,10 +45,55 @@ const daysOfWeek = [
 ];
 
 export default function HorairesSettingsPage() {
+  const { setPageTitle, setPageActions } = useTopbarContext();
   const [configuration, setConfiguration] = useState<HoursConfiguration | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    setPageTitle('Configuration des Horaires');
+    setPageActions(
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        style={{
+          padding: '8px 16px',
+          background: saving ? '#e5e7eb' : '#667eea',
+          border: `1px solid ${saving ? '#e5e7eb' : '#667eea'}`,
+          borderRadius: '8px',
+          fontSize: '14px',
+          fontWeight: 500,
+          color: saving ? '#9ca3af' : 'white',
+          cursor: saving ? 'not-allowed' : 'pointer',
+          transition: 'all 0.3s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+        }}
+        onMouseEnter={(e) => {
+          if (!saving) {
+            e.currentTarget.style.background = '#5568d3';
+            e.currentTarget.style.borderColor = '#5568d3';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!saving) {
+            e.currentTarget.style.background = '#667eea';
+            e.currentTarget.style.borderColor = '#667eea';
+          }
+        }}
+      >
+        <Icon icon="ri:save-line" width={16} />
+        {saving ? "Enregistrement..." : "Enregistrer"}
+      </button>
+    );
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions, saving]);
 
   useEffect(() => {
     fetchConfiguration();
@@ -195,18 +242,6 @@ export default function HorairesSettingsPage() {
 
   return (
     <div className="container-fluid">
-      <div className="row">
-        <div className="col-12">
-          <div className="page-title-box">
-            <h4 className="page-title">Horaires d'Ouverture</h4>
-            <p className="text-muted">
-              Configurez les horaires par défaut et les fermetures exceptionnelles du coworking.
-              Ces horaires sont affichés sur la page publique et dans la bannière de fermetures.
-            </p>
-          </div>
-        </div>
-      </div>
-
       {message && (
         <Alert
           variant={message.type === "success" ? "success" : "danger"}
@@ -298,7 +333,7 @@ export default function HorairesSettingsPage() {
                 <>
                   {configuration.exceptionalClosures.map((closure, index) => (
                     <div key={index} className="border rounded p-3 mb-3">
-                      <Row className="mb-3 align-items-center">
+                      <Row className="mb-3 align-items-end">
                         <Col md={3}>
                           <Form.Label className="mb-1 small text-muted">Date</Form.Label>
                           <Form.Control
@@ -309,7 +344,7 @@ export default function HorairesSettingsPage() {
                             }
                           />
                         </Col>
-                        <Col md={7}>
+                        <Col md={8}>
                           <Form.Label className="mb-1 small text-muted">Raison</Form.Label>
                           <Form.Control
                             type="text"
@@ -320,14 +355,13 @@ export default function HorairesSettingsPage() {
                             }
                           />
                         </Col>
-                        <Col md={2} className="d-flex align-items-end">
+                        <Col md={1} className="d-flex align-items-end">
                           <Button
-                            variant="danger"
+                            variant="outline-danger"
                             size="sm"
                             onClick={() => removeExceptionalClosure(index)}
-                            className="w-100"
                           >
-                            <i className="bi bi-trash"></i>
+                            <Icon icon="ri:delete-bin-line" />
                           </Button>
                         </Col>
                       </Row>
@@ -381,12 +415,12 @@ export default function HorairesSettingsPage() {
               )}
 
               <Button
-                variant="secondary"
+                variant="outline-primary"
                 size="sm"
                 className="mt-3"
                 onClick={addExceptionalClosure}
               >
-                <i className="bi bi-plus-circle me-2"></i>
+                <Icon icon="ri:add-line" className="me-1" />
                 Ajouter une fermeture
               </Button>
             </Card.Body>
@@ -398,18 +432,8 @@ export default function HorairesSettingsPage() {
               onClick={handleSave}
               disabled={saving}
               size="lg"
+              style={{ display: 'none' }}
             >
-              {saving ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2"></span>
-                  Enregistrement...
-                </>
-              ) : (
-                <>
-                  <i className="bi bi-save me-2"></i>
-                  Enregistrer les modifications
-                </>
-              )}
             </Button>
           </div>
         </Col>
@@ -441,9 +465,14 @@ export default function HorairesSettingsPage() {
                 Les 3 prochaines fermetures sont affichées dans la bannière. La bannière peut être masquée par les visiteurs pour 24h.
               </p>
               <hr />
-              <p className="mb-0">
+              <p>
                 <strong>Impact sur les réservations</strong><br />
                 Les fermetures exceptionnelles empêchent automatiquement les réservations pour ces dates.
+              </p>
+              <hr />
+              <p className="mb-0">
+                <strong>Privatisations événementielles</strong><br />
+                Lorsqu'une réservation événementielle (privatisation totale) est confirmée, elle génère automatiquement une fermeture exceptionnelle sur le site selon les heures réservées. Si la privatisation est partielle, cette option peut être désactivée lors de la validation de la réservation.
               </p>
             </Card.Body>
           </Card>

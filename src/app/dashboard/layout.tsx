@@ -84,7 +84,7 @@ export default function DashboardLayout({
                 </Suspense>
                 <VerticalNavigationBar />
                 <div className="page-content">
-                  <Container fluid>{children}</Container>
+                  <Container fluid className="px-2 py-2">{children}</Container>
                   <Footer />
                 </div>
               </div>

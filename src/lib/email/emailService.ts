@@ -1,17 +1,12 @@
 /**
- * Email Service
+ * Email Service using Resend
  *
- * This is a placeholder for email functionality.
- * To enable emails, install nodemailer:
- * npm install nodemailer @types/nodemailer
- *
- * Then configure SMTP settings in .env.local:
- * EMAIL_HOST=smtp.gmail.com
- * EMAIL_PORT=587
- * EMAIL_USER=your-email@gmail.com
- * EMAIL_PASSWORD=your-app-password
- * EMAIL_FROM=Coworking Café <noreply@coworkingcafe.fr>
+ * Configure in .env.local:
+ * RESEND_API_KEY=re_...
+ * RESEND_FROM_EMAIL=Coworking Café <noreply@coworkingcafe.fr>
  */
+
+import { Resend } from "resend";
 
 interface EmailOptions {
   to: string;
@@ -20,45 +15,28 @@ interface EmailOptions {
   text?: string;
 }
 
+const getResendClient = () => {
+  return new Resend(process.env.RESEND_API_KEY);
+};
+
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
-  // TODO: Implement actual email sending with nodemailer
-  console.log("📧 Email would be sent:", {
-    to: options.to,
-    subject: options.subject,
-  });
-
-  // Placeholder - return true for now
-  return true;
-
-  /*
-  // Uncomment when nodemailer is installed and configured:
-
-  const nodemailer = require('nodemailer');
-
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT || '587'),
-    secure: process.env.EMAIL_PORT === '465',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-
   try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
+    const resend = getResendClient();
+
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
       to: options.to,
       subject: options.subject,
       html: options.html,
       text: options.text,
     });
+
+    console.log("✅ Email sent successfully to:", options.to);
     return true;
   } catch (error) {
-    console.error('Email sending error:', error);
+    console.error("❌ Email sending error:", error);
     return false;
   }
-  */
 }
 
 export async function sendBookingConfirmation(
@@ -183,6 +161,195 @@ L-V: 09h-20h | S-D & JF: 10h-20h
   });
 }
 
+export async function sendReservationConfirmed(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    numberOfPeople: number;
+    totalPrice: number;
+    confirmationNumber?: string;
+    paymentStatus: string;
+    invoiceOption?: boolean;
+  }
+): Promise<boolean> {
+  const subject = "✅ Réservation confirmée - Coworking Café";
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #10B981; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+          .content { background: #f9f9f9; padding: 30px; }
+          .details { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+          .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+          .detail-row:last-child { border-bottom: none; }
+          .success-badge { background: #10B981; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; margin: 20px 0; }
+          .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; background: #f3f4f6; border-radius: 0 0 8px 8px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎉 Réservation Confirmée !</h1>
+          </div>
+
+          <div class="content">
+            <h2>Bonjour ${reservationDetails.name},</h2>
+            <p>Bonne nouvelle ! Votre réservation a été confirmée.</p>
+
+            <div class="success-badge">
+              ✓ Réservation validée
+            </div>
+
+            <div class="details">
+              <h3 style="margin-top: 0; color: #10B981;">Détails de votre réservation</h3>
+              <div class="detail-row">
+                <strong>Espace :</strong>
+                <span>${reservationDetails.spaceName}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Date :</strong>
+                <span>${reservationDetails.date}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Horaire :</strong>
+                <span>${reservationDetails.startTime} - ${reservationDetails.endTime}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Nombre de personnes :</strong>
+                <span>${reservationDetails.numberOfPeople}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Prix total :</strong>
+                <span style="color: ${reservationDetails.totalPrice === 0 ? '#F59E0B' : '#10B981'}; font-weight: 600;">${reservationDetails.totalPrice === 0 ? 'Sur devis' : reservationDetails.totalPrice.toFixed(2) + '€'}</span>
+              </div>
+              ${
+                reservationDetails.confirmationNumber
+                  ? `<div class="detail-row">
+                      <strong>Numéro de confirmation :</strong>
+                      <span><code>${reservationDetails.confirmationNumber}</code></span>
+                    </div>`
+                  : ""
+              }
+              <div class="detail-row">
+                <strong>Statut du paiement :</strong>
+                <span>${
+                  reservationDetails.paymentStatus === "paid"
+                    ? "✅ Payé"
+                    : reservationDetails.paymentStatus === "partial"
+                    ? "⚠️ Paiement partiel"
+                    : reservationDetails.invoiceOption
+                    ? "📄 Sur facture"
+                    : "⏳ En attente"
+                }</span>
+              </div>
+            </div>
+
+            ${
+              reservationDetails.invoiceOption
+                ? `<div style="background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 15px; border-radius: 4px; margin: 20px 0;">
+                    <p style="margin: 0; color: #92400E;"><strong>📄 Paiement sur facture</strong></p>
+                    <p style="margin: 8px 0 0 0; color: #92400E; font-size: 14px;">Vous avez choisi le paiement sur facture. Une facture vous sera envoyée prochainement.</p>
+                  </div>`
+                : ""
+            }
+
+            <p><strong>Prochaines étapes :</strong></p>
+            <ul>
+              <li>Présentez-vous à l'accueil le jour de votre réservation</li>
+              ${reservationDetails.invoiceOption ? '<li>Vous recevrez une facture par email dans les prochains jours</li>' : ''}
+              <li>N'hésitez pas à nous contacter si vous avez des questions</li>
+            </ul>
+
+            <p style="margin-top: 30px;">Nous avons hâte de vous accueillir ! 😊</p>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
+
+            <p><strong>Pour toute question :</strong></p>
+            <ul style="list-style: none; padding: 0;">
+              <li>📞 Téléphone : <a href="tel:0987334519">09 87 33 45 19</a></li>
+              <li>📧 Email : <a href="mailto:strasbourg@coworkingcafe.fr">strasbourg@coworkingcafe.fr</a></li>
+            </ul>
+          </div>
+
+          <div class="footer">
+            <p><strong>Coworking Café</strong></p>
+            <p>1 rue de la Division Leclerc, 67000 Strasbourg</p>
+            <p>L-V: 09h-20h | S-D & JF: 10h-20h</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  const text = `
+🎉 Réservation Confirmée !
+
+Bonjour ${reservationDetails.name},
+
+Bonne nouvelle ! Votre réservation a été confirmée.
+
+✓ Réservation validée
+
+Détails de votre réservation :
+- Espace : ${reservationDetails.spaceName}
+- Date : ${reservationDetails.date}
+- Horaire : ${reservationDetails.startTime} - ${reservationDetails.endTime}
+- Nombre de personnes : ${reservationDetails.numberOfPeople}
+- Prix total : ${reservationDetails.totalPrice === 0 ? 'Sur devis' : reservationDetails.totalPrice.toFixed(2) + '€'}
+${
+    reservationDetails.confirmationNumber
+      ? `- Numéro de confirmation : ${reservationDetails.confirmationNumber}`
+      : ""
+  }
+- Statut du paiement : ${
+    reservationDetails.paymentStatus === "paid"
+      ? "Payé"
+      : reservationDetails.paymentStatus === "partial"
+      ? "Paiement partiel"
+      : reservationDetails.invoiceOption
+      ? "Sur facture"
+      : "En attente"
+  }
+
+${
+    reservationDetails.invoiceOption
+      ? `📄 PAIEMENT SUR FACTURE
+Vous avez choisi le paiement sur facture. Une facture vous sera envoyée prochainement.
+
+`
+      : ""
+  }Prochaines étapes :
+- Présentez-vous à l'accueil le jour de votre réservation
+${reservationDetails.invoiceOption ? '- Vous recevrez une facture par email dans les prochains jours\n' : ''}- N'hésitez pas à nous contacter si vous avez des questions
+
+Nous avons hâte de vous accueillir ! 😊
+
+Pour toute question :
+Téléphone : 09 87 33 45 19
+Email : strasbourg@coworkingcafe.fr
+
+Coworking Café
+1 rue de la Division Leclerc, 67000 Strasbourg
+L-V: 09h-20h | S-D & JF: 10h-20h
+  `;
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+    text,
+  });
+}
+
 export async function sendBookingReminder(
   email: string,
   bookingDetails: {
@@ -237,5 +404,148 @@ export async function sendBookingReminder(
     to: email,
     subject,
     html,
+  });
+}
+
+export async function sendReservationCancelled(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    numberOfPeople: number;
+    totalPrice: number;
+    confirmationNumber?: string;
+  }
+): Promise<boolean> {
+  const subject = "❌ Réservation annulée - Coworking Café";
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #EF4444; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+          .content { background: #f9f9f9; padding: 30px; }
+          .details { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+          .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+          .detail-row:last-child { border-bottom: none; }
+          .cancelled-badge { background: #EF4444; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; margin: 20px 0; }
+          .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; background: #f3f4f6; border-radius: 0 0 8px 8px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Réservation Annulée</h1>
+          </div>
+
+          <div class="content">
+            <h2>Bonjour ${reservationDetails.name},</h2>
+            <p>Nous vous informons que votre réservation a été annulée.</p>
+
+            <div class="cancelled-badge">
+              ✗ Réservation annulée
+            </div>
+
+            <div class="details">
+              <h3 style="margin-top: 0; color: #EF4444;">Détails de la réservation annulée</h3>
+              <div class="detail-row">
+                <strong>Espace :</strong>
+                <span>${reservationDetails.spaceName}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Date :</strong>
+                <span>${reservationDetails.date}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Horaire :</strong>
+                <span>${reservationDetails.startTime} - ${reservationDetails.endTime}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Nombre de personnes :</strong>
+                <span>${reservationDetails.numberOfPeople}</span>
+              </div>
+              <div class="detail-row">
+                <strong>Prix :</strong>
+                <span>${reservationDetails.totalPrice.toFixed(2)}€</span>
+              </div>
+              ${
+                reservationDetails.confirmationNumber
+                  ? `<div class="detail-row">
+                      <strong>Numéro de confirmation :</strong>
+                      <span><code>${reservationDetails.confirmationNumber}</code></span>
+                    </div>`
+                  : ""
+              }
+            </div>
+
+            <p>Si vous avez effectué un paiement, un remboursement sera traité dans les meilleurs délais.</p>
+
+            <p>Si vous souhaitez effectuer une nouvelle réservation, n'hésitez pas à nous contacter ou à consulter notre site.</p>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
+
+            <p><strong>Pour toute question :</strong></p>
+            <ul style="list-style: none; padding: 0;">
+              <li>📞 Téléphone : <a href="tel:0987334519">09 87 33 45 19</a></li>
+              <li>📧 Email : <a href="mailto:strasbourg@coworkingcafe.fr">strasbourg@coworkingcafe.fr</a></li>
+            </ul>
+          </div>
+
+          <div class="footer">
+            <p><strong>Coworking Café</strong></p>
+            <p>1 rue de la Division Leclerc, 67000 Strasbourg</p>
+            <p>L-V: 09h-20h | S-D & JF: 10h-20h</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  const text = `
+Réservation Annulée
+
+Bonjour ${reservationDetails.name},
+
+Nous vous informons que votre réservation a été annulée.
+
+✗ Réservation annulée
+
+Détails de la réservation annulée :
+- Espace : ${reservationDetails.spaceName}
+- Date : ${reservationDetails.date}
+- Horaire : ${reservationDetails.startTime} - ${reservationDetails.endTime}
+- Nombre de personnes : ${reservationDetails.numberOfPeople}
+- Prix : ${reservationDetails.totalPrice.toFixed(2)}€
+${
+    reservationDetails.confirmationNumber
+      ? `- Numéro de confirmation : ${reservationDetails.confirmationNumber}`
+      : ""
+  }
+
+Si vous avez effectué un paiement, un remboursement sera traité dans les meilleurs délais.
+
+Si vous souhaitez effectuer une nouvelle réservation, n'hésitez pas à nous contacter ou à consulter notre site.
+
+Pour toute question :
+Téléphone : 09 87 33 45 19
+Email : strasbourg@coworkingcafe.fr
+
+Coworking Café
+1 rue de la Division Leclerc, 67000 Strasbourg
+L-V: 09h-20h | S-D & JF: 10h-20h
+  `;
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+    text,
   });
 }

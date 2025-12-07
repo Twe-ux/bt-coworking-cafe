@@ -131,15 +131,9 @@ export const MENU_ITEMS: MenuItemType[] = [
         parentKey: "booking",
       },
       {
-        key: "booking-spaces",
-        label: "Spaces",
-        url: "/dashboard/booking/spaces",
-        parentKey: "booking",
-      },
-      {
         key: "booking-reservations",
         label: "Reservations",
-        url: "/dashboard/booking/reservations",
+        url: "/dashboard/reservations",
         parentKey: "booking",
       },
       {
@@ -147,6 +141,26 @@ export const MENU_ITEMS: MenuItemType[] = [
         label: "Calendar",
         url: "/dashboard/booking/calendar",
         parentKey: "booking",
+      },
+    ],
+  },
+  {
+    key: "settings",
+    label: "Settings",
+    icon: "ri:settings-3-line",
+    roles: ["dev", "admin"],
+    children: [
+      {
+        key: "settings-spaces",
+        label: "Spaces",
+        url: "/dashboard/settings/spaces",
+        parentKey: "settings",
+      },
+      {
+        key: "settings-horaires",
+        label: "Horaires",
+        url: "/dashboard/settings/horaires",
+        parentKey: "settings",
       },
     ],
   },

@@ -101,10 +101,10 @@ const VerticalNavigationBar = () => {
   }, [baseMenuItems, unreadCount]);
 
   return (
-    <div className="main-nav" id="leftside-menu-container" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className="main-nav" id="leftside-menu-container">
       <LogoBox />
       <HoverMenuToggle />
-      <SimplebarReactClient className="scrollbar" data-simplebar style={{ flex: 1 }}>
+      <SimplebarReactClient className="scrollbar" data-simplebar>
         <AppMenu menuItems={menuItems} />
       </SimplebarReactClient>
       <SidebarFooter />

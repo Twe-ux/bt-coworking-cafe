@@ -1,14 +1,29 @@
 import { Document } from "mongoose";
 
 /**
+ * Pricing tier for capacity-based pricing
+ */
+export interface PricingTier {
+  minPeople: number;
+  maxPeople: number;
+  hourlyRate: number; // Price per hour for this tier
+  dailyRate: number; // Price per day for this tier
+  extraPersonHourly?: number; // Additional cost per extra person per hour
+  extraPersonDaily?: number; // Additional cost per extra person per day
+}
+
+/**
  * Pricing structure for different reservation types
  */
 export interface PricingStructure {
-  hourly: number; // Price per hour (0 if not available or quote-based)
-  daily: number; // Price per day (0 if not available or quote-based)
+  hourly: number; // Base price per hour (0 if not available or quote-based)
+  daily: number; // Base price per day (0 if not available or quote-based)
   weekly: number; // Price per week (0 if not available or quote-based)
   monthly: number; // Price per month (0 if not available or quote-based)
   perPerson: boolean; // If true, multiply by number of people
+  maxHoursBeforeDaily?: number; // Max hours before switching to daily rate (e.g., 5 for open-space)
+  dailyRatePerPerson?: number; // Daily rate per person if > maxHoursBeforeDaily
+  tiers?: PricingTier[]; // Capacity-based pricing tiers
 }
 
 /**

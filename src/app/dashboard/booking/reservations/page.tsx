@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, Table, Badge, Button, Form, Row, Col, Alert } from "react-bootstrap";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import { useTopbarContext } from "@/context/useTopbarContext";
+import { useSearchParams } from "next/navigation";
 
 interface Reservation {
   _id: string;
@@ -71,9 +72,12 @@ const spaceTypeLabels: Record<string, string> = {
 };
 
 export default function AdminReservationsPage() {
+  const searchParams = useSearchParams();
+  const statusParam = searchParams.get('status');
+
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState<string>("");
+  const [filterStatus, setFilterStatus] = useState<string>(statusParam || "");
   const [filterSpaceType, setFilterSpaceType] = useState<string>("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);

@@ -1,6 +1,40 @@
 import { Schema } from "mongoose";
 import { SpaceConfigurationDocument } from "./document";
 
+const pricingTierSchema = new Schema(
+  {
+    minPeople: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    maxPeople: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    hourlyRate: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    dailyRate: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    extraPersonHourly: {
+      type: Number,
+      min: 0,
+    },
+    extraPersonDaily: {
+      type: Number,
+      min: 0,
+    },
+  },
+  { _id: false }
+);
+
 const pricingStructureSchema = new Schema(
   {
     hourly: {
@@ -26,6 +60,18 @@ const pricingStructureSchema = new Schema(
     perPerson: {
       type: Boolean,
       default: false,
+    },
+    maxHoursBeforeDaily: {
+      type: Number,
+      min: 0,
+    },
+    dailyRatePerPerson: {
+      type: Number,
+      min: 0,
+    },
+    tiers: {
+      type: [pricingTierSchema],
+      default: [],
     },
   },
   { _id: false }

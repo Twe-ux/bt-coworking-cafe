@@ -38,8 +38,10 @@ export interface ReservationDocument extends Document {
   notes?: string;
   specialRequests?: string;
   confirmationNumber?: string;
-  paymentStatus: "pending" | "paid" | "refunded" | "failed";
+  paymentStatus: "unpaid" | "pending" | "paid" | "refunded" | "failed" | "partial";
   paymentMethod?: "card" | "cash" | "bank-transfer";
+  amountPaid?: number; // Montant déjà payé (pour paiements partiels)
+  invoiceOption?: boolean; // Client souhaite payer sur facture
   stripePaymentIntentId?: string;
   stripeSessionId?: string;
   stripeCustomerId?: string;
@@ -197,10 +199,10 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       type: String,
       required: true,
       enum: {
-        values: ["pending", "paid", "refunded", "failed"],
+        values: ["unpaid", "pending", "paid", "refunded", "failed", "partial"],
         message: "{VALUE} is not a valid payment status",
       },
-      default: "pending",
+      default: "unpaid",
       index: true,
     },
     paymentMethod: {
@@ -209,6 +211,15 @@ export const ReservationSchema = new Schema<ReservationDocument>(
         values: ["card", "cash", "bank-transfer"],
         message: "{VALUE} is not a valid payment method",
       },
+    },
+    amountPaid: {
+      type: Number,
+      min: [0, "Amount paid cannot be negative"],
+      default: 0,
+    },
+    invoiceOption: {
+      type: Boolean,
+      default: false,
     },
     stripePaymentIntentId: {
       type: String,
