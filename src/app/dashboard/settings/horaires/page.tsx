@@ -186,13 +186,36 @@ export default function HorairesSettingsPage() {
     });
   };
 
-  const removeExceptionalClosure = (index: number) => {
+  const removeExceptionalClosure = async (index: number) => {
     if (!configuration) return;
 
+    const updatedClosures = configuration.exceptionalClosures.filter((_, i) => i !== index);
+
+    // Update state immediately
     setConfiguration({
       ...configuration,
-      exceptionalClosures: configuration.exceptionalClosures.filter((_, i) => i !== index),
+      exceptionalClosures: updatedClosures,
     });
+
+    // Save to API immediately
+    try {
+      await fetch("/api/admin/global-hours", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          defaultHours: configuration.defaultHours,
+          exceptionalClosures: updatedClosures,
+        }),
+      });
+      setMessage({ type: "success", text: "Fermeture supprimée avec succès" });
+    } catch (error) {
+      console.error("Error removing closure:", error);
+      setMessage({ type: "error", text: "Erreur lors de la suppression" });
+      // Revert on error
+      fetchConfiguration();
+    }
   };
 
   const updateExceptionalClosure = (

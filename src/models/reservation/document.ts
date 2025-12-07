@@ -14,8 +14,8 @@ export interface ReservationDocument extends Document {
   space?: ObjectId; // DEPRECATED: Old reference to Space model (kept for backward compatibility)
   spaceType: "open-space" | "salle-verriere" | "salle-etage" | "evenementiel"; // New: spaceType from SpaceConfiguration
   date: Date;
-  startTime: string; // Format: "HH:mm"
-  endTime: string; // Format: "HH:mm"
+  startTime?: string; // Format: "HH:mm" - Optional for full day reservations
+  endTime?: string; // Format: "HH:mm" - Optional for full day reservations
   numberOfPeople: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
 
@@ -84,12 +84,12 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     },
     startTime: {
       type: String,
-      required: [true, "Start time is required"],
+      required: false,
       match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:mm)"],
     },
     endTime: {
       type: String,
-      required: [true, "End time is required"],
+      required: false,
       match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:mm)"],
     },
     numberOfPeople: {

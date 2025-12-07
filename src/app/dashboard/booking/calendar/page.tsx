@@ -679,8 +679,15 @@ const CalendarPage = () => {
     .filter((reservation) => reservation.status !== "cancelled") // Exclure uniquement les annulées
     .map((reservation) => {
       const date = new Date(reservation.date);
-      const [startHour, startMin] = reservation.startTime.split(":");
-      const [endHour, endMin] = reservation.endTime.split(":");
+
+      // Handle full day reservations (no specific times)
+      const isFullDay = !reservation.startTime || !reservation.endTime;
+      const [startHour, startMin] = isFullDay
+        ? ["0", "0"]
+        : reservation.startTime.split(":");
+      const [endHour, endMin] = isFullDay
+        ? ["23", "59"]
+        : reservation.endTime.split(":");
 
       const start = new Date(date);
       start.setHours(parseInt(startHour), parseInt(startMin));
@@ -1286,7 +1293,7 @@ const CalendarPage = () => {
               .fc-event.exceptional-closure-fullday {
                 border: 2px solid #ef4444 !important;
                 border-radius: 6px !important;
-                margin: 0 4px 4px 4px !important;
+                margin: 2px 2px 2px 2px !important;
                 padding: 42px !important;
                 font-weight: 700 !important;
                 font-size: 13px !important;

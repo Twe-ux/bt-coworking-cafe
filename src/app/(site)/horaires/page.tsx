@@ -81,9 +81,9 @@ export default function HorairesPage() {
     return closureDate >= today;
   };
 
-  const upcomingClosures = hoursData?.exceptionalClosures.filter((closure) =>
-    isUpcoming(closure.date)
-  ) || [];
+  const upcomingClosures = hoursData?.exceptionalClosures
+    .filter((closure) => isUpcoming(closure.date))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) || [];
 
   if (loading) {
     return (

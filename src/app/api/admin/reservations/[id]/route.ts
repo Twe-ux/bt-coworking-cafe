@@ -66,18 +66,19 @@ export async function PATCH(
             const reservationDate = new Date(reservation.date);
             return (
               closureDate.toISOString().split('T')[0] === reservationDate.toISOString().split('T')[0] &&
-              closure.reason?.includes('Privatisation événementiel')
+              closure.reason?.includes('Privatisation')
             );
           });
 
           if (!existingClosure) {
             // Ajouter la fermeture exceptionnelle
+            const hasTimeRange = reservation.startTime && reservation.endTime;
             globalConfig.exceptionalClosures.push({
               date: reservation.date,
-              reason: `Privatisation événementiel - ${reservation.confirmationNumber || 'Sans numéro'}`,
-              startTime: reservation.startTime,
-              endTime: reservation.endTime,
-              isFullDay: false,
+              reason: "Privatisation",
+              startTime: hasTimeRange ? reservation.startTime : undefined,
+              endTime: hasTimeRange ? reservation.endTime : undefined,
+              isFullDay: !hasTimeRange,
             });
 
             await globalConfig.save();
