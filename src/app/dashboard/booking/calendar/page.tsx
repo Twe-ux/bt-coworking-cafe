@@ -63,10 +63,10 @@ const spaceTypeGradients: Record<string, string> = {
 };
 
 const spaceTypeLabels: Record<string, string> = {
-  "open-space": "Open-space",
-  "salle-verriere": "Salle Verrière",
-  "salle-etage": "Salle Étage",
-  evenementiel: "Événementiel",
+  "open-space": "Place",
+  "salle-verriere": "Verrière",
+  "salle-etage": "Étage",
+  evenementiel: "Priva",
   desk: "Bureau",
   "meeting-room": "Salle de réunion",
   "private-office": "Bureau privé",
@@ -1133,18 +1133,16 @@ const CalendarPage = () => {
 
               /* Event status indicators - moved to right */
               .fc-event.event-confirmed {
-                border-right-color: rgba(16, 185, 129, 0.8) !important;
-                border-right-width: 10px !important;
+                border-right-color: rgba(16, 185, 129, 1) !important;
+                border-right-width: 20px !important;
               }
               .fc-event.event-pending {
-                border-right-color: rgba(251, 188, 4, 0.9) !important;
-                border-right-width: 10px !important;
-                opacity: 0.85;
+                border-right-color: #ea4335 !important;
+                border-right-width: 20px !important;
               }
               .fc-event.event-completed {
-                border-right-color: rgba(99, 102, 241, 0.8) !important;
-                border-right-width: 10px !important;
-                opacity: 0.7;
+                border-right-color: rgba(16, 185, 129, 1) !important;
+                border-right-width: 20px !important;
               }
 
               /* Event colors - Google Calendar style (solid colors) */
@@ -1519,12 +1517,7 @@ const CalendarPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  <Icon
-                    icon="ri:checkbox-circle-fill"
-                    width={14}
-                    className="me-1"
-                    style={{ color: "#10B981" }}
-                  />
+                  <span className="me-2" style={{ fontSize: "14px", color: "#10B981" }}>✓</span>
                   Confirmée
                 </div>
                 <div
@@ -1536,30 +1529,20 @@ const CalendarPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  <Icon
-                    icon="ri:time-line"
-                    width={14}
-                    className="me-1"
-                    style={{ color: "#F59E0B" }}
-                  />
+                  <span className="me-2" style={{ fontSize: "14px", color: "#F59E0B" }}>⏱</span>
                   En attente
                 </div>
                 <div
                   className="d-inline-flex align-items-center px-3 py-2 rounded-pill"
                   style={{
-                    background: "#6366F115",
-                    border: "1px solid #6366F130",
+                    background: "#EF444415",
+                    border: "1px solid #EF444430",
                     fontSize: "0.8125rem",
                     fontWeight: 500,
                   }}
                 >
-                  <Icon
-                    icon="ri:check-double-line"
-                    width={14}
-                    className="me-1"
-                    style={{ color: "#6366F1" }}
-                  />
-                  Terminée
+                  <span className="me-2" style={{ fontSize: "14px", color: "#EF4444" }}>✕</span>
+                  Annulée
                 </div>
               </div>
             </div>

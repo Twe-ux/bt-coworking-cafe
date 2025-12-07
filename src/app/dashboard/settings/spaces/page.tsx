@@ -369,31 +369,38 @@ export default function SpacesSettingsPage() {
 
   const handleImageUpload = async (spaceType: string, file: File) => {
     try {
+      console.log("🖼️ [Upload] Starting upload for:", spaceType, "File:", file.name, file.type, file.size);
       setUploadingImage(spaceType);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("folder", "spaces");
 
+      console.log("🖼️ [Upload] Sending request to /api/upload");
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
       });
 
+      console.log("🖼️ [Upload] Response status:", response.status);
       const data = await response.json();
+      console.log("🖼️ [Upload] Response data:", data);
 
       if (response.ok && data.url) {
         // Update configuration with new image URL
+        console.log("🖼️ [Upload] Image uploaded successfully, updating config");
         const config = configurations.find((c) => c.spaceType === spaceType);
         if (config) {
           const updatedConfig = { ...config, imageUrl: data.url };
+          console.log("🖼️ [Upload] Updated config:", updatedConfig);
           await handleUpdateConfiguration(updatedConfig);
         }
         setMessage({ type: "success", text: "Image uploadée avec succès" });
       } else {
+        console.error("🖼️ [Upload] Upload failed:", data);
         setMessage({ type: "error", text: data.error || "Erreur lors de l'upload" });
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("🖼️ [Upload] Error uploading image:", error);
       setMessage({ type: "error", text: "Erreur lors de l'upload de l'image" });
     } finally {
       setUploadingImage(null);
