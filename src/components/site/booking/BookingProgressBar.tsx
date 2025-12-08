@@ -2,16 +2,21 @@
 
 interface BookingProgressBarProps {
   currentStep: 1 | 2 | 3 | 4;
+  customLabels?: {
+    step1?: string;
+    step2?: string;
+    step3?: string;
+    step4?: string;
+  };
 }
 
-const steps = [
-  { number: 1, label: 'Espace' },
-  { number: 2, label: 'Date' },
-  { number: 3, label: 'Détails' },
-  { number: 4, label: 'Paiement' },
-];
-
-export default function BookingProgressBar({ currentStep }: BookingProgressBarProps) {
+export default function BookingProgressBar({ currentStep, customLabels }: BookingProgressBarProps) {
+  const steps = [
+    { number: 1, label: customLabels?.step1 || 'Espace' },
+    { number: 2, label: customLabels?.step2 || 'Date' },
+    { number: 3, label: customLabels?.step3 || 'Détails' },
+    { number: 4, label: customLabels?.step4 || 'Paiement' },
+  ];
   const progressPercentage = ((currentStep - 1) / (steps.length - 1)) * 100;
 
   return (
@@ -47,14 +52,14 @@ export default function BookingProgressBar({ currentStep }: BookingProgressBarPr
                 )}
               </div>
             </div>
-            <div className="step-text">{step.label}</div>
+            <div className="step-text" style={{ whiteSpace: 'pre-line' }}>{step.label}</div>
           </div>
         ))}
       </div>
 
       <style jsx>{`
         .booking-progress-bar {
-          padding: 20px 0;
+          padding: 0 0 20px 0;
         }
 
         .progress-line-container {

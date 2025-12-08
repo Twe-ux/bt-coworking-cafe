@@ -29,6 +29,7 @@ interface SpaceConfig {
   maxCapacity: number;
   imageUrl?: string;
   displayOrder: number;
+  features?: string[];
 }
 
 interface DisplaySpace {
@@ -52,31 +53,27 @@ const spaceTypeToSlug: Record<string, string> = {
   "evenementiel": "event-space",
 };
 
-// Static display data (icons, features, etc.)
+// Static display data (icons only - features come from DB)
 const spaceDisplayData: Record<string, Partial<DisplaySpace>> = {
   "open-space": {
     title: "Place",
     subtitle: "Open-space",
     icon: "bi-person-workspace",
-    features: ["WiFi", "Café", "Imprimante"],
   },
   "salle-verriere": {
     title: "Salle de réunion",
     subtitle: "Verrière",
     icon: "bi-briefcase",
-    features: ["Écran", "WiFi", "Tableau blanc"],
   },
   "salle-etage": {
     title: "Salle de réunion",
     subtitle: "Étage",
     icon: "bi-building",
-    features: ["Projecteur", "WiFi", "Climatisation"],
   },
   "evenementiel": {
     title: "Événementiel",
     subtitle: "Grand espace",
     icon: "bi-calendar-event",
-    features: ["Sonorisation", "Vidéoprojecteur", "Traiteur possible"],
   },
 };
 
@@ -118,7 +115,7 @@ export default function BookingPage() {
               icon: displayData.icon || "bi-building",
               image: config.imageUrl || `/images/spaces/${config.slug}.jpg`,
               capacity,
-              features: displayData.features || [],
+              features: config.features || [],
               priceFrom,
               requiresQuote: config.requiresQuote,
             };
@@ -159,20 +156,20 @@ export default function BookingPage() {
       <section className="booking-selection py-5">
         <div className="container">
           {/* Progress Bar */}
-          <div className="row justify-content-center mb-5">
+          <div className="row justify-content-center mb-4">
             <div className="col-lg-8">
               <BookingProgressBar currentStep={1} />
-            </div>
-          </div>
 
-          {/* Page Title */}
-          <div className="text-center mb-4">
-            <h2 className="mb-2" style={{ fontSize: "1.75rem" }}>
-              Quel espace souhaitez-vous réserver ?
-            </h2>
-            <p className="text-muted" style={{ fontSize: "0.95rem" }}>
-              Sélectionnez le type d'espace qui correspond à vos besoins
-            </p>
+              {/* Page Title */}
+              <div className="text-center mb-4 mt-4">
+                <h2 className="mb-2" style={{ fontSize: "1.35rem" }}>
+                  Quel espace souhaitez-vous réserver ?
+                </h2>
+                <p className="text-muted" style={{ fontSize: "0.9rem" }}>
+                  Sélectionnez le type d'espace qui correspond à vos besoins
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Space Type Cards */}

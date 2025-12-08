@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-import PageTitle from '@/components/site/pageTitle';
 import CheckoutForm from '@/components/site/booking/CheckoutForm';
 import { useSession } from 'next-auth/react';
+import BookingProgressBar from '@/components/site/booking/BookingProgressBar';
 
 interface Booking {
   _id: string;
@@ -154,8 +154,7 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
   if (status === 'loading' || loading) {
     return (
       <>
-        <PageTitle title="Paiement" currentPage="Paiement" />
-        <section className="checkout-page py__130">
+        <section className="checkout-page py-5">
           <div className="container">
             <div className="text-center py-5">
               <div className="spinner-border text-primary" role="status">
@@ -172,8 +171,7 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
   if (error) {
     return (
       <>
-        <PageTitle title="Paiement" currentPage="Paiement" />
-        <section className="checkout-page py__130">
+        <section className="checkout-page py-5">
           <div className="container">
             <div className="row justify-content-center">
               <div className="col-lg-8">
@@ -216,12 +214,30 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
 
   return (
     <>
-      <PageTitle title="Paiement sécurisé" currentPage="Paiement" />
-
-      <section className="checkout-page py__130">
+      <section className="checkout-page py-5">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8">
+              {/* Progress Bar */}
+              <div className="booking-card mb-4">
+                <BookingProgressBar currentStep={4} />
+
+                {/* Back button and Title */}
+                <div className="mb-3 position-relative">
+                  <button
+                    onClick={() => router.back()}
+                    className="btn btn-link text-muted p-0 position-absolute"
+                    style={{ fontSize: "0.9rem", left: 0, top: 0 }}
+                  >
+                    <i className="bi bi-arrow-left me-2"></i>
+                    Retour
+                  </button>
+                  <h2 className="text-center mb-0" style={{ fontSize: "1.35rem" }}>
+                    Paiement sécurisé
+                  </h2>
+                </div>
+              </div>
+
               {/* Booking Summary */}
               <div className="card border-0 shadow-sm mb-4">
                 <div className="card-body">
@@ -322,17 +338,6 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
         </div>
       </section>
 
-      <style jsx>{`
-        .py__130 {
-          padding: 130px 0;
-        }
-
-        @media (max-width: 768px) {
-          .py__130 {
-            padding: 60px 0;
-          }
-        }
-      `}</style>
     </>
   );
 }

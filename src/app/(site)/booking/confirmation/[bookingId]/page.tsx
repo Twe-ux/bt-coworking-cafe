@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import PageTitle from '@/components/site/pageTitle';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
@@ -132,8 +131,7 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
   if (status === 'loading' || loading) {
     return (
       <>
-        <PageTitle title="Confirmation" currentPage="Confirmation" />
-        <section className="confirmation-page py__130">
+        <section className="confirmation-page py-5">
           <div className="container">
             <div className="text-center py-5">
               <div className="spinner-border text-primary" role="status">
@@ -149,8 +147,7 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
   if (error) {
     return (
       <>
-        <PageTitle title="Confirmation" currentPage="Confirmation" />
-        <section className="confirmation-page py__130">
+        <section className="confirmation-page py-5">
           <div className="container">
             <div className="row justify-content-center">
               <div className="col-lg-8">
@@ -183,12 +180,26 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
   return (
     <>
-      <PageTitle title="Confirmation de réservation" currentPage="Confirmation" />
-
-      <section className="confirmation-page py__130">
+      <section className="confirmation-page py-5">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8">
+              {/* Back button and Title */}
+              <div className="booking-card mb-4">
+                <div className="mb-3 position-relative">
+                  <button
+                    onClick={() => router.push('/booking')}
+                    className="btn btn-link text-muted p-0 position-absolute"
+                    style={{ fontSize: "0.9rem", left: 0, top: 0 }}
+                  >
+                    <i className="bi bi-arrow-left me-2"></i>
+                    Retour
+                  </button>
+                  <h2 className="text-center mb-0" style={{ fontSize: "1.35rem" }}>
+                    Confirmation de réservation
+                  </h2>
+                </div>
+              </div>
               {/* Success Message */}
               {isConfirmed && (
                 <div className="text-center mb-5">
@@ -370,16 +381,6 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
       </section>
 
       <style jsx>{`
-        .py__130 {
-          padding: 130px 0;
-        }
-
-        @media (max-width: 768px) {
-          .py__130 {
-            padding: 60px 0;
-          }
-        }
-
         .success-icon {
           animation: scaleIn 0.5s ease-out;
         }

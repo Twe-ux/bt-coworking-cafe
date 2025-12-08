@@ -73,10 +73,7 @@ const Header = () => {
                 </Link>
               </div>
               <div className="d-xl-block d-none">
-                <Link
-                  href="https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1"
-                  className="common__btn"
-                >
+                <Link href="/booking" className="common__btn">
                   <span>Réserver</span>
                   <img src="/icons/arrow-up-right.svg" alt="img" />
                 </Link>

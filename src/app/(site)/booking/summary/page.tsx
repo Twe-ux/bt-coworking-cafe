@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import PageTitle from '@/components/site/pageTitle';
 import BookingProgressBar from '@/components/site/booking/BookingProgressBar';
 
 interface BookingData {
@@ -41,6 +40,13 @@ const spaceTypeLabels: Record<string, string> = {
   'meeting-room-glass': 'Salle de réunion - Verrière',
   'meeting-room-floor': 'Salle de réunion - Étage',
   'event-space': 'Événementiel',
+};
+
+const spaceTypeInfo: Record<string, { title: string; subtitle: string }> = {
+  "open-space": { title: "Place", subtitle: "Open-space" },
+  "meeting-room-glass": { title: "Salle de réunion", subtitle: "Verrière" },
+  "meeting-room-floor": { title: "Salle de réunion", subtitle: "Étage" },
+  "event-space": { title: "Événementiel", subtitle: "Grand espace" },
 };
 
 const reservationTypeLabels: Record<string, string> = {
@@ -202,97 +208,115 @@ export default function BookingSummaryPage() {
   const servicesPrice = calculateServicesPrice();
   const totalPrice = getTotalPrice();
 
+  const spaceInfo = spaceTypeInfo[bookingData.spaceType] || { title: 'Espace', subtitle: '' };
+  const dateLabel = new Date(bookingData.date).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "short",
+  });
+  const timeLabel = `${bookingData.startTime}-${bookingData.endTime}`;
+  const peopleLabel = `${bookingData.numberOfPeople} pers.`;
+
   return (
     <>
-      <PageTitle title="Récapitulatif de la réservation" currentPage="Récapitulatif" />
-
-      <section className="booking-summary-page py-4">
+      <section className="booking-summary-page py-5">
         <div className="container">
-          {/* Progress Bar */}
-          <div className="row justify-content-center mb-3">
-            <div className="col-lg-10">
-              <BookingProgressBar currentStep={4} />
-            </div>
-          </div>
-
           <div className="row justify-content-center">
             <div className="col-lg-10">
-              {/* Back button */}
-              <button
-                onClick={() => router.back()}
-                className="btn btn-link text-muted p-0 mb-4"
-              >
-                <i className="bi bi-arrow-left me-2"></i>
-                Retour
-              </button>
+              <div className="booking-card mb-4" style={{ padding: "1.25rem" }}>
+                {/* Progress Bar */}
+                <BookingProgressBar
+                  currentStep={4}
+                  customLabels={{
+                    step1: spaceInfo.subtitle,
+                    step2: `${dateLabel}\n${timeLabel}\n${peopleLabel}`,
+                    step3: 'Détails',
+                  }}
+                />
 
-              <div className="row g-4">
+                <hr style={{ margin: "0 0 1rem 0", border: "none", borderTop: "1px solid #e0e0e0" }} />
+
+                {/* Back button and Title */}
+                <div className="mb-3 position-relative">
+                  <button
+                    onClick={() => router.back()}
+                    className="btn btn-link text-muted p-0 position-absolute"
+                    style={{ fontSize: "0.9rem", left: 0, top: 0 }}
+                  >
+                    <i className="bi bi-arrow-left me-2"></i>
+                    Retour
+                  </button>
+                  <h2 className="text-center mb-0" style={{ fontSize: "1.35rem" }}>
+                    Récapitulatif
+                  </h2>
+                </div>
+              </div>
+
+              <div className="row g-3">
                 {/* Left Column - Summary */}
                 <div className="col-lg-7">
-                  <div className="booking-card mb-3">
-                    <h5 className="mb-3" style={{ fontSize: '1.1rem' }}>
+                  <div className="booking-card mb-3" style={{ padding: "1rem" }}>
+                    <h5 className="mb-3" style={{ fontSize: '1rem' }}>
                       <i className="bi bi-receipt me-2"></i>
-                      Récapitulatif de votre réservation
+                      Détails de la réservation
                     </h5>
 
                     <div className="summary-section">
-                      <div className="summary-row">
-                        <span className="summary-label">Espace</span>
-                        <span className="summary-value">
+                      <div className="summary-row" style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                        <span className="summary-label" style={{ fontSize: '0.85rem' }}>Espace</span>
+                        <span className="summary-value" style={{ fontWeight: '600' }}>
                           {spaceTypeLabels[bookingData.spaceType]}
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Type</span>
+                      <div className="summary-row" style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                        <span className="summary-label" style={{ fontSize: '0.85rem' }}>Type</span>
                         <span className="summary-value">
                           {reservationTypeLabels[bookingData.reservationType]}
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Date</span>
+                      <div className="summary-row" style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                        <span className="summary-label" style={{ fontSize: '0.85rem' }}>Date</span>
                         <span className="summary-value">
                           {new Date(bookingData.date).toLocaleDateString('fr-FR', {
                             weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
                             day: 'numeric',
+                            month: 'long',
                           })}
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Horaires</span>
+                      <div className="summary-row" style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                        <span className="summary-label" style={{ fontSize: '0.85rem' }}>Horaires</span>
                         <span className="summary-value">
                           {bookingData.startTime} - {bookingData.endTime}
-                          <span className="text-muted ms-2">({bookingData.duration})</span>
+                          <span className="text-muted ms-2" style={{ fontSize: '0.85rem' }}>({bookingData.duration})</span>
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Personnes</span>
+                      <div className="summary-row" style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                        <span className="summary-label" style={{ fontSize: '0.85rem' }}>Personnes</span>
                         <span className="summary-value">
                           {bookingData.numberOfPeople}{' '}
                           {bookingData.numberOfPeople > 1 ? 'personnes' : 'personne'}
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Contact</span>
+                      <div className="summary-row" style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                        <span className="summary-label" style={{ fontSize: '0.85rem' }}>Contact</span>
                         <span className="summary-value">
                           {bookingData.contactName}
                           <br />
-                          <small className="text-muted">{bookingData.contactEmail}</small>
+                          <small className="text-muted" style={{ fontSize: '0.8rem' }}>{bookingData.contactEmail}</small>
                           <br />
-                          <small className="text-muted">{bookingData.contactPhone}</small>
+                          <small className="text-muted" style={{ fontSize: '0.8rem' }}>{bookingData.contactPhone}</small>
                         </span>
                       </div>
 
                       {bookingData.specialRequests && (
-                        <div className="summary-row">
-                          <span className="summary-label">Demandes</span>
-                          <span className="summary-value">
+                        <div className="summary-row" style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
+                          <span className="summary-label" style={{ fontSize: '0.85rem' }}>Demandes</span>
+                          <span className="summary-value" style={{ fontSize: '0.85rem' }}>
                             {bookingData.specialRequests}
                           </span>
                         </div>
@@ -301,8 +325,8 @@ export default function BookingSummaryPage() {
                   </div>
 
                   {/* Additional Services */}
-                  <div className="booking-card">
-                    <h5 className="mb-3" style={{ fontSize: '1.1rem' }}>
+                  <div className="booking-card" style={{ padding: "1rem" }}>
+                    <h5 className="mb-3" style={{ fontSize: '1rem' }}>
                       <i className="bi bi-plus-circle me-2"></i>
                       Services supplémentaires
                     </h5>
@@ -383,11 +407,11 @@ export default function BookingSummaryPage() {
 
                 {/* Right Column - Price & Actions */}
                 <div className="col-lg-5">
-                  <div className="booking-card sticky-card">
-                    <h5 className="mb-3" style={{ fontSize: '1.1rem' }}>Total</h5>
+                  <div className="booking-card sticky-card" style={{ padding: "1rem" }}>
+                    <h5 className="mb-3" style={{ fontSize: '1rem' }}>Total</h5>
 
                     <div className="price-breakdown">
-                      <div className="price-row">
+                      <div className="price-row" style={{ fontSize: '0.9rem', padding: '0.5rem 0' }}>
                         <span>Tarif de base</span>
                         <span>{bookingData.basePrice.toFixed(2)}€</span>
                       </div>
@@ -404,7 +428,7 @@ export default function BookingSummaryPage() {
                                 : selected.service.price * selected.quantity;
 
                             return (
-                              <div key={selected.service._id} className="price-row small">
+                              <div key={selected.service._id} className="price-row small" style={{ fontSize: '0.85rem', padding: '0.4rem 0' }}>
                                 <span>
                                   {selected.service.name} x{selected.quantity}
                                   {selected.service.priceUnit === 'per-person' &&
@@ -419,17 +443,18 @@ export default function BookingSummaryPage() {
 
                       <div className="price-divider"></div>
 
-                      <div className="price-row total-row">
-                        <span>Total à payer</span>
-                        <span className="total-price">{totalPrice.toFixed(2)}€</span>
+                      <div className="price-row total-row" style={{ fontSize: '1rem', padding: '0.75rem 0' }}>
+                        <span style={{ fontWeight: '600' }}>Total à payer</span>
+                        <span className="total-price" style={{ fontSize: '1.5rem' }}>{totalPrice.toFixed(2)}€</span>
                       </div>
                     </div>
 
-                    <div className="actions-section mt-4">
+                    <div className="actions-section mt-3">
                       <button
-                        className="btn btn-success btn-lg w-100 mb-3"
+                        className="btn btn-success w-100 mb-2"
                         onClick={() => handleCreateReservation(true)}
                         disabled={loading}
+                        style={{ fontSize: '0.95rem', padding: '0.75rem' }}
                       >
                         {loading ? (
                           <>
@@ -445,9 +470,10 @@ export default function BookingSummaryPage() {
                       </button>
 
                       <button
-                        className="btn btn-outline-success btn-lg w-100"
+                        className="btn btn-outline-success w-100"
                         onClick={() => handleCreateReservation(false)}
                         disabled={loading}
+                        style={{ fontSize: '0.95rem', padding: '0.75rem' }}
                       >
                         {loading ? (
                           <>
@@ -462,7 +488,7 @@ export default function BookingSummaryPage() {
                         )}
                       </button>
 
-                      <p className="text-muted text-center mt-3 mb-0 small">
+                      <p className="text-muted text-center mt-2 mb-0" style={{ fontSize: '0.75rem' }}>
                         <i className="bi bi-info-circle me-1"></i>
                         Vous recevrez une confirmation par email
                       </p>

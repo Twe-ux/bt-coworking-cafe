@@ -60,6 +60,7 @@ export interface SpaceConfigurationDocument extends Document {
   // Display
   imageUrl?: string;
   displayOrder: number;
+  features?: string[]; // Tags/features displayed on the site (e.g., WiFi, Café, Écran)
 
   // Metadata
   createdAt: Date;

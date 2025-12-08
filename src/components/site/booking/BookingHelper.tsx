@@ -1,3 +1,5 @@
+import ProtectedEmail from "@/components/common/ProtectedEmail";
+
 export default function BookingHelper() {
   return (
     <div className="subscribe">
@@ -7,14 +9,17 @@ export default function BookingHelper() {
           <p>Notre équipe est à votre disposition pour vous conseiller</p>
         </div>
         <div className="d-flex gap-3 justify-content-center ">
-          <a href="tel:+33123456789" className="common__btn">
+          <a href="tel:+33987334519" className="common__btn">
             <i className="bi bi-telephone me-2"></i>
             <span>Appelez-nous</span>
           </a>
-          <a href="mailto:contact@btcafe.com" className="common__btn">
-            <i className="bi bi-envelope me-2"></i>
-            <span>Écrivez-nous</span>
-          </a>
+          <ProtectedEmail
+            user="contact"
+            domain="btcafe.com"
+            className="common__btn"
+            showIcon={true}
+            displayText="Écrivez-nous"
+          />
         </div>
       </div>
     </div>

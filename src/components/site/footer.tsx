@@ -35,6 +35,9 @@ const Footer = () => {
       "/professionnels",
       "/mag",
       "/booking",
+      "/booking/open-space/new",
+      "/booking/details",
+      "/booking/summary",
       "/signin",
       "/signup",
     ].includes(pathname);
@@ -129,10 +132,10 @@ const Footer = () => {
               <h3 className="footer__info_group">Liens rapides</h3>
               <ul>
                 <li>
-                  <Link href={"#"}>Réserver</Link>
+                  <Link href={"/booking"}>Réserver</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Fonctionnement</Link>
+                  <Link href={"/concept"}>Fonctionnement</Link>
                 </li>
                 <li>
                   <Link href={"/tarifs"}>Tarifs</Link>

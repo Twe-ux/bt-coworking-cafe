@@ -46,6 +46,7 @@ interface SpaceConfiguration {
   isActive: boolean;
   imageUrl?: string;
   displayOrder: number;
+  features?: string[];
 }
 
 const spaceTypeLabels: Record<string, string> = {
@@ -76,6 +77,7 @@ export default function SpacesSettingsPage() {
     isActive: true,
     requiresQuote: false,
     displayOrder: 0,
+    features: [],
     pricing: {
       hourly: 0,
       daily: 0,
@@ -306,6 +308,7 @@ export default function SpacesSettingsPage() {
           isActive: true,
           requiresQuote: false,
           displayOrder: 0,
+          features: [],
           pricing: {
             hourly: 0,
             daily: 0,
@@ -757,6 +760,76 @@ export default function SpacesSettingsPage() {
                                 })
                               }
                             />
+                          </Form.Group>
+
+                          {/* Features */}
+                          <Form.Group className="mb-3">
+                            <Form.Label>
+                              Tags / Équipements{" "}
+                              <small className="text-muted">
+                                (Exemples: WiFi, Café, Écran, Projecteur, Climatisation, Imprimante, Tableau blanc, etc.)
+                              </small>
+                            </Form.Label>
+                            <div className="d-flex flex-wrap gap-2 mb-2">
+                              {(config.features || []).map((feature, index) => (
+                                <Badge
+                                  key={index}
+                                  bg="light"
+                                  text="dark"
+                                  className="d-flex align-items-center gap-1 p-2"
+                                  style={{ fontSize: '0.875rem' }}
+                                >
+                                  {feature}
+                                  <Icon
+                                    icon="ri:close-line"
+                                    width={14}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                      const newFeatures = [...(config.features || [])];
+                                      newFeatures.splice(index, 1);
+                                      updateConfiguration(config.spaceType, {
+                                        features: newFeatures,
+                                      });
+                                    }}
+                                  />
+                                </Badge>
+                              ))}
+                            </div>
+                            <div className="d-flex gap-2">
+                              <Form.Control
+                                type="text"
+                                placeholder="Ajouter un tag (ex: WiFi)"
+                                id={`feature-input-${config.spaceType}`}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    const input = e.target as HTMLInputElement;
+                                    const value = input.value.trim();
+                                    if (value && !(config.features || []).includes(value)) {
+                                      updateConfiguration(config.spaceType, {
+                                        features: [...(config.features || []), value],
+                                      });
+                                      input.value = '';
+                                    }
+                                  }
+                                }}
+                              />
+                              <Button
+                                variant="outline-primary"
+                                onClick={() => {
+                                  const input = document.getElementById(`feature-input-${config.spaceType}`) as HTMLInputElement;
+                                  const value = input?.value.trim();
+                                  if (value && !(config.features || []).includes(value)) {
+                                    updateConfiguration(config.spaceType, {
+                                      features: [...(config.features || []), value],
+                                    });
+                                    input.value = '';
+                                  }
+                                }}
+                              >
+                                <Icon icon="ri:add-line" />
+                              </Button>
+                            </div>
                           </Form.Group>
 
                           {/* Pricing */}

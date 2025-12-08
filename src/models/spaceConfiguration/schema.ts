@@ -153,6 +153,10 @@ const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
       type: Number,
       default: 0,
     },
+    features: {
+      type: [String],
+      default: [],
+    },
     isDeleted: {
       type: Boolean,
       default: false,
