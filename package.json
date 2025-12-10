@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:users": "tsx src/lib/seed-users.ts"
+    "seed:users": "tsx src/lib/seed-users.ts",
+    "optimize:images": "node scripts/optimize-images.js --all",
+    "optimize:image": "node scripts/optimize-images.js"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
