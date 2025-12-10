@@ -26,6 +26,7 @@ Le script détecte automatiquement le type d'image selon son emplacement :
 | `services/` | 600×400px | 85% | Services |
 | `testimonial/` | 300×300px | 80% | Témoignages |
 | `about/` | 800×600px | 85% | À propos |
+| `takeAway/` | 1200×800px | 85% | Page take-away |
 | Autres | 800×600px | 85% | Par défaut |
 
 ## 🎯 Cas d'Usage
@@ -136,7 +137,15 @@ Les fichiers originaux sont automatiquement sauvegardés dans un dossier `_origi
 
 ## 🔧 Configuration Avancée
 
-Pour modifier les dimensions ou la qualité, éditez `scripts/optimize-images.js` :
+### 📐 Modifier les Dimensions
+
+**IMPORTANT**: Les dimensions sont centralisées dans **UN SEUL fichier** :
+
+```
+scripts/image-config.js
+```
+
+Modifie ce fichier pour changer les dimensions de **toutes les images** (optimisation manuelle + uploads dashboard) :
 
 ```javascript
 const IMAGE_CONFIGS = {
@@ -146,16 +155,25 @@ const IMAGE_CONFIGS = {
     quality: 85,     // Qualité WebP (0-100)
     fit: 'cover'     // 'cover' ou 'inside'
   },
+  takeaway: {
+    width: 1200,     // ← Change ici pour /take-away
+    height: 800,
+    quality: 85,
+    fit: 'cover'
+  },
   // ...
 };
 ```
 
+⚠️ **Ne modifie PAS** `scripts/optimize-images.js` ou `src/lib/image-optimizer.ts` directement - ils importent automatiquement depuis `image-config.js`
+
 ## ⚠️ Notes Importantes
 
-- Les images WebP existantes ne sont pas reconverties
+- ✅ Les images WebP existantes sont maintenant redimensionnées selon la configuration
 - Le script préserve le ratio d'aspect si `fit: 'inside'`
 - La compression WebP offre généralement 60-70% d'économie par rapport à PNG/JPG
 - Compatible avec tous les navigateurs modernes (95%+ support)
+- PNG/JPG sont convertis en WebP, les WebP existants sont juste redimensionnés
 
 ## 🎯 Workflow Recommandé
 

@@ -9,69 +9,8 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-// Configuration des dimensions par catégorie
-const IMAGE_CONFIGS = {
-  blogs: {
-    width: 800,
-    height: 600,
-    quality: 85,
-    fit: 'cover'
-  },
-  projects: {
-    width: 600,
-    height: 400,
-    quality: 85,
-    fit: 'cover'
-  },
-  banner: {
-    width: 1920,
-    height: 1080,
-    quality: 90,
-    fit: 'cover'
-  },
-  spaces: {
-    width: 1200,
-    height: 800,
-    quality: 85,
-    fit: 'cover'
-  },
-  thumbnails: {
-    width: 400,
-    height: 300,
-    quality: 80,
-    fit: 'cover'
-  },
-  menu: {
-    width: 600,
-    height: 400,
-    quality: 85,
-    fit: 'cover'
-  },
-  services: {
-    width: 600,
-    height: 400,
-    quality: 85,
-    fit: 'cover'
-  },
-  testimonial: {
-    width: 300,
-    height: 300,
-    quality: 80,
-    fit: 'cover'
-  },
-  about: {
-    width: 800,
-    height: 600,
-    quality: 85,
-    fit: 'cover'
-  },
-  default: {
-    width: 800,
-    height: 600,
-    quality: 85,
-    fit: 'inside' // Preserve aspect ratio
-  }
-};
+// Import de la configuration centralisée
+const { IMAGE_CONFIGS } = require('./image-config.js');
 
 /**
  * Détermine la catégorie d'image selon son chemin
@@ -115,7 +54,11 @@ async function optimizeImage(inputPath, options = {}) {
   }
 
   // Chemin de sortie .webp
-  const outputPath = path.join(dirname, `${basename}.webp`);
+  // Pour les WebP existants, utiliser un fichier temporaire
+  const isAlreadyWebp = ext === '.webp';
+  const outputPath = isAlreadyWebp
+    ? path.join(dirname, `${basename}.tmp.webp`)
+    : path.join(dirname, `${basename}.webp`);
 
   try {
     const image = sharp(inputPath);
@@ -142,11 +85,18 @@ async function optimizeImage(inputPath, options = {}) {
     const optimizedSize = fs.statSync(outputPath).size;
     const savings = ((1 - optimizedSize / originalSize) * 100).toFixed(1);
 
-    console.log(`   ✓ ${path.basename(outputPath)}`);
+    // Si c'était un WebP, remplacer l'original par le fichier optimisé
+    if (isAlreadyWebp) {
+      fs.renameSync(outputPath, inputPath);
+      console.log(`   ✓ ${path.basename(inputPath)} (redimensionné)`);
+    } else {
+      console.log(`   ✓ ${path.basename(outputPath)}`);
+    }
+
     console.log(`   💾 ${(originalSize / 1024).toFixed(1)}KB → ${(optimizedSize / 1024).toFixed(1)}KB (${savings}% économisé)`);
     console.log('');
 
-    return { success: true, inputPath, outputPath, savings };
+    return { success: true, inputPath, outputPath: isAlreadyWebp ? inputPath : outputPath, savings };
   } catch (error) {
     console.error(`   ✗ Erreur: ${error.message}`);
     console.log('');
@@ -157,7 +107,7 @@ async function optimizeImage(inputPath, options = {}) {
 /**
  * Trouve toutes les images à optimiser
  */
-function findImages(dir, extensions = ['.png', '.jpg', '.jpeg']) {
+function findImages(dir, extensions = ['.png', '.jpg', '.jpeg', '.webp']) {
   const images = [];
 
   function scan(currentDir) {
