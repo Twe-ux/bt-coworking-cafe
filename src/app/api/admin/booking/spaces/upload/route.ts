@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { options as authOptions } from "@/lib/auth-options";
 import cloudinary from "@/lib/cloudinary";
 import { logger } from "@/lib/logger";
+import { optimizeImage, shouldOptimize } from "@/lib/image-optimizer";
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,10 +27,24 @@ export async function POST(request: NextRequest) {
 
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    let buffer = Buffer.from(bytes);
+
+    // Optimiser automatiquement l'image
+    if (shouldOptimize(file.type, file.size)) {
+      try {
+        const optimized = await optimizeImage(buffer, { folder: 'spaces' });
+        buffer = optimized.buffer;
+        logger.info('Image optimisée:', {
+          savings: `${optimized.metadata.savings}%`,
+          size: `${(optimized.metadata.size / 1024).toFixed(1)}KB`
+        });
+      } catch (error) {
+        logger.warn('Échec de l\'optimisation, upload de l\'image originale');
+      }
+    }
 
     // Convert buffer to base64
-    const base64 = `data:${file.type};base64,${buffer.toString("base64")}`;
+    const base64 = `data:image/webp;base64,${buffer.toString("base64")}`;
 
     // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(base64, {

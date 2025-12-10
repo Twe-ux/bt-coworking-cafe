@@ -1,6 +1,17 @@
 # 🖼️ Optimisation d'Images
 
-Ce script convertit automatiquement vos images PNG/JPG en WebP et les redimensionne selon leur utilisation.
+Ce système optimise automatiquement vos images PNG/JPG en WebP et les redimensionne selon leur utilisation.
+
+## ✨ Optimisation Automatique via Dashboard
+
+**L'optimisation est maintenant AUTOMATIQUE !** Lorsque vous uploadez une image via le dashboard (articles de blog, menu, boissons, espaces), elle est automatiquement :
+
+- ✅ Convertie en WebP
+- ✅ Redimensionnée selon sa catégorie
+- ✅ Compressée avec la qualité optimale
+- ✅ Envoyée à Cloudinary déjà optimisée
+
+**Aucune commande à lancer** - tout se fait en arrière-plan lors de l'upload !
 
 ## 📐 Dimensions par Catégorie
 
@@ -17,7 +28,38 @@ Le script détecte automatiquement le type d'image selon son emplacement :
 | `about/` | 800×600px | 85% | À propos |
 | Autres | 800×600px | 85% | Par défaut |
 
-## 🚀 Utilisation
+## 🎯 Cas d'Usage
+
+### Upload via Dashboard (Automatique)
+
+Lorsque vous :
+- Créez un article de blog avec une image
+- Ajoutez une boisson/food avec photo
+- Uploadez une image d'espace
+
+➡️ **L'image est automatiquement optimisée** avant d'être envoyée à Cloudinary
+
+Vous verrez dans les logs :
+```
+✅ Image optimisée avant upload Cloudinary: {
+  savings: '87%',
+  size: '12.3KB',
+  format: 'webp'
+}
+```
+
+### Désactiver l'optimisation automatique
+
+Si vous voulez uploader une image sans optimisation (rare) :
+
+```typescript
+const formData = new FormData();
+formData.append('file', file);
+formData.append('folder', 'blog');
+formData.append('skipOptimization', 'true'); // ← Désactive l'optimisation
+```
+
+## 🚀 Optimisation Manuelle
 
 ### Optimiser toutes les images
 
