@@ -36,4 +36,5 @@ yarn-error.log*
 next-env.d.ts
 build-test.log
 
-
+# Image optimization backups
+public/images/**/_originals/
