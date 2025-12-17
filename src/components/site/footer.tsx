@@ -18,20 +18,35 @@ const Footer = () => {
       pathname.startsWith("/booking") ||
       [
         "/",
-        "/concept",
-        "/spaces",
-        "/pricing",
-        "/contact",
-        "/signin",
-        "/signup",
-        "/scan",
-        "/boissons",
-        "/menu/boissons",
-        "/menu/food",
-        "/professionnels",
+
+        // Static pages - legal and info
         "/CGU",
         "/confidentiality",
         "/mentions-legales",
+        "/contact",
+        "/history",
+        "/manifest",
+
+        // Promotional pages
+        "/scan",
+        "/promo",
+
+        // Site pages
+        "/concept",
+        "/take-away",
+        "/spaces",
+        "/pricing",
+        "/members-program",
+        "/student-offers",
+
+        "/boissons",
+        // "/menu/boissons",
+        // "/menu/food",
+
+        "/blog",
+
+        "/auth/login",
+        "/auth/register",
       ].includes(pathname));
 
   const isClientDashboard =

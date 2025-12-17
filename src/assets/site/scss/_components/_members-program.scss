@@ -1,0 +1,33 @@
+.container p {
+  font-size: 18px;
+}
+
+.services__wapper {
+  .row {
+    margin-bottom: 250px;
+  }
+}
+
+.service__card {
+  min-height: 445px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  .icon {
+    font-size: 50px;
+  }
+  .t__28 {
+    margin-top: 0px !important;
+    margin-bottom: 10px !important;
+  }
+  span {
+    color: var(--btn-clr);
+    font-weight: 700;
+    transition: all 0.3s ease-in-out;
+  }
+  &:hover {
+    span {
+      color: black;
+    }
+  }
+}

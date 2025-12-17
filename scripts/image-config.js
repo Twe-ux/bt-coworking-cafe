@@ -12,104 +12,110 @@ const IMAGE_CONFIGS = {
     width: 800,
     height: 600,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   blogs: {
     width: 800,
     height: 600,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   menu: {
     width: 600,
     height: 400,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   food: {
     width: 600,
     height: 400,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   drinks: {
     width: 600,
     height: 400,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   beverage: {
     width: 600,
     height: 400,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   projects: {
     width: 600,
     height: 400,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   banner: {
     width: 1920,
     height: 1080,
     quality: 90,
-    fit: 'cover'
+    fit: "cover",
   },
   hero: {
     width: 1920,
     height: 1080,
     quality: 90,
-    fit: 'cover'
+    fit: "cover",
   },
   spaces: {
     width: 1200,
     height: 800,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   services: {
     width: 600,
     height: 400,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
+  },
+  membersPrograms: {
+    width: 600,
+    height: 800,
+    quality: 85,
+    fit: "cover",
   },
   testimonial: {
     width: 300,
     height: 300,
     quality: 80,
-    fit: 'cover'
+    fit: "cover",
   },
   about: {
     width: 800,
     height: 600,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   takeaway: {
     width: 1200,
     height: 800,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
-  'take-away': {
+  "take-away": {
     width: 1200,
     height: 800,
     quality: 85,
-    fit: 'cover'
+    fit: "cover",
   },
   thumbnails: {
     width: 400,
     height: 300,
     quality: 80,
-    fit: 'cover'
+    fit: "cover",
   },
   default: {
     width: 800,
     height: 600,
     quality: 85,
-    fit: 'inside' // Preserve aspect ratio
-  }
+    fit: "inside", // Preserve aspect ratio
+  },
 };
 
 module.exports = { IMAGE_CONFIGS };

@@ -15,6 +15,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: "https://new.coworkingcafe.fr/take-away",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://new.coworkingcafe.fr/history",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://new.coworkingcafe.fr/manifest",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: "https://new.coworkingcafe.fr/spaces",
       lastModified: new Date(),
       changeFrequency: "weekly",
@@ -22,6 +40,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: "https://new.coworkingcafe.fr/pricing",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: "https://new.coworkingcafe.fr/members-program",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: "https://new.coworkingcafe.fr/student-offers",
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,

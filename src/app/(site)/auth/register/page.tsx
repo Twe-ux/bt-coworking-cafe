@@ -1,44 +1,44 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import '../login/auth.scss';
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import "../login/auth.scss";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    givenName: '',
-    username: '',
+    email: "",
+    password: "",
+    confirmPassword: "",
+    givenName: "",
+    username: "",
     newsletter: true,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError("Les mots de passe ne correspondent pas");
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères');
+      setError("Le mot de passe doit contenir au moins 8 caractères");
       return;
     }
 
@@ -46,17 +46,17 @@ export default function RegisterPage() {
 
     try {
       // Call registration API
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
           givenName: formData.givenName,
           username: formData.username || undefined,
-          roleSlug: 'client', // Default role for public registration
+          roleSlug: "client", // Default role for public registration
           newsletter: formData.newsletter,
         }),
       });
@@ -64,40 +64,44 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de l\'inscription');
+        throw new Error(data.error || "Erreur lors de l'inscription");
       }
 
       // Auto login after successful registration
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
         redirect: false,
       });
 
       if (result?.error) {
-        setError('Inscription réussie mais erreur de connexion. Veuillez vous connecter manuellement.');
+        setError(
+          "Inscription réussie mais erreur de connexion. Veuillez vous connecter manuellement."
+        );
         setTimeout(() => {
-          router.push('/auth/login');
+          router.push("/auth/login");
         }, 2000);
         return;
       }
 
       if (result?.ok) {
-        router.push('/id');
+        router.push("/id");
         router.refresh();
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error("Registration error:", error);
       setError(
-        error instanceof Error ? error.message : 'Une erreur est survenue lors de l\'inscription'
+        error instanceof Error
+          ? error.message
+          : "Une erreur est survenue lors de l'inscription"
       );
       setIsLoading(false);
     }
   };
 
   return (
-    <section className="auth-section py__130">
-      <div className="container">
+    <section className="auth-section py__130 ">
+      <div className="container pb__130">
         <div className="row justify-content-center">
           <div className="col-lg-6 col-md-8">
             <div className="auth-card">
@@ -232,14 +236,14 @@ export default function RegisterPage() {
                       Inscription en cours...
                     </>
                   ) : (
-                    'Créer mon compte'
+                    "Créer mon compte"
                   )}
                 </button>
               </form>
 
               <div className="auth-footer text-center mt-4">
                 <p>
-                  Vous avez déjà un compte ?{' '}
+                  Vous avez déjà un compte ?{" "}
                   <Link href="/auth/login" className="auth-link fw-bold">
                     Se connecter
                   </Link>
