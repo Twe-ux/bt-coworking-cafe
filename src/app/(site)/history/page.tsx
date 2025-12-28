@@ -9,9 +9,9 @@ export default function historyPage() {
       <article className="service__details py__130">
         <div className="container">
           <img
-            src="/images/services/service.png"
+            src="/images/history/histoire-coworking-strasbourg.webp"
             alt="img"
-            className="w-100 thumb__img"
+            className="w-100 thumb__img rounded-3"
           />
           <div className="first__para pt__60">
             <SlideUp>
@@ -20,17 +20,20 @@ export default function historyPage() {
                 cœur de Strasbourg
               </h2>
             </SlideUp>
-            <p>
+            <p className="text-black mt__20">
               Tout a commencé autour de 2012, quelque part entre Aix-en-Provence
-              et Marseille 🌞. Deux parcours qui se croisent : Christèle,
-              manageuse passionnée et déjà pleine d’idées entrepreneuriales, et
-              Thierry, directeur des opérations chez Domino’s Pizza, Alsacien
-              d’origine. Deux personnalités complémentaires, un duo dans la vie
-              comme au travail — et déjà cette envie commune de construire
-              quelque chose ensemble.
+              et Marseille 🌞. <br />
+              Deux parcours qui se croisent : Christèle, manageuse passionnée et
+              déjà pleine d’idées entrepreneuriales, et Thierry, directeur des
+              opérations chez Domino’s Pizza, Alsacien d’origine. Deux
+              personnalités complémentaires, un duo dans la vie comme au travail
+              — et déjà cette envie commune de construire quelque chose
+              ensemble.
             </p>
-            <h3>2015 : une famille naissante, un rêve qui s’affine</h3>
-            <p>
+            <h3 className="t__28 mt__20">
+              2015 : une famille naissante, un rêve qui s’affine
+            </h3>
+            <p className="text-black mt__20">
               Lorsqu’ils décident de fonder une famille, une évidence s’impose :
               Christèle déborde de projets… mais n’a jamais d’endroit où
               s’installer pour travailler. Pas de lieu chaleureux, pas d’espace
@@ -42,8 +45,8 @@ export default function historyPage() {
               évidence : une ville vivante, humaine, et surtout le berceau
               familial de Thierry.
             </p>
-            <h3>2016–2017 : le grand saut</h3>
-            <p>
+            <h3 className="t__28 mt__20">2016–2017 : le grand saut</h3>
+            <p className="text-black mt__20">
               Dans leurs recherches, ils tombent sur un concept encore rare :
               Anticafé, pionnier du café au temps en France. Une franchise
               recherche justement des franchisés à Strasbourg. Timing parfait.
@@ -51,20 +54,22 @@ export default function historyPage() {
               en 2017 et, après des mois de travaux, d’excitation, de doutes,
               d’élans et de nuits blanches…
             </p>
-            <p>
+            <p className="text-black mt__20">
               📅 Le 18 décembre 2017, Anticafé Strasbourg ouvre enfin ses
               portes.
             </p>
-            <h3>2018–2019 : deux années lumineuses ✨</h3>
-            <p>
+            <h3 className="t__28 mt__20">
+              2018–2019 : deux années lumineuses ✨
+            </h3>
+            <p className="text-black mt__20">
               Les débuts sont au-delà de leurs espérances. Le lieu trouve
               immédiatement son public : étudiants, indépendants, équipes,
               voyageurs… Tous reconnaissent ce qu’ils ont voulu créer : un
               espace chaleureux, accessible, fluide, où l’on peut vraiment se
               poser pour travailler.
             </p>
-            <h3>2020–2022 : la tempête du Covid</h3>
-            <p>
+            <h3 className="t__28 mt__20">2020–2022 : la tempête du Covid</h3>
+            <p className="text-black mt__20">
               Et puis… le monde s’arrête. Fermetures administratives,
               restrictions, passages à vide, reprise timide, incertitudes
               constantes. Pendant près de deux ans et demi, ils tiennent bon.
@@ -74,8 +79,8 @@ export default function historyPage() {
               commerce : c’était leur projet de vie, leur énergie, leur ancrage
               dans Strasbourg.
             </p>
-            <h3>2023 : un nouveau souffle</h3>
-            <p>
+            <h3 className="t__28 mt__20">2023 : un nouveau souffle</h3>
+            <p className="text-black mt__20">
               L’activité reprend, les clients reviennent, les nouveaux affluent.
               Le lieu retrouve son essence : un café-coworking vivant, ancré
               localement, profondément humain. Et une transformation naturelle
@@ -88,7 +93,7 @@ export default function historyPage() {
             <div className="row justify-content-between align-items-center">
               <SlideUp className="col-md-6">
                 <img
-                  src="/images/projects/project-2.png"
+                  src="/images/history/histoire-anticafe-strasbourg.webp"
                   alt="img"
                   className="w-100"
                 />
@@ -99,9 +104,13 @@ export default function historyPage() {
                     Aujourd’hui : un espace pour toutes les manières de
                     travailler
                   </h4>
-                  <p>Le lieu accueille chaque jour :</p>
-                  <ul>
-                    <li>✨ des freelances en quête d’un refuge productif</li>
+                  <p className="text-black mt__20">
+                    Le lieu accueille chaque jour :
+                  </p>
+                  <ul className="text-black mt__20 d-flex flex-column gap-3">
+                    <li >
+                      ✨ des freelances en quête d’un refuge productif
+                    </li>
 
                     <li>
                       ✨ des étudiants en mode révisions ou projets de groupe
@@ -121,7 +130,7 @@ export default function historyPage() {
                   </ul>
                 </div>
               </SlideUp>
-              <p>
+              <p className="text-black mt__20">
                 Six jours sur sept, depuis bientôt dix ans, Christèle et Thierry
                 veillent au grain, accueillent, préparent, réparent,
                 conseillent, sourient. Ils n’ont jamais cessé d’y croire. Et ça

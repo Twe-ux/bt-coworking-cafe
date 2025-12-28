@@ -14,7 +14,7 @@ const MemberProgramCard = ({
   className = "",
 }: ServiceCardProps) => {
   return (
-    <div className={`service__card services__2_card ${className}`}>
+    <div className={`member__card members__2_card ${className}`}>
       <div className="icon">{icon}</div>
       <h3 className="t__28">{title}</h3>
       <p>{description}</p>

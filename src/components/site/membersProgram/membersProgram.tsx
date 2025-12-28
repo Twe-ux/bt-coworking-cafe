@@ -6,12 +6,11 @@ import MemberProgramCard from "./membersProgramCard";
 
 const MembersProgram = () => {
   return (
-    <section className="services services__2 py__130 ">
+    <section className="members members__2 py__90 ">
       <div className="container position-relative ">
         <SlideDown className="">
           <h1 className="title text-white mb-4">
-            Devenez membre. <br />
-            Gagnez des récompenses.
+            Devenez membre. Gagnez des récompenses.
           </h1>
           <p className="mt-4 mt-lg-0">
             Chaque passage chez nous compte (littéralement).
@@ -21,7 +20,7 @@ const MembersProgram = () => {
           </p>
         </SlideDown>
         {/*  */}
-        <div className="services__wapper services__2_wapper">
+        <div className="members__wapper members__2_wapper">
           <div className="row">
             {membersProgramData
               .slice(0, 3)
@@ -40,7 +39,7 @@ const MembersProgram = () => {
                   />
                 </SlideUp>
               ))}
-            <div className="row services__2_row pt-4">
+            <div className="row members__2_row pt-4">
               <div className="col-12">
                 <p>
                   Tu souhaites créer ton compte Membre ?

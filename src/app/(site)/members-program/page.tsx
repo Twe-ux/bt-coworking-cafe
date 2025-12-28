@@ -7,24 +7,24 @@ export default function MembersProgramPage() {
     <>
       <PageTitle title="Programme membre" />
       <MembersProgram />
-      <article className="service__details py__130">
+      <article className="member__details py__90">
         <div className="container pb__130">
-          <div className="second__para pt__60">
-            <h1 className="t__48 mb__20">Vos récompenses</h1>
-            <div className="row justify-content-between align-items-center">
-              <SlideUp className="col-md-6">
+          <div className="second__para ">
+            <h1 className=" title text-black mb-4">Vos récompenses</h1>
+            <div className="row  align-items-center">
+              <div className="col-md-6 ">
                 <img
                   src="/images/membersPrograms/programme-membre-fidelite-coworkingcafe-strasbourg.webp"
                   alt="img"
-                  className="w-100"
+                  className="w-80 rounded-3"
                 />
-              </SlideUp>
+              </div>
               <SlideUp className="col-md-5 mt-4 mt-md-0">
                 <div>
                   <h2 className="t__32 mb__15">
                     Transformez vos points en cadeaux
                   </h2>
-                  <h4 className="t__28">
+                  <h4 className="t__28 mb__15">
                     Chaque point compte et chaque récompense se débloque quand
                     vous l’atteignez. Des heures offertes aux gourmandises, il y
                     en a pour tous les goûts… et ça ne fait que commencer !
@@ -46,11 +46,13 @@ export default function MembersProgramPage() {
                 ponctuelles viendront compléter la liste au fil des saisons. 👀
               </h4>
             </div>
-            <button type="submit" className="btn auth-btn w-100">
-              "Créer mon compte"
-            </button>
+            <div className="w-100 d-flex justify-content-center ">
+              <button type="submit" className="btn auth-btn mt__50 ">
+                "Créer mon compte"
+              </button>
+            </div>
           </div>
-          <div className="thred__para pt__50">
+          <div className="thred__para py__90">
             <h5 className="t__28">Les bonnes raisons de cumuler des points</h5>
             <p>
               Rejoindre le programme membre, ce n’est pas juste gagner des
@@ -84,10 +86,22 @@ export default function MembersProgramPage() {
               Chaque visite devient un petit plaisir en plus. Et avouons-le… qui
               n’aime pas être récompensé·e pour ce qu’il fait déjà ?
             </p>
-            <h4>
-              On aime quand vous revenez. Alors on aime encore plus vous
-              remercier. Rejoignez le programme membre Anticafé ✨
-            </h4>
+            <div className="pb__130">
+              <div className="counter d-flex flex-column ">
+                <div className="counter__box d-flex justify-content-center">
+                  <div className="d-flex flex-column text-center">
+                    <h4 className="counter__number">
+                      On aime quand vous revenez. Alors on aime encore plus vous
+                      remercier.
+                    </h4>
+                    <h4 className="counter__number">
+                      Rejoignez le programme membre Anticafé ✨
+                    </h4>
+                  </div>
+                  {/* <p className="counter__text">test</p> */}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </article>

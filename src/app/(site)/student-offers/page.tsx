@@ -16,10 +16,10 @@ const StudentsOffersPage = () => {
                     <SlideUp className="col-lg-6">
                       <div className="projects__usecase_content">
                         <h3 className="t__54">
-                          "Happy Hours , 🎓 spécial étudiants"
+                          Happy Hours , 🎓 spécial étudiants
                         </h3>
                         <p className="pt__50">
-                          Du lundi au vendredi, de 17h à 20h
+                          Du lundi au vendredi, de 17h à 20h.
                         </p>
                         <p className="mt-2">
                           Besoin d’un endroit pour réviser, bosser en groupe,
@@ -27,20 +27,20 @@ const StudentsOffersPage = () => {
                           fin de journée ?
                         </p>
                         <p className="mt-2">
-                          Nos Happy Hours Étudiants sont faites pour toi 💛
+                          Nos Happy Hours Étudiants sont faites pour toi 💛.
                         </p>
                         <p className="mt-2">
                           Pendant ce créneau, tu profites d’un tarif ultra
                           avantageux : <br />
-                          👉 12 € les 3 heures (au lieu de 18 €) <br />✨ sur
-                          présentation d’une carte étudiante valide{" "}
+                          👉 12 € les 3 heures (au lieu de 18 €). <br />✨ sur
+                          présentation d’une carte étudiante valide.
                         </p>
                         <p className="mt-2">
                           Tu t’installes où tu veux, tu profites du wifi très
                           haut débit, de l’ambiance calme et studieuse, et de
                           toutes nos boissons chaudes et fraîches préparées à la
                           demande. Tout est inclus — tu n’as qu’à venir avec ton
-                          ordi et ta motivation.{" "}
+                          ordi et ta motivation.
                         </p>
                         <p>
                           <ul className="mt-3">
@@ -89,7 +89,7 @@ const StudentsOffersPage = () => {
                     <SlideUp className="col-lg-6">
                       <div className="projects__usecase_content">
                         <h3 className="t__54">
-                          Happy Weekend, 🎓 spécial étudiants`
+                          Happy Weekend, 🎓 spécial étudiants
                         </h3>
                         <p className="pt__50 mt-2">
                           Tous les samedis, dimanches et jours fériés.
@@ -100,7 +100,7 @@ const StudentsOffersPage = () => {
                         </p>
                         <p className="mt-2">
                           Nos Happy Weekend Étudiants sont là pour te sauver la
-                          productivité… et ton budget 💛
+                          productivité… et ton budget 💛.
                         </p>
                         <p className="mt-2">
                           Pendant tout le week-end, tu profites d’un tarif
@@ -142,7 +142,7 @@ const StudentsOffersPage = () => {
                 <p className="mt-2">
                   Pas de réservation nécessaire : tu arrives, tu montres ta
                   carte étudiante, et tu peux profiter de ton espace toute la
-                  journée 😎`
+                  journée 😎.
                 </p>
                 <p className="bold mt-3">
                   Profite de nos Happy Weekend Étudiants pour allier
