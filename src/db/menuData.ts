@@ -11,10 +11,12 @@ export const menuData: MenuItem[] = [
   },
   {
     title: "Concept",
-    link: "/concept",
+    link: "#",
     submenu: [
-      { title: "Café Coworking", link: "/concept" },
+      { title: "Working café", link: "/concept" },
       { title: "Take Away", link: "/take-away" },
+      { title: "Notre histoire", link: "/history" },
+      { title: "Manifeste", link: "/manifest" },
     ],
   },
   {
@@ -23,7 +25,12 @@ export const menuData: MenuItem[] = [
   },
   {
     title: "Tarifs",
-    link: "/pricing",
+    link: "#",
+    submenu: [
+      { title: "Nos offres", link: "/pricing" },
+      { title: "Programme membres", link: "/members-program" },
+      { title: "Étudiants", link: "/student-offers" },
+    ],
   },
   {
     title: "Menu",

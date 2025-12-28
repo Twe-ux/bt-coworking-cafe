@@ -101,6 +101,21 @@ p {
   display: inline-block;
 }
 
+.py__90 {
+  padding: 90px 0;
+
+  @include breakpoint(lg) {
+    padding: 70px 0;
+  }
+
+  @include breakpoint(md) {
+    padding: 60px 0;
+  }
+
+  @include breakpoint(sm) {
+    padding: 50px 0;
+  }
+}
 .py__130 {
   padding: 130px 0;
 

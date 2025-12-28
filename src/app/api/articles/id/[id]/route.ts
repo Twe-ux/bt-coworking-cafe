@@ -166,7 +166,7 @@ export async function PATCH(
 
 /**
  * DELETE /api/articles/id/[id]
- * Soft delete article (admin only)
+ * Delete article permanently and update category count (admin only)
  */
 export async function DELETE(
   request: NextRequest,
@@ -181,12 +181,8 @@ export async function DELETE(
 
     const { id } = params;
 
-    // Soft delete
-    const article = await Article.findOneAndUpdate(
-      { _id: id, isDeleted: false },
-      { isDeleted: true, deletedAt: new Date() },
-      { new: true }
-    );
+    // Find article first to get category
+    const article = await Article.findOne({ _id: id, isDeleted: false });
 
     if (!article) {
       return NextResponse.json(
@@ -194,6 +190,16 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    // Decrement category count if article is published and has a category
+    if (article.status === 'published' && article.category) {
+      await Category.findByIdAndUpdate(article.category, {
+        $inc: { articleCount: -1 },
+      });
+    }
+
+    // Permanently delete the article
+    await Article.deleteOne({ _id: id });
 
     return NextResponse.json({ message: 'Article deleted successfully' });
   } catch (error) {

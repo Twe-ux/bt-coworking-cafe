@@ -5,24 +5,32 @@ import { NextResponse } from "next/server";
 // Public routes that don't require authentication
 const publicRoutes = [
   "/",
+
+  // Static pages - legal and info
   "/CGU",
   "/confidentiality",
   "/mentions-legales",
   "/contact",
+
+  // Promotional pages
   "/scan",
   "/promo",
 
+  // Site pages
   "/concept",
   "/take-away",
+  "/history",
+  "/manifest",
   "/spaces",
   "/pricing",
-  "/blog",
+  "/members-program",
+  "/student-offers",
 
   "/boissons",
-  "/menu/boissons",
-  "/menu/food",
+  // "/menu/boissons",
+  // "/menu/food",
 
-  "/professionnels",
+  "/blog",
 
   "/robots.txt",
   "/sitemap.xml",

@@ -1,64 +1,64 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const callbackUrl = searchParams.get('callbackUrl') || null;
+  const callbackUrl = searchParams.get("callbackUrl") || null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     try {
-      console.log('🔐 Attempting login with email:', email);
+      console.log("🔐 Attempting login with email:", email);
 
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
-      console.log('🔐 Login result:', result);
+      console.log("🔐 Login result:", result);
 
       if (result?.error) {
-        console.error('🔐 Login failed:', result.error);
+        console.error("🔐 Login failed:", result.error);
         setError(result.error);
         setIsLoading(false);
         return;
       }
 
       if (result?.ok) {
-        console.log('🔐 Login successful');
+        console.log("🔐 Login successful");
 
         // Force navigation with full page reload to ensure session is properly set
         // Middleware will intercept and redirect to role-based dashboard
-        const targetUrl = callbackUrl || '/auth/login';
-        console.log('🔐 Redirecting to:', targetUrl);
+        const targetUrl = callbackUrl || "/auth/login";
+        console.log("🔐 Redirecting to:", targetUrl);
 
         setTimeout(() => {
           window.location.href = targetUrl;
         }, 200);
       }
     } catch (error) {
-      console.error('🔐 Login exception:', error);
-      setError('Une erreur est survenue lors de la connexion');
+      console.error("🔐 Login exception:", error);
+      setError("Une erreur est survenue lors de la connexion");
       setIsLoading(false);
     }
   };
 
   return (
     <section className="auth-section py__130">
-      <div className="container">
+      <div className="container pb__130">
         <div className="row justify-content-center">
           <div className="col-lg-6 col-md-8">
             <div className="auth-card">
@@ -119,10 +119,7 @@ export default function LoginForm() {
                       Se souvenir de moi
                     </label>
                   </div>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="auth-link"
-                  >
+                  <Link href="/auth/forgot-password" className="auth-link">
                     Mot de passe oublié ?
                   </Link>
                 </div>
@@ -142,14 +139,14 @@ export default function LoginForm() {
                       Connexion...
                     </>
                   ) : (
-                    'Se connecter'
+                    "Se connecter"
                   )}
                 </button>
               </form>
 
               <div className="auth-footer text-center mt-4">
                 <p>
-                  Vous n'avez pas de compte ?{' '}
+                  Vous n'avez pas de compte ?{" "}
                   <Link href="/auth/register" className="auth-link fw-bold">
                     Créer un compte
                   </Link>
