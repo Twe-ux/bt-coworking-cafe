@@ -6,11 +6,13 @@ export interface UserDocument extends Document {
   password: string;
   username?: string;
   givenName?: string;
+  phone?: string;
   role: ObjectId;
   emailVerifiedAt?: Date;
   lastLoginAt?: Date;
   passwordChangedAt?: Date;
   newsletter: boolean;
+  isTemporary: boolean;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -34,6 +36,7 @@ export const UserSchema = new Schema<UserDocument>(
     },
     username: { type: String, trim: true },
     givenName: { type: String, trim: true },
+    phone: { type: String, trim: true },
     role: {
       type: Types.ObjectId,
       ref: "Role",
@@ -49,6 +52,10 @@ export const UserSchema = new Schema<UserDocument>(
       type: Date,
     },
     newsletter: {
+      type: Boolean,
+      default: false,
+    },
+    isTemporary: {
       type: Boolean,
       default: false,
     },

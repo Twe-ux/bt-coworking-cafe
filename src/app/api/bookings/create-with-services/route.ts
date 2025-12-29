@@ -31,6 +31,9 @@ export async function POST(request: NextRequest) {
       specialRequests,
       additionalServices,
       requiresPayment,
+      createAccount,
+      subscribeNewsletter,
+      password,
     } = body;
 
     // Validation
@@ -62,20 +65,94 @@ export async function POST(request: NextRequest) {
     if (session?.user) {
       // User is logged in
       userId = session.user.id;
+
+      // Update newsletter preference if user is logged in
+      if (subscribeNewsletter !== undefined) {
+        try {
+          await User.findByIdAndUpdate(userId, { newsletter: subscribeNewsletter });
+        } catch (error) {
+          console.error('Error updating newsletter preference:', error);
+        }
+      }
     } else {
       // Create or find guest user by email
-      let user = await User.findOne({ email: contactEmail });
-      if (!user) {
-        // Create a guest user
-        user = await User.create({
-          email: contactEmail,
-          name: contactName,
-          username: contactEmail.split('@')[0] + '_' + Date.now(),
-          password: Math.random().toString(36), // Random password for guest
-          role: 'user', // Will need to be populated with Role reference
-        });
+      try {
+        let user = await User.findOne({ email: contactEmail });
+
+        // Find the default "client" role
+        const Role = mongoose.model('Role');
+        const clientRole = await Role.findOne({ slug: 'client' });
+
+        if (!clientRole) {
+          console.error('❌ No client role found in database');
+          return NextResponse.json(
+            { success: false, error: 'Default client role not found in database' },
+            { status: 500 }
+          );
+        }
+
+        const bcrypt = require('bcryptjs');
+
+        if (!user) {
+          // Create new user
+          if (createAccount && password) {
+            // Create permanent account with user-provided password
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user = await User.create({
+              email: contactEmail,
+              givenName: contactName,
+              phone: contactPhone,
+              username: contactEmail.split('@')[0] + '_' + Date.now(),
+              password: hashedPassword,
+              role: clientRole._id,
+              newsletter: subscribeNewsletter || false,
+              isTemporary: false,
+            });
+          } else {
+            // Create temporary user with random password
+            const randomPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const hashedPassword = await bcrypt.hash(randomPassword, 10);
+            user = await User.create({
+              email: contactEmail,
+              givenName: contactName,
+              phone: contactPhone,
+              username: contactEmail.split('@')[0] + '_' + Date.now(),
+              password: hashedPassword,
+              role: clientRole._id,
+              newsletter: subscribeNewsletter || false,
+              isTemporary: true,
+            });
+          }
+        } else {
+          // User exists - update if needed
+          if (user.isTemporary && createAccount && password) {
+            // Convert temporary user to permanent account
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await User.findByIdAndUpdate(user._id, {
+              password: hashedPassword,
+              givenName: contactName,
+              phone: contactPhone,
+              newsletter: subscribeNewsletter || false,
+              isTemporary: false,
+            });
+          } else if (subscribeNewsletter !== undefined) {
+            // Just update newsletter preference
+            await User.findByIdAndUpdate(user._id, {
+              newsletter: subscribeNewsletter,
+              givenName: contactName,
+              phone: contactPhone,
+            });
+          }
+        }
+
+        userId = user._id;
+      } catch (userError) {
+        console.error('❌ Error creating/finding guest user:', userError);
+        return NextResponse.json(
+          { success: false, error: 'Failed to create guest user: ' + (userError as Error).message },
+          { status: 500 }
+        );
       }
-      userId = user._id;
     }
 
     // Map URL space types to database spaceType values
@@ -151,27 +228,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for overlapping bookings
-    const overlappingBooking = await Reservation.findOne({
-      spaceType: dbSpaceType,
-      date: bookingDate,
-      status: { $nin: ['cancelled'] },
-      $or: [
-        { $and: [{ startTime: { $lte: startTime } }, { endTime: { $gt: startTime } }] },
-        { $and: [{ startTime: { $lt: endTime } }, { endTime: { $gte: endTime } }] },
-        { $and: [{ startTime: { $gte: startTime } }, { endTime: { $lte: endTime } }] },
-      ],
-    });
-
-    if (overlappingBooking) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'This time slot is already booked. Please select a different time.',
-        },
-        { status: 409 }
-      );
-    }
+    // Note: Pas de vérification de chevauchement - plusieurs réservations simultanées sont autorisées
 
     // Create the reservation
     const reservation = await Reservation.create({
@@ -201,6 +258,13 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email
     try {
+      // Format additional services for email
+      const emailServices = (additionalServices || []).map((service: any) => ({
+        name: service.name || service.serviceName || 'Service',
+        quantity: service.quantity || 1,
+        price: service.unitPrice || service.price || 0,
+      }));
+
       await sendBookingConfirmation(contactEmail, {
         name: contactName,
         spaceName: spaceConfig.name,
@@ -214,6 +278,7 @@ export async function POST(request: NextRequest) {
         price: totalPrice || basePrice || 0,
         bookingId: (reservation._id as mongoose.Types.ObjectId).toString(),
         requiresPayment: requiresPayment !== false,
+        additionalServices: emailServices,
       });
     } catch (emailError) {
       console.error('Error sending confirmation email:', emailError);

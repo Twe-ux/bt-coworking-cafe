@@ -4,6 +4,7 @@ import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
 import CustomDatePicker from "@/components/site/booking/CustomDatePicker";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import "../../../[id]/client-dashboard.scss";
 
 // Map URL slugs to database spaceType values
 const spaceTypeMapping: Record<string, string> = {
@@ -152,6 +153,35 @@ export default function BookingDatePage({
   const timeSectionRef = useRef<HTMLDivElement>(null);
   const priceSectionRef = useRef<HTMLDivElement>(null);
   const bookingCardRef = useRef<HTMLDivElement>(null);
+
+  // Load existing booking data on mount to restore previous selections
+  useEffect(() => {
+    const storedData = sessionStorage.getItem("bookingData");
+    if (storedData) {
+      try {
+        const data = JSON.parse(storedData);
+        // Only restore if it's the same space type
+        if (data.spaceType === params.type) {
+          if (data.reservationType) setReservationType(data.reservationType);
+          if (data.date) setSelectedDate(data.date);
+          if (data.endDate) setEndDate(data.endDate);
+          if (data.startTime) {
+            if (data.reservationType === "hourly") {
+              setStartTime(data.startTime);
+            } else if (data.reservationType === "daily") {
+              setArrivalTime(data.startTime);
+            }
+          }
+          if (data.endTime) setEndTime(data.endTime);
+          if (data.numberOfPeople) setNumberOfPeople(data.numberOfPeople);
+          if (data.basePrice) setCalculatedPrice(data.basePrice);
+          if (data.duration) setDuration(data.duration);
+        }
+      } catch (error) {
+        console.error("Error loading stored booking data:", error);
+      }
+    }
+  }, [params.type]);
 
   // Filter available reservation types based on configuration
   const availableReservationTypes = spaceConfig?.availableReservationTypes
@@ -522,13 +552,19 @@ export default function BookingDatePage({
   };
 
   const handleContinue = () => {
+    // Load existing booking data to preserve contact info and other data
+    const existingData = sessionStorage.getItem("bookingData");
+    const existingBookingData = existingData ? JSON.parse(existingData) : {};
+
     let bookingData: any = {
+      ...existingBookingData, // Preserve existing data (contact, services, etc.)
       spaceType: params.type,
       reservationType,
       date: selectedDate,
       basePrice: calculatedPrice,
       duration,
       numberOfPeople,
+      isDailyRate: reservationType === "daily" || appliedDailyRate, // Nouveau champ
     };
 
     if (reservationType === "hourly" || reservationType === "daily") {
@@ -644,6 +680,11 @@ export default function BookingDatePage({
                         })()
                       : "Date",
                   }}
+                  onStepClick={(step) => {
+                    if (step === 1) {
+                      router.push("/booking");
+                    }
+                  }}
                 />
 
                 <hr
@@ -653,24 +694,26 @@ export default function BookingDatePage({
                     borderTop: "1px solid #e0e0e0",
                   }}
                 />
-                <div className="mb-3 position-relative">
-                  {/* Back button */}
-                  <button
-                    onClick={() => router.back()}
-                    className="btn btn-link text-muted p-0 position-absolute"
-                    style={{ fontSize: "0.9rem", left: 0, top: 0 }}
-                  >
-                    <i className="bi bi-arrow-left me-2"></i>
-                    Retour
-                  </button>
-
-                  {/* Title */}
-                  <h2
-                    className="text-center mb-0"
-                    style={{ fontSize: "1.35rem" }}
-                  >
-                    Quand voulez-vous venir ?
-                  </h2>
+                {/* Navigation and Title */}
+                <div className="mb-4">
+                  <div className="custom-breadcrumb d-flex justify-content-between align-items-center">
+                    <button
+                      onClick={() => router.back()}
+                      className="breadcrumb-link"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        padding: "0.35rem 0.75rem"
+                      }}
+                    >
+                      <i className="bi bi-arrow-left"></i>
+                      <span>Retour</span>
+                    </button>
+                    <span className="breadcrumb-current" style={{ fontSize: "1.1rem", fontWeight: "600" }}>
+                      Quand voulez-vous venir ?
+                    </span>
+                    <div style={{ width: "80px" }}></div> {/* Spacer for centering */}
+                  </div>
                 </div>
 
                 {/* Reservation Type - Always Visible */}
