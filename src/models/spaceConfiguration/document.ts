@@ -37,6 +37,16 @@ export interface AvailableReservationTypes {
 }
 
 /**
+ * Deposit policy for payment holds
+ */
+export interface DepositPolicy {
+  enabled: boolean;
+  percentage?: number; // Ex: 30% du montant total
+  fixedAmount?: number; // Ou montant fixe en centimes
+  minimumAmount?: number; // Montant minimum d'empreinte en centimes
+}
+
+/**
  * Space configuration document
  */
 export interface SpaceConfigurationDocument extends Document {
@@ -49,6 +59,7 @@ export interface SpaceConfigurationDocument extends Document {
   pricing: PricingStructure;
   availableReservationTypes: AvailableReservationTypes;
   requiresQuote: boolean; // If true, show "sur devis" instead of booking
+  depositPolicy?: DepositPolicy; // Payment hold configuration
 
   // Capacity
   minCapacity: number;

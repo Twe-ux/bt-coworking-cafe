@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
+import InfoEmpreinte from "@/components/site/booking/InfoEmpreinte";
 import "../../[id]/client-dashboard.scss";
 
 interface BookingData {
@@ -62,6 +63,14 @@ const reservationTypeLabels: Record<string, string> = {
   monthly: "Au mois",
 };
 
+// Mapping inverse : URL slug → DB spaceType
+const slugToSpaceType: Record<string, string> = {
+  "open-space": "open-space",
+  "meeting-room-glass": "salle-verriere",
+  "meeting-room-floor": "salle-etage",
+  "event-space": "evenementiel",
+};
+
 export default function BookingSummaryPage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -71,7 +80,9 @@ export default function BookingSummaryPage() {
     Map<string, SelectedService>
   >(new Map());
   const [loading, setLoading] = useState(false);
-  const [loadingType, setLoadingType] = useState<'payment' | 'no-payment' | null>(null);
+  const [daysUntilBooking, setDaysUntilBooking] = useState<number>(0);
+  const [depositAmount, setDepositAmount] = useState<number>(0);
+  const [spaceConfig, setSpaceConfig] = useState<any>(null);
 
   useEffect(() => {
     // Load booking data from sessionStorage
@@ -80,7 +91,14 @@ export default function BookingSummaryPage() {
       router.push("/booking");
       return;
     }
-    setBookingData(JSON.parse(storedData));
+    const data = JSON.parse(storedData);
+    setBookingData(data);
+
+    // Calculate days until booking
+    const now = new Date();
+    const bookingDate = new Date(data.date);
+    const days = Math.ceil((bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    setDaysUntilBooking(days);
 
     // Load selected services from sessionStorage
     const storedServices = sessionStorage.getItem("selectedServices");
@@ -88,6 +106,37 @@ export default function BookingSummaryPage() {
       const servicesArray = JSON.parse(storedServices);
       const servicesMap = new Map(servicesArray);
       setSelectedServices(servicesMap);
+    }
+
+    // Fetch space configuration to get deposit policy
+    const fetchSpaceConfig = async () => {
+      try {
+        // Convert URL slug to DB spaceType
+        const dbSpaceType = slugToSpaceType[data.spaceType] || data.spaceType;
+        console.log('🔍 Fetching space config for:', data.spaceType, '→ DB:', dbSpaceType);
+        const response = await fetch(`/api/space-configurations/${dbSpaceType}`);
+        console.log('📡 Response status:', response.status, response.ok);
+
+        if (response.ok) {
+          const configData = await response.json();
+          console.log('✅ Config data received:', configData);
+          console.log('📋 depositPolicy:', configData.data?.depositPolicy);
+          setSpaceConfig(configData.data);
+        } else {
+          console.error('❌ Response not OK:', response.status, response.statusText);
+          const errorData = await response.text();
+          console.error('Error response:', errorData);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching space config:', error);
+      }
+    };
+
+    if (data.spaceType) {
+      console.log('🚀 Starting fetch for spaceType:', data.spaceType);
+      fetchSpaceConfig();
+    } else {
+      console.warn('⚠️ No spaceType in booking data');
     }
   }, []);
 
@@ -145,11 +194,49 @@ export default function BookingSummaryPage() {
     return bookingData.basePrice + calculateServicesPrice();
   };
 
-  const handleCreateReservation = async (requiresPayment: boolean) => {
+  const calculateDepositAmount = () => {
+    const totalPrice = getTotalPrice();
+
+    console.log('💰 Calcul empreinte:', {
+      spaceConfig,
+      depositPolicyEnabled: spaceConfig?.depositPolicy?.enabled,
+      totalPrice,
+      policy: spaceConfig?.depositPolicy
+    });
+
+    if (!spaceConfig?.depositPolicy?.enabled) {
+      console.log('⚠️ Pas de depositPolicy enabled, retour du prix total');
+      return totalPrice * 100; // Default to full amount if no policy
+    }
+
+    const totalPriceInCents = totalPrice * 100;
+    const policy = spaceConfig.depositPolicy;
+
+    let depositInCents = totalPriceInCents;
+
+    // Calculate deposit based on policy
+    if (policy.fixedAmount) {
+      depositInCents = policy.fixedAmount;
+      console.log('✅ Montant fixe appliqué:', depositInCents / 100, '€');
+    } else if (policy.percentage) {
+      depositInCents = Math.round(totalPriceInCents * (policy.percentage / 100));
+      console.log('✅ Pourcentage appliqué:', policy.percentage, '% =', depositInCents / 100, '€');
+    }
+
+    // Apply minimum if set
+    if (policy.minimumAmount && depositInCents < policy.minimumAmount) {
+      depositInCents = policy.minimumAmount;
+      console.log('✅ Minimum appliqué:', depositInCents / 100, '€');
+    }
+
+    console.log('💳 Montant final empreinte:', depositInCents / 100, '€');
+    return depositInCents;
+  };
+
+  const handleCreateReservation = async () => {
     if (!bookingData) return;
 
     setLoading(true);
-    setLoadingType(requiresPayment ? 'payment' : 'no-payment');
 
     try {
       // Prepare additional services data
@@ -191,7 +278,7 @@ export default function BookingSummaryPage() {
         contactPhone: bookingData.contactPhone,
         specialRequests: bookingData.specialRequests,
         additionalServices: additionalServicesData,
-        requiresPayment,
+        requiresPayment: true,
         createAccount: bookingData.createAccount || false,
         subscribeNewsletter: bookingData.subscribeNewsletter || false,
         password: bookingData.password,
@@ -208,7 +295,6 @@ export default function BookingSummaryPage() {
       if (!data.success) {
         alert(data.error || "Erreur lors de la création de la réservation");
         setLoading(false);
-        setLoadingType(null);
         return;
       }
 
@@ -218,17 +304,12 @@ export default function BookingSummaryPage() {
       sessionStorage.removeItem("bookingData");
       sessionStorage.removeItem("selectedServices");
 
-      // Redirect based on payment requirement
-      if (requiresPayment) {
-        router.push(`/booking/checkout/${bookingId}`);
-      } else {
-        router.push(`/booking/confirmation/${bookingId}`);
-      }
+      // Redirect to checkout
+      router.push(`/booking/checkout/${bookingId}`);
     } catch (error) {
       console.error("Error creating reservation:", error);
       alert("Une erreur est survenue");
       setLoading(false);
-      setLoadingType(null);
     }
   };
 
@@ -637,41 +718,29 @@ export default function BookingSummaryPage() {
                       </div>
                     </div>
 
+                    {/* Info empreinte */}
+                    <InfoEmpreinte
+                      type={daysUntilBooking <= 7 ? 'manual_capture' : 'setup_intent'}
+                      amount={calculateDepositAmount()}
+                      daysUntilBooking={daysUntilBooking}
+                    />
+
                     <div className="actions-section mt-3">
                       <button
                         className="btn btn-success w-100 mb-2"
-                        onClick={() => handleCreateReservation(true)}
+                        onClick={() => handleCreateReservation()}
                         disabled={loading}
                         style={{ fontSize: "0.95rem", padding: "0.75rem" }}
                       >
-                        {loadingType === 'payment' ? (
+                        {loading ? (
                           <>
                             <span className="spinner-border spinner-border-sm me-2"></span>
-                            Création...
+                            Création en cours...
                           </>
                         ) : (
                           <>
                             <i className="bi bi-credit-card me-2"></i>
-                            Payer maintenant
-                          </>
-                        )}
-                      </button>
-
-                      <button
-                        className="btn btn-outline-success w-100"
-                        onClick={() => handleCreateReservation(false)}
-                        disabled={loading}
-                        style={{ fontSize: "0.95rem", padding: "0.75rem" }}
-                      >
-                        {loadingType === 'no-payment' ? (
-                          <>
-                            <span className="spinner-border spinner-border-sm me-2"></span>
-                            Création...
-                          </>
-                        ) : (
-                          <>
-                            <i className="bi bi-calendar-check me-2"></i>
-                            Réserver sans payer
+                            {daysUntilBooking <= 7 ? 'Valider la réservation' : 'Enregistrer ma carte'}
                           </>
                         )}
                       </button>
@@ -680,8 +749,8 @@ export default function BookingSummaryPage() {
                         className="text-muted text-center mt-2 mb-0"
                         style={{ fontSize: "0.75rem" }}
                       >
-                        <i className="bi bi-info-circle me-1"></i>
-                        Vous recevrez une confirmation par email
+                        <i className="bi bi-shield-check me-1"></i>
+                        Paiement sécurisé par Stripe
                       </p>
                     </div>
                   </div>

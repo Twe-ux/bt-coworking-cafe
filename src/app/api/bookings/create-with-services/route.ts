@@ -265,6 +265,32 @@ export async function POST(request: NextRequest) {
         price: service.unitPrice || service.price || 0,
       }));
 
+      // Calculate deposit amount if deposit policy is enabled
+      let depositAmount: number | undefined;
+      let captureMethod: 'manual' | 'automatic' | undefined;
+
+      if (spaceConfig.depositPolicy?.enabled && requiresPayment !== false) {
+        const totalPriceInCents = (totalPrice || basePrice || 0) * 100;
+        const policy = spaceConfig.depositPolicy;
+        let depositInCents = totalPriceInCents;
+
+        if (policy.fixedAmount) {
+          depositInCents = policy.fixedAmount;
+        } else if (policy.percentage) {
+          depositInCents = Math.round(totalPriceInCents * (policy.percentage / 100));
+        }
+
+        if (policy.minimumAmount && depositInCents < policy.minimumAmount) {
+          depositInCents = policy.minimumAmount;
+        }
+
+        depositAmount = depositInCents;
+
+        // Determine capture method based on booking date
+        const daysUntilBooking = Math.ceil((bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        captureMethod = daysUntilBooking <= 7 ? 'manual' : 'automatic';
+      }
+
       await sendBookingConfirmation(contactEmail, {
         name: contactName,
         spaceName: spaceConfig.name,
@@ -278,6 +304,8 @@ export async function POST(request: NextRequest) {
         price: totalPrice || basePrice || 0,
         bookingId: (reservation._id as mongoose.Types.ObjectId).toString(),
         requiresPayment: requiresPayment !== false,
+        depositAmount,
+        captureMethod,
         additionalServices: emailServices,
       });
     } catch (emailError) {

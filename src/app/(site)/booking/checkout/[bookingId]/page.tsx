@@ -35,17 +35,13 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
   const [booking, setBooking] = useState<Booking | null>(null);
   const [spaceConfig, setSpaceConfig] = useState<SpaceConfig | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [intentType, setIntentType] = useState<'setup_intent' | 'manual_capture' | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Redirect to sign in if not authenticated
-    if (status === 'unauthenticated') {
-      router.push(`/signin?callbackUrl=/booking/checkout/${params.bookingId}`);
-      return;
-    }
-
-    if (status === 'authenticated') {
+    // Allow both authenticated and unauthenticated users to access checkout
+    if (status !== 'loading') {
       fetchBookingAndCreateIntent();
     }
   }, [status, params.bookingId]);
@@ -116,6 +112,7 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
       }
 
       setClientSecret(intentData.data.clientSecret);
+      setIntentType(intentData.data.type);
       setLoading(false);
     } catch (err) {
       console.error('Error fetching booking or creating payment intent:', err);
@@ -307,6 +304,7 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
                     <CheckoutForm
                       bookingId={params.bookingId}
                       amount={Math.round(booking.totalPrice * 100)}
+                      intentType={intentType || 'manual_capture'}
                     />
                   </Elements>
                 </div>

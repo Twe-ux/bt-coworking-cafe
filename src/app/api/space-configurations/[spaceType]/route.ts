@@ -41,6 +41,7 @@ export async function GET(
         maxCapacity: configuration.maxCapacity,
         imageUrl: configuration.imageUrl,
         features: configuration.features,
+        depositPolicy: configuration.depositPolicy,
       },
     });
   } catch (error) {

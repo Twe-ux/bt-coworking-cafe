@@ -99,6 +99,29 @@ const availableReservationTypesSchema = new Schema(
   { _id: false }
 );
 
+const depositPolicySchema = new Schema(
+  {
+    enabled: {
+      type: Boolean,
+      default: false,
+    },
+    percentage: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
+    fixedAmount: {
+      type: Number,
+      min: 0,
+    },
+    minimumAmount: {
+      type: Number,
+      min: 0,
+    },
+  },
+  { _id: false }
+);
+
 const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
   {
     spaceType: {
@@ -130,6 +153,9 @@ const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
     requiresQuote: {
       type: Boolean,
       default: false,
+    },
+    depositPolicy: {
+      type: depositPolicySchema,
     },
     minCapacity: {
       type: Number,

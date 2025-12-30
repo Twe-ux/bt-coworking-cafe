@@ -5,6 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
+interface AdditionalService {
+  service: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
 interface Booking {
   _id: string;
   spaceType: string;
@@ -12,19 +20,31 @@ interface Booking {
   startTime: string;
   endTime: string;
   numberOfPeople: number;
+  basePrice: number;
+  servicesPrice: number;
   totalPrice: number;
   status: string;
   paymentStatus: string;
   requiresPayment: boolean;
   confirmationNumber?: string;
   specialRequests?: string;
+  additionalServices?: AdditionalService[];
   createdAt: string;
+  captureMethod?: 'manual' | 'automatic';
+  stripePaymentIntentId?: string;
+  stripeSetupIntentId?: string;
 }
 
 interface SpaceConfig {
   name: string;
   spaceType: string;
   imageUrl?: string;
+  depositPolicy?: {
+    enabled: boolean;
+    percentage?: number;
+    fixedAmount?: number;
+    minimumAmount?: number;
+  };
 }
 
 export default function ConfirmationPage({ params }: { params: { bookingId: string } }) {
@@ -36,13 +56,8 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Redirect to sign in if not authenticated
-    if (status === 'unauthenticated') {
-      router.push(`/signin?callbackUrl=/booking/confirmation/${params.bookingId}`);
-      return;
-    }
-
-    if (status === 'authenticated') {
+    // Allow both authenticated and unauthenticated users to view confirmation
+    if (status !== 'loading') {
       fetchBooking();
     }
   }, [status, params.bookingId]);
@@ -106,6 +121,28 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
       'evenementiel': 'Événementiel',
     };
     return labels[type] || type;
+  };
+
+  const calculateDepositAmount = () => {
+    if (!booking || !spaceConfig?.depositPolicy?.enabled) {
+      return null;
+    }
+
+    const totalPriceInCents = booking.totalPrice * 100;
+    const policy = spaceConfig.depositPolicy;
+    let depositInCents = totalPriceInCents;
+
+    if (policy.fixedAmount) {
+      depositInCents = policy.fixedAmount;
+    } else if (policy.percentage) {
+      depositInCents = Math.round(totalPriceInCents * (policy.percentage / 100));
+    }
+
+    if (policy.minimumAmount && depositInCents < policy.minimumAmount) {
+      depositInCents = policy.minimumAmount;
+    }
+
+    return depositInCents;
   };
 
   const getStatusBadge = (status: string) => {
@@ -290,6 +327,38 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                     </div>
                   )}
 
+                  {booking.additionalServices && booking.additionalServices.length > 0 && (
+                    <>
+                      <hr />
+                      <div className="row mb-3">
+                        <div className="col-12">
+                          <h6 className="mb-3">
+                            <i className="bi bi-bag-plus me-2"></i>
+                            Services supplémentaires
+                          </h6>
+                          {booking.additionalServices.map((service, index) => (
+                            <div key={index} className="row mb-2">
+                              <div className="col-sm-8">
+                                {service.name} <span className="text-muted">(x{service.quantity})</span>
+                              </div>
+                              <div className="col-sm-4 text-end">
+                                {service.totalPrice.toFixed(2)}€
+                              </div>
+                            </div>
+                          ))}
+                          <div className="row mt-2 pt-2 border-top">
+                            <div className="col-sm-8">
+                              <strong>Sous-total services</strong>
+                            </div>
+                            <div className="col-sm-4 text-end">
+                              <strong>{booking.servicesPrice?.toFixed(2) || '0.00'}€</strong>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
                   <hr />
 
                   <div className="row mb-3">
@@ -312,16 +381,40 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
                   <hr />
 
-                  <div className="row">
+                  <div className="row mb-3">
                     <div className="col-sm-4 text-muted">
-                      <strong>Total payé</strong>
+                      <strong>Prix total</strong>
                     </div>
                     <div className="col-sm-8">
-                      <h4 className="text-success mb-0">
+                      <h4 className="text-primary mb-0">
                         {booking.totalPrice.toFixed(2)}€
                       </h4>
                     </div>
                   </div>
+
+                  {(() => {
+                    const depositAmount = calculateDepositAmount();
+                    if (depositAmount && booking.requiresPayment) {
+                      return (
+                        <div className="row" style={{ backgroundColor: '#fff3cd', margin: '0 -1rem', padding: '1rem', borderRadius: '6px' }}>
+                          <div className="col-sm-4">
+                            <strong>💳 Empreinte bancaire</strong>
+                          </div>
+                          <div className="col-sm-8">
+                            <h5 className="text-warning mb-0">
+                              {(depositAmount / 100).toFixed(2)}€
+                            </h5>
+                            <small className="text-muted">
+                              {booking.captureMethod === 'manual'
+                                ? 'Montant autorisé sur votre carte (sera annulé si vous vous présentez)'
+                                : 'Sera débité 7 jours avant la réservation'}
+                            </small>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
               </div>
 
@@ -343,13 +436,15 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
               {/* Action Buttons */}
               <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-                <Link
-                  href="/dashboard/bookings"
-                  className="btn btn-primary"
-                >
-                  <i className="bi bi-list-ul me-2"></i>
-                  Voir mes réservations
-                </Link>
+                {session && session.user && (
+                  <Link
+                    href={`/${session.user.username}/reservations`}
+                    className="btn btn-primary"
+                  >
+                    <i className="bi bi-list-ul me-2"></i>
+                    Voir mes réservations
+                  </Link>
+                )}
                 <Link
                   href="/booking"
                   className="btn btn-outline-primary"

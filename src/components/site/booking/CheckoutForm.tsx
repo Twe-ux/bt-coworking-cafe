@@ -7,9 +7,10 @@ import { useRouter } from 'next/navigation';
 interface CheckoutFormProps {
   bookingId: string;
   amount: number;
+  intentType: 'setup_intent' | 'manual_capture';
 }
 
-export default function CheckoutForm({ bookingId, amount }: CheckoutFormProps) {
+export default function CheckoutForm({ bookingId, amount, intentType }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -28,24 +29,60 @@ export default function CheckoutForm({ bookingId, amount }: CheckoutFormProps) {
     setErrorMessage(null);
 
     try {
-      // Confirm the payment with Stripe
-      const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/booking/confirmation/${bookingId}`,
-        },
-        redirect: 'if_required',
-      });
+      // First, submit the elements to validate
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        setErrorMessage(submitError.message || 'Erreur de validation');
+        setProcessing(false);
+        return;
+      }
 
-      if (error) {
-        setErrorMessage(error.message || 'Une erreur est survenue lors du paiement');
-        setProcessing(false);
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        // Payment succeeded, redirect to confirmation page
-        router.push(`/booking/confirmation/${bookingId}`);
+      if (intentType === 'setup_intent') {
+        // For setup intent (bookings >7 days): save card for later
+        const { error: setupError, setupIntent } = await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/booking/confirmation/${bookingId}`,
+          },
+          redirect: 'if_required',
+        });
+
+        if (setupError) {
+          setErrorMessage(setupError.message || 'Une erreur est survenue lors de l\'enregistrement de la carte');
+          setProcessing(false);
+        } else if (setupIntent && setupIntent.status === 'succeeded') {
+          // Setup succeeded, redirect to confirmation page
+          router.push(`/booking/confirmation/${bookingId}`);
+        } else {
+          setErrorMessage('L\'enregistrement de la carte n\'a pas pu être confirmé');
+          setProcessing(false);
+        }
       } else {
-        setErrorMessage('Le paiement n\'a pas pu être confirmé');
-        setProcessing(false);
+        // For manual capture payment intent (bookings ≤7 days): authorization hold
+        const { error: paymentError, paymentIntent } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/booking/confirmation/${bookingId}`,
+          },
+          redirect: 'if_required',
+        });
+
+        if (paymentError) {
+          setErrorMessage(paymentError.message || 'Une erreur est survenue lors du paiement');
+          setProcessing(false);
+        } else if (paymentIntent) {
+          // Check payment intent status - handle both succeeded and requires_capture
+          if (paymentIntent.status === 'succeeded' || paymentIntent.status === 'requires_capture') {
+            // Payment succeeded or authorized (manual capture), redirect to confirmation page
+            router.push(`/booking/confirmation/${bookingId}`);
+          } else {
+            setErrorMessage('Le paiement n\'a pas pu être confirmé');
+            setProcessing(false);
+          }
+        } else {
+          setErrorMessage('Le paiement n\'a pas pu être confirmé');
+          setProcessing(false);
+        }
       }
     } catch (err) {
       console.error('Payment error:', err);

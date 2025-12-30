@@ -32,6 +32,13 @@ interface AvailableReservationTypes {
   monthly: boolean;
 }
 
+interface DepositPolicy {
+  enabled: boolean;
+  percentage?: number;
+  fixedAmount?: number;
+  minimumAmount?: number;
+}
+
 interface SpaceConfiguration {
   _id: string;
   spaceType: string;
@@ -41,6 +48,7 @@ interface SpaceConfiguration {
   pricing: PricingStructure;
   availableReservationTypes?: AvailableReservationTypes;
   requiresQuote: boolean;
+  depositPolicy?: DepositPolicy;
   minCapacity: number;
   maxCapacity: number;
   isActive: boolean;
@@ -1166,6 +1174,120 @@ export default function SpacesSettingsPage() {
                               <Icon icon="ri:information-line" className="me-2" />
                               Mode "sur devis" activé. Les visiteurs verront un message les invitant à vous contacter pour un devis personnalisé.
                             </Alert>
+                          )}
+
+                          {/* Deposit Policy */}
+                          <h5 className="mb-3 mt-4">Politique d'empreinte bancaire</h5>
+                          <Form.Group className="mb-3">
+                            <Form.Check
+                              type="checkbox"
+                              id={`depositEnabled-${config.spaceType}`}
+                              label="Activer l'empreinte bancaire pour ce type d'espace"
+                              checked={config.depositPolicy?.enabled || false}
+                              onChange={(e) =>
+                                updateConfiguration(config.spaceType, {
+                                  depositPolicy: {
+                                    ...config.depositPolicy,
+                                    enabled: e.target.checked,
+                                  },
+                                })
+                              }
+                            />
+                          </Form.Group>
+
+                          {config.depositPolicy?.enabled && (
+                            <>
+                              <Alert variant="info" className="mb-3">
+                                <Icon icon="ri:information-line" className="me-2" />
+                                <small>
+                                  L'empreinte bancaire permet de garantir les réservations. Elle peut être :
+                                  <ul className="mb-0 mt-2" style={{ fontSize: '0.85rem' }}>
+                                    <li>Un <strong>pourcentage</strong> du montant total</li>
+                                    <li>Un <strong>montant fixe</strong></li>
+                                    <li>Avec un <strong>montant minimum</strong> si besoin</li>
+                                  </ul>
+                                </small>
+                              </Alert>
+
+                              <Row className="mb-3">
+                                <Col md={6}>
+                                  <Form.Group>
+                                    <Form.Label>Pourcentage du montant total (%)</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      max="100"
+                                      step="1"
+                                      placeholder="Ex: 30 pour 30%"
+                                      value={config.depositPolicy?.percentage || ""}
+                                      onChange={(e) =>
+                                        updateConfiguration(config.spaceType, {
+                                          depositPolicy: {
+                                            ...config.depositPolicy,
+                                            enabled: true,
+                                            percentage: e.target.value ? parseInt(e.target.value) : undefined,
+                                          },
+                                        })
+                                      }
+                                    />
+                                    <Form.Text className="text-muted">
+                                      Laisser vide pour utiliser un montant fixe
+                                    </Form.Text>
+                                  </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                  <Form.Group>
+                                    <Form.Label>Montant fixe (€)</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      step="1"
+                                      placeholder="Ex: 50"
+                                      value={config.depositPolicy?.fixedAmount ? (config.depositPolicy.fixedAmount / 100) : ""}
+                                      onChange={(e) =>
+                                        updateConfiguration(config.spaceType, {
+                                          depositPolicy: {
+                                            ...config.depositPolicy,
+                                            enabled: true,
+                                            fixedAmount: e.target.value ? Math.round(parseFloat(e.target.value) * 100) : undefined,
+                                          },
+                                        })
+                                      }
+                                    />
+                                    <Form.Text className="text-muted">
+                                      Utilisé si le pourcentage n'est pas défini
+                                    </Form.Text>
+                                  </Form.Group>
+                                </Col>
+                              </Row>
+
+                              <Row className="mb-3">
+                                <Col md={6}>
+                                  <Form.Group>
+                                    <Form.Label>Montant minimum d'empreinte (€)</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      step="1"
+                                      placeholder="Ex: 20"
+                                      value={config.depositPolicy?.minimumAmount ? (config.depositPolicy.minimumAmount / 100) : ""}
+                                      onChange={(e) =>
+                                        updateConfiguration(config.spaceType, {
+                                          depositPolicy: {
+                                            ...config.depositPolicy,
+                                            enabled: true,
+                                            minimumAmount: e.target.value ? Math.round(parseFloat(e.target.value) * 100) : undefined,
+                                          },
+                                        })
+                                      }
+                                    />
+                                    <Form.Text className="text-muted">
+                                      Optionnel : montant minimum garanti
+                                    </Form.Text>
+                                  </Form.Group>
+                                </Col>
+                              </Row>
+                            </>
                           )}
 
                           {/* Capacity */}
