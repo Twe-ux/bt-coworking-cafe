@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const user = await requireAuth();
+    const user = await requireAuth(['admin', 'staff', 'dev', 'client']);
 
     const { searchParams } = new URL(request.url);
 

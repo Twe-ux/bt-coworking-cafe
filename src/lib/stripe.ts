@@ -46,13 +46,17 @@ export function getStripePublishableKey(): string {
 export async function createPaymentIntent(
   amount: number,
   currency: string = 'eur',
-  metadata?: Stripe.MetadataParam
+  metadata?: Stripe.MetadataParam,
+  customerId?: string,
+  captureMethod?: 'automatic' | 'manual'
 ): Promise<Stripe.PaymentIntent> {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount), // Amount in cents
       currency: currency.toLowerCase(),
       metadata: metadata || {},
+      customer: customerId, // Link to Stripe customer
+      capture_method: captureMethod || 'automatic',
       automatic_payment_methods: {
         enabled: true,
       },
@@ -76,6 +80,62 @@ export async function retrievePaymentIntent(
     return paymentIntent;
   } catch (error) {
     console.error('Error retrieving payment intent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Cancel a Payment Intent (for hold release when customer shows up)
+ */
+export async function cancelPaymentIntent(
+  paymentIntentId: string
+): Promise<Stripe.PaymentIntent> {
+  try {
+    const paymentIntent = await stripe.paymentIntents.cancel(paymentIntentId);
+    return paymentIntent;
+  } catch (error) {
+    console.error('Error canceling payment intent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Capture a Payment Intent (for no-show charges)
+ */
+export async function capturePaymentIntent(
+  paymentIntentId: string,
+  amount?: number
+): Promise<Stripe.PaymentIntent> {
+  try {
+    const paymentIntent = await stripe.paymentIntents.capture(paymentIntentId, {
+      amount_to_capture: amount ? Math.round(amount) : undefined,
+    });
+    return paymentIntent;
+  } catch (error) {
+    console.error('Error capturing payment intent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Create a Setup Intent for saving payment method without charging
+ */
+export async function createSetupIntent(
+  customerId: string,
+  metadata?: Stripe.MetadataParam
+): Promise<Stripe.SetupIntent> {
+  try {
+    const setupIntent = await stripe.setupIntents.create({
+      customer: customerId,
+      metadata: metadata || {},
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    return setupIntent;
+  } catch (error) {
+    console.error('Error creating setup intent:', error);
     throw error;
   }
 }

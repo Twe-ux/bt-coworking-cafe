@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BookingHelper from "./booking/BookingHelper";
 import SubscribeForm from "./SubscribeForm";
+import Helper from "./Helper";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -49,7 +50,6 @@ const Footer = () => {
         "/auth/register",
       ].includes(pathname));
 
-
   const isClientDashboard =
     pathname &&
     /^\/[^\/]+(?:\/(?:profile|reservations|settings))?(?:\/.*)?$/.test(
@@ -80,6 +80,7 @@ const Footer = () => {
       "/booking/summary",
       "/signin",
       "/signup",
+      "[id]/reservations",
     ].includes(pathname);
 
   // Check if we're on a booking page
@@ -88,6 +89,7 @@ const Footer = () => {
   // Determine which component to show
   const showSubscribeForm = !isClientDashboard && !isBookingPage;
   const showBookingHelper = !isClientDashboard && isBookingPage;
+  const showHelper = isClientDashboard;
 
   return (
     <footer className="footer">
@@ -97,6 +99,9 @@ const Footer = () => {
 
         {/* Show Booking Helper on booking pages */}
         {showBookingHelper && <BookingHelper />}
+
+        {showHelper && <Helper />}
+
         {/* -------Logo and socal icon */}
         <div className="row footer__lo_co ">
           <div

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import ProfileClient from './ProfileClient';
 import ProfileCard from './ProfileCard';
 import './profile.scss';
+import dbConnect from '@/lib/mongodb';
+import { User } from '@/models/user';
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = 'force-dynamic';
@@ -34,6 +36,18 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   const username = session.user.username;
 
+  // Fetch user profile including phone from database
+  let userPhone = '';
+  try {
+    await dbConnect();
+    const user = await User.findOne({ email: session.user.email }).select('phone');
+    if (user?.phone) {
+      userPhone = user.phone;
+    }
+  } catch (error) {
+    console.error('Error fetching user phone:', error);
+  }
+
   return (
     <section className="client-dashboard py__130">
       <div className="container">
@@ -53,6 +67,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               email={session.user.email || ''}
               username={username}
               roleName={session.user.role.name}
+              phone={userPhone}
             />
           </div>
 

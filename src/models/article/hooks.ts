@@ -3,6 +3,10 @@ import slugify from "slugify";
 import mongoose, { Query } from "mongoose";
 
 export function attachHooks() {
+  // Track previous status for article count management
+  let wasPublished = false;
+  let oldCategoryId: any = null;
+
   // Auto-generate slug from title
   ArticleSchema.pre("save", async function (this: ArticleDocument, next) {
     if (this.isModified("title") && !this.slug) {
@@ -30,16 +34,54 @@ export function attachHooks() {
       this.publishedAt = new Date();
     }
 
+    // Track previous state for post-save hook
+    if (!this.isNew) {
+      const original = await mongoose.models.Article.findById(this._id);
+      if (original) {
+        wasPublished = original.status === "published";
+        oldCategoryId = original.category;
+      }
+    }
+
     next();
   });
 
   // Update category article count when article is published
   ArticleSchema.post("save", async function (doc) {
-    if (doc.status === "published" && doc.category) {
+    const isNowPublished = doc.status === "published";
+    const justPublished = isNowPublished && (!wasPublished || doc.isNew);
+    const justUnpublished = !isNowPublished && wasPublished;
+    const categoryChanged = doc.category && oldCategoryId && doc.category.toString() !== oldCategoryId.toString();
+
+    // Increment count when article is newly published
+    if (justPublished && doc.category) {
       await mongoose.models.Category.findByIdAndUpdate(doc.category, {
         $inc: { articleCount: 1 },
       });
     }
+
+    // Decrement count when article is unpublished
+    if (justUnpublished && oldCategoryId) {
+      await mongoose.models.Category.findByIdAndUpdate(oldCategoryId, {
+        $inc: { articleCount: -1 },
+      });
+    }
+
+    // Handle category change for published articles
+    if (isNowPublished && categoryChanged) {
+      // Decrement old category
+      await mongoose.models.Category.findByIdAndUpdate(oldCategoryId, {
+        $inc: { articleCount: -1 },
+      });
+      // Increment new category
+      await mongoose.models.Category.findByIdAndUpdate(doc.category, {
+        $inc: { articleCount: 1 },
+      });
+    }
+
+    // Reset tracking variables
+    wasPublished = false;
+    oldCategoryId = null;
   });
 
   // Update counters when article is deleted

@@ -8,6 +8,7 @@ export interface AdditionalServiceDocument extends Document {
   description?: string;
   category: ServiceCategory;
   price: number;
+  dailyPrice?: number; // Prix forfait à la journée (optionnel)
   priceUnit: 'per-person' | 'flat-rate';
   isActive: boolean;
   isDeleted: boolean;
@@ -28,10 +29,10 @@ const AdditionalServiceSchema = new Schema<AdditionalServiceDocument>(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
       trim: true,
+      default: '', // Sera généré par le hook pre-save
     },
     description: {
       type: String,
@@ -47,6 +48,10 @@ const AdditionalServiceSchema = new Schema<AdditionalServiceDocument>(
       type: Number,
       required: [true, 'Le prix est requis'],
       min: [0, 'Le prix doit être positif'],
+    },
+    dailyPrice: {
+      type: Number,
+      min: [0, 'Le prix forfait jour doit être positif'],
     },
     priceUnit: {
       type: String,

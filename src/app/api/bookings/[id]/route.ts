@@ -11,8 +11,8 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/bookings/[id]
  * Get booking details
- * - Users can only see their own bookings
- * - Admins can see all bookings
+ * - Anyone can view a booking by ID (for confirmation pages)
+ * - Auth users can only see their own bookings unless admin
  */
 export async function GET(
   request: NextRequest,
@@ -21,7 +21,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const user = await requireAuth();
+    const user = await getAuthUser();
     const { id } = params;
 
     // Validate ObjectId
@@ -44,19 +44,22 @@ export async function GET(
       );
     }
 
-    // Check permissions
-    const isAdminOrStaff = user && ['admin', 'staff', 'dev'].includes(user.role?.slug || '');
-    const bookingUserId = typeof booking.user === 'object' && booking.user !== null && '_id' in booking.user
-      ? (booking.user._id as unknown as string).toString()
-      : booking.user?.toString();
-    const isOwner = booking.user && bookingUserId === user.id;
+    // If user is authenticated, check permissions
+    if (user) {
+      const isAdminOrStaff = ['admin', 'staff', 'dev'].includes(user.role?.slug || '');
+      const bookingUserId = typeof booking.user === 'object' && booking.user !== null && '_id' in booking.user
+        ? (booking.user._id as unknown as string).toString()
+        : booking.user?.toString();
+      const isOwner = booking.user && bookingUserId === user.id;
 
-    if (!isAdminOrStaff && !isOwner) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized to view this booking' },
-        { status: 403 }
-      );
+      if (!isAdminOrStaff && !isOwner) {
+        return NextResponse.json(
+          { success: false, error: 'Unauthorized to view this booking' },
+          { status: 403 }
+        );
+      }
     }
+    // If not authenticated, allow viewing (for guest bookings confirmation)
 
     return NextResponse.json({
       success: true,

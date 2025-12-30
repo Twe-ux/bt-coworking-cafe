@@ -8,9 +8,10 @@ interface BookingProgressBarProps {
     step3?: string;
     step4?: string;
   };
+  onStepClick?: (step: number) => void;
 }
 
-export default function BookingProgressBar({ currentStep, customLabels }: BookingProgressBarProps) {
+export default function BookingProgressBar({ currentStep, customLabels, onStepClick }: BookingProgressBarProps) {
   const steps = [
     { number: 1, label: customLabels?.step1 || 'Espace' },
     { number: 2, label: customLabels?.step2 || 'Date' },
@@ -32,29 +33,36 @@ export default function BookingProgressBar({ currentStep, customLabels }: Bookin
 
       {/* Step labels */}
       <div className="d-flex justify-content-between">
-        {steps.map((step) => (
-          <div
-            key={step.number}
-            className={`step-label text-center ${
-              step.number === currentStep
-                ? 'active'
-                : step.number < currentStep
-                ? 'completed'
-                : 'pending'
-            }`}
-          >
-            <div className="step-circle-wrapper d-flex justify-content-center mb-2">
-              <div className="step-circle">
-                {step.number < currentStep ? (
-                  <i className="bi bi-check"></i>
-                ) : (
-                  step.number
-                )}
+        {steps.map((step) => {
+          const isCompleted = step.number < currentStep;
+          const isClickable = isCompleted && onStepClick;
+
+          return (
+            <div
+              key={step.number}
+              className={`step-label text-center ${
+                step.number === currentStep
+                  ? 'active'
+                  : step.number < currentStep
+                  ? 'completed'
+                  : 'pending'
+              } ${isClickable ? 'clickable' : ''}`}
+              onClick={() => isClickable && onStepClick(step.number)}
+              style={{ cursor: isClickable ? 'pointer' : 'default' }}
+            >
+              <div className="step-circle-wrapper d-flex justify-content-center mb-2">
+                <div className="step-circle">
+                  {step.number < currentStep ? (
+                    <i className="bi bi-check"></i>
+                  ) : (
+                    step.number
+                  )}
+                </div>
               </div>
+              <div className="step-text" style={{ whiteSpace: 'pre-line' }}>{step.label}</div>
             </div>
-            <div className="step-text" style={{ whiteSpace: 'pre-line' }}>{step.label}</div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <style jsx>{`
@@ -134,6 +142,15 @@ export default function BookingProgressBar({ currentStep, customLabels }: Bookin
 
         .step-label.completed .step-text {
           color: #666;
+        }
+
+        .step-label.clickable:hover .step-circle {
+          transform: scale(1.1);
+          box-shadow: 0 0 0 4px rgba(65, 121, 114, 0.2);
+        }
+
+        .step-label.clickable:hover .step-text {
+          color: #417972;
         }
 
         @media (max-width: 576px) {

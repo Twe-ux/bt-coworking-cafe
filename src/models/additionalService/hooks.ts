@@ -5,8 +5,8 @@ import slugify from 'slugify';
 export function addHooks(schema: Schema<AdditionalServiceDocument>) {
   // Pre-save hook pour générer le slug automatiquement
   schema.pre('save', async function (this: AdditionalServiceDocument, next) {
-    // Générer le slug à partir du nom si non fourni
-    if (this.isModified('name') && !this.slug) {
+    // Générer le slug à partir du nom si non fourni ou vide
+    if ((this.isModified('name') || this.isNew) && (!this.slug || this.slug === '')) {
       this.slug = slugify(this.name, {
         lower: true,
         strict: true,
@@ -17,6 +17,7 @@ export function addHooks(schema: Schema<AdditionalServiceDocument>) {
       const mongoose = await import('mongoose');
       const existingService = await mongoose.default.models.AdditionalService?.findOne({
         slug: this.slug,
+        _id: { $ne: this._id },
       });
 
       if (existingService) {

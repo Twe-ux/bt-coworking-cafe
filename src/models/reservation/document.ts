@@ -46,6 +46,8 @@ export interface ReservationDocument extends Document {
   stripePaymentIntentId?: string;
   stripeSessionId?: string;
   stripeCustomerId?: string;
+  stripeSetupIntentId?: string; // Pour les réservations > 7 jours (save card for later charge)
+  captureMethod?: "automatic" | "manual"; // Type de capture pour l'empreinte
 
   createdAt: Date;
   updatedAt: Date;
@@ -239,6 +241,19 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     stripeCustomerId: {
       type: String,
       trim: true,
+    },
+    stripeSetupIntentId: {
+      type: String,
+      trim: true,
+      index: true,
+      sparse: true,
+    },
+    captureMethod: {
+      type: String,
+      enum: {
+        values: ["automatic", "manual"],
+        message: "{VALUE} is not a valid capture method",
+      },
     },
     cancelledAt: {
       type: Date,

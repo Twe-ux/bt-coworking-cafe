@@ -142,6 +142,12 @@ export const MENU_ITEMS: MenuItemType[] = [
         url: "/dashboard/booking/calendar",
         parentKey: "booking",
       },
+      {
+        key: "booking-services",
+        label: "Services sup.",
+        url: "/dashboard/booking/services",
+        parentKey: "booking",
+      },
     ],
   },
   {

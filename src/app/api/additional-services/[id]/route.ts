@@ -83,6 +83,7 @@ export async function PATCH(
       'description',
       'category',
       'price',
+      'dailyPrice',
       'priceUnit',
       'isActive',
       'availableForSpaceTypes',
@@ -115,6 +116,14 @@ export async function PATCH(
       { status: 500 }
     );
   }
+}
+
+// PUT /api/additional-services/[id] - Alias for PATCH
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return PATCH(request, { params });
 }
 
 // DELETE /api/additional-services/[id] - Supprimer un service (admin only)
