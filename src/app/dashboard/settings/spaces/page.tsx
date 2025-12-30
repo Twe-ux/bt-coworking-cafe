@@ -1241,7 +1241,7 @@ export default function SpacesSettingsPage() {
                                     <Form.Control
                                       type="number"
                                       min="0"
-                                      step="1"
+                                      step="0.01"
                                       placeholder="Ex: 50"
                                       value={config.depositPolicy?.fixedAmount ? (config.depositPolicy.fixedAmount / 100) : ""}
                                       onChange={(e) =>
@@ -1268,7 +1268,7 @@ export default function SpacesSettingsPage() {
                                     <Form.Control
                                       type="number"
                                       min="0"
-                                      step="1"
+                                      step="0.01"
                                       placeholder="Ex: 20"
                                       value={config.depositPolicy?.minimumAmount ? (config.depositPolicy.minimumAmount / 100) : ""}
                                       onChange={(e) =>
