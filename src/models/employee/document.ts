@@ -6,6 +6,12 @@ export interface EmployeeDocument extends Document {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
+  placeOfBirth: string; // Lieu de naissance
+  address: {
+    street: string;
+    postalCode: string;
+    city: string;
+  };
   phone: string;
   email: string;
   socialSecurityNumber: string; // N° Sécu (15 chiffres)
@@ -16,6 +22,12 @@ export interface EmployeeDocument extends Document {
   hireDate: Date;
   endDate?: Date; // Pour CDD et Stage
   endContractReason?: 'démission' | 'fin-periode-essai' | 'rupture'; // Motif de fin de contrat
+
+  // Rémunération
+  level: string; // Niveau (I, II, III, IV, V)
+  step: number; // Échelon (1, 2, 3, etc.)
+  hourlyRate: number; // Taux horaire en euros
+  monthlySalary?: number; // Salaire mensuel brut (calculé automatiquement)
 
   // Code de pointage
   clockingCode: string; // Code PIN 4 chiffres
@@ -80,6 +92,28 @@ export const EmployeeSchema = new Schema<EmployeeDocument>(
       type: Date,
       required: [true, "La date de naissance est requise"],
     },
+    placeOfBirth: {
+      type: String,
+      required: [true, "Le lieu de naissance est requis"],
+      trim: true,
+    },
+    address: {
+      street: {
+        type: String,
+        required: [true, "L'adresse est requise"],
+        trim: true,
+      },
+      postalCode: {
+        type: String,
+        required: [true, "Le code postal est requis"],
+        trim: true,
+      },
+      city: {
+        type: String,
+        required: [true, "La ville est requise"],
+        trim: true,
+      },
+    },
     phone: {
       type: String,
       required: [true, "Le téléphone est requis"],
@@ -120,6 +154,27 @@ export const EmployeeSchema = new Schema<EmployeeDocument>(
     endContractReason: {
       type: String,
       enum: ['démission', 'fin-periode-essai', 'rupture'],
+    },
+
+    // Rémunération
+    level: {
+      type: String,
+      required: [true, "Le niveau est requis"],
+      trim: true,
+    },
+    step: {
+      type: Number,
+      required: [true, "L'échelon est requis"],
+      min: [1, "L'échelon doit être supérieur à 0"],
+    },
+    hourlyRate: {
+      type: Number,
+      required: [true, "Le taux horaire est requis"],
+      min: [0, "Le taux horaire doit être positif"],
+    },
+    monthlySalary: {
+      type: Number,
+      min: [0, "Le salaire mensuel doit être positif"],
     },
 
     // Code de pointage

@@ -9,10 +9,21 @@ interface Employee {
   _id: string;
   firstName: string;
   lastName: string;
+  dateOfBirth: string;
+  placeOfBirth: string;
+  address: {
+    street: string;
+    postalCode: string;
+    city: string;
+  };
   email: string;
   phone: string;
+  socialSecurityNumber: string;
   contractType: 'CDI' | 'CDD' | 'Stage';
   contractualHours: number;
+  level: string;
+  step: number;
+  hourlyRate: number;
   employeeRole: 'Manager' | 'Employé';
   isActive: boolean;
   hireDate: string;
@@ -36,6 +47,12 @@ interface NewEmployee {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
+  placeOfBirth: string;
+  address: {
+    street: string;
+    postalCode: string;
+    city: string;
+  };
   phone: string;
   email: string;
   socialSecurityNumber: string;
@@ -43,6 +60,9 @@ interface NewEmployee {
   contractualHours: number;
   hireDate: string;
   endDate?: string;
+  level: string;
+  step: number;
+  hourlyRate: number;
   clockingCode: string;
   employeeRole: 'Manager' | 'Employé';
   availability: {
@@ -81,12 +101,21 @@ export default function EmployeesPage() {
     firstName: "",
     lastName: "",
     dateOfBirth: "",
+    placeOfBirth: "",
+    address: {
+      street: "",
+      postalCode: "",
+      city: "",
+    },
     phone: "",
     email: "",
     socialSecurityNumber: "",
     contractType: "CDI",
     contractualHours: 35,
     hireDate: "",
+    level: "I",
+    step: 1,
+    hourlyRate: 12.50,
     clockingCode: "",
     employeeRole: "Employé",
     availability: {
@@ -218,12 +247,21 @@ export default function EmployeesPage() {
           firstName: "",
           lastName: "",
           dateOfBirth: "",
+          placeOfBirth: "",
+          address: {
+            street: "",
+            postalCode: "",
+            city: "",
+          },
           phone: "",
           email: "",
           socialSecurityNumber: "",
           contractType: "CDI",
           contractualHours: 35,
           hireDate: "",
+          level: "I",
+          step: 1,
+          hourlyRate: 12.50,
           clockingCode: "",
           employeeRole: "Employé",
           availability: {
@@ -700,6 +738,7 @@ export default function EmployeesPage() {
                     type="date"
                     value={newEmployee.dateOfBirth}
                     onChange={(e) => setNewEmployee({ ...newEmployee, dateOfBirth: e.target.value })}
+                    min="1900-01-01"
                     max={new Date().toISOString().split('T')[0]}
                   />
                   <Form.Text className="text-muted">
@@ -708,6 +747,69 @@ export default function EmployeesPage() {
                 </Form.Group>
               </Col>
               <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Lieu de naissance *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={newEmployee.placeOfBirth}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, placeOfBirth: e.target.value })}
+                    placeholder="Paris"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>N° Sécurité Sociale (15 chiffres) *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={newEmployee.socialSecurityNumber}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, socialSecurityNumber: e.target.value.replace(/\s/g, '') })}
+                    placeholder="123456789012345"
+                    maxLength={15}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row className="mb-3">
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Adresse *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={newEmployee.address.street}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, address: { ...newEmployee.address, street: e.target.value } })}
+                    placeholder="12 rue de la Paix"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={3}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Code postal *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={newEmployee.address.postalCode}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, address: { ...newEmployee.address, postalCode: e.target.value } })}
+                    placeholder="67000"
+                    maxLength={5}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={3}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Ville *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={newEmployee.address.city}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, address: { ...newEmployee.address, city: e.target.value } })}
+                    placeholder="Strasbourg"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row className="mb-3">
+              <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Téléphone *</Form.Label>
                   <Form.Control
@@ -718,7 +820,7 @@ export default function EmployeesPage() {
                   />
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Email *</Form.Label>
                   <Form.Control
@@ -732,22 +834,7 @@ export default function EmployeesPage() {
             </Row>
 
             <Row className="mb-4">
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>N° Sécurité Sociale (15 chiffres) *</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={newEmployee.socialSecurityNumber}
-                    onChange={(e) => setNewEmployee({ ...newEmployee, socialSecurityNumber: e.target.value.replace(/\s/g, '') })}
-                    placeholder="123456789012345"
-                    maxLength={15}
-                  />
-                  <Form.Text className="text-muted">
-                    {newEmployee.socialSecurityNumber.length}/15 chiffres
-                  </Form.Text>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
+              <Col md={12}>
                 <Form.Group className="mb-3">
                   <Form.Label>Code de pointage (4 chiffres) *</Form.Label>
                   <Form.Control
@@ -846,8 +933,59 @@ export default function EmployeesPage() {
               )}
             </Row>
 
+            {/* Rémunération */}
+            <h6 className="mb-3 text-primary mt-4">
+              <Icon icon="ri:money-euro-circle-line" className="me-2" />
+              Rémunération
+            </h6>
+            <Row className="mb-3">
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Niveau *</Form.Label>
+                  <Form.Select
+                    value={newEmployee.level}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, level: e.target.value })}
+                  >
+                    <option value="I">Niveau I</option>
+                    <option value="II">Niveau II</option>
+                    <option value="III">Niveau III</option>
+                    <option value="IV">Niveau IV</option>
+                    <option value="V">Niveau V</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Échelon *</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={newEmployee.step}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, step: parseInt(e.target.value) || 1 })}
+                    min={1}
+                    max={10}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Taux horaire (€) *</Form.Label>
+                  <Form.Control
+                    type="number"
+                    step="0.01"
+                    value={newEmployee.hourlyRate}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, hourlyRate: parseFloat(e.target.value) || 0 })}
+                    min={0}
+                    placeholder="12.50"
+                  />
+                  <Form.Text className="text-muted">
+                    Salaire mensuel brut estimé: {(newEmployee.hourlyRate * newEmployee.contractualHours * 4.33).toFixed(2)}€
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+            </Row>
+
             {/* Disponibilités */}
-            <h6 className="mb-3 text-primary">
+            <h6 className="mb-3 text-primary mt-4">
               <Icon icon="ri:calendar-line" className="me-2" />
               Disponibilités Horaires
             </h6>
