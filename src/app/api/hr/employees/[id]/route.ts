@@ -137,8 +137,30 @@ export async function PUT(
       }
     }
 
+    // Mettre à jour les champs en gérant correctement les objets imbriqués
+    if (body.workSchedule) {
+      employee.workSchedule = {
+        ...employee.workSchedule,
+        ...body.workSchedule,
+      };
+      employee.markModified('workSchedule');
+      delete body.workSchedule;
+    }
+
+    if (body.onboardingStatus) {
+      employee.onboardingStatus = {
+        ...employee.onboardingStatus,
+        ...body.onboardingStatus,
+      };
+      employee.markModified('onboardingStatus');
+      delete body.onboardingStatus;
+    }
+
     Object.assign(employee, body);
     await employee.save();
+
+    console.log('=== EMPLOYEE SAVED ===');
+    console.log('step4Completed after save:', employee.onboardingStatus.step4Completed);
 
     return NextResponse.json({
       success: true,

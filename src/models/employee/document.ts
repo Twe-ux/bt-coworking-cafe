@@ -20,6 +20,7 @@ export interface EmployeeDocument extends Document {
   contractType: 'CDI' | 'CDD' | 'Stage';
   contractualHours: number; // Nombre d'heures hebdomadaires
   hireDate: Date;
+  hireTime?: string; // Heure d'entrée (ex: "9H30")
   endDate?: Date; // Pour CDD et Stage
   endContractReason?: 'démission' | 'fin-periode-essai' | 'rupture'; // Motif de fin de contrat
 
@@ -35,27 +36,46 @@ export interface EmployeeDocument extends Document {
   // Rôle employé
   employeeRole: 'Manager' | 'Employé';
 
-  // Disponibilités horaires (par jour)
+  // Disponibilités horaires (par jour) - Plusieurs créneaux possibles
   availability: {
-    monday: { start: string; end: string; available: boolean };
-    tuesday: { start: string; end: string; available: boolean };
-    wednesday: { start: string; end: string; available: boolean };
-    thursday: { start: string; end: string; available: boolean };
-    friday: { start: string; end: string; available: boolean };
-    saturday: { start: string; end: string; available: boolean };
-    sunday: { start: string; end: string; available: boolean };
+    monday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    tuesday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    wednesday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    thursday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    friday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    saturday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    sunday: { available: boolean; slots: Array<{ start: string; end: string }> };
   };
 
   // Statut du processus de création
   onboardingStatus: {
-    contractGenerated: boolean;
-    contractGeneratedAt?: Date;
+    step1Completed: boolean; // Informations employé
+    step2Completed: boolean; // Documents administratifs
+    step3Completed: boolean; // Planning
+    step4Completed: boolean; // Contrat généré
     dpaeCompleted: boolean;
     dpaeCompletedAt?: Date;
+    medicalVisitCompleted: boolean;
+    medicalVisitCompletedAt?: Date;
+    mutuelleCompleted: boolean;
+    mutuelleCompletedAt?: Date;
     bankDetailsProvided: boolean;
     bankDetailsProvidedAt?: Date;
+    registerCompleted: boolean;
+    registerCompletedAt?: Date;
+    contractGenerated: boolean;
+    contractGeneratedAt?: Date;
     contractSent: boolean;
     contractSentAt?: Date;
+  };
+
+  // Planning de travail
+  workSchedule?: {
+    weeklyDistribution: string; // Tableau de répartition hebdomadaire
+    timeSlots: string; // Plages horaires
+    weeklyDistributionData?: { // Données du tableau de répartition
+      [key: string]: { [week: string]: string };
+    };
   };
 
   // Coordonnées bancaires
@@ -94,23 +114,23 @@ export const EmployeeSchema = new Schema<EmployeeDocument>(
     },
     placeOfBirth: {
       type: String,
-      required: [true, "Le lieu de naissance est requis"],
+      required: false,
       trim: true,
     },
     address: {
       street: {
         type: String,
-        required: [true, "L'adresse est requise"],
+        required: false,
         trim: true,
       },
       postalCode: {
         type: String,
-        required: [true, "Le code postal est requis"],
+        required: false,
         trim: true,
       },
       city: {
         type: String,
-        required: [true, "La ville est requise"],
+        required: false,
         trim: true,
       },
     },
@@ -148,6 +168,11 @@ export const EmployeeSchema = new Schema<EmployeeDocument>(
       type: Date,
       required: [true, "La date d'embauche est requise"],
     },
+    hireTime: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     endDate: {
       type: Date,
     },
@@ -159,17 +184,17 @@ export const EmployeeSchema = new Schema<EmployeeDocument>(
     // Rémunération
     level: {
       type: String,
-      required: [true, "Le niveau est requis"],
+      required: false,
       trim: true,
     },
     step: {
       type: Number,
-      required: [true, "L'échelon est requis"],
+      required: false,
       min: [1, "L'échelon doit être supérieur à 0"],
     },
     hourlyRate: {
       type: Number,
-      required: [true, "Le taux horaire est requis"],
+      required: false,
       min: [0, "Le taux horaire doit être positif"],
     },
     monthlySalary: {
@@ -192,55 +217,65 @@ export const EmployeeSchema = new Schema<EmployeeDocument>(
       default: 'Employé',
     },
 
-    // Disponibilités horaires
+    // Disponibilités horaires - Plusieurs créneaux par jour
     availability: {
       monday: {
-        start: { type: String, default: '09:00' },
-        end: { type: String, default: '18:00' },
         available: { type: Boolean, default: true },
+        slots: { type: [{ start: String, end: String }], default: [] },
       },
       tuesday: {
-        start: { type: String, default: '09:00' },
-        end: { type: String, default: '18:00' },
         available: { type: Boolean, default: true },
+        slots: { type: [{ start: String, end: String }], default: [] },
       },
       wednesday: {
-        start: { type: String, default: '09:00' },
-        end: { type: String, default: '18:00' },
         available: { type: Boolean, default: true },
+        slots: { type: [{ start: String, end: String }], default: [] },
       },
       thursday: {
-        start: { type: String, default: '09:00' },
-        end: { type: String, default: '18:00' },
         available: { type: Boolean, default: true },
+        slots: { type: [{ start: String, end: String }], default: [] },
       },
       friday: {
-        start: { type: String, default: '09:00' },
-        end: { type: String, default: '18:00' },
         available: { type: Boolean, default: true },
+        slots: { type: [{ start: String, end: String }], default: [] },
       },
       saturday: {
-        start: { type: String, default: '09:00' },
-        end: { type: String, default: '18:00' },
         available: { type: Boolean, default: false },
+        slots: { type: [{ start: String, end: String }], default: [] },
       },
       sunday: {
-        start: { type: String, default: '09:00' },
-        end: { type: String, default: '18:00' },
         available: { type: Boolean, default: false },
+        slots: { type: [{ start: String, end: String }], default: [] },
       },
     },
 
     // Statut du processus de création
     onboardingStatus: {
-      contractGenerated: { type: Boolean, default: false },
-      contractGeneratedAt: { type: Date },
+      step1Completed: { type: Boolean, default: false },
+      step2Completed: { type: Boolean, default: false },
+      step3Completed: { type: Boolean, default: false },
+      step4Completed: { type: Boolean, default: false },
       dpaeCompleted: { type: Boolean, default: false },
       dpaeCompletedAt: { type: Date },
+      medicalVisitCompleted: { type: Boolean, default: false },
+      medicalVisitCompletedAt: { type: Date },
+      mutuelleCompleted: { type: Boolean, default: false },
+      mutuelleCompletedAt: { type: Date },
       bankDetailsProvided: { type: Boolean, default: false },
       bankDetailsProvidedAt: { type: Date },
+      registerCompleted: { type: Boolean, default: false },
+      registerCompletedAt: { type: Date },
+      contractGenerated: { type: Boolean, default: false },
+      contractGeneratedAt: { type: Date },
       contractSent: { type: Boolean, default: false },
       contractSentAt: { type: Date },
+    },
+
+    // Planning de travail
+    workSchedule: {
+      weeklyDistribution: { type: String },
+      timeSlots: { type: String },
+      weeklyDistributionData: { type: Object },
     },
 
     // Coordonnées bancaires

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Card, Button, Table, Badge, Modal, Form, Row, Col, Alert, ProgressBar } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 import { useTopbarContext } from "@/context/useTopbarContext";
+import ContractTemplateCDI from "@/components/hr/ContractTemplateCDI";
+import OnboardingWizard from "@/components/hr/OnboardingWizard";
 
 interface Employee {
   _id: string;
@@ -27,20 +29,41 @@ interface Employee {
   employeeRole: 'Manager' | 'Employé';
   isActive: boolean;
   hireDate: string;
+  hireTime?: string;
   endDate?: string;
   endContractReason?: 'démission' | 'fin-periode-essai' | 'rupture';
   onboardingStatus: {
+    step1Completed?: boolean;
+    step2Completed?: boolean;
+    step3Completed?: boolean;
+    step4Completed?: boolean;
     contractGenerated: boolean;
     dpaeCompleted: boolean;
+    dpaeCompletedAt?: Date;
+    medicalVisitCompleted?: boolean;
+    medicalVisitCompletedAt?: Date;
+    mutuelleCompleted?: boolean;
+    mutuelleCompletedAt?: Date;
     bankDetailsProvided: boolean;
+    bankDetailsProvidedAt?: Date;
+    registerCompleted?: boolean;
+    registerCompletedAt?: Date;
     contractSent: boolean;
+  };
+  workSchedule?: {
+    weeklyDistribution: string;
+    timeSlots: string;
   };
 }
 
-interface AvailabilitySlot {
+interface TimeSlot {
   start: string;
   end: string;
+}
+
+interface AvailabilityDay {
   available: boolean;
+  slots: TimeSlot[];
 }
 
 interface NewEmployee {
@@ -59,6 +82,7 @@ interface NewEmployee {
   contractType: 'CDI' | 'CDD' | 'Stage';
   contractualHours: number;
   hireDate: string;
+  hireTime?: string;
   endDate?: string;
   level: string;
   step: number;
@@ -66,20 +90,19 @@ interface NewEmployee {
   clockingCode: string;
   employeeRole: 'Manager' | 'Employé';
   availability: {
-    monday: AvailabilitySlot;
-    tuesday: AvailabilitySlot;
-    wednesday: AvailabilitySlot;
-    thursday: AvailabilitySlot;
-    friday: AvailabilitySlot;
-    saturday: AvailabilitySlot;
-    sunday: AvailabilitySlot;
+    monday: AvailabilityDay;
+    tuesday: AvailabilityDay;
+    wednesday: AvailabilityDay;
+    thursday: AvailabilityDay;
+    friday: AvailabilityDay;
+    saturday: AvailabilityDay;
+    sunday: AvailabilityDay;
   };
 }
 
-const defaultAvailability: AvailabilitySlot = {
-  start: '09:00',
-  end: '18:00',
+const defaultAvailability: AvailabilityDay = {
   available: true,
+  slots: [{ start: '09:00', end: '18:00' }],
 };
 
 export default function EmployeesPage() {
@@ -89,6 +112,7 @@ export default function EmployeesPage() {
   const [saving, setSaving] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
   const [showContractModal, setShowContractModal] = useState(false);
   const [showResignModal, setShowResignModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
@@ -113,6 +137,7 @@ export default function EmployeesPage() {
     contractType: "CDI",
     contractualHours: 35,
     hireDate: "",
+    hireTime: "9H30",
     level: "I",
     step: 1,
     hourlyRate: 12.50,
@@ -124,8 +149,8 @@ export default function EmployeesPage() {
       wednesday: { ...defaultAvailability },
       thursday: { ...defaultAvailability },
       friday: { ...defaultAvailability },
-      saturday: { ...defaultAvailability, available: false },
-      sunday: { ...defaultAvailability, available: false },
+      saturday: { available: false, slots: [] },
+      sunday: { available: false, slots: [] },
     },
   });
 
@@ -233,7 +258,12 @@ export default function EmployeesPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newEmployee),
+        body: JSON.stringify({
+          ...newEmployee,
+          onboardingStatus: {
+            step1Completed: true,
+          },
+        }),
       });
 
       const data = await response.json();
@@ -270,8 +300,8 @@ export default function EmployeesPage() {
             wednesday: { ...defaultAvailability },
             thursday: { ...defaultAvailability },
             friday: { ...defaultAvailability },
-            saturday: { ...defaultAvailability, available: false },
-            sunday: { ...defaultAvailability, available: false },
+            saturday: { available: false, slots: [] },
+            sunday: { available: false, slots: [] },
           },
         });
       } else {
@@ -292,7 +322,13 @@ export default function EmployeesPage() {
       const data = await response.json();
 
       if (data.success) {
-        setSelectedEmployee(data.data);
+        // Convertir les dates au format YYYY-MM-DD pour les inputs
+        const employeeData = {
+          ...data.data,
+          dateOfBirth: data.data.dateOfBirth ? new Date(data.data.dateOfBirth).toISOString().split('T')[0] : '',
+          hireDate: data.data.hireDate ? new Date(data.data.hireDate).toISOString().split('T')[0] : '',
+        };
+        setSelectedEmployee(employeeData);
         setShowEditModal(true);
       }
     } catch (error) {
@@ -429,30 +465,190 @@ export default function EmployeesPage() {
     }
   };
 
+  const handleContractGenerated = async () => {
+    if (!selectedEmployee) return;
+
+    try {
+      const response = await fetch(`/api/hr/employees/${selectedEmployee._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          onboardingStatus: {
+            ...selectedEmployee.onboardingStatus,
+            step4Completed: true,
+            contractGenerated: true,
+            contractGeneratedAt: new Date(),
+          },
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage({ type: "success", text: "Contrat généré avec succès" });
+        fetchEmployees();
+      } else {
+        setMessage({ type: "error", text: data.error || "Erreur lors de la mise à jour du statut" });
+      }
+    } catch (error) {
+      console.error("Error updating contract status:", error);
+      setMessage({ type: "error", text: "Erreur lors de la mise à jour du statut" });
+    }
+  };
+
+  const handleStartOnboarding = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setShowOnboardingWizard(true);
+  };
+
   const handleViewContract = (employee: Employee) => {
     setSelectedEmployee(employee);
     setShowContractModal(true);
   };
 
-  const updateAvailability = (day: keyof typeof newEmployee.availability, field: keyof AvailabilitySlot, value: string | boolean) => {
+  const handleOnboardingComplete = () => {
+    fetchEmployees();
+  };
+
+  const updateAvailability = (day: keyof typeof newEmployee.availability, available: boolean) => {
+    setNewEmployee(prev => ({
+      ...prev,
+      availability: {
+        ...prev.availability,
+        [day]: {
+          available,
+          slots: available ? prev.availability[day].slots : [],
+        },
+      },
+    }));
+  };
+
+  const updateTimeSlot = (day: keyof typeof newEmployee.availability, slotIndex: number, field: 'start' | 'end', value: string) => {
+    setNewEmployee(prev => {
+      const newSlots = [...prev.availability[day].slots];
+      newSlots[slotIndex] = { ...newSlots[slotIndex], [field]: value };
+      return {
+        ...prev,
+        availability: {
+          ...prev.availability,
+          [day]: {
+            ...prev.availability[day],
+            slots: newSlots,
+          },
+        },
+      };
+    });
+  };
+
+  const addTimeSlot = (day: keyof typeof newEmployee.availability) => {
     setNewEmployee(prev => ({
       ...prev,
       availability: {
         ...prev.availability,
         [day]: {
           ...prev.availability[day],
-          [field]: value,
+          slots: [...prev.availability[day].slots, { start: '09:00', end: '18:00' }],
         },
       },
     }));
   };
 
+  const removeTimeSlot = (day: keyof typeof newEmployee.availability, slotIndex: number) => {
+    setNewEmployee(prev => ({
+      ...prev,
+      availability: {
+        ...prev.availability,
+        [day]: {
+          ...prev.availability[day],
+          slots: prev.availability[day].slots.filter((_, i) => i !== slotIndex),
+        },
+      },
+    }));
+  };
+
+  // Fonctions pour gérer les créneaux dans l'édition
+  const updateEditAvailability = (day: string, available: boolean) => {
+    if (!selectedEmployee) return;
+
+    const availability = selectedEmployee.availability || {};
+    const dayData = availability[day as keyof typeof availability] || { available: true, slots: [] };
+
+    setSelectedEmployee({
+      ...selectedEmployee,
+      availability: {
+        ...availability,
+        [day]: {
+          available,
+          slots: available ? dayData.slots : [],
+        },
+      },
+    });
+  };
+
+  const updateEditTimeSlot = (day: string, slotIndex: number, field: 'start' | 'end', value: string) => {
+    if (!selectedEmployee) return;
+
+    const availability = selectedEmployee.availability || {};
+    const dayData = availability[day as keyof typeof availability] || { available: true, slots: [] };
+    const newSlots = [...(dayData.slots || [])];
+    newSlots[slotIndex] = { ...newSlots[slotIndex], [field]: value };
+
+    setSelectedEmployee({
+      ...selectedEmployee,
+      availability: {
+        ...availability,
+        [day]: {
+          ...dayData,
+          slots: newSlots,
+        },
+      },
+    });
+  };
+
+  const addEditTimeSlot = (day: string) => {
+    if (!selectedEmployee) return;
+
+    const availability = selectedEmployee.availability || {};
+    const dayData = availability[day as keyof typeof availability] || { available: true, slots: [] };
+
+    setSelectedEmployee({
+      ...selectedEmployee,
+      availability: {
+        ...availability,
+        [day]: {
+          ...dayData,
+          slots: [...(dayData.slots || []), { start: '09:00', end: '18:00' }],
+        },
+      },
+    });
+  };
+
+  const removeEditTimeSlot = (day: string, slotIndex: number) => {
+    if (!selectedEmployee) return;
+
+    const availability = selectedEmployee.availability || {};
+    const dayData = availability[day as keyof typeof availability] || { available: true, slots: [] };
+
+    setSelectedEmployee({
+      ...selectedEmployee,
+      availability: {
+        ...availability,
+        [day]: {
+          ...dayData,
+          slots: (dayData.slots || []).filter((_, i) => i !== slotIndex),
+        },
+      },
+    });
+  };
+
   const getOnboardingProgress = (employee: Employee) => {
     const steps = [
-      employee.onboardingStatus.contractGenerated,
-      employee.onboardingStatus.dpaeCompleted,
-      employee.onboardingStatus.bankDetailsProvided,
-      employee.onboardingStatus.contractSent,
+      employee.onboardingStatus.step1Completed,
+      employee.onboardingStatus.step2Completed,
+      employee.onboardingStatus.step3Completed,
+      employee.onboardingStatus.step4Completed,
     ];
     const completed = steps.filter(Boolean).length;
     return Math.round((completed / steps.length) * 100);
@@ -648,11 +844,21 @@ export default function EmployeesPage() {
                                 <Button
                                   size="sm"
                                   variant="outline-primary"
-                                  onClick={() => handleViewContract(employee)}
-                                  title="Voir le contrat"
+                                  onClick={() => handleStartOnboarding(employee)}
+                                  title="Continuer l'onboarding"
                                 >
-                                  <Icon icon="ri:file-text-line" />
+                                  <Icon icon="ri:file-list-3-line" />
                                 </Button>
+                                {employee.onboardingStatus.step4Completed && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline-success"
+                                    onClick={() => handleViewContract(employee)}
+                                    title="Voir le contrat"
+                                  >
+                                    <Icon icon="ri:file-text-line" />
+                                  </Button>
+                                )}
                                 <Button
                                   size="sm"
                                   variant="outline-danger"
@@ -899,7 +1105,7 @@ export default function EmployeesPage() {
             </Row>
 
             <Row className="mb-4">
-              <Col md={6}>
+              <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label>Date d'embauche *</Form.Label>
                   <Form.Control
@@ -912,6 +1118,17 @@ export default function EmployeesPage() {
                   <Form.Text className="text-muted">
                     Format: JJ/MM/AAAA
                   </Form.Text>
+                </Form.Group>
+              </Col>
+              <Col md={2}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Heure d'entrée</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="9H30"
+                    value={newEmployee.hireTime || ''}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, hireTime: e.target.value })}
+                  />
                 </Form.Group>
               </Col>
               {(newEmployee.contractType === 'CDD' || newEmployee.contractType === 'Stage') && (
@@ -992,44 +1209,68 @@ export default function EmployeesPage() {
             <div className="border rounded p-3">
               {Object.keys(newEmployee.availability).map((day) => {
                 const dayKey = day as keyof typeof newEmployee.availability;
-                const slot = newEmployee.availability[dayKey];
+                const dayData = newEmployee.availability[dayKey];
 
                 return (
-                  <Row key={day} className="mb-2 align-items-center">
-                    <Col md={2}>
+                  <div key={day} className="mb-3 pb-3 border-bottom">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
                       <Form.Check
                         type="switch"
                         id={`available-${day}`}
-                        label={dayLabels[day]}
-                        checked={slot.available}
-                        onChange={(e) => updateAvailability(dayKey, 'available', e.target.checked)}
+                        label={<strong>{dayLabels[day]}</strong>}
+                        checked={dayData.available}
+                        onChange={(e) => updateAvailability(dayKey, e.target.checked)}
                       />
-                    </Col>
-                    <Col md={5}>
-                      <Form.Group>
-                        <Form.Label className="small">Début</Form.Label>
-                        <Form.Control
-                          type="time"
+                      {dayData.available && (
+                        <Button
+                          variant="outline-primary"
                           size="sm"
-                          value={slot.start}
-                          onChange={(e) => updateAvailability(dayKey, 'start', e.target.value)}
-                          disabled={!slot.available}
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={5}>
-                      <Form.Group>
-                        <Form.Label className="small">Fin</Form.Label>
-                        <Form.Control
-                          type="time"
-                          size="sm"
-                          value={slot.end}
-                          onChange={(e) => updateAvailability(dayKey, 'end', e.target.value)}
-                          disabled={!slot.available}
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
+                          onClick={() => addTimeSlot(dayKey)}
+                        >
+                          <Icon icon="ri:add-line" className="me-1" />
+                          Ajouter un créneau
+                        </Button>
+                      )}
+                    </div>
+
+                    {dayData.available && dayData.slots.map((slot, slotIndex) => (
+                      <Row key={slotIndex} className="mb-2 align-items-end">
+                        <Col md={5}>
+                          <Form.Group>
+                            <Form.Label className="small">Début</Form.Label>
+                            <Form.Control
+                              type="time"
+                              size="sm"
+                              value={slot.start}
+                              onChange={(e) => updateTimeSlot(dayKey, slotIndex, 'start', e.target.value)}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={5}>
+                          <Form.Group>
+                            <Form.Label className="small">Fin</Form.Label>
+                            <Form.Control
+                              type="time"
+                              size="sm"
+                              value={slot.end}
+                              onChange={(e) => updateTimeSlot(dayKey, slotIndex, 'end', e.target.value)}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col md={2}>
+                          {dayData.slots.length > 1 && (
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => removeTimeSlot(dayKey, slotIndex)}
+                            >
+                              <Icon icon="ri:delete-bin-line" />
+                            </Button>
+                          )}
+                        </Col>
+                      </Row>
+                    ))}
+                  </div>
                 );
               })}
             </div>
@@ -1092,6 +1333,89 @@ export default function EmployeesPage() {
               <Row className="mb-3">
                 <Col md={6}>
                   <Form.Group className="mb-3">
+                    <Form.Label>Date de naissance</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={selectedEmployee.dateOfBirth}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, dateOfBirth: e.target.value })}
+                      min="1900-01-01"
+                      max="2100-12-31"
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Lieu de naissance</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={selectedEmployee.placeOfBirth || ''}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, placeOfBirth: e.target.value })}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col md={12}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Adresse</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Rue"
+                      value={selectedEmployee.address?.street || ''}
+                      onChange={(e) => setSelectedEmployee({
+                        ...selectedEmployee,
+                        address: {
+                          street: e.target.value,
+                          postalCode: selectedEmployee.address?.postalCode || '',
+                          city: selectedEmployee.address?.city || ''
+                        }
+                      })}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Code postal</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={selectedEmployee.address?.postalCode || ''}
+                      onChange={(e) => setSelectedEmployee({
+                        ...selectedEmployee,
+                        address: {
+                          street: selectedEmployee.address?.street || '',
+                          postalCode: e.target.value,
+                          city: selectedEmployee.address?.city || ''
+                        }
+                      })}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Ville</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={selectedEmployee.address?.city || ''}
+                      onChange={(e) => setSelectedEmployee({
+                        ...selectedEmployee,
+                        address: {
+                          street: selectedEmployee.address?.street || '',
+                          postalCode: selectedEmployee.address?.postalCode || '',
+                          city: e.target.value
+                        }
+                      })}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Form.Group className="mb-3">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
                       type="email"
@@ -1107,6 +1431,31 @@ export default function EmployeesPage() {
                       type="tel"
                       value={selectedEmployee.phone}
                       onChange={(e) => setSelectedEmployee({ ...selectedEmployee, phone: e.target.value })}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Numéro de sécurité sociale (15 chiffres)</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={selectedEmployee.socialSecurityNumber}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, socialSecurityNumber: e.target.value })}
+                      maxLength={15}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Code de pointage (4 chiffres)</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={selectedEmployee.clockingCode}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, clockingCode: e.target.value })}
+                      maxLength={4}
                     />
                   </Form.Group>
                 </Col>
@@ -1140,7 +1489,72 @@ export default function EmployeesPage() {
                     </Form.Select>
                   </Form.Group>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Date d'embauche</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={selectedEmployee.hireDate}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, hireDate: e.target.value })}
+                      min="1900-01-01"
+                      max="2100-12-31"
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Heure d'entrée</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="9H30"
+                      value={selectedEmployee.hireTime || ''}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, hireTime: e.target.value })}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Niveau</Form.Label>
+                    <Form.Select
+                      value={selectedEmployee.level || ''}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, level: e.target.value })}
+                    >
+                      <option value="">Sélectionner</option>
+                      <option value="I">I</option>
+                      <option value="II">II</option>
+                      <option value="III">III</option>
+                      <option value="IV">IV</option>
+                      <option value="V">V</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Échelon</Form.Label>
+                    <Form.Control
+                      type="number"
+                      min="1"
+                      value={selectedEmployee.step || ''}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, step: parseInt(e.target.value) || undefined })}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Taux horaire (€)</Form.Label>
+                    <Form.Control
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={selectedEmployee.hourlyRate || ''}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, hourlyRate: parseFloat(e.target.value) || undefined })}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
                   <Form.Group className="mb-3">
                     <Form.Label>Rôle</Form.Label>
                     <Form.Select
@@ -1176,6 +1590,86 @@ export default function EmployeesPage() {
                   </div>
                 </Alert>
               )}
+
+              {/* Disponibilités Horaires */}
+              <h6 className="mb-3 text-primary mt-4">
+                <Icon icon="ri:calendar-line" className="me-2" />
+                Disponibilités Horaires
+              </h6>
+              <div className="border rounded p-3">
+                {Object.keys(selectedEmployee.availability || {}).map((day) => {
+                  const availability = selectedEmployee.availability || {};
+                  const dayData = availability[day as keyof typeof availability];
+
+                  // Convertir l'ancien format si nécessaire
+                  let slots = dayData?.slots || [];
+                  if (slots.length === 0 && (dayData as any)?.start && (dayData as any)?.end) {
+                    slots = [{ start: (dayData as any).start, end: (dayData as any).end }];
+                  }
+
+                  return (
+                    <div key={day} className="mb-3 pb-3 border-bottom">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <Form.Check
+                          type="switch"
+                          id={`edit-available-${day}`}
+                          label={<strong>{dayLabels[day]}</strong>}
+                          checked={dayData?.available || false}
+                          onChange={(e) => updateEditAvailability(day, e.target.checked)}
+                        />
+                        {dayData?.available && (
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            onClick={() => addEditTimeSlot(day)}
+                          >
+                            <Icon icon="ri:add-line" className="me-1" />
+                            Ajouter un créneau
+                          </Button>
+                        )}
+                      </div>
+
+                      {dayData?.available && slots.map((slot, slotIndex) => (
+                        <Row key={slotIndex} className="mb-2 align-items-end">
+                          <Col md={5}>
+                            <Form.Group>
+                              <Form.Label className="small">Début</Form.Label>
+                              <Form.Control
+                                type="time"
+                                size="sm"
+                                value={slot.start}
+                                onChange={(e) => updateEditTimeSlot(day, slotIndex, 'start', e.target.value)}
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col md={5}>
+                            <Form.Group>
+                              <Form.Label className="small">Fin</Form.Label>
+                              <Form.Control
+                                type="time"
+                                size="sm"
+                                value={slot.end}
+                                onChange={(e) => updateEditTimeSlot(day, slotIndex, 'end', e.target.value)}
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col md={2}>
+                            {slots.length > 1 && (
+                              <Button
+                                variant="outline-danger"
+                                size="sm"
+                                onClick={() => removeEditTimeSlot(day, slotIndex)}
+                              >
+                                <Icon icon="ri:delete-bin-line" />
+                              </Button>
+                            )}
+                          </Col>
+                        </Row>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
             </Form>
           )}
         </Modal.Body>
@@ -1189,87 +1683,29 @@ export default function EmployeesPage() {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal de visualisation du contrat */}
-      <Modal show={showContractModal} onHide={() => setShowContractModal(false)} size="lg" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <Icon icon="ri:file-text-line" className="me-2" />
-            Contrat de travail
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedEmployee && (
-            <div className="p-4">
-              <Alert variant="info">
-                <Icon icon="ri:information-line" className="me-2" />
-                La génération de contrat PDF sera disponible au Step 2. Pour l'instant, voici les informations de l'employé.
-              </Alert>
+      {/* Modal d'onboarding */}
+      {selectedEmployee && (
+        <OnboardingWizard
+          show={showOnboardingWizard}
+          onHide={() => setShowOnboardingWizard(false)}
+          employee={selectedEmployee}
+          onComplete={handleOnboardingComplete}
+          onGenerateContract={() => {
+            setShowOnboardingWizard(false);
+            setShowContractModal(true);
+          }}
+        />
+      )}
 
-              <h5 className="mb-3">Informations contractuelles</h5>
-              <Table bordered>
-                <tbody>
-                  <tr>
-                    <th width="40%">Nom complet</th>
-                    <td>{selectedEmployee.firstName} {selectedEmployee.lastName}</td>
-                  </tr>
-                  <tr>
-                    <th>Email</th>
-                    <td>{selectedEmployee.email}</td>
-                  </tr>
-                  <tr>
-                    <th>Téléphone</th>
-                    <td>{selectedEmployee.phone}</td>
-                  </tr>
-                  <tr>
-                    <th>Type de contrat</th>
-                    <td><Badge bg="primary">{selectedEmployee.contractType}</Badge></td>
-                  </tr>
-                  <tr>
-                    <th>Heures hebdomadaires</th>
-                    <td>{selectedEmployee.contractualHours}h</td>
-                  </tr>
-                  <tr>
-                    <th>Rôle</th>
-                    <td>{selectedEmployee.employeeRole}</td>
-                  </tr>
-                  <tr>
-                    <th>Date d'embauche</th>
-                    <td>{new Date(selectedEmployee.hireDate).toLocaleDateString('fr-FR')}</td>
-                  </tr>
-                  <tr>
-                    <th>Statut</th>
-                    <td>
-                      <Badge bg={selectedEmployee.isActive ? "success" : "danger"}>
-                        {selectedEmployee.isActive ? "Actif" : "Archivé"}
-                      </Badge>
-                    </td>
-                  </tr>
-                  {selectedEmployee.endDate && (
-                    <tr>
-                      <th>Date de fin de contrat</th>
-                      <td>
-                        {new Date(selectedEmployee.endDate).toLocaleDateString('fr-FR')}
-                        {selectedEmployee.endContractReason && (
-                          <Badge bg="secondary" className="ms-2">
-                            {selectedEmployee.endContractReason === 'démission' && 'Démission'}
-                            {selectedEmployee.endContractReason === 'fin-periode-essai' && 'Fin période essai'}
-                            {selectedEmployee.endContractReason === 'rupture' && 'Rupture'}
-                          </Badge>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setShowContractModal(false)}>
-            Fermer
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Modal de génération du contrat */}
+      {selectedEmployee && (
+        <ContractTemplateCDI
+          show={showContractModal}
+          onHide={() => setShowContractModal(false)}
+          employee={selectedEmployee}
+          onValidate={handleContractGenerated}
+        />
+      )}
 
       {/* Modal de fin de contrat */}
       <Modal show={showResignModal} onHide={() => setShowResignModal(false)} centered>
