@@ -151,6 +151,32 @@ export const MENU_ITEMS: MenuItemType[] = [
     ],
   },
   {
+    key: "hr",
+    label: "Ressources Humaines",
+    icon: "ri:user-settings-line",
+    roles: ["dev", "admin", "manager"],
+    children: [
+      {
+        key: "hr-employees",
+        label: "Employés",
+        url: "/dashboard/hr/employees",
+        parentKey: "hr",
+      },
+      {
+        key: "hr-planning",
+        label: "Planning",
+        url: "/dashboard/hr/planning",
+        parentKey: "hr",
+      },
+      {
+        key: "hr-timesheets",
+        label: "Pointages",
+        url: "/dashboard/hr/timesheets",
+        parentKey: "hr",
+      },
+    ],
+  },
+  {
     key: "settings",
     label: "Settings",
     icon: "ri:settings-3-line",
