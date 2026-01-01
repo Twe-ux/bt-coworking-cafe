@@ -1380,43 +1380,23 @@ export default function ContractTemplateCDI({
         <Button variant="outline-secondary" onClick={onHide}>
           Annuler
         </Button>
-        {employee.onboardingStatus.step4Completed ? (
-          <Button
-            variant="success"
-            onClick={handleSaveContract}
-            disabled={saving}
-          >
-            {saving ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" />
-                Enregistrement...
-              </>
-            ) : (
-              <>
-                <Icon icon="ri:save-line" className="me-2" />
-                Enregistrer
-              </>
-            )}
-          </Button>
-        ) : (
-          <Button
-            variant="purple"
-            onClick={handleGeneratePDF}
-            disabled={generating}
-          >
-            {generating ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" />
-                Génération en cours...
-              </>
-            ) : (
-              <>
-                <Icon icon="ri:file-pdf-line" className="me-2" />
-                Enregistrer PDF
-              </>
-            )}
-          </Button>
-        )}
+        <Button
+          variant="success"
+          onClick={handleGeneratePDF}
+          disabled={generating}
+        >
+          {generating ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" />
+              Génération en cours...
+            </>
+          ) : (
+            <>
+              <Icon icon="ri:file-pdf-line" className="me-2" />
+              Enregistrer contrat
+            </>
+          )}
+        </Button>
       </Modal.Footer>
     </Modal>
   );
