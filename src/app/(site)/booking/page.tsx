@@ -136,7 +136,7 @@ export default function BookingPage() {
   if (loading) {
     return (
       <>
-        <PageTitle title="Réserver un espace" currentPage="Réservation" />
+        <PageTitle title="Réserver un espace" />
         <section className="booking-selection py-5">
           <div className="container">
             <div className="text-center">
