@@ -20,6 +20,15 @@ interface Employee {
   firstName: string;
   lastName: string;
   employeeRole: string;
+  availability?: {
+    monday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    tuesday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    wednesday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    thursday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    friday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    saturday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    sunday: { available: boolean; slots: Array<{ start: string; end: string }> };
+  };
 }
 
 interface Shift {
@@ -84,6 +93,9 @@ export default function EmployeeScheduling({
   const [editingShiftTypeId, setEditingShiftTypeId] = useState<string | null>(
     null
   );
+
+  // Availability display toggle
+  const [showAvailability, setShowAvailability] = useState(true);
 
   useEffect(() => {
     loadShifts();
@@ -254,6 +266,36 @@ export default function EmployeeScheduling({
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
     );
+  };
+
+  // Get availability slots for a specific date and period
+  const getAvailabilitySlots = (employee: Employee, date: Date, period: 'morning' | 'afternoon') => {
+    if (!employee.availability) return [];
+
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const dayName = dayNames[date.getDay()] as keyof typeof employee.availability;
+    const dayAvailability = employee.availability[dayName];
+
+    if (!dayAvailability || !dayAvailability.available || !dayAvailability.slots.length) {
+      return [];
+    }
+
+    const pivotInMinutes = 14 * 60 + 30; // 14:30
+
+    return dayAvailability.slots.filter((slot) => {
+      const [startHour, startMinute] = slot.start.split(':').map(Number);
+      const [endHour, endMinute] = slot.end.split(':').map(Number);
+      const startInMinutes = startHour * 60 + startMinute;
+      const endInMinutes = endHour * 60 + endMinute;
+
+      if (period === 'morning') {
+        // Include slot if it overlaps with morning (before 14:30)
+        return startInMinutes < pivotInMinutes;
+      } else {
+        // Include slot if it overlaps with afternoon (from 14:30)
+        return endInMinutes > pivotInMinutes;
+      }
+    });
   };
 
   // Month navigation
@@ -492,17 +534,29 @@ export default function EmployeeScheduling({
       <Card.Body>
         {/* Header with month navigation */}
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={goToPreviousMonth}
-          >
-            <Icon icon="eva:arrow-ios-back-fill" />
-          </Button>
-          <h4 className="mb-0 text-capitalize">{formatMonthYear()}</h4>
-          <Button variant="outline-secondary" size="sm" onClick={goToNextMonth}>
-            <Icon icon="eva:arrow-ios-forward-fill" />
-          </Button>
+          <div className="d-flex align-items-center gap-2">
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={goToPreviousMonth}
+            >
+              <Icon icon="eva:arrow-ios-back-fill" />
+            </Button>
+            <h4 className="mb-0 text-capitalize">{formatMonthYear()}</h4>
+            <Button variant="outline-secondary" size="sm" onClick={goToNextMonth}>
+              <Icon icon="eva:arrow-ios-forward-fill" />
+            </Button>
+          </div>
+
+          <div className="d-flex align-items-center gap-2">
+            <Form.Check
+              type="switch"
+              id="show-availability-switch"
+              label="Afficher les disponibilités"
+              checked={showAvailability}
+              onChange={(e) => setShowAvailability(e.target.checked)}
+            />
+          </div>
         </div>
 
         {error && (
@@ -663,6 +717,8 @@ export default function EmployeeScheduling({
                           const { morning, afternoon } =
                             splitShiftsByTime(employeeShifts);
                           const color = getEmployeeColor(employee._id);
+                          const morningAvailability = getAvailabilitySlots(employee, date, 'morning');
+                          const afternoonAvailability = getAvailabilitySlots(employee, date, 'afternoon');
 
                           return (
                             <div
@@ -671,45 +727,95 @@ export default function EmployeeScheduling({
                               style={{ minHeight: "25px" }}
                             >
                               {/* Morning shifts (before 14:30) - max 2 side by side */}
-                              <div style={{ flex: 1 }} className="d-flex gap-1">
-                                {morning.slice(0, 2).map((shift) => (
-                                  <div
-                                    key={shift._id}
-                                    className="rounded px-1 py-1 text-white text-center"
-                                    style={{
-                                      backgroundColor: color,
-                                      fontSize: "0.65rem",
-                                      fontWeight: 500,
-                                      cursor: "pointer",
-                                      flex: 1,
-                                    }}
-                                    onClick={(e) => handleShiftClick(shift, e)}
-                                    title={`${employee.firstName} - ${shift.startTime} à ${shift.endTime}`}
-                                  >
-                                    {shift.startTime}-{shift.endTime}
-                                  </div>
-                                ))}
+                              <div
+                                style={{
+                                  flex: 1,
+                                  borderRadius: '3px',
+                                }}
+                                className="d-flex gap-1"
+                              >
+                                {morning.length > 0 ? (
+                                  morning.slice(0, 2).map((shift) => (
+                                    <div
+                                      key={shift._id}
+                                      className="rounded px-1 py-1 text-white text-center"
+                                      style={{
+                                        backgroundColor: color,
+                                        fontSize: "0.65rem",
+                                        fontWeight: 500,
+                                        cursor: "pointer",
+                                        flex: 1,
+                                      }}
+                                      onClick={(e) => handleShiftClick(shift, e)}
+                                      title={`${employee.firstName} - ${shift.startTime} à ${shift.endTime}`}
+                                    >
+                                      {shift.startTime}-{shift.endTime}
+                                    </div>
+                                  ))
+                                ) : (
+                                  showAvailability && morningAvailability.slice(0, 2).map((slot, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="rounded px-1 py-1 text-center"
+                                      style={{
+                                        backgroundColor: `${color}20`, // 20 = ~12% opacity in hex
+                                        color: '#6c757d',
+                                        fontSize: "0.6rem",
+                                        fontWeight: 400,
+                                        flex: 1,
+                                      }}
+                                      title={`Disponible: ${slot.start} à ${slot.end}`}
+                                    >
+                                      {slot.start}-{slot.end}
+                                    </div>
+                                  ))
+                                )}
                               </div>
 
                               {/* Afternoon shifts (after 14:30) - max 2 side by side */}
-                              <div style={{ flex: 1 }} className="d-flex gap-1">
-                                {afternoon.slice(0, 2).map((shift) => (
-                                  <div
-                                    key={shift._id}
-                                    className="rounded px-1 py-1 text-white text-center"
-                                    style={{
-                                      backgroundColor: color,
-                                      fontSize: "0.65rem",
-                                      fontWeight: 500,
-                                      cursor: "pointer",
-                                      flex: 1,
-                                    }}
-                                    onClick={(e) => handleShiftClick(shift, e)}
-                                    title={`${employee.firstName} - ${shift.startTime} à ${shift.endTime}`}
-                                  >
-                                    {shift.startTime}-{shift.endTime}
-                                  </div>
-                                ))}
+                              <div
+                                style={{
+                                  flex: 1,
+                                  borderRadius: '3px',
+                                }}
+                                className="d-flex gap-1"
+                              >
+                                {afternoon.length > 0 ? (
+                                  afternoon.slice(0, 2).map((shift) => (
+                                    <div
+                                      key={shift._id}
+                                      className="rounded px-1 py-1 text-white text-center"
+                                      style={{
+                                        backgroundColor: color,
+                                        fontSize: "0.65rem",
+                                        fontWeight: 500,
+                                        cursor: "pointer",
+                                        flex: 1,
+                                      }}
+                                      onClick={(e) => handleShiftClick(shift, e)}
+                                      title={`${employee.firstName} - ${shift.startTime} à ${shift.endTime}`}
+                                    >
+                                      {shift.startTime}-{shift.endTime}
+                                    </div>
+                                  ))
+                                ) : (
+                                  showAvailability && afternoonAvailability.slice(0, 2).map((slot, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="rounded px-1 py-1 text-center"
+                                      style={{
+                                        backgroundColor: `${color}20`, // 20 = ~12% opacity in hex
+                                        color: '#6c757d',
+                                        fontSize: "0.6rem",
+                                        fontWeight: 400,
+                                        flex: 1,
+                                      }}
+                                      title={`Disponible: ${slot.start} à ${slot.end}`}
+                                    >
+                                      {slot.start}-{slot.end}
+                                    </div>
+                                  ))
+                                )}
                               </div>
                             </div>
                           );

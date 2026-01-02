@@ -24,7 +24,7 @@ export default async function SchedulePage() {
 
   // Récupérer tous les employés actifs
   const employees = await Employee.find({ isActive: true })
-    .select('_id firstName lastName employeeRole contractualHours')
+    .select('_id firstName lastName employeeRole contractualHours availability')
     .sort({ firstName: 1, lastName: 1 })
     .lean();
 
