@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-options';
+import { options as authOptions } from '@/lib/auth-options';
 import { redirect } from 'next/navigation';
 import connectDB from '@/lib/db';
 import { Employee } from '@/models/employee';

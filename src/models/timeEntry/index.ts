@@ -10,14 +10,16 @@ import {
 TimeEntrySchema.methods.calculateTotalHours = calculateTotalHours;
 TimeEntrySchema.methods.completeShift = completeShift;
 
-export type TimeEntry = TimeEntryMethods;
+// Type qui combine le document et les méthodes
+export type TimeEntryDocumentWithMethods = TimeEntryDocument & TimeEntryMethods;
 
-let TimeEntryModel: Model<TimeEntryDocument>;
+let TimeEntryModel: Model<TimeEntryDocument, {}, TimeEntryMethods>;
 
 if (models.TimeEntry) {
-  TimeEntryModel = models.TimeEntry as Model<TimeEntryDocument>;
+  TimeEntryModel = models.TimeEntry as any;
 } else {
-  TimeEntryModel = model<TimeEntryDocument>('TimeEntry', TimeEntrySchema);
+  // @ts-ignore - Mongoose type inference issues with methods
+  TimeEntryModel = model('TimeEntry', TimeEntrySchema);
 }
 
 if (!TimeEntryModel) {

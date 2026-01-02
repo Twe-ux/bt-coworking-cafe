@@ -4,11 +4,12 @@ import { Icon } from "@iconify/react";
 interface Reservation {
   _id: string;
   spaceType: string;
-  date: Date;
+  date: string;
   startTime?: string;
   endTime?: string;
   numberOfPeople: number;
-  status: string;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  paymentStatus: string;
   user: {
     name: string;
     email: string;

@@ -151,7 +151,7 @@ export default function BookingPage() {
   }
   return (
     <>
-      <PageTitle title="Réserver un espace" currentPage="Réservation" />
+      <PageTitle title="Réserver un espace" />
 
       <section className="booking-selection py-5">
         <div className="container">

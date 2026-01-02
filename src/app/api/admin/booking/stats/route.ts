@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    logger.error("Error fetching booking stats:", { error });
+    logger.error("Error fetching booking stats:", { data: error });
     return NextResponse.json(
       { error: "Erreur lors de la récupération des statistiques" },
       { status: 500 }

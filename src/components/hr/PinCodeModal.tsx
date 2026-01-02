@@ -47,7 +47,7 @@ export default function PinCodeModal({
   };
 
   return (
-    <Modal show={show} onHide={handleHide} centered size="md">
+    <Modal show={show} onHide={handleHide} centered size="sm">
       <Modal.Header closeButton className="border-0 pb-0">
         <Modal.Title className="w-100 text-center fs-5 fw-bold">
           Commencer le pointage

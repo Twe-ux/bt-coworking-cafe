@@ -150,8 +150,8 @@ export async function POST(request: NextRequest) {
               month: "long",
               year: "numeric",
             }),
-            startTime: reservation.startTime,
-            endTime: reservation.endTime,
+            startTime: reservation.startTime || "",
+            endTime: reservation.endTime || "",
             numberOfPeople: reservation.numberOfPeople,
             totalPrice: reservation.totalPrice,
             confirmationNumber: reservation.confirmationNumber,
@@ -161,14 +161,16 @@ export async function POST(request: NextRequest) {
 
           logger.info("Confirmation email sent for new reservation", {
             component: "API /admin/reservations POST",
-            reservationId: reservation._id,
-            email: emailTo,
+            data: {
+              reservationId: reservation._id,
+              email: emailTo,
+            }
           });
         }
       } catch (emailError) {
         logger.error("Failed to send confirmation email for new reservation", {
           component: "API /admin/reservations POST",
-          error: emailError,
+          data: emailError,
         });
         // Don't fail the request if email fails
       }
@@ -207,17 +209,21 @@ export async function POST(request: NextRequest) {
 
               await globalConfig.save();
               logger.info("Fermeture exceptionnelle créée automatiquement lors de la création", {
-                reservationId: reservation._id,
-                date: reservation.date,
-                timeRange: `${reservation.startTime} - ${reservation.endTime}`,
+                data: {
+                  reservationId: reservation._id,
+                  date: reservation.date,
+                  timeRange: `${reservation.startTime} - ${reservation.endTime}`,
+                }
               });
             }
           }
         } catch (closureError) {
           // Log l'erreur mais ne pas faire échouer la création de réservation
           logger.error("Erreur lors de la création de la fermeture exceptionnelle", {
-            error: closureError,
-            reservationId: reservation._id,
+            data: {
+              error: closureError,
+              reservationId: reservation._id,
+            }
           });
         }
       }
@@ -305,11 +311,11 @@ export async function PATCH(request: NextRequest) {
           "event-space": "Espace événementiel",
         };
 
-        const emailTo = reservation.contactEmail || reservation.user?.email;
+        const emailTo = reservation.contactEmail || session.user.email;
 
         if (emailTo) {
           await sendReservationConfirmed(emailTo, {
-            name: reservation.contactName || reservation.user?.name || "Client",
+            name: reservation.contactName || session.user.name || "Client",
             spaceName: spaceTypeLabels[reservation.spaceType] || reservation.spaceType,
             date: new Date(reservation.date).toLocaleDateString("fr-FR", {
               weekday: "long",
@@ -317,8 +323,8 @@ export async function PATCH(request: NextRequest) {
               month: "long",
               year: "numeric",
             }),
-            startTime: reservation.startTime,
-            endTime: reservation.endTime,
+            startTime: reservation.startTime || "",
+            endTime: reservation.endTime || "",
             numberOfPeople: reservation.numberOfPeople,
             totalPrice: reservation.totalPrice,
             confirmationNumber: reservation.confirmationNumber,
@@ -328,14 +334,16 @@ export async function PATCH(request: NextRequest) {
 
           logger.info("Confirmation email sent", {
             component: "API /admin/reservations PATCH",
-            reservationId: reservation._id,
-            email: emailTo,
+            data: {
+              reservationId: reservation._id,
+              email: emailTo,
+            }
           });
         }
       } catch (emailError) {
         logger.error("Failed to send confirmation email", {
           component: "API /admin/reservations PATCH",
-          error: emailError,
+          data: emailError,
         });
         // Don't fail the request if email fails
       }
@@ -359,11 +367,11 @@ export async function PATCH(request: NextRequest) {
           "event-space": "Espace événementiel",
         };
 
-        const emailTo = reservation.contactEmail || reservation.user?.email;
+        const emailTo = reservation.contactEmail || session.user.email;
 
         if (emailTo) {
           await sendReservationCancelled(emailTo, {
-            name: reservation.contactName || reservation.user?.name || "Client",
+            name: reservation.contactName || session.user.name || "Client",
             spaceName: spaceTypeLabels[reservation.spaceType] || reservation.spaceType,
             date: new Date(reservation.date).toLocaleDateString("fr-FR", {
               weekday: "long",
@@ -371,8 +379,8 @@ export async function PATCH(request: NextRequest) {
               month: "long",
               year: "numeric",
             }),
-            startTime: reservation.startTime,
-            endTime: reservation.endTime,
+            startTime: reservation.startTime || "",
+            endTime: reservation.endTime || "",
             numberOfPeople: reservation.numberOfPeople,
             totalPrice: reservation.totalPrice,
             confirmationNumber: reservation.confirmationNumber,
@@ -380,14 +388,16 @@ export async function PATCH(request: NextRequest) {
 
           logger.info("Cancellation email sent", {
             component: "API /admin/reservations PATCH",
-            reservationId: reservation._id,
-            email: emailTo,
+            data: {
+              reservationId: reservation._id,
+              email: emailTo,
+            }
           });
         }
       } catch (emailError) {
         logger.error("Failed to send cancellation email", {
           component: "API /admin/reservations PATCH",
-          error: emailError,
+          data: emailError,
         });
         // Don't fail the request if email fails
       }

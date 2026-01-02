@@ -83,17 +83,21 @@ export async function PATCH(
 
             await globalConfig.save();
             logger.info("Fermeture exceptionnelle créée automatiquement", {
-              reservationId: reservation._id,
-              date: reservation.date,
-              timeRange: `${reservation.startTime} - ${reservation.endTime}`,
+              data: {
+                reservationId: reservation._id,
+                date: reservation.date,
+                timeRange: `${reservation.startTime} - ${reservation.endTime}`,
+              }
             });
           }
         }
       } catch (closureError) {
         // Log l'erreur mais ne pas faire échouer la mise à jour de réservation
         logger.error("Erreur lors de la création de la fermeture exceptionnelle", {
-          error: closureError,
-          reservationId: reservation._id,
+          data: {
+            error: closureError,
+            reservationId: reservation._id,
+          }
         });
       }
     }

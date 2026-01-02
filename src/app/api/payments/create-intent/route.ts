@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     // If user is authenticated, check ownership
     if (user && booking.user) {
       const bookingUserId = typeof booking.user === 'object' && '_id' in booking.user
-        ? booking.user._id.toString()
+        ? (booking.user._id as unknown as string).toString()
         : booking.user.toString();
 
       if (bookingUserId !== user.id) {

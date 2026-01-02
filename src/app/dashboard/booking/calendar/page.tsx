@@ -22,8 +22,8 @@ interface Reservation {
   };
   spaceType: string;
   date: string;
-  startTime: string;
-  endTime: string;
+  startTime?: string;
+  endTime?: string;
   numberOfPeople: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
@@ -39,7 +39,18 @@ interface SpaceConfiguration {
     hourly: number;
     daily: number;
     perPerson: boolean;
+    maxHoursBeforeDaily?: number;
+    dailyRatePerPerson?: number;
+    tiers?: Array<{
+      minPeople: number;
+      maxPeople: number;
+      hourlyRate: number;
+      dailyRate: number;
+      extraPersonHourly?: number;
+      extraPersonDaily?: number;
+    }>;
   };
+  requiresQuote?: boolean;
   minCapacity: number;
   maxCapacity: number;
 }
@@ -688,10 +699,10 @@ const CalendarPage = () => {
       const isFullDay = !reservation.startTime || !reservation.endTime;
       const [startHour, startMin] = isFullDay
         ? ["0", "0"]
-        : reservation.startTime.split(":");
+        : (reservation.startTime || "0:0").split(":");
       const [endHour, endMin] = isFullDay
         ? ["23", "59"]
-        : reservation.endTime.split(":");
+        : (reservation.endTime || "23:59").split(":");
 
       const start = new Date(date);
       start.setHours(parseInt(startHour), parseInt(startMin));

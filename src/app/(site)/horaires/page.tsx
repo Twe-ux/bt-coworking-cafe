@@ -88,7 +88,7 @@ export default function HorairesPage() {
   if (loading) {
     return (
       <>
-        <PageTitle title="Horaires d'ouverture" currentPage="Horaires" />
+        <PageTitle title="Horaires d'ouverture" />
         <section className="py-5">
           <div className="container">
             <div className="text-center">
@@ -104,7 +104,7 @@ export default function HorairesPage() {
 
   return (
     <>
-      <PageTitle title="Horaires d'ouverture" currentPage="Horaires" />
+      <PageTitle title="Horaires d'ouverture" />
 
       <section className="horaires-section py-5">
         <div className="container">

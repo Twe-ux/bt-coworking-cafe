@@ -8,7 +8,7 @@ interface Employee {
   _id: string;
   firstName: string;
   lastName: string;
-  employeeRole: string;
+  employeeRole?: string;
   employeeColor?: string;
 }
 

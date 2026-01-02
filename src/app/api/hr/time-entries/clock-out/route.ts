@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-options';
+import { options as authOptions } from '@/lib/auth-options';
 import connectDB from '@/lib/db';
 import { TimeEntry } from '@/models/timeEntry';
 

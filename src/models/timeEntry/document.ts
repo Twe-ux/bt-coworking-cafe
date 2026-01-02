@@ -22,7 +22,7 @@ export interface TimeEntryDocument extends Document {
 }
 
 /** Schema pour valider les objets TimeEntry dans la base de données */
-export const TimeEntrySchema = new Schema<TimeEntryDocument>(
+export const TimeEntrySchema = new Schema(
   {
     employeeId: {
       type: Schema.Types.ObjectId,

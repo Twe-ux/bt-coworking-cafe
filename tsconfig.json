@@ -29,5 +29,5 @@
     ".next/types/**/*.ts",
     "src/components/site/AhrefsWebAnalytics.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "tmp_for_planning"]
 }

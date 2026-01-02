@@ -36,7 +36,7 @@ export async function GET(
       data: space,
     });
   } catch (error) {
-    logger.error("Error fetching space:", { error });
+    logger.error("Error fetching space:", { data: error });
     return NextResponse.json(
       { error: "Erreur lors de la récupération de l'espace" },
       { status: 500 }
@@ -75,14 +75,14 @@ export async function PATCH(
       return NextResponse.json({ error: "Espace non trouvé" }, { status: 404 });
     }
 
-    logger.info("Space updated:", { spaceId: id, spaceType: updatedSpace.spaceType });
+    logger.info("Space updated:", { data: { spaceId: id, spaceType: updatedSpace.spaceType } });
 
     return NextResponse.json({
       success: true,
       data: updatedSpace,
     });
   } catch (error: any) {
-    logger.error("Error updating space:", { error });
+    logger.error("Error updating space:", { data: error });
 
     // Handle duplicate key error
     if (error.code === 11000) {
@@ -130,14 +130,14 @@ export async function DELETE(
       return NextResponse.json({ error: "Espace non trouvé" }, { status: 404 });
     }
 
-    logger.info("Space deleted:", { spaceId: id, spaceType: deletedSpace.spaceType });
+    logger.info("Space deleted:", { data: { spaceId: id, spaceType: deletedSpace.spaceType } });
 
     return NextResponse.json({
       success: true,
       message: "Espace supprimé avec succès",
     });
   } catch (error) {
-    logger.error("Error deleting space:", { error });
+    logger.error("Error deleting space:", { data: error });
     return NextResponse.json(
       { error: "Erreur lors de la suppression de l'espace" },
       { status: 500 }

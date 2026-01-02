@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
-    let buffer = Buffer.from(bytes);
+    let buffer: Buffer = Buffer.from(bytes);
 
     // Optimiser automatiquement l'image
     if (shouldOptimize(file.type, file.size)) {
@@ -35,8 +35,10 @@ export async function POST(request: NextRequest) {
         const optimized = await optimizeImage(buffer, { folder: 'spaces' });
         buffer = optimized.buffer;
         logger.info('Image optimisée:', {
-          savings: `${optimized.metadata.savings}%`,
-          size: `${(optimized.metadata.size / 1024).toFixed(1)}KB`
+          data: {
+            savings: `${optimized.metadata.savings}%`,
+            size: `${(optimized.metadata.size / 1024).toFixed(1)}KB`
+          }
         });
       } catch (error) {
         logger.warn('Échec de l\'optimisation, upload de l\'image originale');
@@ -52,7 +54,7 @@ export async function POST(request: NextRequest) {
       resource_type: "auto",
     });
 
-    logger.info("Image uploaded to Cloudinary:", { publicId: result.public_id });
+    logger.info("Image uploaded to Cloudinary:", { data: { publicId: result.public_id } });
 
     return NextResponse.json({
       success: true,
@@ -62,7 +64,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    logger.error("Error uploading image:", { error });
+    logger.error("Error uploading image:", { data: error });
     return NextResponse.json(
       { error: "Erreur lors de l'upload de l'image" },
       { status: 500 }

@@ -30,16 +30,26 @@ interface Employee {
   step?: number;
   hourlyRate?: number;
   monthlySalary?: number;
-  clockingCode: string;
-  employeeRole: string;
+  clockingCode?: string;
+  employeeRole?: string;
   isActive: boolean;
   onboardingStatus?: {
+    step1Completed?: boolean;
+    step2Completed?: boolean;
+    step3Completed?: boolean;
+    step4Completed?: boolean;
     contractGenerated: boolean;
     contractGeneratedAt?: Date;
     dpaeCompleted: boolean;
     dpaeCompletedAt?: Date;
+    medicalVisitCompleted?: boolean;
+    medicalVisitCompletedAt?: Date;
+    mutuelleCompleted?: boolean;
+    mutuelleCompletedAt?: Date;
     bankDetailsProvided: boolean;
     bankDetailsProvidedAt?: Date;
+    registerCompleted?: boolean;
+    registerCompletedAt?: Date;
     contractSent: boolean;
     contractSentAt?: Date;
   };
@@ -51,13 +61,13 @@ interface Employee {
     };
   };
   availability?: {
-    monday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    tuesday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    wednesday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    thursday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    friday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    saturday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    sunday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    monday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    tuesday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    wednesday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    thursday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    friday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    saturday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    sunday?: { available: boolean; slots: Array<{ start: string; end: string }> };
   };
 }
 
@@ -254,23 +264,23 @@ export default function ContractTemplateCDI({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             onboardingStatus: {
-              step1Completed: employee.onboardingStatus.step1Completed || false,
-              step2Completed: employee.onboardingStatus.step2Completed || false,
-              step3Completed: employee.onboardingStatus.step3Completed || false,
+              step1Completed: employee.onboardingStatus?.step1Completed || false,
+              step2Completed: employee.onboardingStatus?.step2Completed || false,
+              step3Completed: employee.onboardingStatus?.step3Completed || false,
               step4Completed: true,
-              dpaeCompleted: employee.onboardingStatus.dpaeCompleted || false,
-              dpaeCompletedAt: employee.onboardingStatus.dpaeCompletedAt,
-              medicalVisitCompleted: employee.onboardingStatus.medicalVisitCompleted || false,
-              medicalVisitCompletedAt: employee.onboardingStatus.medicalVisitCompletedAt,
-              mutuelleCompleted: employee.onboardingStatus.mutuelleCompleted || false,
-              mutuelleCompletedAt: employee.onboardingStatus.mutuelleCompletedAt,
-              bankDetailsProvided: employee.onboardingStatus.bankDetailsProvided || false,
-              bankDetailsProvidedAt: employee.onboardingStatus.bankDetailsProvidedAt,
-              registerCompleted: employee.onboardingStatus.registerCompleted || false,
-              registerCompletedAt: employee.onboardingStatus.registerCompletedAt,
-              contractGenerated: employee.onboardingStatus.contractGenerated || true,
-              contractGeneratedAt: employee.onboardingStatus.contractGeneratedAt || new Date(),
-              contractSent: employee.onboardingStatus.contractSent || false,
+              dpaeCompleted: employee.onboardingStatus?.dpaeCompleted || false,
+              dpaeCompletedAt: employee.onboardingStatus?.dpaeCompletedAt,
+              medicalVisitCompleted: employee.onboardingStatus?.medicalVisitCompleted || false,
+              medicalVisitCompletedAt: employee.onboardingStatus?.medicalVisitCompletedAt,
+              mutuelleCompleted: employee.onboardingStatus?.mutuelleCompleted || false,
+              mutuelleCompletedAt: employee.onboardingStatus?.mutuelleCompletedAt,
+              bankDetailsProvided: employee.onboardingStatus?.bankDetailsProvided || false,
+              bankDetailsProvidedAt: employee.onboardingStatus?.bankDetailsProvidedAt,
+              registerCompleted: employee.onboardingStatus?.registerCompleted || false,
+              registerCompletedAt: employee.onboardingStatus?.registerCompletedAt,
+              contractGenerated: employee.onboardingStatus?.contractGenerated || true,
+              contractGeneratedAt: employee.onboardingStatus?.contractGeneratedAt || new Date(),
+              contractSent: employee.onboardingStatus?.contractSent || false,
             }
           })
         });
@@ -347,23 +357,23 @@ export default function ContractTemplateCDI({
       if (employee._id) {
         const updatePayload = {
           onboardingStatus: {
-            step1Completed: employee.onboardingStatus.step1Completed || false,
-            step2Completed: employee.onboardingStatus.step2Completed || false,
-            step3Completed: employee.onboardingStatus.step3Completed || false,
+            step1Completed: employee.onboardingStatus?.step1Completed || false,
+            step2Completed: employee.onboardingStatus?.step2Completed || false,
+            step3Completed: employee.onboardingStatus?.step3Completed || false,
             step4Completed: true,
-            dpaeCompleted: employee.onboardingStatus.dpaeCompleted || false,
-            dpaeCompletedAt: employee.onboardingStatus.dpaeCompletedAt,
-            medicalVisitCompleted: employee.onboardingStatus.medicalVisitCompleted || false,
-            medicalVisitCompletedAt: employee.onboardingStatus.medicalVisitCompletedAt,
-            mutuelleCompleted: employee.onboardingStatus.mutuelleCompleted || false,
-            mutuelleCompletedAt: employee.onboardingStatus.mutuelleCompletedAt,
-            bankDetailsProvided: employee.onboardingStatus.bankDetailsProvided || false,
-            bankDetailsProvidedAt: employee.onboardingStatus.bankDetailsProvidedAt,
-            registerCompleted: employee.onboardingStatus.registerCompleted || false,
-            registerCompletedAt: employee.onboardingStatus.registerCompletedAt,
+            dpaeCompleted: employee.onboardingStatus?.dpaeCompleted || false,
+            dpaeCompletedAt: employee.onboardingStatus?.dpaeCompletedAt,
+            medicalVisitCompleted: employee.onboardingStatus?.medicalVisitCompleted || false,
+            medicalVisitCompletedAt: employee.onboardingStatus?.medicalVisitCompletedAt,
+            mutuelleCompleted: employee.onboardingStatus?.mutuelleCompleted || false,
+            mutuelleCompletedAt: employee.onboardingStatus?.mutuelleCompletedAt,
+            bankDetailsProvided: employee.onboardingStatus?.bankDetailsProvided || false,
+            bankDetailsProvidedAt: employee.onboardingStatus?.bankDetailsProvidedAt,
+            registerCompleted: employee.onboardingStatus?.registerCompleted || false,
+            registerCompletedAt: employee.onboardingStatus?.registerCompletedAt,
             contractGenerated: true,
             contractGeneratedAt: new Date(),
-            contractSent: employee.onboardingStatus.contractSent || false,
+            contractSent: employee.onboardingStatus?.contractSent || false,
           }
         };
 

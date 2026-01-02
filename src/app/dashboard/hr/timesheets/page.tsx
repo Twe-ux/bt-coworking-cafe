@@ -611,13 +611,13 @@ export default function TimesheetsPage() {
                                   style={{ cursor: "pointer", textDecoration: "underline" }}
                                   onClick={() =>
                                     handleCellClick(
-                                      `${row.shift1._id}-clockIn`,
-                                      row.shift1.clockIn,
-                                      row.shift1.date
+                                      `${row.shift1!._id}-clockIn`,
+                                      row.shift1!.clockIn,
+                                      row.shift1!.date
                                     )
                                   }
                                 >
-                                  {formatTimeFR(row.shift1.clockIn)}
+                                  {formatTimeFR(row.shift1!.clockIn)}
                                 </span>
                               )}
                               <span>-</span>
@@ -653,13 +653,13 @@ export default function TimesheetsPage() {
                                   style={{ cursor: "pointer", textDecoration: "underline" }}
                                   onClick={() =>
                                     handleCellClick(
-                                      `${row.shift1._id}-clockOut`,
-                                      row.shift1.clockOut!,
-                                      row.shift1.date
+                                      `${row.shift1!._id}-clockOut`,
+                                      row.shift1!.clockOut!,
+                                      row.shift1!.date
                                     )
                                   }
                                 >
-                                  {formatTimeFR(row.shift1.clockOut)}
+                                  {formatTimeFR(row.shift1!.clockOut!)}
                                 </span>
                               ) : (
                                 <Badge bg="warning" style={{ fontSize: "11px" }}>
@@ -708,13 +708,13 @@ export default function TimesheetsPage() {
                                   style={{ cursor: "pointer", textDecoration: "underline" }}
                                   onClick={() =>
                                     handleCellClick(
-                                      `${row.shift2._id}-clockIn`,
-                                      row.shift2.clockIn,
-                                      row.shift2.date
+                                      `${row.shift2!._id}-clockIn`,
+                                      row.shift2!.clockIn,
+                                      row.shift2!.date
                                     )
                                   }
                                 >
-                                  {formatTimeFR(row.shift2.clockIn)}
+                                  {formatTimeFR(row.shift2!.clockIn)}
                                 </span>
                               )}
                               <span>-</span>
@@ -750,13 +750,13 @@ export default function TimesheetsPage() {
                                   style={{ cursor: "pointer", textDecoration: "underline" }}
                                   onClick={() =>
                                     handleCellClick(
-                                      `${row.shift2._id}-clockOut`,
-                                      row.shift2.clockOut!,
-                                      row.shift2.date
+                                      `${row.shift2!._id}-clockOut`,
+                                      row.shift2!.clockOut!,
+                                      row.shift2!.date
                                     )
                                   }
                                 >
-                                  {formatTimeFR(row.shift2.clockOut)}
+                                  {formatTimeFR(row.shift2!.clockOut!)}
                                 </span>
                               ) : (
                                 <Badge bg="warning" style={{ fontSize: "11px" }}>

@@ -103,8 +103,8 @@ export default function BookingSummaryPage() {
     // Load selected services from sessionStorage
     const storedServices = sessionStorage.getItem("selectedServices");
     if (storedServices) {
-      const servicesArray = JSON.parse(storedServices);
-      const servicesMap = new Map(servicesArray);
+      const servicesArray = JSON.parse(storedServices) as [string, SelectedService][];
+      const servicesMap = new Map<string, SelectedService>(servicesArray);
       setSelectedServices(servicesMap);
     }
 

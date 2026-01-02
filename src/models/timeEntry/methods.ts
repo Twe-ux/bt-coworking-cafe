@@ -25,7 +25,7 @@ export function calculateTotalHours(this: TimeEntryDocument): number {
 /**
  * Termine le shift en cours (clock-out)
  */
-export async function completeShift(this: TimeEntryDocument): Promise<void> {
+export async function completeShift(this: TimeEntryDocument & TimeEntryMethods): Promise<void> {
   if (this.status === 'completed') {
     throw new Error('Ce shift est déjà terminé');
   }

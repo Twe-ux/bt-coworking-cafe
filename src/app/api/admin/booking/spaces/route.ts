@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       data: spaces,
     });
   } catch (error) {
-    logger.error("Error fetching spaces:", { error });
+    logger.error("Error fetching spaces:", { data: error });
     return NextResponse.json(
       { error: "Erreur lors de la récupération des espaces" },
       { status: 500 }
@@ -63,14 +63,14 @@ export async function POST(request: NextRequest) {
     const newSpace = new SpaceConfiguration(body);
     await newSpace.save();
 
-    logger.info("Space created:", { spaceId: newSpace._id, spaceType: newSpace.spaceType });
+    logger.info("Space created:", { data: { spaceId: newSpace._id, spaceType: newSpace.spaceType } });
 
     return NextResponse.json({
       success: true,
       data: newSpace,
     });
   } catch (error: any) {
-    logger.error("Error creating space:", { error });
+    logger.error("Error creating space:", { data: error });
 
     // Handle duplicate key error
     if (error.code === 11000) {

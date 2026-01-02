@@ -10,19 +10,19 @@ interface Employee {
   lastName: string;
   contractualHours: number;
   onboardingStatus: {
-    step1Completed: boolean;
-    step2Completed: boolean;
-    step3Completed: boolean;
-    step4Completed: boolean;
-    dpaeCompleted: boolean;
+    step1Completed?: boolean;
+    step2Completed?: boolean;
+    step3Completed?: boolean;
+    step4Completed?: boolean;
+    dpaeCompleted?: boolean;
     dpaeCompletedAt?: Date;
-    medicalVisitCompleted: boolean;
+    medicalVisitCompleted?: boolean;
     medicalVisitCompletedAt?: Date;
-    mutuelleCompleted: boolean;
+    mutuelleCompleted?: boolean;
     mutuelleCompletedAt?: Date;
-    bankDetailsProvided: boolean;
+    bankDetailsProvided?: boolean;
     bankDetailsProvidedAt?: Date;
-    registerCompleted: boolean;
+    registerCompleted?: boolean;
     registerCompletedAt?: Date;
   };
   workSchedule?: {
@@ -33,13 +33,13 @@ interface Employee {
     };
   };
   availability?: {
-    monday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    tuesday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    wednesday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    thursday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    friday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    saturday: { available: boolean; slots: Array<{ start: string; end: string }> };
-    sunday: { available: boolean; slots: Array<{ start: string; end: string }> };
+    monday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    tuesday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    wednesday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    thursday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    friday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    saturday?: { available: boolean; slots: Array<{ start: string; end: string }> };
+    sunday?: { available: boolean; slots: Array<{ start: string; end: string }> };
   };
 }
 
@@ -177,7 +177,7 @@ export default function OnboardingWizard({
       .map(day => {
         const schedule = weeklySchedule[day as keyof typeof weeklySchedule];
         const slotsText = schedule.slots
-          .map(slot => `${slot.start} - ${slot.end}`)
+          .map((slot: { start: string; end: string }) => `${slot.start} - ${slot.end}`)
           .join(' et ');
         return `${dayNames[day]}: ${slotsText}`;
       })
@@ -465,7 +465,7 @@ export default function OnboardingWizard({
                       <td>
                         {schedule.available && schedule.slots.length > 0 ? (
                           <span>
-                            {schedule.slots.map((slot, idx) => (
+                            {schedule.slots.map((slot: { start: string; end: string }, idx: number) => (
                               <div key={idx}>{slot.start} - {slot.end}</div>
                             ))}
                           </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react";
-import { Form, Alert } from "react-bootstrap";
+import { Form, Alert, Badge } from "react-bootstrap";
 import { EmployeeAvailability } from "../types";
 
 interface Step3PlanningProps {

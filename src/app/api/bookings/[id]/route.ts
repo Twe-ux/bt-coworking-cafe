@@ -288,6 +288,13 @@ export async function DELETE(
 
     // Check cancellation policy (24 hours before)
     if (!isAdminOrStaff) {
+      if (!booking.startTime) {
+        return NextResponse.json(
+          { success: false, error: 'Booking has no start time' },
+          { status: 400 }
+        );
+      }
+
       const bookingDateTime = new Date(booking.date);
       const [hours, minutes] = booking.startTime.split(':').map(Number);
       bookingDateTime.setHours(hours, minutes);

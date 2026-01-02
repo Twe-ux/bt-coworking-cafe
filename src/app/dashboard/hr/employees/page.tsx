@@ -54,6 +54,17 @@ interface Employee {
     weeklyDistribution: string;
     timeSlots: string;
   };
+  availability?: {
+    monday?: AvailabilityDay;
+    tuesday?: AvailabilityDay;
+    wednesday?: AvailabilityDay;
+    thursday?: AvailabilityDay;
+    friday?: AvailabilityDay;
+    saturday?: AvailabilityDay;
+    sunday?: AvailabilityDay;
+  };
+  clockingCode?: string;
+  employeeColor?: string;
 }
 
 interface TimeSlot {
@@ -1538,7 +1549,7 @@ export default function EmployeesPage() {
                       type="number"
                       min="1"
                       value={selectedEmployee.step || ''}
-                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, step: parseInt(e.target.value) || undefined })}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, step: parseInt(e.target.value) || 0 })}
                     />
                   </Form.Group>
                 </Col>
@@ -1550,7 +1561,7 @@ export default function EmployeesPage() {
                       step="0.01"
                       min="0"
                       value={selectedEmployee.hourlyRate || ''}
-                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, hourlyRate: parseFloat(e.target.value) || undefined })}
+                      onChange={(e) => setSelectedEmployee({ ...selectedEmployee, hourlyRate: parseFloat(e.target.value) || 0 })}
                     />
                   </Form.Group>
                 </Col>

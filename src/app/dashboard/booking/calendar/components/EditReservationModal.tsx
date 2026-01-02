@@ -9,8 +9,8 @@ interface Reservation {
   };
   spaceType: string;
   date: string;
-  startTime: string;
-  endTime: string;
+  startTime?: string;
+  endTime?: string;
   numberOfPeople: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
