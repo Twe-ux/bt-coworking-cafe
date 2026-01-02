@@ -151,6 +151,13 @@ export const MENU_ITEMS: MenuItemType[] = [
     ],
   },
   {
+    key: "clocking",
+    label: "Pointage",
+    icon: "ri:time-line",
+    roles: ["staff"],
+    url: "/dashboard/hr/clocking",
+  },
+  {
     key: "hr",
     label: "Ressources Humaines",
     icon: "ri:user-settings-line",

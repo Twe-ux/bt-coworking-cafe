@@ -9,8 +9,9 @@ interface Employee {
   _id: string;
   firstName: string;
   lastName: string;
-  employeeRole: string;
-  contractualHours: number;
+  employeeRole?: string;
+  contractualHours?: number;
+  employeeColor?: string;
 }
 
 interface Shift {
@@ -20,15 +21,27 @@ interface Shift {
     firstName: string;
     lastName: string;
     employeeRole: string;
-  };
+  } | string;
   date: string;
   startTime: string;
   endTime: string;
 }
 
+interface TimeEntry {
+  _id: string;
+  employeeId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  } | string;
+  date: string;
+  totalHours?: number;
+}
+
 interface EmployeeMonthlyStatsProps {
   employees: Employee[];
   shifts: Shift[];
+  timeEntries?: TimeEntry[];
   currentDate: Date;
 }
 
@@ -47,10 +60,15 @@ const EMPLOYEE_COLORS = [
 export default function EmployeeMonthlyStats({
   employees,
   shifts,
+  timeEntries = [],
   currentDate,
 }: EmployeeMonthlyStatsProps) {
   // Get employee color
   const getEmployeeColor = (employeeId: string) => {
+    const employee = employees.find((emp) => emp._id === employeeId);
+    if (employee?.employeeColor) {
+      return employee.employeeColor;
+    }
     const index = employees.findIndex((emp) => emp._id === employeeId);
     return EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length];
   };
@@ -64,7 +82,8 @@ export default function EmployeeMonthlyStats({
   };
 
   // Calculate monthly contractual hours (weekly hours × 4.33)
-  const calculateContractualMonthlyHours = (weeklyHours: number) => {
+  const calculateContractualMonthlyHours = (weeklyHours?: number) => {
+    if (!weeklyHours) return null;
     const totalMinutes = Math.round(weeklyHours * 4.33 * 60);
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
@@ -77,7 +96,8 @@ export default function EmployeeMonthlyStats({
     const month = currentDate.getMonth();
 
     return shifts.filter((shift) => {
-      if (shift.employeeId._id !== employeeId) return false;
+      const shiftEmpId = typeof shift.employeeId === 'string' ? shift.employeeId : shift.employeeId._id;
+      if (shiftEmpId !== employeeId) return false;
 
       // Parse shift date and compare year/month/day only
       const shiftDate = new Date(shift.date);
@@ -85,6 +105,24 @@ export default function EmployeeMonthlyStats({
       const shiftMonth = shiftDate.getMonth();
 
       return shiftYear === year && shiftMonth === month;
+    });
+  };
+
+  // Get all time entries for an employee in the current month
+  const getEmployeeMonthTimeEntries = (employeeId: string) => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    return timeEntries.filter((entry) => {
+      const entryEmpId = typeof entry.employeeId === 'string' ? entry.employeeId : entry.employeeId._id;
+      if (entryEmpId !== employeeId) return false;
+
+      // Parse entry date and compare year/month only
+      const entryDate = new Date(entry.date);
+      const entryYear = entryDate.getFullYear();
+      const entryMonth = entryDate.getMonth();
+
+      return entryYear === year && entryMonth === month;
     });
   };
 
@@ -99,46 +137,70 @@ export default function EmployeeMonthlyStats({
     });
 
     const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
+    const minutes = Math.round(totalMinutes % 60);
     return `${hours}:${minutes.toString().padStart(2, "0")}`;
   };
 
-  // Calculate actual hours (from clocking - not implemented yet)
+  // Calculate actual hours (from time entries)
   const calculateActualHours = (employeeId: string) => {
-    // TODO: Will be calculated from time entries once clocking system is implemented
-    return "0:00";
+    const monthTimeEntries = getEmployeeMonthTimeEntries(employeeId);
+    let totalMinutes = 0;
+
+    monthTimeEntries.forEach((entry) => {
+      if (entry.totalHours) {
+        totalMinutes += entry.totalHours * 60;
+      }
+    });
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = Math.round(totalMinutes % 60);
+    return `${hours}:${minutes.toString().padStart(2, "0")}`;
   };
 
-  // Calculate projected hours (actual + remaining planned)
+  // Calculate projected hours (actual for past days + planned for future days)
   const calculateProjectedHours = (employeeId: string) => {
     const monthShifts = getEmployeeMonthShifts(employeeId);
+    const monthTimeEntries = getEmployeeMonthTimeEntries(employeeId);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let actualMinutes = 0; // TODO: Get from time entries
-    let remainingPlannedMinutes = 0;
+    let totalMinutes = 0;
 
+    // Pour chaque shift du mois
     monthShifts.forEach((shift) => {
       const shiftDate = new Date(shift.date);
       shiftDate.setHours(0, 0, 0, 0);
 
-      // If shift is today or in the future, add to remaining planned
-      if (shiftDate >= today) {
+      if (shiftDate < today) {
+        // Pour les jours passés : utiliser les heures réalisées si elles existent
+        const dateStr = shiftDate.toISOString().split("T")[0];
+        const entriesForDate = monthTimeEntries.filter((entry) => {
+          const entryDateStr = new Date(entry.date).toISOString().split("T")[0];
+          return entryDateStr === dateStr;
+        });
+
+        // Compter les heures réalisées pour ce jour
+        entriesForDate.forEach((entry) => {
+          if (entry.totalHours) {
+            totalMinutes += entry.totalHours * 60;
+          }
+        });
+      } else {
+        // Pour aujourd'hui et le futur : utiliser les heures planifiées
         const durationInHours = calculateDuration(shift.startTime, shift.endTime);
-        remainingPlannedMinutes += durationInHours * 60;
+        totalMinutes += durationInHours * 60;
       }
     });
 
-    const totalMinutes = actualMinutes + remainingPlannedMinutes;
     const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
+    const minutes = Math.round(totalMinutes % 60);
     return `${hours}:${minutes.toString().padStart(2, "0")}`;
   };
 
   return (
     <div className="mt-4">
       <div className="d-flex align-items-center mb-3">
-        <Icon icon="eva:calendar-outline" width={24} className="me-2" />
+        <Icon icon="ri:calendar-line" width={24} className="me-2" />
         <h5 className="mb-0 text-capitalize">
           Statistiques Mensuelles - {formatMonthYear()}
         </h5>
@@ -177,14 +239,16 @@ export default function EmployeeMonthlyStats({
                         <small className="text-muted">{employee.employeeRole}</small>
                       </div>
                     </div>
-                    <div className="text-end">
-                      <small className="text-muted d-block" style={{ fontSize: "0.7rem" }}>
-                        Contractuel
-                      </small>
-                      <strong style={{ fontSize: "0.9rem" }}>
-                        {contractualMonthlyHours}
-                      </strong>
-                    </div>
+                    {contractualMonthlyHours && (
+                      <div className="text-end">
+                        <small className="text-muted d-block" style={{ fontSize: "0.7rem" }}>
+                          Contractuel
+                        </small>
+                        <strong style={{ fontSize: "0.9rem" }}>
+                          {contractualMonthlyHours}
+                        </strong>
+                      </div>
+                    )}
                   </div>
 
                   {/* Statistics */}
@@ -196,7 +260,7 @@ export default function EmployeeMonthlyStats({
                     >
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="eva:calendar-outline"
+                          icon="ri:calendar-line"
                           width={20}
                           className="me-2"
                           style={{ color: "#0d6efd" }}
@@ -215,7 +279,7 @@ export default function EmployeeMonthlyStats({
                     >
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="eva:clock-outline"
+                          icon="ri:time-line"
                           width={20}
                           className="me-2"
                           style={{ color: "#10b981" }}
@@ -234,7 +298,7 @@ export default function EmployeeMonthlyStats({
                     >
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="eva:trending-up-outline"
+                          icon="ri:line-chart-line"
                           width={20}
                           className="me-2"
                           style={{ color: "#8b5cf6" }}
