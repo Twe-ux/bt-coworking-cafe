@@ -12,8 +12,12 @@
 
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error(
+// Use a placeholder during build if env var is not set
+// Runtime will fail if actually used without proper key
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_build_placeholder';
+
+if (!process.env.STRIPE_SECRET_KEY && process.env.NODE_ENV !== 'production') {
+  console.warn(
     'STRIPE_SECRET_KEY is not defined. Please add it to your .env.local file.\n' +
     'Get your keys from: https://dashboard.stripe.com/test/apikeys'
   );
@@ -23,10 +27,23 @@ if (!process.env.STRIPE_SECRET_KEY) {
  * Initialize Stripe with the secret key
  * Uses the latest API version
  */
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+export const stripe = new Stripe(STRIPE_SECRET_KEY, {
   apiVersion: '2025-10-29.clover',
   typescript: true,
 });
+
+/**
+ * Validate that Stripe is properly configured
+ * Throws error if used at runtime without proper key
+ */
+function validateStripeConfig(): void {
+  if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_build_placeholder') {
+    throw new Error(
+      'STRIPE_SECRET_KEY is not properly configured. Please add it to your environment variables.\n' +
+      'Get your keys from: https://dashboard.stripe.com/test/apikeys'
+    );
+  }
+}
 
 /**
  * Get Stripe publishable key for client-side usage
@@ -50,6 +67,7 @@ export async function createPaymentIntent(
   customerId?: string,
   captureMethod?: 'automatic' | 'manual'
 ): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount), // Amount in cents
@@ -75,6 +93,7 @@ export async function createPaymentIntent(
 export async function retrievePaymentIntent(
   paymentIntentId: string
 ): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     return paymentIntent;
@@ -90,6 +109,7 @@ export async function retrievePaymentIntent(
 export async function cancelPaymentIntent(
   paymentIntentId: string
 ): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
   try {
     const paymentIntent = await stripe.paymentIntents.cancel(paymentIntentId);
     return paymentIntent;
@@ -106,6 +126,7 @@ export async function capturePaymentIntent(
   paymentIntentId: string,
   amount?: number
 ): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
   try {
     const paymentIntent = await stripe.paymentIntents.capture(paymentIntentId, {
       amount_to_capture: amount ? Math.round(amount) : undefined,
