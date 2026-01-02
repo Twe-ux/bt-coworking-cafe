@@ -165,7 +165,7 @@ export const MENU_ITEMS: MenuItemType[] = [
       {
         key: "hr-planning",
         label: "Planning",
-        url: "/dashboard/hr/planning",
+        url: "/dashboard/hr/schedule",
         parentKey: "hr",
       },
       {
