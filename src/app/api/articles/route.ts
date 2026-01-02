@@ -96,8 +96,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     const user = await getAuthUser();
     if (!user) {

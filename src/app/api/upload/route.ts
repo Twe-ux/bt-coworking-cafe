@@ -6,8 +6,7 @@ import { optimizeImage, shouldOptimize } from '@/lib/image-optimizer';
 // POST /api/upload - Upload image to Cloudinary (admin only)
 export async function POST(request: NextRequest) {
   try {
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -103,8 +102,7 @@ export async function POST(request: NextRequest) {
 // DELETE /api/upload - Delete image from Cloudinary (admin only)
 export async function DELETE(request: NextRequest) {
   try {
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     const { searchParams } = new URL(request.url);
     const publicId = searchParams.get('publicId');

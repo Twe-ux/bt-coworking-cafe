@@ -22,8 +22,7 @@ export async function GET(
 ) {
   try {
     // Check authentication
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     await connectDB();
 
@@ -57,8 +56,7 @@ export async function PATCH(
 ) {
   try {
     // Check authentication
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     await connectDB();
 
@@ -174,8 +172,7 @@ export async function DELETE(
 ) {
   try {
     // Check authentication
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     await connectDB();
 

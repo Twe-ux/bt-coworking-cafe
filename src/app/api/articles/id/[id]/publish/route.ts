@@ -15,9 +15,8 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Check authentication
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    // Check authentication (throws ApiError if not authorized)
+    await requireAuth(['admin', 'staff', 'dev']);
 
     await connectDB();
 

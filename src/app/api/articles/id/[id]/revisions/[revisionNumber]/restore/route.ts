@@ -17,8 +17,7 @@ export async function POST(
 ) {
   try {
     // Check authentication
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     await connectDB();
 
