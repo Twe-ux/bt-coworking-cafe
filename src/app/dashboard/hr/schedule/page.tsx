@@ -4,12 +4,12 @@ import { authOptions } from '@/lib/auth-options';
 import { redirect } from 'next/navigation';
 import connectDB from '@/lib/db';
 import { Employee } from '@/models/employee';
-import EmployeeScheduling from '@/components/hr/EmployeeScheduling';
+import ScheduleWrapper from '@/components/hr/ScheduleWrapper';
 import { Card, Col, Row } from 'react-bootstrap';
 
 export const metadata: Metadata = {
   title: 'Planning Employés',
-  description: 'Gestion du planning hebdomadaire des employés',
+  description: 'Gestion du planning mensuel des employés',
 };
 
 export default async function SchedulePage() {
@@ -24,7 +24,7 @@ export default async function SchedulePage() {
 
   // Récupérer tous les employés actifs
   const employees = await Employee.find({ isActive: true })
-    .select('_id firstName lastName employeeRole')
+    .select('_id firstName lastName employeeRole contractualHours')
     .sort({ firstName: 1, lastName: 1 })
     .lean();
 
@@ -39,7 +39,7 @@ export default async function SchedulePage() {
       <Row>
         <Col xs={12}>
           <div className="page-title-box">
-            <h4 className="page-title">Planning Hebdomadaire</h4>
+            <h4 className="page-title">Planning Mensuel</h4>
           </div>
         </Col>
       </Row>
@@ -59,7 +59,7 @@ export default async function SchedulePage() {
               </Card.Body>
             </Card>
           ) : (
-            <EmployeeScheduling employees={serializedEmployees} />
+            <ScheduleWrapper employees={serializedEmployees} />
           )}
         </Col>
       </Row>

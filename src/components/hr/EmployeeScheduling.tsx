@@ -37,6 +37,8 @@ interface Shift {
 
 interface EmployeeSchedulingProps {
   employees: Employee[];
+  onShiftsChange?: (shifts: Shift[]) => void;
+  onDateChange?: (date: Date) => void;
 }
 
 // Color palette for employees
@@ -53,6 +55,8 @@ const EMPLOYEE_COLORS = [
 
 export default function EmployeeScheduling({
   employees,
+  onShiftsChange,
+  onDateChange,
 }: EmployeeSchedulingProps) {
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [loading, setLoading] = useState(false);
@@ -85,6 +89,20 @@ export default function EmployeeScheduling({
     loadShifts();
     loadShiftTypes();
   }, []);
+
+  // Notify parent component when shifts change
+  useEffect(() => {
+    if (onShiftsChange) {
+      onShiftsChange(shifts);
+    }
+  }, [shifts, onShiftsChange]);
+
+  // Notify parent component when currentDate changes
+  useEffect(() => {
+    if (onDateChange) {
+      onDateChange(currentDate);
+    }
+  }, [currentDate, onDateChange]);
 
   const loadShiftTypes = async () => {
     try {
