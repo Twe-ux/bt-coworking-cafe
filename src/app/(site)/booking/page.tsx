@@ -50,7 +50,7 @@ const spaceTypeToSlug: Record<string, string> = {
   "open-space": "open-space",
   "salle-verriere": "meeting-room-glass",
   "salle-etage": "meeting-room-floor",
-  "evenementiel": "event-space",
+  evenementiel: "event-space",
 };
 
 // Static display data (icons only - features come from DB)
@@ -70,7 +70,7 @@ const spaceDisplayData: Record<string, Partial<DisplaySpace>> = {
     subtitle: "Étage",
     icon: "bi-building",
   },
-  "evenementiel": {
+  evenementiel: {
     title: "Événementiel",
     subtitle: "Grand espace",
     icon: "bi-calendar-event",
@@ -95,14 +95,19 @@ export default function BookingPage() {
             // Determine price display
             let priceFrom = "Sur devis";
             if (!config.requiresQuote) {
-              const lowestPrice = config.pricing.hourly > 0 ? config.pricing.hourly : config.pricing.daily;
+              const lowestPrice =
+                config.pricing.hourly > 0
+                  ? config.pricing.hourly
+                  : config.pricing.daily;
               priceFrom = lowestPrice > 0 ? `${lowestPrice}€/h` : "Sur devis";
             }
 
             // Format capacity
             const capacity =
               config.minCapacity === config.maxCapacity
-                ? `${config.minCapacity} personne${config.minCapacity > 1 ? "s" : ""}`
+                ? `${config.minCapacity} personne${
+                    config.minCapacity > 1 ? "s" : ""
+                  }`
                 : config.maxCapacity > 50
                 ? `Jusqu'à ${config.maxCapacity} personnes`
                 : `${config.minCapacity}-${config.maxCapacity} personnes`;
@@ -153,7 +158,7 @@ export default function BookingPage() {
     <>
       <PageTitle title="Réserver un espace" />
 
-      <section className="booking-selection py-5">
+      <section className="booking-selection py__90">
         <div className="container">
           {/* Progress Bar */}
           <div className="row justify-content-center mb-4">
@@ -175,9 +180,13 @@ export default function BookingPage() {
           {/* Space Type Cards */}
           <div className="row g-4 justify-content-center">
             {spaces.map((space) => (
-              <div key={space.id} className="col-lg-3 col-md-6">
+              <div key={space.id} className="col-lg-3 col-md-6 px-10">
                 <Link
-                  href={space.requiresQuote ? "/contact" : `/booking/${space.id}/new`}
+                  href={
+                    space.requiresQuote
+                      ? "/contact"
+                      : `/booking/${space.id}/new`
+                  }
                   className="text-decoration-none"
                 >
                   <div className="space-card h-100">
@@ -205,7 +214,11 @@ export default function BookingPage() {
                       <div className="card-overlay">
                         <div className="overlay-content">
                           <i className="bi bi-arrow-right-circle"></i>
-                          <span>{space.requiresQuote ? "Demander un devis" : "Réserver"}</span>
+                          <span>
+                            {space.requiresQuote
+                              ? "Demander un devis"
+                              : "Réserver"}
+                          </span>
                         </div>
                       </div>
                     </div>

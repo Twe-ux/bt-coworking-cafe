@@ -4,13 +4,20 @@
     max-height: 350px;
     background-color: #588983;
     padding: 80px 80px;
-    border-radius: 10px;
+    border-radius: 16px;
     transform: translateY(-50%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
     @include breakpoint(xl) {
       padding: 80px 70px;
     }
     @include breakpoint(lg) {
       padding: 25px 35px;
+    }
+    @include breakpoint(sm) {
+      padding: 2rem 2rem;
+      max-width: 95%;
+      margin: 0 auto;
     }
 
     div > form > div {
@@ -28,7 +35,7 @@
     h2 {
       color: var(--grayWhite-clr);
       font-size: 40px;
-      font-weight: 500px;
+      font-weight: 600;
       line-height: 40px;
       max-width: 690px;
       @include breakpoint(xl) {
@@ -67,6 +74,30 @@
     input::placeholder {
       color: var(--pra-clr);
     }
+
+    .input__btn {
+      width: 100%;
+      padding: 23px;
+      border-radius: 12px;
+      color: var(--pra-clr);
+      background-color: var(--main-clr);
+      outline: none;
+      border: 1px solid var(--main-clr);
+      transition: all 0.3s ease;
+
+      &:focus {
+        border-color: var(--btn-clr);
+        box-shadow: 0 0 0 3px rgba(239, 214, 146, 0.2);
+      }
+
+      @include breakpoint(lg) {
+        padding: 20px;
+      }
+      @include breakpoint(sm) {
+        padding: 17px;
+      }
+    }
+
     .common__btn {
       width: 100%;
       background-color: var(--btn-clr);
@@ -74,11 +105,22 @@
       margin-top: 20px;
       padding: 23px;
       justify-content: center;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
       @include breakpoint(lg) {
         padding: 20px;
       }
       @include breakpoint(sm) {
         padding: 17px;
+        margin-top: 0;
       }
     }
   }
