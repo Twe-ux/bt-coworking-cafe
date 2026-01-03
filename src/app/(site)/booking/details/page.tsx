@@ -314,10 +314,9 @@ export default function BookingDetailsPage() {
         <div className="container">
           {/* Main Card */}
           <div className="row justify-content-center">
-            <div className="col-lg-8">
+            <div className="col-lg-10">
               <div
                 className="booking-card"
-                style={{ padding: "1.25rem" }}
                 ref={bookingCardRef}
               >
                 {/* Progress Bar */}
@@ -336,38 +335,21 @@ export default function BookingDetailsPage() {
                   }}
                 />
 
-                <hr
-                  style={{
-                    margin: "0 0 1rem 0",
-                    border: "none",
-                    borderTop: "1px solid #e0e0e0",
-                  }}
-                />
+                <hr className="my-3" style={{ opacity: 0.1 }} />
 
                 {/* Navigation and Title */}
-                <div className="mb-4">
-                  <div className="custom-breadcrumb d-flex justify-content-between align-items-center">
-                    <button
-                      onClick={() => router.back()}
-                      className="breadcrumb-link"
-                      style={{
-                        background: "none",
-                        border: "none",
-                        padding: "0.35rem 0.75rem",
-                      }}
-                    >
-                      <i className="bi bi-arrow-left"></i>
-                      <span>Retour</span>
-                    </button>
-                    <span
-                      className="breadcrumb-current"
-                      style={{ fontSize: "1.1rem", fontWeight: "600" }}
-                    >
-                      Informations de contact
-                    </span>
-                    <div style={{ width: "80px" }}></div>{" "}
-                    {/* Spacer for centering */}
-                  </div>
+                <div className="custom-breadcrumb d-flex justify-content-between align-items-center mb-4">
+                  <button
+                    onClick={() => router.back()}
+                    className="breadcrumb-link"
+                  >
+                    <i className="bi bi-arrow-left"></i>
+                    <span>Retour</span>
+                  </button>
+                  <h1 className="breadcrumb-current m-0">
+                    Informations de contact
+                  </h1>
+                  <div style={{ width: "80px" }}></div>
                 </div>
 
                 {/* Contact Information */}
@@ -451,21 +433,12 @@ export default function BookingDetailsPage() {
                     <div className="col-md-6 mb-4 mb-md-0">
                       <div className="stat-card h-100">
                         <div className="w-100">
-                          <h5
-                            className="mb-3"
-                            style={{
-                              fontSize: "1.1rem",
-                              fontWeight: "700",
-                              color: "var(--main-clr)",
-                            }}
-                          >
-                            Coordonnées
-                          </h5>
+                          <div className="d-flex align-items-center gap-2 mb-4">
+                            <i className="bi bi-person-lines-fill text-success"></i>
+                            <h2 className="h6 mb-0 fw-semibold">Coordonnées</h2>
+                          </div>
                           <div className="mb-3">
-                            <label
-                              className="form-label"
-                              style={{ fontSize: "0.9rem", fontWeight: "500" }}
-                            >
+                            <label className="form-label">
                               Nom complet
                             </label>
                             <input
@@ -479,10 +452,7 @@ export default function BookingDetailsPage() {
                           </div>
 
                           <div className="mb-3">
-                            <label
-                              className="form-label"
-                              style={{ fontSize: "0.9rem", fontWeight: "500" }}
-                            >
+                            <label className="form-label">
                               Email
                             </label>
                             <input
@@ -496,10 +466,7 @@ export default function BookingDetailsPage() {
                           </div>
 
                           <div className="mb-0">
-                            <label
-                              className="form-label"
-                              style={{ fontSize: "0.9rem", fontWeight: "500" }}
-                            >
+                            <label className="form-label">
                               Téléphone
                             </label>
                             <input
@@ -521,16 +488,10 @@ export default function BookingDetailsPage() {
                         <div className="d-flex flex-column h-100">
                           <div className="stat-card flex-grow-1">
                             <div className="w-100">
-                              <h5
-                                className="mb-3"
-                                style={{
-                                  fontSize: "1.1rem",
-                                  fontWeight: "700",
-                                  color: "var(--main-clr)",
-                                }}
-                              >
-                                Informations compte
-                              </h5>
+                              <div className="d-flex align-items-center gap-2 mb-4">
+                                <i className="bi bi-shield-check text-success"></i>
+                                <h2 className="h6 mb-0 fw-semibold">Informations compte</h2>
+                              </div>
 
                               <div className="form-check custom-checkbox mb-3">
                                 <input
@@ -558,13 +519,7 @@ export default function BookingDetailsPage() {
                               {createAccount && (
                                 <div className="ms-4 mb-3">
                                   <div className="mb-3">
-                                    <label
-                                      className="form-label"
-                                      style={{
-                                        fontSize: "0.85rem",
-                                        fontWeight: "500",
-                                      }}
-                                    >
+                                    <label className="form-label small">
                                       Mot de passe
                                     </label>
                                     <input
@@ -576,17 +531,10 @@ export default function BookingDetailsPage() {
                                         setPassword(e.target.value)
                                       }
                                       required={createAccount}
-                                      style={{ fontSize: "0.9rem" }}
                                     />
                                   </div>
                                   <div className="mb-2">
-                                    <label
-                                      className="form-label"
-                                      style={{
-                                        fontSize: "0.85rem",
-                                        fontWeight: "500",
-                                      }}
-                                    >
+                                    <label className="form-label small">
                                       Confirmer le mot de passe
                                     </label>
                                     <input
@@ -598,7 +546,6 @@ export default function BookingDetailsPage() {
                                         setConfirmPassword(e.target.value)
                                       }
                                       required={createAccount}
-                                      style={{ fontSize: "0.9rem" }}
                                     />
                                     {createAccount &&
                                       password &&
@@ -689,13 +636,13 @@ export default function BookingDetailsPage() {
                   {/* Additional Services */}
                   {!servicesLoading && availableServices.length > 0 && (
                     <div className="mb-4">
-                      <label
-                        className="form-label"
-                        style={{ fontSize: "0.9rem", fontWeight: "500" }}
-                      >
-                        Services supplémentaires{" "}
-                        <span className="text-muted">(optionnel)</span>
-                      </label>
+                      <div className="d-flex align-items-center gap-2 mb-3">
+                        <i className="bi bi-plus-circle text-success"></i>
+                        <label className="form-label mb-0 fw-semibold">
+                          Services supplémentaires{" "}
+                          <span className="text-muted fw-normal">(optionnel)</span>
+                        </label>
+                      </div>
 
                       {/* Category Buttons */}
                       <div className="d-flex gap-2 flex-wrap mb-3">
@@ -761,75 +708,77 @@ export default function BookingDetailsPage() {
                                     <div
                                       style={{
                                         fontSize: "0.85rem",
-                                        fontWeight: "500",
+                                        fontWeight: "600",
+                                        marginBottom: "0.25rem"
                                       }}
                                     >
-                                      {service.name}
-                                    </div>
-                                    <div
-                                      style={{
-                                        fontSize: "0.75rem",
-                                        color: "#6c757d",
-                                      }}
-                                    >
-                                      {displayPrice.toFixed(2)}€{" "}
-                                      {service.priceUnit === "per-person"
-                                        ? "/ pers."
-                                        : ""}
-                                      {" · Total: "}
-                                      {totalServicePrice.toFixed(2)}€
+                                      {service.name} · {displayPrice.toFixed(2)}€{" "}
+                                      {service.priceUnit === "per-person" ? "/ pers." : ""}
                                     </div>
                                   </div>
-                                  <div className="d-flex align-items-center gap-2">
-                                    <div
-                                      className="btn-group btn-group-sm"
-                                      role="group"
-                                    >
-                                      <button
-                                        type="button"
-                                        className="btn btn-outline-secondary"
-                                        onClick={() =>
-                                          updateServiceQuantity(
-                                            service._id,
-                                            quantity - 1
-                                          )
-                                        }
-                                        disabled={quantity <= 1}
+                                  <div className="d-flex align-items-center gap-3">
+                                    <div className="d-flex align-items-center gap-2">
+                                      <div
+                                        className="btn-group btn-group-sm"
+                                        role="group"
+                                      >
+                                        <button
+                                          type="button"
+                                          className="btn btn-outline-secondary"
+                                          onClick={() =>
+                                            updateServiceQuantity(
+                                              service._id,
+                                              quantity - 1
+                                            )
+                                          }
+                                          disabled={quantity <= 1}
+                                          style={{
+                                            fontSize: "0.75rem",
+                                            padding: "0.25rem 0.5rem",
+                                          }}
+                                        >
+                                          <i className="bi bi-dash"></i>
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="btn btn-outline-secondary"
+                                          disabled
+                                          style={{
+                                            fontSize: "0.75rem",
+                                            padding: "0.25rem 0.75rem",
+                                            minWidth: "40px",
+                                          }}
+                                        >
+                                          {quantity}
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="btn btn-outline-secondary"
+                                          onClick={() =>
+                                            updateServiceQuantity(
+                                              service._id,
+                                              quantity + 1
+                                            )
+                                          }
+                                          style={{
+                                            fontSize: "0.75rem",
+                                            padding: "0.25rem 0.5rem",
+                                          }}
+                                        >
+                                          <i className="bi bi-plus"></i>
+                                        </button>
+                                      </div>
+                                      <div
                                         style={{
-                                          fontSize: "0.75rem",
-                                          padding: "0.25rem 0.5rem",
+                                          fontSize: "0.875rem",
+                                          fontWeight: "700",
+                                          color: "#3d6661",
+                                          minWidth: "60px",
+                                          textAlign: "right"
                                         }}
                                       >
-                                        <i className="bi bi-dash"></i>
-                                      </button>
-                                      <button
-                                        type="button"
-                                        className="btn btn-outline-secondary"
-                                        disabled
-                                        style={{
-                                          fontSize: "0.75rem",
-                                          padding: "0.25rem 0.75rem",
-                                          minWidth: "40px",
-                                        }}
-                                      >
-                                        {quantity}
-                                      </button>
-                                      <button
-                                        type="button"
-                                        className="btn btn-outline-secondary"
-                                        onClick={() =>
-                                          updateServiceQuantity(
-                                            service._id,
-                                            quantity + 1
-                                          )
-                                        }
-                                        style={{
-                                          fontSize: "0.75rem",
-                                          padding: "0.25rem 0.5rem",
-                                        }}
-                                      >
-                                        <i className="bi bi-plus"></i>
-                                      </button>
+                                        {totalServicePrice.toFixed(2)}€
+                                      </div>
                                     </div>
                                     <button
                                       type="button"
@@ -850,13 +799,13 @@ export default function BookingDetailsPage() {
                   )}
 
                   <div className="mb-4">
-                    <label
-                      className="form-label"
-                      style={{ fontSize: "0.9rem", fontWeight: "500" }}
-                    >
-                      Demandes particulières{" "}
-                      <span className="text-muted">(optionnel)</span>
-                    </label>
+                    <div className="d-flex align-items-center gap-2 mb-2">
+                      <i className="bi bi-chat-left-text text-success"></i>
+                      <label className="form-label mb-0 fw-semibold">
+                        Demandes particulières{" "}
+                        <span className="text-muted fw-normal">(optionnel)</span>
+                      </label>
+                    </div>
                     <textarea
                       className="form-control"
                       rows={4}
@@ -868,58 +817,55 @@ export default function BookingDetailsPage() {
 
                   {/* Price Summary */}
                   {bookingData && selectedServices.size > 0 && (
-                    <div className="alert alert-info">
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span>Tarif de base:</span>
-                        <span className="fw-semibold">
-                          {bookingData.basePrice.toFixed(2)}€
-                        </span>
+                    <div className="price-breakdown">
+                      <div className="price-row">
+                        <span>Tarif de base</span>
+                        <span className="fw-semibold">{bookingData.basePrice.toFixed(2)}€</span>
                       </div>
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span>Services supplémentaires:</span>
-                        <span className="fw-semibold">
-                          {calculateServicesPrice().toFixed(2)}€
-                        </span>
+                      <div className="price-row">
+                        <span>Services supplémentaires</span>
+                        <span className="fw-semibold">{calculateServicesPrice().toFixed(2)}€</span>
                       </div>
-                      <hr className="my-2" />
-                      <div className="d-flex justify-content-between align-items-center">
-                        <span className="fw-bold">Total:</span>
-                        <span className="fw-bold fs-5 text-success">
-                          {getTotalPrice().toFixed(2)}€
-                        </span>
+                      <div className="price-divider"></div>
+                      <div className="price-row total-row">
+                        <span>Total</span>
+                        <span className="total-price">{getTotalPrice().toFixed(2)}€</span>
                       </div>
                     </div>
                   )}
                 </div>
 
                 {/* Continue Button */}
-                <button
-                  className="btn btn-success btn-lg w-100 mt-3"
-                  onClick={handleContinue}
-                  disabled={!isValidForm() || loading}
-                  style={{ fontSize: "0.95rem" }}
-                >
-                  {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2"></span>
-                      Chargement...
-                    </>
-                  ) : (
-                    <>
-                      Voir le récapitulatif
-                      <i className="bi bi-arrow-right ms-2"></i>
-                    </>
-                  )}
-                </button>
-
-                {!isValidForm() && (
-                  <p
-                    className="text-danger text-center mt-2 mb-0 small"
-                    style={{ fontSize: "0.8rem" }}
+                <div className="actions-section mt-4">
+                  <button
+                    className="btn btn-success btn-lg w-100"
+                    onClick={handleContinue}
+                    disabled={!isValidForm() || loading}
+                    style={{
+                      padding: "0.875rem 1.5rem",
+                      fontSize: "0.9375rem",
+                      fontWeight: "600"
+                    }}
                   >
-                    Veuillez remplir tous les champs obligatoires
-                  </p>
-                )}
+                    {loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2"></span>
+                        Chargement...
+                      </>
+                    ) : (
+                      <>
+                        Voir le récapitulatif
+                        <i className="bi bi-arrow-right ms-2"></i>
+                      </>
+                    )}
+                  </button>
+
+                  {!isValidForm() && (
+                    <p className="text-danger text-center mt-3 mb-0 small">
+                      Veuillez remplir tous les champs obligatoires
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -968,6 +914,12 @@ export default function BookingDetailsPage() {
                           ? service.dailyPrice
                           : service.price;
 
+                      const totalServicePrice = isSelected && selected
+                        ? (service.priceUnit === "per-person"
+                          ? displayPrice * (bookingData?.numberOfPeople || 1) * selected.quantity
+                          : displayPrice * selected.quantity)
+                        : displayPrice;
+
                       return (
                         <div
                           key={service._id}
@@ -975,14 +927,14 @@ export default function BookingDetailsPage() {
                             isSelected ? "border-success bg-light" : ""
                           }`}
                         >
-                          <div className="d-flex align-items-start">
+                          <div className="d-flex align-items-start gap-3">
                             <input
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => toggleService(service)}
                               id={`service-modal-${service._id}`}
-                              className="form-check-input mt-1 me-3"
-                              style={{ cursor: "pointer" }}
+                              className="form-check-input mt-1"
+                              style={{ cursor: "pointer", flexShrink: 0 }}
                             />
                             <label
                               htmlFor={`service-modal-${service._id}`}
@@ -990,17 +942,17 @@ export default function BookingDetailsPage() {
                               style={{ cursor: "pointer" }}
                             >
                               <div className="d-flex justify-content-between align-items-start">
-                                <div>
+                                <div className="flex-grow-1">
                                   <div
-                                    className="fw-semibold"
-                                    style={{ fontSize: "0.9rem" }}
+                                    className="fw-semibold mb-1"
+                                    style={{ fontSize: "0.9375rem" }}
                                   >
                                     {service.name}
                                   </div>
                                   {service.description && (
                                     <div
                                       className="text-muted"
-                                      style={{ fontSize: "0.8rem" }}
+                                      style={{ fontSize: "0.8125rem" }}
                                     >
                                       {service.description}
                                     </div>
@@ -1009,13 +961,11 @@ export default function BookingDetailsPage() {
                                 <div
                                   className="text-nowrap ms-3"
                                   style={{
-                                    fontSize: "0.9rem",
-                                    fontWeight: "600",
+                                    fontSize: "1rem",
+                                    fontWeight: "700",
                                   }}
                                 >
-                                  {displayPrice.toFixed(2)}€
-                                  {service.priceUnit === "per-person" &&
-                                    "/pers"}
+                                  {totalServicePrice.toFixed(2)}€
                                   {isDaily &&
                                     service.dailyPrice !== undefined && (
                                       <div
