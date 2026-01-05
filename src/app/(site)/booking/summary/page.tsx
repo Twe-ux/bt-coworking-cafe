@@ -34,6 +34,7 @@ interface AdditionalService {
   price: number;
   dailyPrice?: number;
   priceUnit: "per-person" | "flat-rate";
+  vatRate: number;
   icon?: string;
 }
 
@@ -83,6 +84,20 @@ export default function BookingSummaryPage() {
   const [daysUntilBooking, setDaysUntilBooking] = useState<number>(0);
   const [depositAmount, setDepositAmount] = useState<number>(0);
   const [spaceConfig, setSpaceConfig] = useState<any>(null);
+  const [showTTC, setShowTTC] = useState(true);
+
+  // Fonction pour convertir un prix entre TTC et HT
+  const convertPrice = (
+    priceTTC: number,
+    vatRate: number,
+    toTTC: boolean
+  ): number => {
+    if (toTTC) {
+      return priceTTC; // Already TTC
+    } else {
+      return priceTTC / (1 + vatRate / 100); // Convert to HT
+    }
+  };
 
   useEffect(() => {
     // Load booking data from sessionStorage
@@ -97,13 +112,18 @@ export default function BookingSummaryPage() {
     // Calculate days until booking
     const now = new Date();
     const bookingDate = new Date(data.date);
-    const days = Math.ceil((bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    const days = Math.ceil(
+      (bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+    );
     setDaysUntilBooking(days);
 
     // Load selected services from sessionStorage
     const storedServices = sessionStorage.getItem("selectedServices");
     if (storedServices) {
-      const servicesArray = JSON.parse(storedServices) as [string, SelectedService][];
+      const servicesArray = JSON.parse(storedServices) as [
+        string,
+        SelectedService
+      ][];
       const servicesMap = new Map<string, SelectedService>(servicesArray);
       setSelectedServices(servicesMap);
     }
@@ -113,30 +133,41 @@ export default function BookingSummaryPage() {
       try {
         // Convert URL slug to DB spaceType
         const dbSpaceType = slugToSpaceType[data.spaceType] || data.spaceType;
-        console.log('🔍 Fetching space config for:', data.spaceType, '→ DB:', dbSpaceType);
-        const response = await fetch(`/api/space-configurations/${dbSpaceType}`);
-        console.log('📡 Response status:', response.status, response.ok);
+        console.log(
+          "🔍 Fetching space config for:",
+          data.spaceType,
+          "→ DB:",
+          dbSpaceType
+        );
+        const response = await fetch(
+          `/api/space-configurations/${dbSpaceType}`
+        );
+        console.log("📡 Response status:", response.status, response.ok);
 
         if (response.ok) {
           const configData = await response.json();
-          console.log('✅ Config data received:', configData);
-          console.log('📋 depositPolicy:', configData.data?.depositPolicy);
+          console.log("✅ Config data received:", configData);
+          console.log("📋 depositPolicy:", configData.data?.depositPolicy);
           setSpaceConfig(configData.data);
         } else {
-          console.error('❌ Response not OK:', response.status, response.statusText);
+          console.error(
+            "❌ Response not OK:",
+            response.status,
+            response.statusText
+          );
           const errorData = await response.text();
-          console.error('Error response:', errorData);
+          console.error("Error response:", errorData);
         }
       } catch (error) {
-        console.error('❌ Error fetching space config:', error);
+        console.error("❌ Error fetching space config:", error);
       }
     };
 
     if (data.spaceType) {
-      console.log('🚀 Starting fetch for spaceType:', data.spaceType);
+      console.log("🚀 Starting fetch for spaceType:", data.spaceType);
       fetchSpaceConfig();
     } else {
-      console.warn('⚠️ No spaceType in booking data');
+      console.warn("⚠️ No spaceType in booking data");
     }
   }, []);
 
@@ -153,9 +184,10 @@ export default function BookingSummaryPage() {
       const quantity = selected.quantity;
 
       // Utiliser le prix forfait jour si disponible et si c'est une réservation à la journée
-      const priceToUse = isDaily && service.dailyPrice !== undefined
-        ? service.dailyPrice
-        : service.price;
+      const priceToUse =
+        isDaily && service.dailyPrice !== undefined
+          ? service.dailyPrice
+          : service.price;
 
       if (service.priceUnit === "per-person" && bookingData) {
         total += priceToUse * bookingData.numberOfPeople * quantity;
@@ -197,15 +229,15 @@ export default function BookingSummaryPage() {
   const calculateDepositAmount = () => {
     const totalPrice = getTotalPrice();
 
-    console.log('💰 Calcul empreinte:', {
+    console.log("💰 Calcul empreinte:", {
       spaceConfig,
       depositPolicyEnabled: spaceConfig?.depositPolicy?.enabled,
       totalPrice,
-      policy: spaceConfig?.depositPolicy
+      policy: spaceConfig?.depositPolicy,
     });
 
     if (!spaceConfig?.depositPolicy?.enabled) {
-      console.log('⚠️ Pas de depositPolicy enabled, retour du prix total');
+      console.log("⚠️ Pas de depositPolicy enabled, retour du prix total");
       return totalPrice * 100; // Default to full amount if no policy
     }
 
@@ -217,19 +249,27 @@ export default function BookingSummaryPage() {
     // Calculate deposit based on policy
     if (policy.fixedAmount) {
       depositInCents = policy.fixedAmount;
-      console.log('✅ Montant fixe appliqué:', depositInCents / 100, '€');
+      console.log("✅ Montant fixe appliqué:", depositInCents / 100, "€");
     } else if (policy.percentage) {
-      depositInCents = Math.round(totalPriceInCents * (policy.percentage / 100));
-      console.log('✅ Pourcentage appliqué:', policy.percentage, '% =', depositInCents / 100, '€');
+      depositInCents = Math.round(
+        totalPriceInCents * (policy.percentage / 100)
+      );
+      console.log(
+        "✅ Pourcentage appliqué:",
+        policy.percentage,
+        "% =",
+        depositInCents / 100,
+        "€"
+      );
     }
 
     // Apply minimum if set
     if (policy.minimumAmount && depositInCents < policy.minimumAmount) {
       depositInCents = policy.minimumAmount;
-      console.log('✅ Minimum appliqué:', depositInCents / 100, '€');
+      console.log("✅ Minimum appliqué:", depositInCents / 100, "€");
     }
 
-    console.log('💳 Montant final empreinte:', depositInCents / 100, '€');
+    console.log("💳 Montant final empreinte:", depositInCents / 100, "€");
     return depositInCents;
   };
 
@@ -243,9 +283,10 @@ export default function BookingSummaryPage() {
       const isDaily = isDailyRate();
       const additionalServicesData = Array.from(selectedServices.values()).map(
         (selected) => {
-          const priceToUse = isDaily && selected.service.dailyPrice !== undefined
-            ? selected.service.dailyPrice
-            : selected.service.price;
+          const priceToUse =
+            isDaily && selected.service.dailyPrice !== undefined
+              ? selected.service.dailyPrice
+              : selected.service.price;
 
           return {
             service: selected.service._id,
@@ -254,9 +295,7 @@ export default function BookingSummaryPage() {
             unitPrice: priceToUse,
             totalPrice:
               selected.service.priceUnit === "per-person"
-                ? priceToUse *
-                  bookingData.numberOfPeople *
-                  selected.quantity
+                ? priceToUse * bookingData.numberOfPeople * selected.quantity
                 : priceToUse * selected.quantity,
           };
         }
@@ -337,7 +376,7 @@ export default function BookingSummaryPage() {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-10">
-              <div className="booking-card mb-4" style={{ padding: "1.25rem" }}>
+              <div className="booking-card mb-4">
                 {/* Progress Bar */}
                 <BookingProgressBar
                   currentStep={4}
@@ -357,93 +396,69 @@ export default function BookingSummaryPage() {
                   }}
                 />
 
-                <hr
-                  style={{
-                    margin: "0 0 1rem 0",
-                    border: "none",
-                    borderTop: "1px solid #e0e0e0",
-                  }}
-                />
+                <hr className="my-3" style={{ opacity: 0.1 }} />
 
                 {/* Navigation and Title */}
-                <div className="mb-4">
-                  <div className="custom-breadcrumb d-flex justify-content-between align-items-center">
-                    <button
-                      onClick={() => router.back()}
-                      className="breadcrumb-link"
-                      style={{
-                        background: "none",
-                        border: "none",
-                        padding: "0.35rem 0.75rem"
-                      }}
-                    >
-                      <i className="bi bi-arrow-left"></i>
-                      <span>Retour</span>
-                    </button>
-                    <span className="breadcrumb-current" style={{ fontSize: "1.1rem", fontWeight: "600" }}>
-                      Récapitulatif
-                    </span>
-                    <div style={{ width: "80px" }}></div> {/* Spacer for centering */}
-                  </div>
+                <div className="custom-breadcrumb d-flex justify-content-between align-items-center">
+                  <button
+                    onClick={() => router.back()}
+                    className="breadcrumb-link"
+                  >
+                    <i className="bi bi-arrow-left"></i>
+                    <span>Retour</span>
+                  </button>
+                  <h1 className="breadcrumb-current m-0">Récapitulatif</h1>
+                  <div style={{ width: "80px" }}></div>
                 </div>
               </div>
 
               <div className="row g-3">
                 {/* Left Column - Summary */}
-                <div className="col-lg-7">
+                <div
+                  className="col-lg-5 d-flex flex-column"
+                  style={{ gap: "var(--spacing-3)" }}
+                >
                   <div
-                    className="booking-card mb-3"
-                    style={{ padding: "1rem" }}
+                    className="booking-card d-flex flex-column"
+                    style={{ flex: 1 }}
                   >
-                    <h5 className="mb-3" style={{ fontSize: "1rem" }}>
-                      <i className="bi bi-receipt me-2"></i>
-                      Détails de la réservation
-                    </h5>
-
-                    <div className="summary-section">
-                      <div
-                        className="summary-row"
-                        style={{ padding: "0.5rem 0", fontSize: "0.9rem" }}
+                    <div className="d-flex align-items-center gap-3 mb-4">
+                      <i
+                        className="bi bi-calendar-check"
+                        style={{ color: "#588983", fontSize: "1.25rem" }}
+                      ></i>
+                      <h2
+                        className="h6 mb-0 fw-bold"
+                        style={{ fontSize: "1rem" }}
                       >
-                        <span
-                          className="summary-label"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Espace
-                        </span>
-                        <span
-                          className="summary-value"
-                          style={{ fontWeight: "600" }}
-                        >
+                        Détails de la réservation
+                      </h2>
+                    </div>
+
+                    <div
+                      className="summary-section"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "1rem",
+                      }}
+                    >
+                      <div className="summary-row">
+                        <span className="summary-label">Espace</span>
+                        <span className="summary-value">
                           {spaceTypeLabels[bookingData.spaceType]}
                         </span>
                       </div>
 
-                      <div
-                        className="summary-row"
-                        style={{ padding: "0.5rem 0", fontSize: "0.9rem" }}
-                      >
-                        <span
-                          className="summary-label"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Type
-                        </span>
+                      <div className="summary-row">
+                        <span className="summary-label">Type</span>
                         <span className="summary-value">
                           {reservationTypeLabels[bookingData.reservationType]}
                         </span>
                       </div>
 
-                      <div
-                        className="summary-row"
-                        style={{ padding: "0.5rem 0", fontSize: "0.9rem" }}
-                      >
-                        <span
-                          className="summary-label"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Date
-                        </span>
+                      <div className="summary-row">
+                        <span className="summary-label">Date</span>
                         <span className="summary-value">
                           {new Date(bookingData.date).toLocaleDateString(
                             "fr-FR",
@@ -456,37 +471,18 @@ export default function BookingSummaryPage() {
                         </span>
                       </div>
 
-                      <div
-                        className="summary-row"
-                        style={{ padding: "0.5rem 0", fontSize: "0.9rem" }}
-                      >
-                        <span
-                          className="summary-label"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Horaires
-                        </span>
+                      <div className="summary-row">
+                        <span className="summary-label">Horaires</span>
                         <span className="summary-value">
                           {bookingData.startTime} - {bookingData.endTime}
-                          <span
-                            className="text-muted ms-2"
-                            style={{ fontSize: "0.85rem" }}
-                          >
+                          <small className="text-muted ms-2">
                             ({bookingData.duration})
-                          </span>
+                          </small>
                         </span>
                       </div>
 
-                      <div
-                        className="summary-row"
-                        style={{ padding: "0.5rem 0", fontSize: "0.9rem" }}
-                      >
-                        <span
-                          className="summary-label"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Personnes
-                        </span>
+                      <div className="summary-row">
+                        <span className="summary-label">Personnes</span>
                         <span className="summary-value">
                           {bookingData.numberOfPeople}{" "}
                           {bookingData.numberOfPeople > 1
@@ -495,50 +491,24 @@ export default function BookingSummaryPage() {
                         </span>
                       </div>
 
-                      <div
-                        className="summary-row"
-                        style={{ padding: "0.5rem 0", fontSize: "0.9rem" }}
-                      >
-                        <span
-                          className="summary-label"
-                          style={{ fontSize: "0.85rem" }}
-                        >
-                          Contact
-                        </span>
+                      <div className="summary-row">
+                        <span className="summary-label">Contact</span>
                         <span className="summary-value">
-                          {bookingData.contactName}
-                          <br />
-                          <small
-                            className="text-muted"
-                            style={{ fontSize: "0.8rem" }}
-                          >
+                          <div>{bookingData.contactName}</div>
+                          <small className="text-muted">
                             {bookingData.contactEmail}
                           </small>
                           <br />
-                          <small
-                            className="text-muted"
-                            style={{ fontSize: "0.8rem" }}
-                          >
+                          <small className="text-muted">
                             {bookingData.contactPhone}
                           </small>
                         </span>
                       </div>
 
                       {bookingData.specialRequests && (
-                        <div
-                          className="summary-row"
-                          style={{ padding: "0.5rem 0", fontSize: "0.9rem" }}
-                        >
-                          <span
-                            className="summary-label"
-                            style={{ fontSize: "0.85rem" }}
-                          >
-                            Demandes
-                          </span>
-                          <span
-                            className="summary-value"
-                            style={{ fontSize: "0.85rem" }}
-                          >
+                        <div className="summary-row">
+                          <span className="summary-label">Demandes</span>
+                          <span className="summary-value">
                             {bookingData.specialRequests}
                           </span>
                         </div>
@@ -548,189 +518,485 @@ export default function BookingSummaryPage() {
 
                   {/* Additional Services - Editable */}
                   {selectedServices.size > 0 && (
-                    <div className="booking-card" style={{ padding: "1rem" }}>
-                      <h5 className="mb-3" style={{ fontSize: "1rem" }}>
-                        <i className="bi bi-plus-circle me-2"></i>
-                        Services supplémentaires
-                      </h5>
+                    <div className="booking-card" style={{ flex: 1 }}>
+                      <div className="d-flex align-items-center gap-3 mb-4">
+                        <i
+                          className="bi bi-star"
+                          style={{ color: "#588983", fontSize: "1.25rem" }}
+                        ></i>
+                        <h2
+                          className="h6 mb-0 fw-bold"
+                          style={{ fontSize: "1rem" }}
+                        >
+                          Services supplémentaires
+                        </h2>
+                      </div>
 
-                      <div className="summary-section">
-                        {Array.from(selectedServices.values()).map((selected) => {
-                          const isDaily = isDailyRate();
-                          const priceToUse = isDaily && selected.service.dailyPrice !== undefined
-                            ? selected.service.dailyPrice
-                            : selected.service.price;
+                      <div className="d-flex flex-column gap-3">
+                        {Array.from(selectedServices.values()).map(
+                          (selected) => {
+                            const isDaily = isDailyRate();
+                            const priceToUse =
+                              isDaily &&
+                              selected.service.dailyPrice !== undefined
+                                ? selected.service.dailyPrice
+                                : selected.service.price;
 
-                          const itemTotal =
-                            selected.service.priceUnit === "per-person"
-                              ? priceToUse *
-                                bookingData.numberOfPeople *
-                                selected.quantity
-                              : priceToUse * selected.quantity;
+                            const itemTotal =
+                              selected.service.priceUnit === "per-person"
+                                ? priceToUse *
+                                  bookingData.numberOfPeople *
+                                  selected.quantity
+                                : priceToUse * selected.quantity;
 
-                          return (
-                            <div
-                              key={selected.service._id}
-                              className="border rounded p-2 mb-2"
-                              style={{ backgroundColor: "#f8f9fa" }}
-                            >
-                              <div className="d-flex justify-content-between align-items-start mb-2">
-                                <div className="flex-grow-1">
-                                  <div style={{ fontSize: "0.9rem", fontWeight: "600" }}>
-                                    {selected.service.name}
+                            return (
+                              <div
+                                key={selected.service._id}
+                                className="service-item-card p-3 rounded border"
+                                style={{
+                                  backgroundColor: "hsl(var(--muted) / 0.3)",
+                                }}
+                              >
+                                <div className="d-flex justify-content-between align-items-start mb-3">
+                                  <div className="flex-grow-1">
+                                    <div className="fw-semibold mb-1">
+                                      {selected.service.name}
+                                    </div>
+                                    <div className="text-muted small">
+                                      {priceToUse.toFixed(2)}€
+                                      {selected.service.priceUnit ===
+                                        "per-person" && " / personne"}
+                                      {isDaily &&
+                                        selected.service.dailyPrice !==
+                                          undefined && (
+                                          <span
+                                            className="badge bg-success-subtle text-success ms-2 px-2 py-1"
+                                            style={{ fontSize: "0.7rem" }}
+                                          >
+                                            Prix jour
+                                          </span>
+                                        )}
+                                    </div>
                                   </div>
-                                  <div style={{ fontSize: "0.75rem", color: "#6c757d" }}>
-                                    {priceToUse.toFixed(2)}€
-                                    {selected.service.priceUnit === "per-person" && "/pers"}
-                                    {isDaily && selected.service.dailyPrice !== undefined && (
-                                      <span className="text-success ms-1">(Prix jour)</span>
-                                    )}
-                                  </div>
-                                </div>
-                                <button
-                                  type="button"
-                                  className="btn btn-sm btn-link text-danger p-0"
-                                  onClick={() => removeService(selected.service._id)}
-                                  title="Supprimer"
-                                >
-                                  <i className="bi bi-x-lg"></i>
-                                </button>
-                              </div>
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="btn-group btn-group-sm">
                                   <button
                                     type="button"
-                                    className="btn btn-outline-secondary"
+                                    className="btn btn-sm btn-ghost p-1"
                                     onClick={() =>
-                                      updateServiceQuantity(
-                                        selected.service._id,
-                                        selected.quantity - 1
-                                      )
+                                      removeService(selected.service._id)
                                     }
-                                    disabled={selected.quantity <= 1}
-                                  >
-                                    -
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="btn btn-outline-secondary"
-                                    disabled
-                                  >
-                                    {selected.quantity}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="btn btn-outline-secondary"
-                                    onClick={() =>
-                                      updateServiceQuantity(
-                                        selected.service._id,
-                                        selected.quantity + 1
-                                      )
+                                    title="Supprimer"
+                                    style={{
+                                      opacity: 0.6,
+                                      transition: "opacity 0.2s",
+                                    }}
+                                    onMouseEnter={(e) =>
+                                      (e.currentTarget.style.opacity = "1")
+                                    }
+                                    onMouseLeave={(e) =>
+                                      (e.currentTarget.style.opacity = "0.6")
                                     }
                                   >
-                                    +
+                                    <i className="bi bi-x-lg"></i>
                                   </button>
                                 </div>
-                                <span style={{ fontWeight: "600", fontSize: "0.9rem" }}>
-                                  {itemTotal.toFixed(2)}€
-                                </span>
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <div className="d-flex align-items-center gap-2">
+                                    <button
+                                      type="button"
+                                      className="btn btn-outline-secondary btn-sm"
+                                      style={{
+                                        width: "32px",
+                                        height: "32px",
+                                        padding: 0,
+                                      }}
+                                      onClick={() =>
+                                        updateServiceQuantity(
+                                          selected.service._id,
+                                          selected.quantity - 1
+                                        )
+                                      }
+                                      disabled={selected.quantity <= 1}
+                                    >
+                                      <i className="bi bi-dash"></i>
+                                    </button>
+                                    <span
+                                      className="fw-semibold px-2"
+                                      style={{
+                                        minWidth: "30px",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {selected.quantity}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="btn btn-outline-secondary btn-sm"
+                                      style={{
+                                        width: "32px",
+                                        height: "32px",
+                                        padding: 0,
+                                      }}
+                                      onClick={() =>
+                                        updateServiceQuantity(
+                                          selected.service._id,
+                                          selected.quantity + 1
+                                        )
+                                      }
+                                    >
+                                      <i className="bi bi-plus"></i>
+                                    </button>
+                                  </div>
+                                  <span
+                                    className="fw-bold"
+                                    style={{ color: "#588983" }}
+                                  >
+                                    {itemTotal.toFixed(2)}€
+                                  </span>
+                                </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          }
+                        )}
                       </div>
                     </div>
                   )}
                 </div>
 
                 {/* Right Column - Price & Actions */}
-                <div className="col-lg-5">
+                <div className="col-lg-7 d-flex">
                   <div
-                    className="booking-card sticky-card"
-                    style={{ padding: "1rem" }}
+                    className="booking-card d-flex flex-column w-100"
+                    style={{ flex: 1 }}
                   >
-                    <h5 className="mb-3" style={{ fontSize: "1rem" }}>
-                      Total
-                    </h5>
+                    <div className="d-flex align-items-center gap-3 mb-4">
+                      <i
+                        className="bi bi-cash-stack"
+                        style={{ color: "#588983", fontSize: "1.25rem" }}
+                      ></i>
+                      <h2
+                        className="h6 mb-0 fw-bold"
+                        style={{ fontSize: "1rem" }}
+                      >
+                        Récapitulatif
+                      </h2>
+                    </div>
 
                     <div className="price-breakdown">
-                      <div
-                        className="price-row"
-                        style={{ fontSize: "0.9rem", padding: "0.5rem 0" }}
-                      >
-                        <span>Tarif de base</span>
-                        <span>{bookingData.basePrice.toFixed(2)}€</span>
+                      {/* TTC/HT Switch */}
+                      <div className="d-flex justify-content-end align-items-center gap-3 mb-3">
+                        <span
+                          className={`tax-toggle ${showTTC ? "active" : ""}`}
+                          onClick={() => setShowTTC(true)}
+                          style={{
+                            cursor: "pointer",
+                            fontSize: "0.875rem",
+                            fontWeight: showTTC ? "600" : "400",
+                          }}
+                        >
+                          Prix TTC
+                        </span>
+                        <div className="form-check form-switch mb-0">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="taxSwitchSummary"
+                            checked={!showTTC}
+                            onChange={() => setShowTTC(!showTTC)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </div>
+                        <span
+                          className={`tax-toggle ${!showTTC ? "active" : ""}`}
+                          onClick={() => setShowTTC(false)}
+                          style={{
+                            cursor: "pointer",
+                            fontSize: "0.875rem",
+                            fontWeight: !showTTC ? "600" : "400",
+                          }}
+                        >
+                          Prix HT
+                        </span>
                       </div>
 
-                      {selectedServices.size > 0 && (
-                        <>
-                          <div className="price-divider"></div>
-                          {Array.from(selectedServices.values()).map(
-                            (selected) => {
-                              const isDaily = isDailyRate();
-                              const priceToUse = isDaily && selected.service.dailyPrice !== undefined
-                                ? selected.service.dailyPrice
-                                : selected.service.price;
-
-                              const itemTotal =
-                                selected.service.priceUnit === "per-person"
-                                  ? priceToUse *
-                                    bookingData.numberOfPeople *
-                                    selected.quantity
-                                  : priceToUse * selected.quantity;
-
-                              return (
-                                <div
-                                  key={selected.service._id}
-                                  className="price-row small"
-                                  style={{
-                                    fontSize: "0.85rem",
-                                    padding: "0.4rem 0",
-                                  }}
-                                >
-                                  <span>
-                                    {selected.service.name} x{selected.quantity}
-                                    {selected.service.priceUnit ===
-                                      "per-person" &&
-                                      ` (${bookingData.numberOfPeople} pers)`}
-                                  </span>
-                                  <span>{itemTotal.toFixed(2)}€</span>
-                                </div>
-                              );
-                            }
-                          )}
-                        </>
-                      )}
-
+                      {/* Header Row */}
+                      <div
+                        className="price-row"
+                        style={{
+                          // borderBottom: "2px solid #e0e0e0",
+                          paddingBottom: "0.75rem",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        <div className="d-flex justify-content-between align-items-center w-100">
+                          <span
+                            style={{
+                              fontWeight: "700",
+                              fontSize: "0.9rem",
+                              color: "#666",
+                            }}
+                          >
+                            Prestation
+                          </span>
+                          <div className="d-flex gap-4 align-items-center">
+                            <span
+                              style={{
+                                fontWeight: "700",
+                                fontSize: "0.85rem",
+                                color: "#666",
+                                minWidth: "80px",
+                                textAlign: "right",
+                              }}
+                            >
+                              Quantité
+                            </span>
+                            <span
+                              style={{
+                                fontWeight: "700",
+                                fontSize: "0.85rem",
+                                color: "#666",
+                                minWidth: "100px",
+                                textAlign: "right",
+                              }}
+                            >
+                              Prix unitaire
+                            </span>
+                            <span
+                              style={{
+                                fontWeight: "700",
+                                fontSize: "0.85rem",
+                                color: "#666",
+                                minWidth: "80px",
+                                textAlign: "right",
+                              }}
+                            >
+                              Total
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                       <div className="price-divider"></div>
 
+                      {/* Base Rate Row */}
                       <div
-                        className="price-row total-row"
-                        style={{ fontSize: "1rem", padding: "0.75rem 0" }}
+                        className="price-row"
+                        style={{
+                          paddingTop: "0.5rem",
+                          paddingBottom: "0.5rem",
+                        }}
                       >
-                        <span style={{ fontWeight: "600" }}>Total à payer</span>
-                        <span
-                          className="total-price"
-                          style={{ fontSize: "1.5rem" }}
-                        >
-                          {totalPrice.toFixed(2)}€
+                        <div className="d-flex justify-content-between align-items-center w-100">
+                          <span>Tarif </span>
+                          <div className="d-flex gap-4 align-items-center">
+                            <span
+                              className="text-muted"
+                              style={{
+                                fontSize: "0.875rem",
+                                minWidth: "80px",
+                                textAlign: "right",
+                              }}
+                            >
+                              {bookingData.numberOfPeople}{" "}
+                              {bookingData.numberOfPeople > 1
+                                ? "pers."
+                                : "pers."}
+                            </span>
+                            <span
+                              className="text-muted"
+                              style={{
+                                fontSize: "0.875rem",
+                                minWidth: "100px",
+                                textAlign: "right",
+                              }}
+                            >
+                              {(() => {
+                                const vatRate =
+                                  bookingData.reservationType === "hourly"
+                                    ? 10
+                                    : 20;
+                                const unitPrice = convertPrice(
+                                  bookingData.basePrice /
+                                    bookingData.numberOfPeople,
+                                  vatRate,
+                                  showTTC
+                                );
+                                return unitPrice.toFixed(2);
+                              })()}
+                              €
+                            </span>
+                            <span
+                              className="fw-semibold"
+                              style={{ minWidth: "80px", textAlign: "right" }}
+                            >
+                              {(() => {
+                                const vatRate =
+                                  bookingData.reservationType === "hourly"
+                                    ? 10
+                                    : 20;
+                                const totalPrice = convertPrice(
+                                  bookingData.basePrice,
+                                  vatRate,
+                                  showTTC
+                                );
+                                return totalPrice.toFixed(2);
+                              })()}
+                              €
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {selectedServices.size > 0 &&
+                        Array.from(selectedServices.values()).map(
+                          (selected) => {
+                            const isDaily = isDailyRate();
+                            const displayPriceTTC =
+                              isDaily &&
+                              selected.service.dailyPrice !== undefined
+                                ? selected.service.dailyPrice
+                                : selected.service.price;
+                            const vatRate = selected.service.vatRate || 20;
+
+                            const displayPrice = convertPrice(
+                              displayPriceTTC,
+                              vatRate,
+                              showTTC
+                            );
+                            const totalServicePrice =
+                              selected.service.priceUnit === "per-person"
+                                ? displayPrice *
+                                  (bookingData?.numberOfPeople || 1) *
+                                  selected.quantity
+                                : displayPrice * selected.quantity;
+
+                            return (
+                              <div
+                                key={selected.service._id}
+                                className="price-row"
+                                style={{
+                                  paddingTop: "0.5rem",
+                                  paddingBottom: "0.5rem",
+                                }}
+                              >
+                                <div className="d-flex justify-content-between align-items-center w-100">
+                                  <span>
+                                    {selected.service.name}{" "}
+                                    {selected.service.priceUnit ===
+                                      "per-person" && "(par pers.)"}
+                                  </span>
+                                  <div className="d-flex gap-4 align-items-center">
+                                    <span
+                                      className="text-muted"
+                                      style={{
+                                        fontSize: "0.875rem",
+                                        minWidth: "80px",
+                                        textAlign: "right",
+                                      }}
+                                    >
+                                      {selected.quantity}
+                                    </span>
+                                    <span
+                                      className="text-muted"
+                                      style={{
+                                        fontSize: "0.875rem",
+                                        minWidth: "100px",
+                                        textAlign: "right",
+                                      }}
+                                    >
+                                      {displayPrice.toFixed(2)}€
+                                    </span>
+                                    <span
+                                      className="fw-semibold"
+                                      style={{
+                                        minWidth: "80px",
+                                        textAlign: "right",
+                                      }}
+                                    >
+                                      {totalServicePrice.toFixed(2)}€
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                        )}
+
+                      <div className="price-row total-row">
+                        <span>Total {showTTC ? "TTC" : "HT"}</span>
+                        <span className="total-price">
+                          {(() => {
+                            // Calculate total TTC
+                            const totalTTC = getTotalPrice();
+
+                            if (showTTC) {
+                              return totalTTC.toFixed(2);
+                            } else {
+                              // Convert to HT
+                              const baseVatRate =
+                                bookingData.reservationType === "hourly"
+                                  ? 10
+                                  : 20;
+                              const baseHT = convertPrice(
+                                bookingData.basePrice,
+                                baseVatRate,
+                                false
+                              );
+
+                              let servicesHT = 0;
+                              selectedServices.forEach((selected) => {
+                                const service = selected.service;
+                                const quantity = selected.quantity;
+                                const isDaily = isDailyRate();
+                                const displayPriceTTC =
+                                  isDaily && service.dailyPrice !== undefined
+                                    ? service.dailyPrice
+                                    : service.price;
+                                const vatRate = service.vatRate || 20;
+                                const displayPriceHT = convertPrice(
+                                  displayPriceTTC,
+                                  vatRate,
+                                  false
+                                );
+
+                                if (service.priceUnit === "per-person") {
+                                  servicesHT +=
+                                    displayPriceHT *
+                                    (bookingData?.numberOfPeople || 1) *
+                                    quantity;
+                                } else {
+                                  servicesHT += displayPriceHT * quantity;
+                                }
+                              });
+
+                              return (baseHT + servicesHT).toFixed(2);
+                            }
+                          })()}
+                          €
                         </span>
                       </div>
                     </div>
 
                     {/* Info empreinte */}
                     <InfoEmpreinte
-                      type={daysUntilBooking <= 7 ? 'manual_capture' : 'setup_intent'}
+                      type={
+                        daysUntilBooking <= 7
+                          ? "manual_capture"
+                          : "setup_intent"
+                      }
                       amount={calculateDepositAmount()}
                       daysUntilBooking={daysUntilBooking}
                     />
 
-                    <div className="actions-section mt-3">
+                    <div className="actions-section mt-auto pt-4">
                       <button
-                        className="btn btn-success w-100 mb-2"
+                        className="btn btn-success w-100 mb-3"
                         onClick={() => handleCreateReservation()}
                         disabled={loading}
-                        style={{ fontSize: "0.95rem", padding: "0.75rem" }}
+                        style={{
+                          padding: "0.875rem 1.5rem",
+                          fontSize: "0.9375rem",
+                          fontWeight: "600",
+                        }}
                       >
                         {loading ? (
                           <>
@@ -740,18 +1006,19 @@ export default function BookingSummaryPage() {
                         ) : (
                           <>
                             <i className="bi bi-credit-card me-2"></i>
-                            {daysUntilBooking <= 7 ? 'Valider la réservation' : 'Enregistrer ma carte'}
+                            {daysUntilBooking <= 7
+                              ? "Valider la réservation"
+                              : "Enregistrer ma carte"}
                           </>
                         )}
                       </button>
 
-                      <p
-                        className="text-muted text-center mt-2 mb-0"
-                        style={{ fontSize: "0.75rem" }}
-                      >
-                        <i className="bi bi-shield-check me-1"></i>
-                        Paiement sécurisé par Stripe
-                      </p>
+                      <div className="text-center">
+                        <small className="text-muted d-flex align-items-center justify-content-center gap-1">
+                          <i className="bi bi-shield-check"></i>
+                          <span>Paiement sécurisé par Stripe</span>
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>

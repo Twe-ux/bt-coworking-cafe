@@ -10,6 +10,7 @@ export interface AdditionalServiceDocument extends Document {
   price: number;
   dailyPrice?: number; // Prix forfait à la journée (optionnel)
   priceUnit: 'per-person' | 'flat-rate';
+  vatRate: number; // Taux de TVA en pourcentage (ex: 10, 20, 5.5)
   isActive: boolean;
   isDeleted: boolean;
   availableForSpaceTypes?: string[]; // desk, meeting-room, event-space, etc.
@@ -58,6 +59,13 @@ const AdditionalServiceSchema = new Schema<AdditionalServiceDocument>(
       required: true,
       enum: ['per-person', 'flat-rate'],
       default: 'flat-rate',
+    },
+    vatRate: {
+      type: Number,
+      required: true,
+      default: 20, // TVA normale par défaut
+      min: [0, 'Le taux de TVA doit être positif'],
+      max: [100, 'Le taux de TVA ne peut pas dépasser 100%'],
     },
     isActive: {
       type: Boolean,

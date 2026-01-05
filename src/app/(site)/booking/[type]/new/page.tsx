@@ -148,10 +148,28 @@ export default function BookingDatePage({
   const [dateSectionOpen, setDateSectionOpen] = useState(true); // Open by default
   const [dateSectionClosing, setDateSectionClosing] = useState(false);
   const [timeSectionOpen, setTimeSectionOpen] = useState(false);
+  const [showTTC, setShowTTC] = useState(true);
 
   // Refs for auto-scroll
   const timeSectionRef = useRef<HTMLDivElement>(null);
   const priceSectionRef = useRef<HTMLDivElement>(null);
+
+  // Convert price between TTC and HT
+  // Hourly rate (1h-4h30) = 10% VAT, Daily rate = 20% VAT
+  const getDisplayPrice = () => {
+    if (!showTTC) {
+      // Calculate HT based on reservation type
+      const vatRate =
+        appliedDailyRate ||
+        reservationType === "daily" ||
+        reservationType === "weekly" ||
+        reservationType === "monthly"
+          ? 1.2
+          : 1.1;
+      return calculatedPrice / vatRate;
+    }
+    return calculatedPrice;
+  };
   const bookingCardRef = useRef<HTMLDivElement>(null);
 
   // Load existing booking data on mount to restore previous selections
@@ -193,13 +211,13 @@ export default function BookingDatePage({
     : allReservationTypes;
 
   // Get available time slots with current time filtering
-  const getAvailableTimeSlots = (): string[] => {
+  const getAvailableStartTimeSlots = (): string[] => {
     if (!globalHours || !selectedDate) {
       return allTimeSlots;
     }
 
     // Parse date manually to avoid timezone issues
-    const [year, month, day] = selectedDate.split('-').map(Number);
+    const [year, month, day] = selectedDate.split("-").map(Number);
     const selectedDateObj = new Date(year, month - 1, day);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -220,8 +238,22 @@ export default function BookingDatePage({
       return allTimeSlots;
     }
 
+    // Calculate the latest start time (1 hour before closing for hourly reservations)
+    const [closeHour, closeMinute] = dayHours.closeTime!.split(":").map(Number);
+    const latestStartMinutes = closeHour * 60 + closeMinute - 60; // 1 hour before closing
+    const latestStartHour = Math.floor(latestStartMinutes / 60);
+    const latestStartMinuteRemainder = latestStartMinutes % 60;
+    const latestStartTime = `${String(latestStartHour).padStart(
+      2,
+      "0"
+    )}:${String(latestStartMinuteRemainder).padStart(2, "0")}`;
+
     let filteredSlots = allTimeSlots.filter((slot) => {
-      return slot >= dayHours.openTime! && slot <= dayHours.closeTime!;
+      // For hourly reservations, start time must be at least 1 hour before closing
+      // For daily/weekly/monthly, we can start up until closing time
+      const maxTime =
+        reservationType === "hourly" ? latestStartTime : dayHours.closeTime!;
+      return slot >= dayHours.openTime! && slot <= maxTime;
     });
 
     // If daily mode, exclude last 5 hours (but include the 5h cutoff time itself)
@@ -254,26 +286,75 @@ export default function BookingDatePage({
     return filteredSlots;
   };
 
-  const availableTimeSlots = getAvailableTimeSlots();
+  const getAvailableEndTimeSlots = () => {
+    if (!globalHours || !selectedDate) {
+      return allTimeSlots;
+    }
+
+    // Parse date manually to avoid timezone issues
+    const [year, month, day] = selectedDate.split("-").map(Number);
+    const selectedDateObj = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selectedDateObj.setHours(0, 0, 0, 0);
+
+    const dayOfWeek = selectedDateObj
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
+    const dayHours = globalHours.defaultHours?.[dayOfWeek];
+
+    if (
+      !dayHours ||
+      !dayHours.isOpen ||
+      !dayHours.openTime ||
+      !dayHours.closeTime
+    ) {
+      return allTimeSlots;
+    }
+
+    // Calculate the earliest end time (1 hour after opening)
+    const [openHour, openMinute] = dayHours.openTime.split(":").map(Number);
+    const earliestEndMinutes = openHour * 60 + openMinute + 60; // 1 hour after opening
+    const earliestEndHour = Math.floor(earliestEndMinutes / 60);
+    const earliestEndMinuteRemainder = earliestEndMinutes % 60;
+    const earliestEndTime = `${String(earliestEndHour).padStart(
+      2,
+      "0"
+    )}:${String(earliestEndMinuteRemainder).padStart(2, "0")}`;
+
+    // For end time: from opening+1h to closing time
+    const filteredSlots = allTimeSlots.filter((slot) => {
+      return slot >= earliestEndTime && slot <= dayHours.closeTime!;
+    });
+
+    return filteredSlots;
+  };
+
+  const availableStartTimeSlots = getAvailableStartTimeSlots();
+  const availableEndTimeSlots = getAvailableEndTimeSlots();
 
   // Calculate end date for weekly/monthly
   useEffect(() => {
     if (!selectedDate) return;
 
     // Parse date manually to avoid timezone issues
-    const [year, month, day] = selectedDate.split('-').map(Number);
+    const [year, month, day] = selectedDate.split("-").map(Number);
 
     if (reservationType === "weekly") {
       const start = new Date(year, month - 1, day);
       const end = new Date(start);
       end.setDate(end.getDate() + 6); // 7 days total (including start day)
-      const endDateStr = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
+      const endDateStr = `${end.getFullYear()}-${String(
+        end.getMonth() + 1
+      ).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`;
       setEndDate(endDateStr);
     } else if (reservationType === "monthly") {
       const start = new Date(year, month - 1, day);
       const end = new Date(start);
       end.setDate(end.getDate() + 29); // 30 days total
-      const endDateStr = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
+      const endDateStr = `${end.getFullYear()}-${String(
+        end.getMonth() + 1
+      ).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`;
       setEndDate(endDateStr);
     }
   }, [selectedDate, reservationType]);
@@ -450,11 +531,11 @@ export default function BookingDatePage({
     numberOfPeople,
   ]);
 
-  const calculateDailyPrice = () => {
+  const calculateDailyPrice = async () => {
     if (!spaceConfig || !globalHours || !selectedDate) return;
 
     // Parse date manually to avoid timezone issues
-    const [year, month, day] = selectedDate.split('-').map(Number);
+    const [year, month, day] = selectedDate.split("-").map(Number);
     const dateObj = new Date(year, month - 1, day);
     const dayOfWeek = dateObj
       .toLocaleDateString("en-US", { weekday: "long" })
@@ -463,12 +544,53 @@ export default function BookingDatePage({
 
     if (dayHours && dayHours.closeTime && arrivalTime) {
       setDuration(`${arrivalTime} - ${dayHours.closeTime}`);
-      const basePrice = spaceConfig.pricing.daily;
-      setCalculatedPrice(
-        spaceConfig.pricing.perPerson ? basePrice * numberOfPeople : basePrice
-      );
       setEndTime(dayHours.closeTime);
       setStartTime(arrivalTime);
+
+      // Use API to calculate price with tier support
+      try {
+        const startDateTime = new Date(
+          year,
+          month - 1,
+          day,
+          parseInt(arrivalTime.split(":")[0]),
+          parseInt(arrivalTime.split(":")[1])
+        ).toISOString();
+        const endDateTime = new Date(
+          year,
+          month - 1,
+          day,
+          parseInt(dayHours.closeTime.split(":")[0]),
+          parseInt(dayHours.closeTime.split(":")[1])
+        ).toISOString();
+
+        const response = await fetch("/api/calculate-price", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            spaceType: dbSpaceType,
+            reservationType: "daily",
+            startTime: startDateTime,
+            endTime: endDateTime,
+            numberOfPeople: numberOfPeople,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setCalculatedPrice(data.data.totalPrice);
+        }
+      } catch (err) {
+        console.error("Error calculating daily price:", err);
+        // Fallback to simple calculation
+        const basePrice = spaceConfig.pricing.daily;
+        setCalculatedPrice(
+          spaceConfig.pricing.perPerson ? basePrice * numberOfPeople : basePrice
+        );
+      }
     }
   };
 
@@ -516,12 +638,24 @@ export default function BookingDatePage({
     // Calculate price using API
     try {
       // Parse date manually and combine with time to avoid timezone issues
-      const [year, month, day] = selectedDate.split('-').map(Number);
-      const [startHour, startMinute] = startTime.split(':').map(Number);
-      const [endHour, endMinute] = endTime.split(':').map(Number);
+      const [year, month, day] = selectedDate.split("-").map(Number);
+      const [startHour, startMinute] = startTime.split(":").map(Number);
+      const [endHour, endMinute] = endTime.split(":").map(Number);
 
-      const startDateTime = new Date(year, month - 1, day, startHour, startMinute).toISOString();
-      const endDateTime = new Date(year, month - 1, day, endHour, endMinute).toISOString();
+      const startDateTime = new Date(
+        year,
+        month - 1,
+        day,
+        startHour,
+        startMinute
+      ).toISOString();
+      const endDateTime = new Date(
+        year,
+        month - 1,
+        day,
+        endHour,
+        endMinute
+      ).toISOString();
 
       const response = await fetch("/api/calculate-price", {
         method: "POST",
@@ -549,6 +683,19 @@ export default function BookingDatePage({
         spaceConfig.pricing.perPerson ? basePrice * numberOfPeople : basePrice
       );
     }
+  };
+
+  // Function to automatically set end time to +1 hour after start time
+  const handleStartTimeSelection = (time: string) => {
+    setStartTime(time);
+
+    // Calculate end time (+1 hour)
+    const [hour, minute] = time.split(":").map(Number);
+    const endHour = hour + 1;
+    const endTime = `${String(endHour).padStart(2, "0")}:${String(
+      minute
+    ).padStart(2, "0")}`;
+    setEndTime(endTime);
   };
 
   const handleContinue = () => {
@@ -607,7 +754,7 @@ export default function BookingDatePage({
         <section className="booking-date-page py-3">
           <div className="container">
             <div className="text-center">
-              <div className="spinner-border text-primary" role="status">
+              <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">Chargement...</span>
               </div>
             </div>
@@ -635,7 +782,7 @@ export default function BookingDatePage({
         <div className="container">
           {/* Main Card */}
           <div className="row justify-content-center">
-            <div className="col-lg-8">
+            <div className="col-lg-10">
               <div
                 className="booking-card"
                 style={{ padding: "1.25rem" }}
@@ -649,12 +796,17 @@ export default function BookingDatePage({
                     step2: selectedDate
                       ? (() => {
                           // Parse date manually to avoid timezone issues
-                          const [year, month, day] = selectedDate.split('-').map(Number);
+                          const [year, month, day] = selectedDate
+                            .split("-")
+                            .map(Number);
                           const dateObj = new Date(year, month - 1, day);
-                          const dateLabel = dateObj.toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "short",
-                          });
+                          const dateLabel = dateObj.toLocaleDateString(
+                            "fr-FR",
+                            {
+                              day: "numeric",
+                              month: "short",
+                            }
+                          );
                           let timeLabel = "";
                           if (
                             reservationType === "hourly" &&
@@ -687,33 +839,21 @@ export default function BookingDatePage({
                   }}
                 />
 
-                <hr
-                  style={{
-                    margin: "0 0 1rem 0",
-                    border: "none",
-                    borderTop: "1px solid #e0e0e0",
-                  }}
-                />
+                <hr className="my-3" style={{ opacity: 0.1 }} />
+
                 {/* Navigation and Title */}
-                <div className="mb-4">
-                  <div className="custom-breadcrumb d-flex justify-content-between align-items-center">
-                    <button
-                      onClick={() => router.back()}
-                      className="breadcrumb-link"
-                      style={{
-                        background: "none",
-                        border: "none",
-                        padding: "0.35rem 0.75rem"
-                      }}
-                    >
-                      <i className="bi bi-arrow-left"></i>
-                      <span>Retour</span>
-                    </button>
-                    <span className="breadcrumb-current" style={{ fontSize: "1.1rem", fontWeight: "600" }}>
-                      Quand voulez-vous venir ?
-                    </span>
-                    <div style={{ width: "80px" }}></div> {/* Spacer for centering */}
-                  </div>
+                <div className="custom-breadcrumb d-flex justify-content-between align-items-center mb-4">
+                  <button
+                    onClick={() => router.back()}
+                    className="breadcrumb-link"
+                  >
+                    <i className="bi bi-arrow-left"></i>
+                    <span>Retour</span>
+                  </button>
+                  <h1 className="breadcrumb-current m-0">
+                    Quand voulez-vous venir ?
+                  </h1>
+                  <div style={{ width: "80px" }}></div>
                 </div>
 
                 {/* Reservation Type - Always Visible */}
@@ -775,9 +915,14 @@ export default function BookingDatePage({
                         {!dateSectionOpen && selectedDate && (
                           <span className="section-value">
                             {(() => {
-                              const [year, month, day] = selectedDate.split('-').map(Number);
+                              const [year, month, day] = selectedDate
+                                .split("-")
+                                .map(Number);
                               const dateObj = new Date(year, month - 1, day);
-                              return dateObj.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+                              return dateObj.toLocaleDateString("fr-FR", {
+                                day: "numeric",
+                                month: "long",
+                              });
                             })()}
                           </span>
                         )}
@@ -795,7 +940,11 @@ export default function BookingDatePage({
                           onDateChange={setSelectedDate}
                           minDate={(() => {
                             const today = new Date();
-                            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                            return `${today.getFullYear()}-${String(
+                              today.getMonth() + 1
+                            ).padStart(2, "0")}-${String(
+                              today.getDate()
+                            ).padStart(2, "0")}`;
                           })()}
                           reservationType={reservationType}
                           endDate={endDate}
@@ -857,7 +1006,7 @@ export default function BookingDatePage({
                                     padding: "0.25rem",
                                   }}
                                 >
-                                  {availableTimeSlots.map((time) => (
+                                  {availableStartTimeSlots.map((time) => (
                                     <button
                                       key={time}
                                       className={`time-slot-btn ${
@@ -867,7 +1016,9 @@ export default function BookingDatePage({
                                         padding: "0.5rem 0.35rem",
                                         fontSize: "0.85rem",
                                       }}
-                                      onClick={() => setStartTime(time)}
+                                      onClick={() =>
+                                        handleStartTimeSelection(time)
+                                      }
                                     >
                                       {time}
                                     </button>
@@ -888,7 +1039,7 @@ export default function BookingDatePage({
                                     padding: "0.25rem",
                                   }}
                                 >
-                                  {availableTimeSlots.map((time) => {
+                                  {availableEndTimeSlots.map((time) => {
                                     let isLessThanOneHour = false;
                                     if (startTime) {
                                       const [startHour, startMinute] = startTime
@@ -944,7 +1095,7 @@ export default function BookingDatePage({
                                   padding: "0.25rem",
                                 }}
                               >
-                                {availableTimeSlots.map((time) => (
+                                {availableStartTimeSlots.map((time) => (
                                   <button
                                     key={time}
                                     className={`time-slot-btn ${
@@ -964,8 +1115,14 @@ export default function BookingDatePage({
                                 selectedDate &&
                                 (() => {
                                   // Parse date manually to avoid timezone issues
-                                  const [year, month, day] = selectedDate.split('-').map(Number);
-                                  const dateObj = new Date(year, month - 1, day);
+                                  const [year, month, day] = selectedDate
+                                    .split("-")
+                                    .map(Number);
+                                  const dateObj = new Date(
+                                    year,
+                                    month - 1,
+                                    day
+                                  );
                                   const dayOfWeek = dateObj
                                     .toLocaleDateString("en-US", {
                                       weekday: "long",
@@ -1112,12 +1269,52 @@ export default function BookingDatePage({
                             textAlign: "center",
                           }}
                         >
-                          <label
-                            className="form-label fw-semibold mb-3"
-                            style={{ fontSize: "0.9rem" }}
-                          >
-                            Prix
-                          </label>
+                          <div className="d-flex justify-content-between align-items-center mb-3">
+                            {/* <label
+                              className="form-label fw-semibold mb-0"
+                              style={{ fontSize: "0.9rem" }}
+                            >
+                              Prix
+                            </label> */}
+                            {/* TTC/HT Switch */}
+                            <div className="d-flex align-items-center gap-2">
+                              <span
+                                className={`tax-toggle ${
+                                  showTTC ? "active" : ""
+                                }`}
+                                onClick={() => setShowTTC(true)}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "0.75rem",
+                                }}
+                              >
+                                TTC
+                              </span>
+                              <div className="form-check form-switch mb-0">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  role="switch"
+                                  id="taxSwitchPrice"
+                                  checked={!showTTC}
+                                  onChange={() => setShowTTC(!showTTC)}
+                                  style={{ cursor: "pointer" }}
+                                />
+                              </div>
+                              <span
+                                className={`tax-toggle ${
+                                  !showTTC ? "active" : ""
+                                }`}
+                                onClick={() => setShowTTC(false)}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "0.75rem",
+                                }}
+                              >
+                                HT
+                              </span>
+                            </div>
+                          </div>
                           {reservationType !== "daily" && (
                             <div className="mb-2">
                               <span
@@ -1138,7 +1335,8 @@ export default function BookingDatePage({
                                 reservationType === "daily" ? "1rem" : "0",
                             }}
                           >
-                            {calculatedPrice.toFixed(0)}€
+                            {getDisplayPrice().toFixed(2)}€{" "}
+                            {showTTC ? "TTC" : "HT"}
                           </div>
                           <p
                             className="text-muted mb-0 small mt-2"

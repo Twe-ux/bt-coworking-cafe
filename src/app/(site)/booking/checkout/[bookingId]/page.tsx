@@ -154,7 +154,7 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
         <section className="checkout-page py-5">
           <div className="container">
             <div className="text-center py-5">
-              <div className="spinner-border text-primary" role="status">
+              <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">Chargement...</span>
               </div>
               <p className="mt-3 text-muted">Préparation du paiement...</p>
@@ -197,135 +197,126 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
     return null;
   }
 
-  const appearance = {
-    theme: 'stripe' as const,
-    variables: {
-      colorPrimary: '#0d6efd',
-    },
-  };
-
-  const options = {
-    clientSecret,
-    appearance,
-  };
+  // Pour CardElement, on n'a pas besoin de passer le clientSecret dans les options
+  // Il sera passé directement dans confirmCardPayment/confirmCardSetup
+  const options = {};
 
   return (
     <>
       <section className="checkout-page py-5">
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-lg-8">
+            <div className="col-lg-10">
               {/* Progress Bar */}
               <div className="booking-card mb-4">
                 <BookingProgressBar currentStep={4} />
 
-                {/* Back button and Title */}
-                <div className="mb-3 position-relative">
+                <hr className="my-3" style={{ opacity: 0.1 }} />
+
+                {/* Navigation and Title */}
+                <div className="custom-breadcrumb d-flex justify-content-between align-items-center mb-4">
                   <button
                     onClick={() => router.back()}
-                    className="btn btn-link text-muted p-0 position-absolute"
-                    style={{ fontSize: "0.9rem", left: 0, top: 0 }}
+                    className="breadcrumb-link"
                   >
-                    <i className="bi bi-arrow-left me-2"></i>
-                    Retour
+                    <i className="bi bi-arrow-left"></i>
+                    <span>Retour</span>
                   </button>
-                  <h2 className="text-center mb-0" style={{ fontSize: "1.35rem" }}>
+                  <h1 className="breadcrumb-current m-0">
                     Paiement sécurisé
-                  </h2>
+                  </h1>
+                  <div style={{ width: "80px" }}></div>
                 </div>
               </div>
 
               {/* Booking Summary */}
-              <div className="card border-0 shadow-sm mb-4">
-                <div className="card-body">
-                  <h5 className="card-title mb-4">
-                    <i className="bi bi-receipt me-2"></i>
-                    Récapitulatif de la réservation
-                  </h5>
+              <div className="booking-card mb-4">
+                <div className="d-flex align-items-center gap-2 mb-4">
+                  <i className="bi bi-receipt text-success" style={{ fontSize: "1.125rem" }}></i>
+                  <h2 className="h6 mb-0 fw-semibold">Récapitulatif de la réservation</h2>
+                </div>
 
-                  <div className="row mb-3">
-                    <div className="col-sm-4 text-muted">Espace</div>
-                    <div className="col-sm-8">
-                      <strong>{spaceConfig?.name || 'Espace'}</strong>
-                      <span className="badge bg-primary ms-2">
-                        {getTypeLabel(booking.spaceType)}
-                      </span>
-                    </div>
+                <div className="summary-row mb-3">
+                  <div className="summary-label">Espace</div>
+                  <div className="summary-value">
+                    <strong>{spaceConfig?.name || 'Espace'}</strong>
+                    <span className="badge bg-success ms-2" style={{ fontSize: "0.75rem" }}>
+                      {getTypeLabel(booking.spaceType)}
+                    </span>
                   </div>
+                </div>
 
-                  <div className="row mb-3">
-                    <div className="col-sm-4 text-muted">Date</div>
-                    <div className="col-sm-8">
-                      <i className="bi bi-calendar me-2"></i>
-                      {formatDate(booking.date)}
-                    </div>
+                <div className="summary-row mb-3">
+                  <div className="summary-label">Date</div>
+                  <div className="summary-value">
+                    <i className="bi bi-calendar me-2 text-success"></i>
+                    {formatDate(booking.date)}
                   </div>
+                </div>
 
-                  <div className="row mb-3">
-                    <div className="col-sm-4 text-muted">Horaire</div>
-                    <div className="col-sm-8">
-                      <i className="bi bi-clock me-2"></i>
-                      {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
-                    </div>
+                <div className="summary-row mb-3">
+                  <div className="summary-label">Horaire</div>
+                  <div className="summary-value">
+                    <i className="bi bi-clock me-2 text-success"></i>
+                    {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
                   </div>
+                </div>
 
-                  <div className="row mb-3">
-                    <div className="col-sm-4 text-muted">Nombre de personnes</div>
-                    <div className="col-sm-8">
-                      <i className="bi bi-people me-2"></i>
-                      {booking.numberOfPeople} {booking.numberOfPeople > 1 ? 'personnes' : 'personne'}
-                    </div>
+                <div className="summary-row mb-4">
+                  <div className="summary-label">Personnes</div>
+                  <div className="summary-value">
+                    <i className="bi bi-people me-2 text-success"></i>
+                    {booking.numberOfPeople} {booking.numberOfPeople > 1 ? 'personnes' : 'personne'}
                   </div>
+                </div>
 
-                  <hr />
+                <div className="price-divider mb-4"></div>
 
-                  <div className="row">
-                    <div className="col-sm-4 text-muted">
-                      <strong>Total à payer</strong>
-                    </div>
-                    <div className="col-sm-8">
-                      <h4 className="text-primary mb-0">
-                        {booking.totalPrice.toFixed(2)}€
-                      </h4>
-                    </div>
+                <div className="summary-row">
+                  <div className="summary-label" style={{ fontSize: "0.875rem", fontWeight: "700" }}>
+                    Total à payer
+                  </div>
+                  <div className="summary-value">
+                    <h4 className="text-success mb-0" style={{ fontSize: "1.5rem", fontWeight: "700" }}>
+                      {booking.totalPrice.toFixed(2)}€
+                    </h4>
                   </div>
                 </div>
               </div>
 
               {/* Payment Form */}
-              <div className="card border-0 shadow-sm">
-                <div className="card-body">
-                  <h5 className="card-title mb-4">
-                    <i className="bi bi-credit-card me-2"></i>
-                    Informations de paiement
-                  </h5>
-
-                  <Elements stripe={stripePromise} options={options}>
-                    <CheckoutForm
-                      bookingId={params.bookingId}
-                      amount={Math.round(booking.totalPrice * 100)}
-                      intentType={intentType || 'manual_capture'}
-                    />
-                  </Elements>
+              <div className="booking-card">
+                <div className="d-flex align-items-center gap-2 mb-4">
+                  <i className="bi bi-credit-card text-success" style={{ fontSize: "1.125rem" }}></i>
+                  <h2 className="h6 mb-0 fw-semibold">Informations de paiement</h2>
                 </div>
+
+                <Elements stripe={stripePromise} options={options}>
+                  <CheckoutForm
+                    bookingId={params.bookingId}
+                    amount={Math.round(booking.totalPrice * 100)}
+                    intentType={intentType || 'manual_capture'}
+                    clientSecret={clientSecret}
+                  />
+                </Elements>
               </div>
 
               {/* Security Info */}
-              <div className="text-center mt-4">
-                <p className="text-muted mb-2">
+              <div className="text-center mt-4" style={{ paddingBottom: "3rem" }}>
+                <p className="text-muted mb-2" style={{ fontSize: "0.875rem", fontWeight: "500" }}>
                   <i className="bi bi-shield-check me-2"></i>
                   Paiement 100% sécurisé
                 </p>
-                <div className="d-flex justify-content-center gap-3">
-                  <small className="text-muted">
+                <div className="d-flex justify-content-center gap-3 flex-wrap">
+                  <small className="text-muted" style={{ fontSize: "0.75rem" }}>
                     <i className="bi bi-lock-fill me-1"></i>
                     Cryptage SSL
                   </small>
-                  <small className="text-muted">
+                  <small className="text-muted" style={{ fontSize: "0.75rem" }}>
                     <i className="bi bi-credit-card-2-front me-1"></i>
                     Stripe
                   </small>
-                  <small className="text-muted">
+                  <small className="text-muted" style={{ fontSize: "0.75rem" }}>
                     <i className="bi bi-shield-fill-check me-1"></i>
                     PCI DSS
                   </small>

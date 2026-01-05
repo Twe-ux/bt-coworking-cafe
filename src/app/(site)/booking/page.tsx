@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import PageTitle from "@/components/site/pageTitle";
 import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
+import PageTitle from "@/components/site/pageTitle";
 import Link from "next/link";
-import BookingHelper from "@/components/site/booking/BookingHelper";
+import { useEffect, useState } from "react";
 
 interface SpaceConfig {
   spaceType: string;
@@ -42,6 +41,8 @@ interface DisplaySpace {
   capacity: string;
   features: string[];
   priceFrom: string;
+  hourlyPrice: string;
+  dailyPrice: string;
   requiresQuote: boolean;
 }
 
@@ -80,6 +81,28 @@ const spaceDisplayData: Record<string, Partial<DisplaySpace>> = {
 export default function BookingPage() {
   const [spaces, setSpaces] = useState<DisplaySpace[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showTTC, setShowTTC] = useState(true);
+
+  // Function to convert price string from TTC to HT or vice versa
+  // Hourly = 10% VAT, Daily = 20% VAT
+  const convertPrice = (priceString: string, toTTC: boolean): string => {
+    if (priceString === "Sur devis") return priceString;
+
+    // Extract the numeric price
+    const match = priceString.match(/(\d+(?:\.\d+)?)€/);
+    if (!match) return priceString;
+
+    const price = parseFloat(match[1]);
+
+    // Determine VAT rate based on whether it's hourly or daily
+    const isHourly = priceString.includes("/h");
+    const vatRate = isHourly ? 1.1 : 1.2; // 10% for hourly, 20% for daily
+
+    const convertedPrice = toTTC ? price : (price / vatRate).toFixed(2);
+
+    // Replace the price in the original string
+    return priceString.replace(/\d+(?:\.\d+)?€/, `${convertedPrice}€`);
+  };
 
   useEffect(() => {
     const fetchSpaces = async () => {
@@ -93,24 +116,32 @@ export default function BookingPage() {
             const urlSlug = spaceTypeToSlug[config.spaceType] || config.slug;
 
             // Determine price display
-            let priceFrom = "Sur devis";
+            let hourlyPrice = "Sur devis";
+            let dailyPrice = "Sur devis";
+            let capacityText = "";
+
             if (!config.requiresQuote) {
-              const lowestPrice =
-                config.pricing.hourly > 0
-                  ? config.pricing.hourly
-                  : config.pricing.daily;
-              priceFrom = lowestPrice > 0 ? `${lowestPrice}€/h` : "Sur devis";
+              // Hourly price (store TTC values)
+              if (config.pricing.hourly > 0) {
+                hourlyPrice = `${config.pricing.hourly}€/h`;
+              }
+
+              // Daily price (store TTC values)
+              if (config.pricing.daily > 0) {
+                dailyPrice = `${config.pricing.daily}€/jour`;
+              }
             }
 
-            // Format capacity
-            const capacity =
-              config.minCapacity === config.maxCapacity
-                ? `${config.minCapacity} personne${
-                    config.minCapacity > 1 ? "s" : ""
-                  }`
-                : config.maxCapacity > 50
-                ? `Jusqu'à ${config.maxCapacity} personnes`
-                : `${config.minCapacity}-${config.maxCapacity} personnes`;
+            // Format capacity for bottom display
+            if (config.minCapacity === config.maxCapacity) {
+              capacityText = `${config.minCapacity} personne${
+                config.minCapacity > 1 ? "s" : ""
+              }`;
+            } else if (config.maxCapacity > 50) {
+              capacityText = `Jusqu'à ${config.maxCapacity} personnes`;
+            } else {
+              capacityText = `${config.minCapacity}-${config.maxCapacity} personnes`;
+            }
 
             return {
               id: urlSlug,
@@ -119,9 +150,11 @@ export default function BookingPage() {
               description: config.description || displayData.description || "",
               icon: displayData.icon || "bi-building",
               image: config.imageUrl || `/images/spaces/${config.slug}.jpg`,
-              capacity,
+              capacity: capacityText,
               features: config.features || [],
-              priceFrom,
+              priceFrom: hourlyPrice, // Kept for compatibility, but we'll use new fields
+              hourlyPrice,
+              dailyPrice,
               requiresQuote: config.requiresQuote,
             };
           });
@@ -145,7 +178,7 @@ export default function BookingPage() {
         <section className="booking-selection py-5">
           <div className="container">
             <div className="text-center">
-              <div className="spinner-border text-primary" role="status">
+              <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">Chargement...</span>
               </div>
             </div>
@@ -173,6 +206,35 @@ export default function BookingPage() {
                 <p className="text-muted" style={{ fontSize: "0.9rem" }}>
                   Sélectionnez le type d'espace qui correspond à vos besoins
                 </p>
+
+                {/* TTC/HT Switch */}
+                <div className="d-flex justify-content-center align-items-center gap-3 mt-3">
+                  <span
+                    className={`tax-toggle ${showTTC ? "active" : ""}`}
+                    onClick={() => setShowTTC(true)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Prix TTC
+                  </span>
+                  <div className="form-check form-switch mb-0">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="taxSwitch"
+                      checked={!showTTC}
+                      onChange={() => setShowTTC(!showTTC)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </div>
+                  <span
+                    className={`tax-toggle ${!showTTC ? "active" : ""}`}
+                    onClick={() => setShowTTC(false)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Prix HT
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -224,31 +286,79 @@ export default function BookingPage() {
                     </div>
 
                     <div className="card-content">
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                          <h3 className="card-title mb-0">{space.title}</h3>
-                          <p className="card-subtitle text-muted">
-                            {space.subtitle}
-                          </p>
-                        </div>
-                        <span className="price-badge">{space.priceFrom}</span>
+                      <div className="d-flex justify-content-between align-items-center mb-1">
+                        <h3 className="card-title">{space.title}</h3>
+                        <p className="card-subtitle text-muted">
+                          {space.subtitle}
+                        </p>
+                      </div>
+                      <div className="capacity-info mb-3">
+                        <i className="bi bi-people me-2 text-success"></i>
+                        <span
+                          style={{ fontSize: "0.875rem", fontWeight: "500" }}
+                        >
+                          {space.capacity}
+                        </span>
                       </div>
 
                       <p className="card-description">{space.description}</p>
 
-                      <div className="card-meta">
-                        <div className="meta-item">
-                          <i className="bi bi-people me-2"></i>
-                          <span>{space.capacity}</span>
-                        </div>
-                        <div className="features-list">
-                          {space.features.map((feature, index) => (
-                            <span key={index} className="feature-badge">
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
+                      <div className="features-list mb-3">
+                        {space.features.map((feature, index) => (
+                          <span key={index} className="feature-badge">
+                            {feature}
+                          </span>
+                        ))}
                       </div>
+                    </div>
+
+                    {/* Pricing section at bottom with full width background */}
+                    <div
+                      className={`d-flex mt-auto ${
+                        space.requiresQuote
+                          ? "justify-content-center align-items-center"
+                          : "justify-content-center align-items-center"
+                      }`}
+                      style={{
+                        background:
+                          "linear-gradient(135deg, rgba(242, 211, 129, 0.25) 0%, rgba(65, 121, 114, 0.2) 100%)",
+                        borderBottomLeftRadius: "10px",
+                        borderBottomRightRadius: "10px",
+                        padding: "20px",
+                        marginLeft: "-20px",
+                        marginRight: "-20px",
+                        marginBottom: "-20px",
+                      }}
+                    >
+                      {!space.requiresQuote && (
+                        <>
+                          <div className="d-flex gap-3 align-items-center mb-3">
+                            <span className="text-success fw-bold">
+                              {convertPrice(space.hourlyPrice, showTTC)}{" "}
+                              {showTTC ? "TTC" : "HT"}
+                            </span>
+                            <span
+                              className="rounded-circle bg-black"
+                              style={{
+                                width: "6px",
+                                height: "6px",
+                                display: "inline-block",
+                              }}
+                            ></span>
+                            <span className="text-success fw-bold">
+                              {convertPrice(space.dailyPrice, showTTC)}{" "}
+                              {showTTC ? "TTC" : "HT"}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                      {space.requiresQuote && (
+                        <div className="d-flex gap-3 align-items-center mb-3">
+                          <span className="text-success fw-bold">
+                            Sur devis
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>

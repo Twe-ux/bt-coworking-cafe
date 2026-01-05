@@ -15,6 +15,7 @@ interface AdditionalService {
   price: number;
   dailyPrice?: number;
   priceUnit: 'per-person' | 'flat-rate';
+  vatRate: number;
   isActive: boolean;
   order: number;
   availableForSpaceTypes?: string[];
@@ -52,6 +53,7 @@ const AdditionalServicesPage = () => {
     price: 0,
     dailyPrice: undefined as number | undefined,
     priceUnit: 'flat-rate' as 'per-person' | 'flat-rate',
+    vatRate: 20,
     isActive: true,
     order: 0,
     icon: '',
@@ -87,6 +89,7 @@ const AdditionalServicesPage = () => {
         price: service.price,
         dailyPrice: service.dailyPrice,
         priceUnit: service.priceUnit,
+        vatRate: service.vatRate,
         isActive: service.isActive,
         order: service.order,
         icon: service.icon || '',
@@ -100,6 +103,7 @@ const AdditionalServicesPage = () => {
         price: 0,
         dailyPrice: undefined,
         priceUnit: 'flat-rate',
+        vatRate: 20,
         isActive: true,
         order: 0,
         icon: '',
@@ -156,6 +160,8 @@ const AdditionalServicesPage = () => {
     e.preventDefault();
 
     try {
+      console.log('📤 Submitting formData:', formData);
+
       const url = editingService
         ? `/api/additional-services/${editingService._id}`
         : '/api/additional-services';
@@ -474,6 +480,31 @@ const AdditionalServicesPage = () => {
                   <Form.Text className="text-muted">
                     Le prix par personne sera multiplié par le nombre de
                     participants
+                  </Form.Text>
+                </Form.Group>
+              </div>
+
+              <div className="col-md-6">
+                <Form.Group>
+                  <Form.Label>
+                    Taux de TVA (%) <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Select
+                    value={formData.vatRate}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        vatRate: parseFloat(e.target.value),
+                      })
+                    }
+                    required
+                  >
+                    <option value="5.5">5,5% (Taux réduit alimentaire)</option>
+                    <option value="10">10% (Taux réduit)</option>
+                    <option value="20">20% (Taux normal)</option>
+                  </Form.Select>
+                  <Form.Text className="text-muted">
+                    Taux de TVA applicable à ce service
                   </Form.Text>
                 </Form.Group>
               </div>

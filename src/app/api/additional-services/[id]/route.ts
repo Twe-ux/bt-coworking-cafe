@@ -63,6 +63,9 @@ export async function PATCH(
     const { id } = params;
     const body = await request.json();
 
+    console.log('📥 Received body for UPDATE:', body);
+    console.log('📥 vatRate in body:', body.vatRate, 'type:', typeof body.vatRate);
+
     let service;
     if (mongoose.Types.ObjectId.isValid(id)) {
       service = await AdditionalService.findById(id);
@@ -85,6 +88,7 @@ export async function PATCH(
       'price',
       'dailyPrice',
       'priceUnit',
+      'vatRate',
       'isActive',
       'availableForSpaceTypes',
       'icon',
@@ -102,7 +106,9 @@ export async function PATCH(
       service.slug = ''; // Sera regénéré par le hook
     }
 
+    console.log('💾 About to save service with vatRate:', service.vatRate);
     await service.save();
+    console.log('✅ Service saved. Current vatRate:', service.vatRate);
 
     return NextResponse.json({
       success: true,
