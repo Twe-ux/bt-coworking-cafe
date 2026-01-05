@@ -18,7 +18,7 @@ export default function BookingProgressBar({ currentStep, customLabels, onStepCl
     { number: 3, label: customLabels?.step3 || 'Détails' },
     { number: 4, label: customLabels?.step4 || 'Paiement' },
   ];
-  const progressPercentage = ((currentStep - 1) / (steps.length - 1)) * 100;
+  const progressPercentage = Math.min(((currentStep - 1) / (steps.length - 1)) * 100, 100);
 
   return (
     <div className="booking-progress-bar mb-4">

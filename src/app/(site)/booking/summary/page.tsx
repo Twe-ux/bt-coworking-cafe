@@ -3,9 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
 import InfoEmpreinte from "@/components/site/booking/InfoEmpreinte";
 import "../../[id]/client-dashboard.scss";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
 
 interface BookingData {
   spaceType: string;
@@ -72,6 +76,79 @@ const slugToSpaceType: Record<string, string> = {
   "event-space": "evenementiel",
 };
 
+// Payment Form Component
+interface PaymentFormContentProps {
+  bookingId: string;
+  onSuccess: () => void;
+  onError: (error: string) => void;
+}
+
+function PaymentFormContent({ bookingId, onSuccess, onError }: PaymentFormContentProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/booking/confirmation/${bookingId}`,
+        },
+      });
+
+      if (error) {
+        onError(error.message || "Une erreur est survenue");
+        setIsProcessing(false);
+      } else {
+        onSuccess();
+      }
+    } catch (err) {
+      onError("Une erreur est survenue lors du paiement");
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-4">
+      <PaymentElement />
+      <button
+        type="submit"
+        disabled={!stripe || isProcessing}
+        className="btn w-100 mt-4"
+        style={{
+          padding: "1rem 2rem",
+          fontSize: "1rem",
+          fontWeight: "600",
+          backgroundColor: "#588983",
+          color: "white",
+          border: "none",
+        }}
+      >
+        {isProcessing ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-2"></span>
+            Traitement en cours...
+          </>
+        ) : (
+          <>
+            <i className="bi bi-lock me-2"></i>
+            Valider la réservation
+          </>
+        )}
+      </button>
+    </form>
+  );
+}
+
 export default function BookingSummaryPage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -85,6 +162,12 @@ export default function BookingSummaryPage() {
   const [depositAmount, setDepositAmount] = useState<number>(0);
   const [spaceConfig, setSpaceConfig] = useState<any>(null);
   const [showTTC, setShowTTC] = useState(true);
+
+  // Stripe payment states
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const [bookingId, setBookingId] = useState<string>("");
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [paymentError, setPaymentError] = useState<string>("");
 
   // Fonction pour convertir un prix entre TTC et HT
   const convertPrice = (
@@ -277,6 +360,7 @@ export default function BookingSummaryPage() {
     if (!bookingData) return;
 
     setLoading(true);
+    setPaymentError("");
 
     try {
       // Prepare additional services data
@@ -332,22 +416,36 @@ export default function BookingSummaryPage() {
       const data = await response.json();
 
       if (!data.success) {
-        alert(data.error || "Erreur lors de la création de la réservation");
+        setPaymentError(data.error || "Erreur lors de la création de la réservation");
         setLoading(false);
         return;
       }
 
-      const bookingId = data.data._id;
+      const createdBookingId = data.data._id;
+      setBookingId(createdBookingId);
 
-      // Clear sessionStorage
-      sessionStorage.removeItem("bookingData");
-      sessionStorage.removeItem("selectedServices");
+      // Create payment intent
+      const paymentResponse = await fetch("/api/payments/create-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingId: createdBookingId }),
+      });
 
-      // Redirect to checkout
-      router.push(`/booking/checkout/${bookingId}`);
+      const paymentData = await paymentResponse.json();
+
+      if (!paymentData.success) {
+        setPaymentError(paymentData.error || "Erreur lors de la création du paiement");
+        setLoading(false);
+        return;
+      }
+
+      // Set client secret and show payment form
+      setClientSecret(paymentData.data.clientSecret);
+      setShowPaymentForm(true);
+      setLoading(false);
     } catch (error) {
       console.error("Error creating reservation:", error);
-      alert("Une erreur est survenue");
+      setPaymentError("Une erreur est survenue");
       setLoading(false);
     }
   };
@@ -412,26 +510,23 @@ export default function BookingSummaryPage() {
                 </div>
               </div>
 
-              <div className="row g-3">
-                {/* Left Column - Summary */}
+              <div className="row g-3" style={{ display: "flex" }}>
+                {/* Left Column (55%) - Summary + Price Breakdown */}
                 <div
-                  className="col-lg-5 d-flex flex-column"
-                  style={{ gap: "var(--spacing-3)" }}
+                  className="d-flex flex-column"
+                  style={{ flex: "0 0 55%", gap: "1rem" }}
                 >
                   <div
                     className="booking-card d-flex flex-column"
                     style={{ flex: 1 }}
                   >
-                    <div className="d-flex align-items-center gap-3 mb-4">
-                      <i
-                        className="bi bi-calendar-check"
-                        style={{ color: "#588983", fontSize: "1.25rem" }}
-                      ></i>
+                    <div className="d-flex align-items-center gap-3 mb-4 pb-3" style={{ borderBottom: "2px solid #f0f0f0" }}>
+                      <i className="bi bi-calendar-check" style={{ fontSize: "1.5rem", color: "#588983" }}></i>
                       <h2
                         className="h6 mb-0 fw-bold"
-                        style={{ fontSize: "1rem" }}
+                        style={{ fontSize: "1.125rem", color: "#333" }}
                       >
-                        Détails de la réservation
+                        Résumé de la réservation
                       </h2>
                     </div>
 
@@ -440,50 +535,76 @@ export default function BookingSummaryPage() {
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: "1rem",
+                        gap: "0",
                       }}
                     >
-                      <div className="summary-row">
-                        <span className="summary-label">Espace</span>
-                        <span className="summary-value">
+                      <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 0",
+                        borderBottom: "1px solid #f0f0f0"
+                      }}>
+                        <span style={{ fontWeight: "600", color: "#666" }}>Espace</span>
+                        <span style={{ color: "#333", textAlign: "right" }}>
                           {spaceTypeLabels[bookingData.spaceType]}
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Type</span>
-                        <span className="summary-value">
+                      <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 0",
+                        borderBottom: "1px solid #f0f0f0"
+                      }}>
+                        <span style={{ fontWeight: "600", color: "#666" }}>Type</span>
+                        <span style={{ color: "#333", textAlign: "right" }}>
                           {reservationTypeLabels[bookingData.reservationType]}
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Date</span>
-                        <span className="summary-value">
+                      <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 0",
+                        borderBottom: "1px solid #f0f0f0"
+                      }}>
+                        <span style={{ fontWeight: "600", color: "#666" }}>Date</span>
+                        <span style={{ color: "#333", textAlign: "right" }}>
                           {new Date(bookingData.date).toLocaleDateString(
                             "fr-FR",
                             {
                               weekday: "long",
                               day: "numeric",
                               month: "long",
+                              year: "numeric"
                             }
                           )}
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Horaires</span>
-                        <span className="summary-value">
-                          {bookingData.startTime} - {bookingData.endTime}
-                          <small className="text-muted ms-2">
+                      <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 0",
+                        borderBottom: "1px solid #f0f0f0"
+                      }}>
+                        <span style={{ fontWeight: "600", color: "#666" }}>Horaires</span>
+                        <span style={{ color: "#333", textAlign: "right" }}>
+                          {bookingData.startTime} - {bookingData.endTime}{" "}
+                          <small style={{ color: "#999" }}>
                             ({bookingData.duration})
                           </small>
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Personnes</span>
-                        <span className="summary-value">
+                      <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 0",
+                        borderBottom: "1px solid #f0f0f0"
+                      }}>
+                        <span style={{ fontWeight: "600", color: "#666" }}>Personnes</span>
+                        <span style={{ color: "#333", textAlign: "right" }}>
                           {bookingData.numberOfPeople}{" "}
                           {bookingData.numberOfPeople > 1
                             ? "personnes"
@@ -491,24 +612,33 @@ export default function BookingSummaryPage() {
                         </span>
                       </div>
 
-                      <div className="summary-row">
-                        <span className="summary-label">Contact</span>
-                        <span className="summary-value">
+                      <div style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 0",
+                        borderBottom: bookingData.specialRequests ? "1px solid #f0f0f0" : "none"
+                      }}>
+                        <span style={{ fontWeight: "600", color: "#666" }}>Contact</span>
+                        <span style={{ color: "#333", textAlign: "right" }}>
                           <div>{bookingData.contactName}</div>
-                          <small className="text-muted">
+                          <small style={{ color: "#999" }}>
                             {bookingData.contactEmail}
                           </small>
                           <br />
-                          <small className="text-muted">
+                          <small style={{ color: "#999" }}>
                             {bookingData.contactPhone}
                           </small>
                         </span>
                       </div>
 
                       {bookingData.specialRequests && (
-                        <div className="summary-row">
-                          <span className="summary-label">Demandes</span>
-                          <span className="summary-value">
+                        <div style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "12px 0"
+                        }}>
+                          <span style={{ fontWeight: "600", color: "#666" }}>Demandes</span>
+                          <span style={{ color: "#333", textAlign: "right" }}>
                             {bookingData.specialRequests}
                           </span>
                         </div>
@@ -516,168 +646,15 @@ export default function BookingSummaryPage() {
                     </div>
                   </div>
 
-                  {/* Additional Services - Editable */}
-                  {selectedServices.size > 0 && (
-                    <div className="booking-card" style={{ flex: 1 }}>
-                      <div className="d-flex align-items-center gap-3 mb-4">
-                        <i
-                          className="bi bi-star"
-                          style={{ color: "#588983", fontSize: "1.25rem" }}
-                        ></i>
-                        <h2
-                          className="h6 mb-0 fw-bold"
-                          style={{ fontSize: "1rem" }}
-                        >
-                          Services supplémentaires
-                        </h2>
-                      </div>
-
-                      <div className="d-flex flex-column gap-3">
-                        {Array.from(selectedServices.values()).map(
-                          (selected) => {
-                            const isDaily = isDailyRate();
-                            const priceToUse =
-                              isDaily &&
-                              selected.service.dailyPrice !== undefined
-                                ? selected.service.dailyPrice
-                                : selected.service.price;
-
-                            const itemTotal =
-                              selected.service.priceUnit === "per-person"
-                                ? priceToUse *
-                                  bookingData.numberOfPeople *
-                                  selected.quantity
-                                : priceToUse * selected.quantity;
-
-                            return (
-                              <div
-                                key={selected.service._id}
-                                className="service-item-card p-3 rounded border"
-                                style={{
-                                  backgroundColor: "hsl(var(--muted) / 0.3)",
-                                }}
-                              >
-                                <div className="d-flex justify-content-between align-items-start mb-3">
-                                  <div className="flex-grow-1">
-                                    <div className="fw-semibold mb-1">
-                                      {selected.service.name}
-                                    </div>
-                                    <div className="text-muted small">
-                                      {priceToUse.toFixed(2)}€
-                                      {selected.service.priceUnit ===
-                                        "per-person" && " / personne"}
-                                      {isDaily &&
-                                        selected.service.dailyPrice !==
-                                          undefined && (
-                                          <span
-                                            className="badge bg-success-subtle text-success ms-2 px-2 py-1"
-                                            style={{ fontSize: "0.7rem" }}
-                                          >
-                                            Prix jour
-                                          </span>
-                                        )}
-                                    </div>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm btn-ghost p-1"
-                                    onClick={() =>
-                                      removeService(selected.service._id)
-                                    }
-                                    title="Supprimer"
-                                    style={{
-                                      opacity: 0.6,
-                                      transition: "opacity 0.2s",
-                                    }}
-                                    onMouseEnter={(e) =>
-                                      (e.currentTarget.style.opacity = "1")
-                                    }
-                                    onMouseLeave={(e) =>
-                                      (e.currentTarget.style.opacity = "0.6")
-                                    }
-                                  >
-                                    <i className="bi bi-x-lg"></i>
-                                  </button>
-                                </div>
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center gap-2">
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-secondary btn-sm"
-                                      style={{
-                                        width: "32px",
-                                        height: "32px",
-                                        padding: 0,
-                                      }}
-                                      onClick={() =>
-                                        updateServiceQuantity(
-                                          selected.service._id,
-                                          selected.quantity - 1
-                                        )
-                                      }
-                                      disabled={selected.quantity <= 1}
-                                    >
-                                      <i className="bi bi-dash"></i>
-                                    </button>
-                                    <span
-                                      className="fw-semibold px-2"
-                                      style={{
-                                        minWidth: "30px",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      {selected.quantity}
-                                    </span>
-                                    <button
-                                      type="button"
-                                      className="btn btn-outline-secondary btn-sm"
-                                      style={{
-                                        width: "32px",
-                                        height: "32px",
-                                        padding: 0,
-                                      }}
-                                      onClick={() =>
-                                        updateServiceQuantity(
-                                          selected.service._id,
-                                          selected.quantity + 1
-                                        )
-                                      }
-                                    >
-                                      <i className="bi bi-plus"></i>
-                                    </button>
-                                  </div>
-                                  <span
-                                    className="fw-bold"
-                                    style={{ color: "#588983" }}
-                                  >
-                                    {itemTotal.toFixed(2)}€
-                                  </span>
-                                </div>
-                              </div>
-                            );
-                          }
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Column - Price & Actions */}
-                <div className="col-lg-7 d-flex">
-                  <div
-                    className="booking-card d-flex flex-column w-100"
-                    style={{ flex: 1 }}
-                  >
-                    <div className="d-flex align-items-center gap-3 mb-4">
-                      <i
-                        className="bi bi-cash-stack"
-                        style={{ color: "#588983", fontSize: "1.25rem" }}
-                      ></i>
+                  {/* Price Breakdown Card */}
+                  <div className="booking-card">
+                    <div className="d-flex align-items-center gap-3 mb-4 pb-3" style={{ borderBottom: "2px solid #f0f0f0" }}>
+                      <i className="bi bi-cash-stack" style={{ fontSize: "1.5rem", color: "#588983" }}></i>
                       <h2
                         className="h6 mb-0 fw-bold"
-                        style={{ fontSize: "1rem" }}
+                        style={{ fontSize: "1.125rem", color: "#333" }}
                       >
-                        Récapitulatif
+                        Récapitulatif des prix
                       </h2>
                     </div>
 
@@ -975,6 +952,24 @@ export default function BookingSummaryPage() {
                         </span>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Right Column (45%) - Payment Only */}
+                <div
+                  className="d-flex flex-column"
+                  style={{ flex: "0 0 45%", gap: "1rem" }}
+                >
+                  <div className="booking-card d-flex flex-column" style={{ height: "100%" }}>
+                    <div className="d-flex align-items-center gap-3 mb-4 pb-3" style={{ borderBottom: "2px solid #f0f0f0" }}>
+                      <i className="bi bi-credit-card" style={{ fontSize: "1.5rem", color: "#588983" }}></i>
+                      <h2
+                        className="h6 mb-0 fw-bold"
+                        style={{ fontSize: "1.125rem", color: "#333" }}
+                      >
+                        Paiement sécurisé
+                      </h2>
+                    </div>
 
                     {/* Info empreinte */}
                     <InfoEmpreinte
@@ -987,39 +982,121 @@ export default function BookingSummaryPage() {
                       daysUntilBooking={daysUntilBooking}
                     />
 
-                    <div className="actions-section mt-auto pt-4">
-                      <button
-                        className="btn btn-success w-100 mb-3"
-                        onClick={() => handleCreateReservation()}
-                        disabled={loading}
-                        style={{
-                          padding: "0.875rem 1.5rem",
-                          fontSize: "0.9375rem",
-                          fontWeight: "600",
+                    {/* Payment Error */}
+                    {paymentError && (
+                      <div className="alert alert-danger" role="alert">
+                        <i className="bi bi-exclamation-triangle me-2"></i>
+                        {paymentError}
+                      </div>
+                    )}
+
+                    {/* Payment Form or Button */}
+                    {showPaymentForm && clientSecret ? (
+                      <Elements
+                        stripe={stripePromise}
+                        options={{
+                          clientSecret,
+                          appearance: {
+                            theme: 'stripe',
+                            variables: {
+                              colorPrimary: '#588983',
+                              colorBackground: '#ffffff',
+                              colorText: '#333333',
+                              colorDanger: '#df1b41',
+                              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                              spacingUnit: '4px',
+                              borderRadius: '8px',
+                            },
+                            rules: {
+                              '.Input': {
+                                border: '1px solid #e0e0e0',
+                                boxShadow: 'none',
+                              },
+                              '.Input:focus': {
+                                border: '1px solid #588983',
+                                boxShadow: '0 0 0 1px #588983',
+                              },
+                              '.Label': {
+                                color: '#333333',
+                                fontWeight: '600',
+                              },
+                            },
+                          },
                         }}
                       >
-                        {loading ? (
-                          <>
-                            <span className="spinner-border spinner-border-sm me-2"></span>
-                            Création en cours...
-                          </>
-                        ) : (
-                          <>
-                            <i className="bi bi-credit-card me-2"></i>
-                            {daysUntilBooking <= 7
-                              ? "Valider la réservation"
-                              : "Enregistrer ma carte"}
-                          </>
-                        )}
-                      </button>
+                        <PaymentFormContent
+                          bookingId={bookingId}
+                          onSuccess={() => {
+                            // Clear sessionStorage
+                            sessionStorage.removeItem("bookingData");
+                            sessionStorage.removeItem("selectedServices");
+                            router.push(`/booking/confirmation/${bookingId}`);
+                          }}
+                          onError={(error) => setPaymentError(error)}
+                        />
+                      </Elements>
+                    ) : (
+                      <div className="flex-grow-1 d-flex flex-column justify-content-center">
+                        {/* Placeholder for payment form */}
+                        <div
+                          style={{
+                            background: "#f9f9f9",
+                            border: "2px dashed #588983",
+                            borderRadius: "12px",
+                            padding: "2rem",
+                            textAlign: "center",
+                            minHeight: "280px",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: "1.5rem",
+                          }}
+                        >
+                          <i className="bi bi-credit-card" style={{ fontSize: "4rem", color: "#588983", marginBottom: "1rem" }}></i>
+                          <p style={{ fontWeight: "600", fontSize: "1.125rem", color: "#666", marginBottom: "1rem" }}>
+                            Formulaire de paiement Stripe Elements
+                          </p>
+                          <p style={{ color: "#999", fontSize: "0.875rem", lineHeight: "1.8", margin: "0" }}>
+                            Les champs du formulaire Stripe apparaîtront ici :<br />
+                            • Numéro de carte<br />
+                            • Date d'expiration<br />
+                            • CVC
+                          </p>
+                        </div>
 
-                      <div className="text-center">
-                        <small className="text-muted d-flex align-items-center justify-content-center gap-1">
-                          <i className="bi bi-shield-check"></i>
-                          <span>Paiement sécurisé par Stripe</span>
-                        </small>
+                        <button
+                          className="btn w-100"
+                          onClick={() => handleCreateReservation()}
+                          disabled={loading}
+                          style={{
+                            padding: "1rem 2rem",
+                            fontSize: "1rem",
+                            fontWeight: "600",
+                            backgroundColor: "#588983",
+                            color: "white",
+                            border: "none",
+                          }}
+                        >
+                          {loading ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2"></span>
+                              Création en cours...
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-lock me-2"></i>
+                              Valider la réservation
+                            </>
+                          )}
+                        </button>
                       </div>
-                    </div>
+                    )}
+
+                    <p className="text-center text-muted mt-3" style={{ fontSize: "0.8125rem" }}>
+                      <i className="bi bi-shield-check me-1"></i>
+                      Paiement sécurisé par Stripe
+                    </p>
                   </div>
                 </div>
               </div>

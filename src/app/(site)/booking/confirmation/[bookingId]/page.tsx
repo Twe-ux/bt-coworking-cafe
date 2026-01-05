@@ -228,7 +228,7 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
             <div className="col-lg-10">
               {/* Progress Bar */}
               <div className="booking-card mb-4">
-                <BookingProgressBar currentStep={5} />
+                <BookingProgressBar currentStep={4} />
 
                 <hr className="my-3" style={{ opacity: 0.1 }} />
 

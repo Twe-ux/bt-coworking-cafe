@@ -75,9 +75,7 @@ export async function createPaymentIntent(
       metadata: metadata || {},
       customer: customerId, // Link to Stripe customer
       capture_method: captureMethod || 'automatic',
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: ['card'], // Only card payments (no Klarna, Amazon Pay, etc.)
     });
 
     return paymentIntent;
@@ -149,9 +147,7 @@ export async function createSetupIntent(
     const setupIntent = await stripe.setupIntents.create({
       customer: customerId,
       metadata: metadata || {},
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: ['card'], // Only card payments (no Klarna, Amazon Pay, etc.)
     });
 
     return setupIntent;
