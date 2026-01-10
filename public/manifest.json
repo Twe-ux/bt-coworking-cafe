@@ -1,0 +1,82 @@
+{
+  "name": "Coworking Café - Réservation",
+  "short_name": "Coworking Café",
+  "description": "Réservez votre espace de coworking et salles de réunion au Coworking Café Strasbourg",
+  "start_url": "/booking",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F59E0B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity", "lifestyle"],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "Réserver un espace",
+      "short_name": "Réserver",
+      "description": "Réserver un espace de coworking",
+      "url": "/booking",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Mes réservations",
+      "short_name": "Mes réservations",
+      "description": "Voir mes réservations",
+      "url": "/booking/my-bookings",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Accéder au tableau de bord client",
+      "url": "/dashboards/analytics",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

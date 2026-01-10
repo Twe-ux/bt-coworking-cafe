@@ -3,6 +3,7 @@ import "@/assets/dashboard/scss/app.scss";
 import Footer from "@/components/dashboard/layout/Footer";
 import AppProvidersWrapper from "@/components/dashboard/wrappers/AppProvidersWrapper";
 import AuthProtectionWrapper from "@/components/dashboard/wrappers/AuthProtectionWrapper";
+import PWAInstallPrompt from "@/components/common/PWAInstallPrompt";
 import dynamic from "next/dynamic";
 import { Figtree } from "next/font/google";
 import Image from "next/image";
@@ -88,6 +89,7 @@ export default function DashboardLayout({
                   <Footer />
                 </div>
               </div>
+              <PWAInstallPrompt />
             </AuthProtectionWrapper>
           </AppProvidersWrapper>
         </div>
