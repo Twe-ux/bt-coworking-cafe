@@ -18,6 +18,8 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -173,35 +175,69 @@ export default function RegisterPage() {
                   <label htmlFor="password" className="form-label">
                     Mot de passe * (min. 8 caractères)
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    className="form-control auth-input"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    minLength={8}
-                    disabled={isLoading}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      className="form-control auth-input"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      minLength={8}
+                      disabled={isLoading}
+                      style={{ paddingRight: "2.5rem" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-link position-absolute"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        top: "50%",
+                        right: "0.5rem",
+                        transform: "translateY(-50%)",
+                        padding: "0.25rem 0.5rem",
+                        color: "#666",
+                      }}
+                    >
+                      <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="confirmPassword" className="form-label">
                     Confirmer le mot de passe *
                   </label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    className="form-control auth-input"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      className="form-control auth-input"
+                      placeholder="••••••••"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                      disabled={isLoading}
+                      style={{ paddingRight: "2.5rem" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-link position-absolute"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      style={{
+                        top: "50%",
+                        right: "0.5rem",
+                        transform: "translateY(-50%)",
+                        padding: "0.25rem 0.5rem",
+                        color: "#666",
+                      }}
+                    >
+                      <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mb-4">

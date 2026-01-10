@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
+    const attendanceStatus = searchParams.get("attendanceStatus");
     const spaceType = searchParams.get("spaceType");
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
@@ -38,6 +39,10 @@ export async function GET(request: NextRequest) {
 
     if (status) {
       query.status = status;
+    }
+
+    if (attendanceStatus) {
+      query.attendanceStatus = attendanceStatus;
     }
 
     if (spaceType) {

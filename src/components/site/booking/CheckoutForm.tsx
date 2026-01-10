@@ -1,16 +1,17 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
 
 interface CheckoutFormProps {
   bookingId: string;
   amount: number;
   intentType: 'setup_intent' | 'manual_capture';
+  clientSecret: string;
 }
 
-export default function CheckoutForm({ bookingId, amount, intentType }: CheckoutFormProps) {
+export default function CheckoutForm({ bookingId, amount, intentType, clientSecret }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -28,24 +29,26 @@ export default function CheckoutForm({ bookingId, amount, intentType }: Checkout
     setProcessing(true);
     setErrorMessage(null);
 
-    try {
-      // First, submit the elements to validate
-      const { error: submitError } = await elements.submit();
-      if (submitError) {
-        setErrorMessage(submitError.message || 'Erreur de validation');
-        setProcessing(false);
-        return;
-      }
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) {
+      setErrorMessage('Erreur de chargement du formulaire');
+      setProcessing(false);
+      return;
+    }
 
+    try {
       if (intentType === 'setup_intent') {
         // For setup intent (bookings >7 days): save card for later
-        const { error: setupError, setupIntent } = await stripe.confirmSetup({
-          elements,
-          confirmParams: {
-            return_url: `${window.location.origin}/booking/confirmation/${bookingId}`,
-          },
-          redirect: 'if_required',
-        });
+        const { error: setupError, setupIntent } = await stripe.confirmCardSetup(
+          // Client secret will be passed via the confirmCardSetup method
+          // We need to fetch it from the API
+          await fetchClientSecret(),
+          {
+            payment_method: {
+              card: cardElement,
+            },
+          }
+        );
 
         if (setupError) {
           setErrorMessage(setupError.message || 'Une erreur est survenue lors de l\'enregistrement de la carte');
@@ -59,13 +62,14 @@ export default function CheckoutForm({ bookingId, amount, intentType }: Checkout
         }
       } else {
         // For manual capture payment intent (bookings ≤7 days): authorization hold
-        const { error: paymentError, paymentIntent } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `${window.location.origin}/booking/confirmation/${bookingId}`,
-          },
-          redirect: 'if_required',
-        });
+        const { error: paymentError, paymentIntent } = await stripe.confirmCardPayment(
+          await fetchClientSecret(),
+          {
+            payment_method: {
+              card: cardElement,
+            },
+          }
+        );
 
         if (paymentError) {
           setErrorMessage(paymentError.message || 'Une erreur est survenue lors du paiement');
@@ -91,6 +95,10 @@ export default function CheckoutForm({ bookingId, amount, intentType }: Checkout
     }
   };
 
+  const fetchClientSecret = async () => {
+    return clientSecret;
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       {errorMessage && (
@@ -101,14 +109,35 @@ export default function CheckoutForm({ bookingId, amount, intentType }: Checkout
       )}
 
       <div className="mb-4">
-        <PaymentElement />
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#1a1a1a',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+                '::placeholder': {
+                  color: '#9ca3af',
+                },
+              },
+              invalid: {
+                color: '#df1b41',
+              },
+            },
+          }}
+        />
       </div>
 
       <div className="d-grid">
         <button
           type="submit"
-          className="btn btn-primary btn-lg"
+          className="btn btn-success btn-lg"
           disabled={!stripe || processing}
+          style={{
+            padding: "0.875rem 1.5rem",
+            fontSize: "0.9375rem",
+            fontWeight: "600"
+          }}
         >
           {processing ? (
             <>
@@ -125,7 +154,7 @@ export default function CheckoutForm({ bookingId, amount, intentType }: Checkout
       </div>
 
       <div className="text-center mt-3">
-        <small className="text-muted">
+        <small className="text-muted" style={{ fontSize: "0.8125rem" }}>
           <i className="bi bi-shield-check me-1"></i>
           Paiement sécurisé par Stripe
         </small>

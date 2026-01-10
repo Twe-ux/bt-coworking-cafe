@@ -5,6 +5,8 @@ import { Reservation } from '@/models/reservation';
 import { verifyWebhookSignature, stripe } from '@/lib/stripe';
 import Stripe from 'stripe';
 import type { CardBrand } from '@/models/payment/document';
+import { sendBookingConfirmation, sendCardSavedConfirmation } from '@/lib/email/emailService';
+import { getSpaceTypeName } from '@/lib/space-names';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -14,6 +16,8 @@ export const dynamic = 'force-dynamic';
  * Handle Stripe webhook events
  *
  * Events handled:
+ * - payment_intent.amount_capturable_updated: Authorization hold created (manual capture)
+ * - setup_intent.succeeded: Card saved for future payment
  * - payment_intent.succeeded: Payment was successful
  * - payment_intent.payment_failed: Payment failed
  * - charge.refunded: Payment was refunded
@@ -48,6 +52,24 @@ export async function POST(request: NextRequest) {
 
     // Handle different event types
     switch (event.type) {
+      case 'payment_intent.amount_capturable_updated': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        console.log('💳 PaymentIntent authorized (requires_capture):', paymentIntent.id);
+
+        // NEW WORKFLOW: Create booking if payment is authorized and metadata flag is set
+        await handlePaymentAuthorized(paymentIntent);
+        break;
+      }
+
+      case 'setup_intent.succeeded': {
+        const setupIntent = event.data.object as Stripe.SetupIntent;
+        console.log('💾 SetupIntent succeeded (card saved):', setupIntent.id);
+
+        // NEW WORKFLOW: Create booking if card is saved and metadata flag is set
+        await handleSetupIntentSucceeded(setupIntent);
+        break;
+      }
+
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         console.log('✅ PaymentIntent succeeded:', paymentIntent.id);
@@ -275,6 +297,243 @@ async function handleRefund(charge: Stripe.Charge) {
     }
   } catch (error) {
     console.error('Error handling refund:', error);
+    throw error;
+  }
+}
+
+/**
+ * NEW WORKFLOW: Handle payment authorized (manual capture)
+ * Creates reservation from payment intent metadata
+ */
+async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
+  try {
+    console.log('🔍 Checking payment intent metadata:', paymentIntent.metadata);
+
+    // Check if this payment should create a booking
+    if (paymentIntent.metadata?.createBookingOnAuthorization !== 'true') {
+      console.log('⏭️ Skipping booking creation (not flagged)');
+      return;
+    }
+
+    // CRITICAL: Check if booking already exists BEFORE creating (prevents race condition duplicates)
+    // This check must happen synchronously before any async operations
+    const existingBooking = await Reservation.findOne({
+      stripePaymentIntentId: paymentIntent.id,
+    });
+
+    if (existingBooking) {
+      console.log('⏭️ Booking already exists for this payment intent:', existingBooking._id);
+      // Send email again if needed (in case first one failed)
+      return;
+    }
+
+    // Parse reservation data from metadata
+    const metadata = paymentIntent.metadata;
+
+    // Generate confirmation number
+    const confirmationNumber = `BT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+    // Parse additional services if present
+    let additionalServices = [];
+    if (metadata.additionalServices) {
+      try {
+        additionalServices = JSON.parse(metadata.additionalServices);
+      } catch (e) {
+        console.error('Error parsing additionalServices:', e);
+      }
+    }
+
+    // Parse invoiceDetails if present
+    let invoiceDetails = undefined;
+    if (metadata.invoiceDetails) {
+      try {
+        invoiceDetails = JSON.parse(metadata.invoiceDetails);
+      } catch (e) {
+        console.error('Error parsing invoiceDetails:', e);
+      }
+    }
+
+    // Create reservation
+    let reservation;
+    try {
+      reservation = await Reservation.create({
+        spaceType: metadata.spaceType,
+        date: new Date(metadata.date),
+        startTime: metadata.startTime,
+        endTime: metadata.endTime,
+        numberOfPeople: parseInt(metadata.numberOfPeople),
+        totalPrice: parseFloat(metadata.totalPrice),
+        user: metadata.userId || null,
+        contactEmail: metadata.contactEmail,
+        contactName: metadata.contactName,
+        contactPhone: metadata.contactPhone,
+        companyName: metadata.companyName || '',
+        status: 'pending', // Will be confirmed by admin
+        paymentStatus: 'pending',
+        invoiceOption: metadata.invoiceOption !== 'no_invoice', // Convert to boolean
+        invoiceDetails: invoiceDetails,
+        additionalServices,
+        stripePaymentIntentId: paymentIntent.id,
+        stripeCustomerId: paymentIntent.customer as string,
+        captureMethod: 'manual',
+        requiresPayment: true,
+        confirmationNumber,
+        isPartialPrivatization: metadata.isPartialPrivatization === 'true',
+        message: metadata.message || '',
+      });
+
+      console.log(`✅ Reservation created from payment authorization:`, reservation._id);
+    } catch (createError: any) {
+      // Handle duplicate key error (E11000) - happens when webhook is called multiple times
+      if (createError.code === 11000 && createError.keyPattern?.stripePaymentIntentId) {
+        console.log('⚠️ Reservation already exists for this payment intent (duplicate webhook call), skipping...');
+        return;
+      }
+      // Re-throw other errors
+      throw createError;
+    }
+
+    // Send confirmation email to customer
+    try {
+      const SpaceConfiguration = (await import('@/models/spaceConfiguration')).default;
+      const spaceConfig = await SpaceConfiguration.findOne({ spaceType: metadata.spaceType });
+
+      await sendBookingConfirmation(metadata.contactEmail, {
+        name: metadata.contactName,
+        spaceName: spaceConfig?.name || getSpaceTypeName(metadata.spaceType),
+        date: new Date(metadata.date).toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        time: metadata.startTime && metadata.endTime
+          ? `${metadata.startTime} - ${metadata.endTime}`
+          : 'Journée complète',
+        price: parseFloat(metadata.totalPrice),
+        bookingId: reservation._id.toString(),
+        requiresPayment: true,
+        depositAmount: parseInt(metadata.depositAmount || metadata.totalPrice) || parseFloat(metadata.totalPrice) * 100, // Use stored deposit amount in cents
+        captureMethod: metadata.captureMethod as 'manual' | 'automatic',
+        numberOfPeople: parseInt(metadata.numberOfPeople),
+      });
+
+      console.log('📧 Confirmation email sent to customer');
+    } catch (emailError) {
+      console.error('Error sending confirmation email:', emailError);
+      // Don't fail the booking creation if email fails
+    }
+  } catch (error) {
+    console.error('Error handling payment authorization:', error);
+    throw error;
+  }
+}
+
+/**
+ * NEW WORKFLOW: Handle setup intent succeeded (card saved for later)
+ * Creates reservation from setup intent metadata
+ */
+async function handleSetupIntentSucceeded(setupIntent: Stripe.SetupIntent) {
+  try {
+    console.log('🔍 Checking setup intent metadata:', setupIntent.metadata);
+
+    // Check if this setup intent should create a booking
+    if (setupIntent.metadata?.createBookingOnAuthorization !== 'true') {
+      console.log('⏭️ Skipping booking creation (not flagged)');
+      return;
+    }
+
+    // Check if booking already exists for this setup intent
+    const existingBooking = await Reservation.findOne({
+      stripeSetupIntentId: setupIntent.id,
+    });
+
+    if (existingBooking) {
+      console.log('⏭️ Booking already exists for this setup intent:', existingBooking._id);
+      return;
+    }
+
+    // Parse reservation data from metadata
+    const metadata = setupIntent.metadata;
+
+    // Generate confirmation number
+    const confirmationNumber = `BT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+    // Parse additional services if present
+    let additionalServices = [];
+    if (metadata.additionalServices) {
+      try {
+        additionalServices = JSON.parse(metadata.additionalServices);
+      } catch (e) {
+        console.error('Error parsing additionalServices:', e);
+      }
+    }
+
+    // Parse invoiceDetails if present
+    let invoiceDetails = undefined;
+    if (metadata.invoiceDetails) {
+      try {
+        invoiceDetails = JSON.parse(metadata.invoiceDetails);
+      } catch (e) {
+        console.error('Error parsing invoiceDetails:', e);
+      }
+    }
+
+    // Create reservation
+    const reservation = await Reservation.create({
+      spaceType: metadata.spaceType,
+      date: new Date(metadata.date),
+      startTime: metadata.startTime,
+      endTime: metadata.endTime,
+      numberOfPeople: parseInt(metadata.numberOfPeople),
+      totalPrice: parseFloat(metadata.totalPrice),
+      user: metadata.userId || null,
+      contactEmail: metadata.contactEmail,
+      contactName: metadata.contactName,
+      contactPhone: metadata.contactPhone,
+      companyName: metadata.companyName || '',
+      status: 'pending', // Will be confirmed by admin
+      paymentStatus: 'pending',
+      invoiceOption: metadata.invoiceOption !== 'no_invoice', // Convert to boolean
+      invoiceDetails: invoiceDetails,
+      additionalServices,
+      stripeSetupIntentId: setupIntent.id,
+      stripeCustomerId: setupIntent.customer as string,
+      captureMethod: 'deferred',
+      requiresPayment: true,
+      confirmationNumber,
+      isPartialPrivatization: metadata.isPartialPrivatization === 'true',
+      message: metadata.message || '',
+    });
+
+    console.log(`✅ Reservation created from setup intent:`, reservation._id);
+
+    // Send card saved email to customer
+    try {
+      const SpaceConfiguration = (await import('@/models/spaceConfiguration')).default;
+      const spaceConfig = await SpaceConfiguration.findOne({ spaceType: metadata.spaceType });
+
+      await sendCardSavedConfirmation(metadata.contactEmail, {
+        name: metadata.contactName,
+        spaceName: spaceConfig?.name || getSpaceTypeName(metadata.spaceType),
+        date: new Date(metadata.date).toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        startTime: metadata.startTime || '',
+        endTime: metadata.endTime || '',
+        totalPrice: parseFloat(metadata.totalPrice),
+      });
+
+      console.log('📧 Card saved email sent to customer');
+    } catch (emailError) {
+      console.error('Error sending card saved email:', emailError);
+      // Don't fail the booking creation if email fails
+    }
+  } catch (error) {
+    console.error('Error handling setup intent succeeded:', error);
     throw error;
   }
 }

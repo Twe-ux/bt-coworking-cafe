@@ -8,8 +8,6 @@
  */
 
 import PageTitle from "@/components/site/pageTitle";
-import Partner from "@/components/site/partner";
-import { partnerTwoLogos } from "@/db/partnerOneLogos";
 import SlideUp from "@/utils/animations/slideUp";
 import { Metadata } from "next";
 
@@ -28,7 +26,7 @@ const TakeAway = () => {
     <>
       <PageTitle title={"Take Away"} />
       <article className="concept py__130">
-        <div className="container">
+        <div className="container pb__130">
           {/* PAGE 2 PDF: Image comptoir (boissons à emporter) */}
           <img
             src="/images/takeAway/coworking-cafe-strasbourg-take-away-boissons-a-emporter.webp"
@@ -38,9 +36,9 @@ const TakeAway = () => {
 
           <div className="first__para pt__60">
             <SlideUp>
-              <h2 className="t__54">
+              <h3 className="t__28">
                 Plus d'une trentaine de choix de boissons à emporter
-              </h2>
+              </h3>
             </SlideUp>
             <p>
               Que vous soyez en télétravail à la maison, en balade dans le
@@ -53,59 +51,25 @@ const TakeAway = () => {
             </p>
             <p>
               Notre offre "à emporter" , c'est la solution parfaite pour celles
-              et ceux qui aiment l'énergie d'Anticafé… mais ont besoin d'avancer
+              et ceux qui aiment nos boissons… mais ont besoin d'avancer
               ailleurs. Vous passez, vous commandez, vous repartez avec votre
               boisson préférée — la même qualité qu'ici, mais en version nomade.
               ✨
             </p>
 
             {/* PAGE 3 PDF: Carrousel des 5 catégories de boissons - Images uniformes */}
-            <div id="drinksCarousel" className="carousel slide my-4 rounded overflow-hidden shadow" data-bs-ride="carousel">
-              <div className="carousel-inner">
-                <div className="carousel-item active">
-                  <img
-                    src="/images/takeAway/Carrousel-optimized/coworking-cafe-strasbourg-hot-drinks-boissons-chaudes.webp"
-                    alt="Hot Drinks"
-                    className="d-block w-100"
-                  />
-                </div>
-                <div className="carousel-item">
-                  <img
-                    src="/images/takeAway/Carrousel-optimized/coworking-cafe-strasbourg-cold-drinks-boissons-fraîches.webp"
-                    alt="Cold Drinks"
-                    className="d-block w-100"
-                  />
-                </div>
-                <div className="carousel-item">
-                  <img
-                    src="/images/takeAway/Carrousel-optimized/coworking-cafe-strasbourg-drinks-boissons-alternatives-matcha.webp"
-                    alt="Matcha & Alternatives"
-                    className="d-block w-100"
-                  />
-                </div>
-                <div className="carousel-item">
-                  <img
-                    src="/images/takeAway/Carrousel-optimized/coworking-cafe-strasbourg-jus-smoothies.webp"
-                    alt="Jus & Smoothies"
-                    className="d-block w-100"
-                  />
-                </div>
-                <div className="carousel-item">
-                  <img
-                    src="/images/takeAway/Carrousel-optimized/coworking-cafe-strasbourg-take-away-drinks-boissons-alternatives-cafe.webp"
-                    alt="Alternatives au café"
-                    className="d-block w-100"
-                  />
-                </div>
-              </div>
-              <button className="carousel-control-prev" type="button" data-bs-target="#drinksCarousel" data-bs-slide="prev">
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Précédent</span>
-              </button>
-              <button className="carousel-control-next" type="button" data-bs-target="#drinksCarousel" data-bs-slide="next">
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Suivant</span>
-              </button>
+            <div className="d-flex gap-4">
+              <img
+                src="/images/takeAway/menu/carte-boissons-coffeeshop-strasbourg-coworking-cafe.webp"
+                alt="Hot Drinks"
+                className="d-block w-46 rounded-3"
+              />
+
+              <img
+                src="/images/takeAway/menu/menu-boissons-coworking-cafe-strasbourg.webp"
+                alt="Cold Drinks"
+                className=" w-52 rounded-3"
+              />
             </div>
 
             <p>
@@ -124,10 +88,10 @@ const TakeAway = () => {
               />
             </div>
             <div className="col-lg-6">
-              <h2 className="t__54">🍪 Encas sucrés</h2>
+              <h3 className="t__28">🍪 Encas sucrés</h3>
               <p>
-                Envie d'un petit boost ? On propose une sélection d'encas sucrés :
-                cookies, mini-cakes, gaufres moelleuses, barres aux fruits,
+                Envie d'un petit boost ? On propose une sélection d'encas sucrés
+                : cookies, mini-cakes, gaufres moelleuses, barres aux fruits,
                 madeleines… Les prix varient entre 1,40 € et 2,90 €, et la
                 sélection change au fil de la semaine selon les arrivages et les
                 envies du moment. Simple, gourmand, efficace.
@@ -155,9 +119,9 @@ const TakeAway = () => {
           {/* PAGE 5 PDF: Gobelets Billie - Texte gauche, Image droite */}
           <div className="row align-items-center g-4 pt__50">
             <div className="col-lg-6">
-              <h2 className="t__54">
+              <h3 className="t__28">
                 🌱 Notre solution écologique : les gobelets Billie
-              </h2>
+              </h3>
               <p>
                 Pour limiter les déchets, nous proposons les gobelets
                 réutilisables Billie. Le principe est simple : vous prenez votre
@@ -165,9 +129,9 @@ const TakeAway = () => {
                 ramener ou échanger dans n'importe quelle boutique partenaire
                 Billie à Strasbourg. Pratique si vous vous déplacez beaucoup en
                 ville ! Les couvercles, eux, sont vendus 1 € (ils ne sont pas
-                consignés), ce qui vous permet d'en garder un propre sous la main
-                et de n'échanger que le gobelet. Une solution green, flexible et
-                super facile à adopter. 🌿
+                consignés), ce qui vous permet d'en garder un propre sous la
+                main et de n'échanger que le gobelet. Une solution green,
+                flexible et super facile à adopter. 🌿
               </p>
             </div>
             <div className="col-lg-6">
@@ -180,7 +144,7 @@ const TakeAway = () => {
           </div>
 
           <div className="second__para pt__60">
-            <h2 className="t__54">🛒 Notre petite épicerie</h2>
+            <h3 className="t__28">🛒 Notre petite épicerie</h3>
             <p>
               Juste à côté du comptoir, vous trouverez une mini-épicerie pensée
               pour mettre en avant nos partenaires et coups de cœur du moment :
@@ -192,20 +156,16 @@ const TakeAway = () => {
             </p>
             <SlideUp>
               <div className="d-flex gap-3 ">
-                <ul className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <ul className="">
                   <li>des biscuits... </li>
                   <li>notre café en grains </li>
-                </ul>
-                <ul className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
                   <li>notre matcha et autres préparations de boissons</li>
                   <li>des boissons fraîches (eau, maté pétillant...)</li>
                 </ul>
               </div>
             </SlideUp>
           </div>
-
-          {/* PAGE 6 PDF: Section Partenaires (déjà présente) */}
-          <Partner data={partnerTwoLogos} className={"bg-white"} />
         </div>
       </article>
     </>

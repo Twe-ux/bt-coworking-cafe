@@ -24,22 +24,22 @@ export const historyData: History[] = [
     categories: [""],
     imgSrc: "/images/history/equipe-coworkingcafe-strasbourg-margot.webp",
   },
-  {
-    id: 4,
-    title: "",
-    categories: [""],
-    imgSrc: "/images/history/equipe-coworkingcafe-strasbourg-maya.webp",
-  },
+  // {
+  //   id: 4,
+  //   title: "",
+  //   categories: [""],
+  //   imgSrc: "/images/history/equipe-coworkingcafe-strasbourg-maya.webp",
+  // },
   {
     id: 5,
     title: "",
     categories: [""],
     imgSrc: "/images/history/equipe-coworkingcafe-strasbourg-thierry.webp",
   },
-  {
-    id: 6,
-    title: "",
-    categories: [""],
-    imgSrc: "/images/history/equipe-coworkingcafe-strasbourg-zenoise.webp",
-  },
+  // {
+  //   id: 6,
+  //   title: "",
+  //   categories: [""],
+  //   imgSrc: "/images/history/equipe-coworkingcafe-strasbourg-zenoise.webp",
+  // },
 ];

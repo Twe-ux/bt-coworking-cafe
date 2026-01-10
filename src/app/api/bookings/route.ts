@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import { Reservation } from '@/models/reservation';
 import Space from '@/models/space';
 import { getAuthUser, requireAuth, handleApiError } from '@/lib/api-helpers';
+import { getSpaceTypeName } from '@/lib/space-names';
 import mongoose from 'mongoose';
 
 // Force dynamic rendering
@@ -82,11 +83,27 @@ export async function GET(request: NextRequest) {
       Reservation.countDocuments(query),
     ]);
 
+    // Transform bookings to ensure space.name is always set
+    // For new bookings that use spaceType, create a virtual space object with the French name
+    const transformedBookings = bookings.map((booking: any) => {
+      if (!booking.space && booking.spaceType) {
+        return {
+          ...booking,
+          space: {
+            name: getSpaceTypeName(booking.spaceType),
+            type: booking.spaceType,
+            location: '1 Boulevard Leblois, 67000 Strasbourg',
+          },
+        };
+      }
+      return booking;
+    });
+
     const pages = Math.ceil(total / limit);
 
     return NextResponse.json({
       success: true,
-      data: bookings,
+      data: transformedBookings,
       pagination: {
         page,
         limit,

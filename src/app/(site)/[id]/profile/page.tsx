@@ -36,16 +36,20 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   const username = session.user.username;
 
-  // Fetch user profile including phone from database
+  // Fetch user profile including phone and companyName from database
   let userPhone = '';
+  let userCompanyName = '';
   try {
     await dbConnect();
-    const user = await User.findOne({ email: session.user.email }).select('phone');
+    const user = await User.findOne({ email: session.user.email }).select('phone companyName');
     if (user?.phone) {
       userPhone = user.phone;
     }
+    if (user?.companyName) {
+      userCompanyName = user.companyName;
+    }
   } catch (error) {
-    console.error('Error fetching user phone:', error);
+    console.error('Error fetching user profile:', error);
   }
 
   return (
@@ -68,6 +72,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               username={username}
               roleName={session.user.role.name}
               phone={userPhone}
+              companyName={userCompanyName}
             />
           </div>
 

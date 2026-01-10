@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 interface InfoEmpreinteProps {
   type: "manual_capture" | "setup_intent";
   amount: number;
@@ -31,8 +29,13 @@ export default function InfoEmpreinte({
       }}
     >
       <div className="d-flex align-items-center gap-2 mb-2">
-        <i className="bi bi-info-circle" style={{ fontSize: "1rem", color: "#588983" }}></i>
-        <strong style={{ color: "#333", fontSize: "0.875rem" }}>Empreinte bancaire</strong>
+        <i
+          className="bi bi-info-circle"
+          style={{ fontSize: "1rem", color: "#588983" }}
+        ></i>
+        <strong style={{ color: "#333", fontSize: "0.875rem" }}>
+          Empreinte bancaire
+        </strong>
       </div>
 
       <div
@@ -42,11 +45,21 @@ export default function InfoEmpreinte({
           lineHeight: "1.6",
         }}
       >
-        Une autorisation de{" "}
-        <strong style={{ color: "#333" }}>
-          {formatAmount(amount)}
-        </strong>{" "}
-        sera effectuée sur votre carte. Le montant sera capturé 48h avant la réservation.
+        Une empreinte bancaire de{" "}
+        <strong style={{ color: "#333" }}>{formatAmount(amount)}</strong> sera
+        effectuée sur votre carte pour garantir votre réservation, selon{" "}
+        <a
+          href="/CGU#article6"
+          style={{
+            color: "#588983",
+            textDecoration: "underline",
+            fontWeight: 600,
+          }}
+        >
+          nos CGVs
+        </a>{" "}
+        <br /> Aucun débit ne sera effectué si vous vous présentez à votre
+        réservation.
       </div>
     </div>
   );

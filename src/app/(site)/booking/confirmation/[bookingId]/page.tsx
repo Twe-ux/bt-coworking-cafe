@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import BookingProgressBar from '@/components/site/booking/BookingProgressBar';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
 
 interface AdditionalService {
   service: string;
@@ -31,7 +31,7 @@ interface Booking {
   specialRequests?: string;
   additionalServices?: AdditionalService[];
   createdAt: string;
-  captureMethod?: 'manual' | 'automatic';
+  captureMethod?: "manual" | "automatic";
   stripePaymentIntentId?: string;
   stripeSetupIntentId?: string;
 }
@@ -48,7 +48,11 @@ interface SpaceConfig {
   };
 }
 
-export default function ConfirmationPage({ params }: { params: { bookingId: string } }) {
+export default function ConfirmationPage({
+  params,
+}: {
+  params: { bookingId: string };
+}) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [booking, setBooking] = useState<Booking | null>(null);
@@ -57,8 +61,12 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Clear booking session data when reaching confirmation page
+    sessionStorage.removeItem("bookingData");
+    sessionStorage.removeItem("selectedServices");
+
     // Allow both authenticated and unauthenticated users to view confirmation
-    if (status !== 'loading') {
+    if (status !== "loading") {
       fetchBooking();
     }
   }, [status, params.bookingId]);
@@ -72,7 +80,7 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
       const data = await response.json();
 
       if (!data.success) {
-        setError(data.error || 'Impossible de charger la réservation');
+        setError(data.error || "Impossible de charger la réservation");
         setLoading(false);
         return;
       }
@@ -82,7 +90,9 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
       // Fetch space configuration
       if (bookingDetails.spaceType) {
-        const spaceResponse = await fetch(`/api/space-configurations/${bookingDetails.spaceType}`);
+        const spaceResponse = await fetch(
+          `/api/space-configurations/${bookingDetails.spaceType}`
+        );
         const spaceData = await spaceResponse.json();
         if (spaceData.success) {
           setSpaceConfig(spaceData.data);
@@ -91,18 +101,18 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching booking:', err);
-      setError('Une erreur est survenue lors du chargement de la réservation');
+      console.error("Error fetching booking:", err);
+      setError("Une erreur est survenue lors du chargement de la réservation");
       setLoading(false);
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("fr-FR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -112,14 +122,16 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
   const getTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
-      'desk': 'Bureau',
-      'meeting-room': 'Salle de réunion',
-      'private-office': 'Bureau privé',
-      'event-space': 'Espace événement',
-      'open-space': 'Open-space',
-      'salle-verriere': 'Salle Verrière',
-      'salle-etage': 'Salle Étage',
-      'evenementiel': 'Événementiel',
+      desk: "Bureau",
+      "meeting-room": "Salle de réunion",
+      "meeting-room-glass": "Salle Verrière",
+      "meeting-room-floor": "Salle Étage",
+      "private-office": "Bureau privé",
+      "event-space": "Espace événement",
+      "open-space": "Open-space",
+      "salle-verriere": "Salle Verrière",
+      "salle-etage": "Salle Étage",
+      evenementiel: "Événementiel",
     };
     return labels[type] || type;
   };
@@ -136,7 +148,9 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
     if (policy.fixedAmount) {
       depositInCents = policy.fixedAmount;
     } else if (policy.percentage) {
-      depositInCents = Math.round(totalPriceInCents * (policy.percentage / 100));
+      depositInCents = Math.round(
+        totalPriceInCents * (policy.percentage / 100)
+      );
     }
 
     if (policy.minimumAmount && depositInCents < policy.minimumAmount) {
@@ -148,25 +162,25 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
   const getStatusBadge = (status: string) => {
     const badges: Record<string, { class: string; label: string }> = {
-      'confirmed': { class: 'bg-success', label: 'Confirmé' },
-      'pending': { class: 'bg-warning', label: 'En attente' },
-      'cancelled': { class: 'bg-danger', label: 'Annulé' },
-      'completed': { class: 'bg-info', label: 'Terminé' },
+      confirmed: { class: "bg-success", label: "Confirmé" },
+      pending: { class: "bg-warning", label: "En attente" },
+      cancelled: { class: "bg-danger", label: "Annulé" },
+      completed: { class: "bg-info", label: "Terminé" },
     };
-    return badges[status] || { class: 'bg-secondary', label: status };
+    return badges[status] || { class: "bg-secondary", label: status };
   };
 
   const getPaymentStatusBadge = (status: string) => {
     const badges: Record<string, { class: string; label: string }> = {
-      'paid': { class: 'bg-success', label: 'Payé' },
-      'pending': { class: 'bg-warning', label: 'En attente' },
-      'failed': { class: 'bg-danger', label: 'Échoué' },
-      'refunded': { class: 'bg-info', label: 'Remboursé' },
+      paid: { class: "bg-success", label: "Payé" },
+      pending: { class: "bg-warning", label: "En attente" },
+      failed: { class: "bg-danger", label: "Échoué" },
+      refunded: { class: "bg-info", label: "Remboursé" },
     };
-    return badges[status] || { class: 'bg-secondary', label: status };
+    return badges[status] || { class: "bg-secondary", label: status };
   };
 
-  if (status === 'loading' || loading) {
+  if (status === "loading" || loading) {
     return (
       <>
         <section className="confirmation-page py-5">
@@ -196,7 +210,7 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                 </div>
                 <div className="text-center mt-4">
                   <button
-                    onClick={() => router.push('/booking')}
+                    onClick={() => router.push("/booking")}
                     className="btn btn-success"
                   >
                     <i className="bi bi-arrow-left me-2"></i>
@@ -217,7 +231,7 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
 
   const statusBadge = getStatusBadge(booking.status);
   const paymentBadge = getPaymentStatusBadge(booking.paymentStatus);
-  const isPaid = booking.paymentStatus === 'paid';
+  const isPaid = booking.paymentStatus === "paid";
   const isConfirmed = isPaid || !booking.requiresPayment;
 
   return (
@@ -233,15 +247,39 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                 <hr className="my-3" style={{ opacity: 0.1 }} />
 
                 {/* Navigation and Title */}
-                <div className="custom-breadcrumb d-flex justify-content-between align-items-center mb-4">
+                <div
+                  className="d-flex justify-content-between align-items-center mb-4 px-4 py-3 rounded"
+                  style={{
+                    backgroundColor: "#e8eae6",
+                    minHeight: "60px"
+                  }}
+                >
                   <button
-                    onClick={() => router.push('/booking')}
+                    onClick={() => router.push("/booking")}
                     className="breadcrumb-link"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#4a5568",
+                      fontSize: "1rem",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem"
+                    }}
                   >
                     <i className="bi bi-arrow-left"></i>
                     <span>Retour</span>
                   </button>
-                  <h1 className="breadcrumb-current m-0">
+                  <h1
+                    className="m-0"
+                    style={{
+                      fontSize: "1.125rem",
+                      fontWeight: "600",
+                      color: "#4a5568"
+                    }}
+                  >
                     Confirmation
                   </h1>
                   <div style={{ width: "80px" }}></div>
@@ -251,38 +289,39 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
               {isConfirmed && (
                 <div className="booking-card mb-4 text-center">
                   <div className="success-icon mb-3">
-                    <i className="bi bi-check-circle-fill text-success" style={{ fontSize: '4rem' }}></i>
+                    <i
+                      className="bi bi-check-circle-fill text-success"
+                      style={{ fontSize: "4rem" }}
+                    ></i>
                   </div>
-                  <h2 className="mb-3" style={{ fontSize: "1.5rem", fontWeight: "700" }}>Réservation confirmée !</h2>
-                  <p className="text-muted mb-0" style={{ fontSize: "0.9375rem" }}>
+                  <h2
+                    className="mb-3"
+                    style={{ fontSize: "1.5rem", fontWeight: "700" }}
+                  >
+                    Réservation confirmée !
+                  </h2>
+                  <p
+                    className="text-muted mb-0"
+                    style={{ fontSize: "0.9375rem" }}
+                  >
                     {isPaid
-                      ? 'Votre réservation a été confirmée avec succès. Un email de confirmation a été envoyé à votre adresse.'
-                      : 'Votre demande de réservation a été enregistrée. Vous recevrez une confirmation par email dans les plus brefs délais.'}
+                      ? "Votre réservation a été confirmée avec succès. Un email de confirmation a été envoyé à votre adresse."
+                      : "Votre demande de réservation a été enregistrée. Vous recevrez une confirmation par email dans les plus brefs délais."}
                   </p>
                 </div>
               )}
 
-              {/* Confirmation Number */}
-              {booking.confirmationNumber && (
-                <div className="booking-card mb-4 text-center" style={{ backgroundColor: "hsl(var(--muted))" }}>
-                  <small className="text-muted d-block mb-2" style={{ fontSize: "0.8125rem", fontWeight: "500" }}>
-                    Numéro de confirmation
-                  </small>
-                  <h3 className="mb-2 font-monospace" style={{ fontSize: "1.5rem", fontWeight: "700", color: "#588983" }}>
-                    {booking.confirmationNumber}
-                  </h3>
-                  <small className="text-muted" style={{ fontSize: "0.8125rem" }}>
-                    <i className="bi bi-info-circle me-1"></i>
-                    Veuillez conserver ce numéro pour vos dossiers
-                  </small>
-                </div>
-              )}
 
               {/* Booking Details */}
               <div className="booking-card mb-4">
                 <div className="d-flex align-items-center gap-2 mb-4">
-                  <i className="bi bi-receipt text-success" style={{ fontSize: "1.125rem" }}></i>
-                  <h2 className="h6 mb-0 fw-semibold">Détails de la réservation</h2>
+                  <i
+                    className="bi bi-receipt text-success"
+                    style={{ fontSize: "1.125rem" }}
+                  ></i>
+                  <h2 className="h6 mb-0 fw-semibold">
+                    Détails de la réservation
+                  </h2>
                 </div>
 
                 {/* Space Image */}
@@ -292,7 +331,11 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                       src={spaceConfig.imageUrl}
                       alt={spaceConfig.name}
                       className="img-fluid rounded"
-                      style={{ maxHeight: '300px', width: '100%', objectFit: 'cover' }}
+                      style={{
+                        maxHeight: "300px",
+                        width: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                   </div>
                 )}
@@ -300,8 +343,11 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                 <div className="summary-row mb-3">
                   <div className="summary-label">Espace</div>
                   <div className="summary-value">
-                    <strong>{spaceConfig?.name || 'Espace'}</strong>
-                    <span className="badge bg-success ms-2" style={{ fontSize: "0.75rem" }}>
+                    <strong>{spaceConfig?.name || "Espace"}</strong>
+                    <span
+                      className="badge bg-success ms-2"
+                      style={{ fontSize: "0.75rem" }}
+                    >
                       {getTypeLabel(booking.spaceType)}
                     </span>
                   </div>
@@ -319,7 +365,8 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                   <div className="summary-label">Horaire</div>
                   <div className="summary-value">
                     <i className="bi bi-clock me-2 text-success"></i>
-                    {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+                    {formatTime(booking.startTime)} -{" "}
+                    {formatTime(booking.endTime)}
                   </div>
                 </div>
 
@@ -327,47 +374,69 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                   <div className="summary-label">Personnes</div>
                   <div className="summary-value">
                     <i className="bi bi-people me-2 text-success"></i>
-                    {booking.numberOfPeople} {booking.numberOfPeople > 1 ? 'personnes' : 'personne'}
+                    {booking.numberOfPeople}{" "}
+                    {booking.numberOfPeople > 1 ? "personnes" : "personne"}
                   </div>
                 </div>
 
                 {booking.specialRequests && (
                   <div className="summary-row mb-3">
                     <div className="summary-label">Demandes spéciales</div>
-                    <div className="summary-value">{booking.specialRequests}</div>
+                    <div className="summary-value">
+                      {booking.specialRequests}
+                    </div>
                   </div>
                 )}
 
-                {booking.additionalServices && booking.additionalServices.length > 0 && (
-                  <>
-                    <div className="price-divider mb-4 mt-4"></div>
+                {booking.additionalServices &&
+                  booking.additionalServices.length > 0 && (
+                    <>
+                      <div className="price-divider mb-4 mt-4"></div>
 
-                    <div className="mb-4">
-                      <h6 className="mb-3 d-flex align-items-center gap-2">
-                        <i className="bi bi-bag-plus text-success"></i>
-                        Services supplémentaires
-                      </h6>
-                      {booking.additionalServices.map((service, index) => (
-                        <div key={index} className="summary-row mb-2">
-                          <div className="summary-label" style={{ fontSize: "0.875rem" }}>
-                            {service.name} <span className="text-muted">(x{service.quantity})</span>
+                      <div className="mb-4">
+                        <h6 className="mb-3 d-flex align-items-center gap-2">
+                          <i className="bi bi-bag-plus text-success"></i>
+                          Services supplémentaires
+                        </h6>
+                        {booking.additionalServices.map((service, index) => (
+                          <div key={index} className="summary-row mb-2">
+                            <div
+                              className="summary-label"
+                              style={{ fontSize: "0.875rem" }}
+                            >
+                              {service.name}{" "}
+                              <span className="text-muted">
+                                (x{service.quantity})
+                              </span>
+                            </div>
+                            <div
+                              className="summary-value"
+                              style={{ fontSize: "0.875rem" }}
+                            >
+                              {service.totalPrice.toFixed(2)}€
+                            </div>
                           </div>
-                          <div className="summary-value" style={{ fontSize: "0.875rem" }}>
-                            {service.totalPrice.toFixed(2)}€
+                        ))}
+                        <div
+                          className="summary-row mt-3 pt-3"
+                          style={{ borderTop: "1px solid hsl(var(--border))" }}
+                        >
+                          <div
+                            className="summary-label"
+                            style={{ fontWeight: "600" }}
+                          >
+                            Sous-total services
                           </div>
-                        </div>
-                      ))}
-                      <div className="summary-row mt-3 pt-3" style={{ borderTop: "1px solid hsl(var(--border))" }}>
-                        <div className="summary-label" style={{ fontWeight: "600" }}>
-                          Sous-total services
-                        </div>
-                        <div className="summary-value" style={{ fontWeight: "600" }}>
-                          {booking.servicesPrice?.toFixed(2) || '0.00'}€
+                          <div
+                            className="summary-value"
+                            style={{ fontWeight: "600" }}
+                          >
+                            {booking.servicesPrice?.toFixed(2) || "0.00"}€
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
 
                 <div className="price-divider mb-4"></div>
 
@@ -392,11 +461,17 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                 <div className="price-divider mb-4"></div>
 
                 <div className="summary-row">
-                  <div className="summary-label" style={{ fontSize: "0.875rem", fontWeight: "700" }}>
+                  <div
+                    className="summary-label"
+                    style={{ fontSize: "0.875rem", fontWeight: "700" }}
+                  >
                     Total à payer
                   </div>
                   <div className="summary-value">
-                    <h4 className="text-success mb-0" style={{ fontSize: "1.5rem", fontWeight: "700" }}>
+                    <h4
+                      className="text-success mb-0"
+                      style={{ fontSize: "1.5rem", fontWeight: "700" }}
+                    >
                       {booking.totalPrice.toFixed(2)}€
                     </h4>
                   </div>
@@ -408,18 +483,41 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
                     return (
                       <>
                         <div className="price-divider mb-4 mt-4"></div>
-                        <div className="alert alert-warning border-0 mb-0" style={{ backgroundColor: "rgba(255, 193, 7, 0.1)" }}>
+                        <div
+                          className="alert alert-warning border-0 mb-0"
+                          style={{ backgroundColor: "rgba(255, 193, 7, 0.1)" }}
+                        >
                           <div className="d-flex align-items-center gap-2 mb-2">
-                            <i className="bi bi-credit-card-2-front" style={{ fontSize: "1.125rem", color: "#856404" }}></i>
-                            <strong style={{ fontSize: "0.9375rem", color: "#856404" }}>Empreinte bancaire</strong>
+                            <i
+                              className="bi bi-credit-card-2-front"
+                              style={{ fontSize: "1.125rem", color: "#856404" }}
+                            ></i>
+                            <strong
+                              style={{
+                                fontSize: "0.9375rem",
+                                color: "#856404",
+                              }}
+                            >
+                              Empreinte bancaire
+                            </strong>
                           </div>
-                          <h5 className="mb-2" style={{ color: "#856404", fontSize: "1.25rem", fontWeight: "700" }}>
+                          <h5
+                            className="mb-2"
+                            style={{
+                              color: "#856404",
+                              fontSize: "1.25rem",
+                              fontWeight: "700",
+                            }}
+                          >
                             {(depositAmount / 100).toFixed(2)}€
                           </h5>
-                          <small className="text-muted" style={{ fontSize: "0.8125rem" }}>
-                            {booking.captureMethod === 'manual'
-                              ? 'Montant autorisé sur votre carte (sera annulé si vous vous présentez)'
-                              : 'Sera débité 7 jours avant la réservation'}
+                          <small
+                            className="text-muted"
+                            style={{ fontSize: "0.8125rem" }}
+                          >
+                            {booking.captureMethod === "manual"
+                              ? "Montant autorisé sur votre carte (sera annulé si vous vous présentez)"
+                              : "Sera débité 7 jours avant la réservation"}
                           </small>
                         </div>
                       </>
@@ -430,61 +528,58 @@ export default function ConfirmationPage({ params }: { params: { bookingId: stri
               </div>
 
               {/* Important Information */}
-              <div className="booking-card mb-4" style={{ borderLeft: "4px solid #588983" }}>
+              <div
+                className="booking-card mb-4"
+                style={{ borderLeft: "4px solid #588983" }}
+              >
                 <div className="d-flex align-items-center gap-2 mb-3">
-                  <i className="bi bi-info-circle text-success" style={{ fontSize: "1.125rem" }}></i>
+                  <i
+                    className="bi bi-info-circle text-success"
+                    style={{ fontSize: "1.125rem" }}
+                  ></i>
                   <h6 className="mb-0 fw-semibold">Informations importantes</h6>
                 </div>
-                <ul className="mb-0" style={{ fontSize: "0.875rem", lineHeight: "1.8" }}>
-                  <li>Veuillez arriver 5 minutes avant l'heure de début de votre réservation</li>
+                <ul
+                  className="mb-0"
+                  style={{ fontSize: "0.875rem", lineHeight: "1.8" }}
+                >
+                  <li>
+                    Veuillez arriver 5 minutes avant l'heure de début de votre
+                    réservation
+                  </li>
                   <li>Présentez votre numéro de confirmation à la réception</li>
-                  <li>En cas d'annulation, veuillez nous prévenir au moins 24 heures à l'avance</li>
-                  <li>Un email de confirmation a été envoyé avec tous les détails</li>
+                  <li>
+                    En cas d'annulation, veuillez nous prévenir au moins 24
+                    heures à l'avance
+                  </li>
+                  <li>
+                    Un email de confirmation a été envoyé avec tous les détails
+                  </li>
                 </ul>
               </div>
 
-              {/* Action Buttons */}
-              <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4">
-                {session && session.user && (
+              {session && session.user && (
+                <div className="d-flex justify-content-center mb-4">
                   <Link
                     href={`/${session.user.username}/reservations`}
                     className="btn btn-success"
-                    style={{ padding: "0.75rem 1.5rem", fontSize: "0.9375rem", fontWeight: "600" }}
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      fontSize: "0.9375rem",
+                      fontWeight: "600",
+                    }}
                   >
                     <i className="bi bi-list-ul me-2"></i>
                     Voir mes réservations
                   </Link>
-                )}
-                <button
-                  onClick={() => router.push('/booking')}
-                  className="btn btn-outline-success"
-                  style={{ padding: "0.75rem 1.5rem", fontSize: "0.9375rem", fontWeight: "600" }}
-                >
-                  <i className="bi bi-arrow-left me-2"></i>
-                  Retour aux espaces
-                </button>
-              </div>
-
-              {/* Contact Info */}
-              <div className="text-center" style={{ paddingBottom: "3rem" }}>
-                <p className="text-muted mb-3" style={{ fontSize: "0.9375rem", fontWeight: "500" }}>
-                  Des questions ? Contactez-nous
-                </p>
-                <div className="d-flex justify-content-center gap-4 flex-wrap">
-                  <a href="tel:+33123456789" className="text-decoration-none text-success" style={{ fontSize: "0.875rem", fontWeight: "500" }}>
-                    <i className="bi bi-telephone me-2"></i>
-                    +33 1 23 45 67 89
-                  </a>
-                  <a href="mailto:contact@btcafe.com" className="text-decoration-none text-success" style={{ fontSize: "0.875rem", fontWeight: "500" }}>
-                    <i className="bi bi-envelope me-2"></i>
-                    contact@btcafe.com
-                  </a>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </section>
+
+      <div style={{ height: "9rem" }}></div>
 
       <style jsx>{`
         .success-icon {

@@ -28,8 +28,8 @@ export const menuData: MenuItem[] = [
     link: "#",
     submenu: [
       { title: "Nos offres", link: "/pricing" },
-      { title: "Programme membres", link: "/members-program" },
-      { title: "Étudiants", link: "/student-offers" },
+      { title: "Programme membre", link: "/members-program" },
+      { title: "Offres étudiantes", link: "/student-offers" },
     ],
   },
   {

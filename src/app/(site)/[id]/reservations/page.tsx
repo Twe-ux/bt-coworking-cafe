@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import "../client-dashboard.scss";
+import CancelBookingModal from "@/components/site/booking/CancelBookingModal";
 
 interface Reservation {
   _id: string;
@@ -32,6 +33,8 @@ export default function ReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("upcoming");
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Reservation | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -53,7 +56,7 @@ export default function ReservationsPage() {
   const fetchReservations = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/bookings", {
+      const response = await fetch("/api/bookings?limit=100&sortBy=date&sortOrder=desc", {
         credentials: "include", // Include session cookies
       });
       const data = await response.json();
@@ -74,10 +77,10 @@ export default function ReservationsPage() {
 
   const getStatusBadge = (status: string) => {
     const badges: Record<string, { class: string; label: string }> = {
-      confirmed: { class: "bg-success", label: "Confirmé" },
-      pending: { class: "bg-warning", label: "En attente" },
-      cancelled: { class: "bg-danger", label: "Annulé" },
-      completed: { class: "bg-info", label: "Terminé" },
+      confirmed: { class: "confirmed", label: "Validée" },
+      pending: { class: "pending", label: "En attente" },
+      cancelled: { class: "cancelled", label: "Annulée" },
+      completed: { class: "completed", label: "Terminée" },
     };
     return badges[status] || { class: "bg-secondary", label: status };
   };
@@ -110,16 +113,40 @@ export default function ReservationsPage() {
     });
   };
 
-  const filteredReservations = reservations.filter((reservation) => {
-    if (filter === "all") return true;
-    if (filter === "upcoming")
-      return (
-        reservation.status === "pending" || reservation.status === "confirmed"
-      );
-    if (filter === "completed") return reservation.status === "completed";
-    if (filter === "cancelled") return reservation.status === "cancelled";
-    return true;
-  });
+  const handleCancelClick = (e: React.MouseEvent, reservation: Reservation) => {
+    e.preventDefault(); // Empêcher la navigation vers la page de détails
+    e.stopPropagation();
+    setSelectedBooking(reservation);
+    setShowCancelModal(true);
+  };
+
+  const handleCancelModalClose = () => {
+    setShowCancelModal(false);
+    setSelectedBooking(null);
+  };
+
+  const handleCancellationComplete = () => {
+    fetchReservations();
+    handleCancelModalClose();
+  };
+
+  const filteredReservations = reservations
+    .filter((reservation) => {
+      if (filter === "all") return true;
+      if (filter === "upcoming")
+        return (
+          reservation.status === "pending" || reservation.status === "confirmed"
+        );
+      if (filter === "completed") return reservation.status === "completed";
+      if (filter === "cancelled") return reservation.status === "cancelled";
+      return true;
+    })
+    .sort((a, b) => {
+      // Trier par date (les plus proches en premier)
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateA - dateB;
+    });
 
   if (status === "loading" || loading) {
     return (
@@ -229,70 +256,73 @@ export default function ReservationsPage() {
 
                   return (
                     <div key={reservation._id} className="col-md-6 col-lg-4">
-                      <Link
-                        href={`/booking/confirmation/${reservation._id}`}
-                        className="reservation-card"
-                      >
-                        <div className="d-flex justify-content-between align-items-start mb-3">
-                          <h5 className="reservation-space mb-0">
-                            {getSpaceLabel(reservation.spaceType)}
-                          </h5>
-                          <div className="info-item mb-0">
-                            <i className="bi bi-people"></i>
-                            <span>{reservation.numberOfPeople} pers.</span>
-                          </div>
-                        </div>
-
-                        <div className="reservation-info">
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div className="info-item mb-0">
-                              <i className="bi bi-calendar"></i>
-                              <span>{formatDate(reservation.date)}</span>
-                            </div>
-                            <div className="info-item mb-0">
-                              <i className="bi bi-clock"></i>
-                              <span>
-                                {reservation.startTime} - {reservation.endTime}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {reservation.additionalServices &&
-                          reservation.additionalServices.length > 0 && (
-                            <div className="mt-2 mb-2">
-                              <small
-                                className="text-muted"
-                                style={{ fontSize: "0.85rem" }}
+                      <div className="reservation-card">
+                        <Link
+                          href={`/booking/confirmation/${reservation._id}`}
+                          style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
+                          <div className="d-flex justify-content-between align-items-start mb-3">
+                            <h5 className="reservation-space mb-0">
+                              {getSpaceLabel(reservation.spaceType)}
+                            </h5>
+                            {(reservation.status === "confirmed" || reservation.status === "pending") && (
+                              <button
+                                onClick={(e) => handleCancelClick(e, reservation)}
+                                className="btn-cancel-top"
+                                title="Annuler la réservation"
                               >
-                                {reservation.additionalServices.length} service
-                                {reservation.additionalServices.length > 1
-                                  ? "s"
-                                  : ""}{" "}
-                                sup.
-                              </small>
-                            </div>
-                          )}
+                                <i className="bi bi-x-circle"></i>
+                              </button>
+                            )}
+                          </div>
 
-                        <div className="reservation-footer">
-                          <span
-                            className={`status-badge ${
-                              reservation.status === "cancelled"
-                                ? "cancelled"
-                                : paymentBadge.class === "bg-success"
-                                ? "paid"
-                                : "pending"
-                            }`}
-                          >
-                            {reservation.status === "cancelled"
-                              ? "Annulée"
-                              : paymentBadge.label}
-                          </span>
-                          <span className="price">
-                            {reservation.totalPrice.toFixed(2)}€
-                          </span>
-                        </div>
-                      </Link>
+                          <div className="reservation-content">
+                            <div className="reservation-info">
+                              <div className="d-flex justify-content-between align-items-center mb-2">
+                                <div className="info-item mb-0">
+                                  <i className="bi bi-calendar"></i>
+                                  <span>{formatDate(reservation.date)}</span>
+                                </div>
+                                <div className="info-item mb-0">
+                                  <i className="bi bi-clock"></i>
+                                  <span>
+                                    {reservation.startTime} - {reservation.endTime}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="info-item mb-0">
+                                <i className="bi bi-people"></i>
+                                <span>{reservation.numberOfPeople} personne{reservation.numberOfPeople > 1 ? "s" : ""}</span>
+                              </div>
+                            </div>
+
+                            {reservation.additionalServices &&
+                              reservation.additionalServices.length > 0 && (
+                                <div className="mt-2">
+                                  <small
+                                    className="text-muted"
+                                    style={{ fontSize: "0.85rem" }}
+                                  >
+                                    {reservation.additionalServices.length} service
+                                    {reservation.additionalServices.length > 1
+                                      ? "s"
+                                      : ""}{" "}
+                                    sup.
+                                  </small>
+                                </div>
+                              )}
+                          </div>
+
+                          <div className="reservation-footer">
+                            <span className={`status-badge ${statusBadge.class}`}>
+                              {statusBadge.label}
+                            </span>
+                            <span className="price">
+                              {reservation.totalPrice.toFixed(2)}€
+                            </span>
+                          </div>
+                        </Link>
+                      </div>
                     </div>
                   );
                 })}
@@ -301,6 +331,13 @@ export default function ReservationsPage() {
           </div>
         </div>
       </div>
+
+      <CancelBookingModal
+        booking={selectedBooking}
+        show={showCancelModal}
+        onHide={handleCancelModalClose}
+        onCancelled={handleCancellationComplete}
+      />
     </section>
   );
 }

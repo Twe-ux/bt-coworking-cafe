@@ -20,7 +20,13 @@ export async function GET(request: NextRequest) {
     let settings = await BookingSettings.findOne();
 
     // Determine which policy to use based on space type
-    const isMeetingRoom = spaceType === "salle-etage" || spaceType === "salle-verriere";
+    const isMeetingRoom = [
+      'meeting-room',
+      'meeting-room-glass',
+      'meeting-room-floor',
+      'salle-verriere',
+      'salle-etage'
+    ].includes(spaceType || '');
 
     let policy;
     if (!settings) {

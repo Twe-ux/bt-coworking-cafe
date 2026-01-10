@@ -1,5 +1,6 @@
 "use client";
 
+import ProtectedEmail from "@/components/common/ProtectedEmail";
 import { useState } from "react";
 import { Alert, Button, Modal, Spinner } from "react-bootstrap";
 
@@ -30,6 +31,8 @@ interface CancellationPreview {
   cancellationFee: number;
   refundAmount: number;
   message: string;
+  isPending?: boolean;
+  depositAmount?: number; // in euros
 }
 
 export default function CancelBookingModal({
@@ -54,20 +57,39 @@ export default function CancelBookingModal({
     try {
       // For pending bookings, cancellation is always free - no need to calculate
       if (booking.status === "pending") {
+        // Determine message based on space type
+        let cancellationMessage = "";
+        if (booking.spaceType === "open-space") {
+          cancellationMessage =
+            "Attention, des frais d'annulation peuvent s'appliquer selon les <a href='/CGU#article6' target='_blank' rel='noopener noreferrer' style='color: inherit; text-decoration: underline;'>CGVs</a>.<br/><em>Entre 0 et 15 jours calendaires avant la réservation : 50% du montant total sera prélevé.</em>";
+        } else if (
+          booking.spaceType === "salle-verriere" ||
+          booking.spaceType === "salle-etage"
+        ) {
+          cancellationMessage =
+            "Attention, des frais d'annulation peuvent s'appliquer selon les <a href='/CGU#article6' target='_blank' rel='noopener noreferrer' style='color: inherit; text-decoration: underline;'>CGVs</a>.<br/><em>Entre 0 et 29 jours calendaires avant la réservation : jusqu'à 70% du montant total peut être prélevé.</em>";
+        } else {
+          // Default for evenementiel or other types
+          cancellationMessage =
+            "Attention, des frais d'annulation peuvent s'appliquer selon les <a href='/CGU#article6' target='_blank' rel='noopener noreferrer' style='color: inherit; text-decoration: underline;'>CGVs</a>.";
+        }
+
         setPreview({
           daysUntilBooking: 0,
           chargePercentage: 0,
           cancellationFee: 0,
           refundAmount: 0,
-          message:
-            "Annulation gratuite. Votre réservation n'a pas encore été validée par le commerce. L'empreinte bancaire sera automatiquement annulée.",
+          message: cancellationMessage,
+          isPending: true,
         });
         setLoadingPreview(false);
         return;
       }
 
       // For confirmed bookings, fetch real cancellation policy from public API
-      const policyResponse = await fetch(`/api/cancellation-policy?spaceType=${booking.spaceType}`);
+      const policyResponse = await fetch(
+        `/api/cancellation-policy?spaceType=${booking.spaceType}`
+      );
       const policyData = await policyResponse.json();
 
       if (!policyData.success) {
@@ -75,6 +97,40 @@ export default function CancelBookingModal({
       }
 
       const policy = policyData.data.cancellationPolicy;
+
+      // Calculate actual deposit amount based on deposit policy
+      const spaceConfigResponse = await fetch(
+        `/api/space-configurations/${booking.spaceType}`
+      );
+      const spaceConfigData = await spaceConfigResponse.json();
+
+      let depositAmount = booking.totalPrice; // Default to total price
+
+      if (
+        spaceConfigData.success &&
+        spaceConfigData.data.depositPolicy?.enabled
+      ) {
+        const depositPolicy = spaceConfigData.data.depositPolicy;
+        const totalPriceInCents = booking.totalPrice * 100;
+        let depositInCents = totalPriceInCents;
+
+        if (depositPolicy.fixedAmount) {
+          depositInCents = depositPolicy.fixedAmount;
+        } else if (depositPolicy.percentage) {
+          depositInCents = Math.round(
+            totalPriceInCents * (depositPolicy.percentage / 100)
+          );
+        }
+
+        if (
+          depositPolicy.minimumAmount &&
+          depositInCents < depositPolicy.minimumAmount
+        ) {
+          depositInCents = depositPolicy.minimumAmount;
+        }
+
+        depositAmount = depositInCents / 100; // Convert to euros
+      }
 
       // Calculate days until booking
       const bookingDate = new Date(booking.date);
@@ -96,19 +152,21 @@ export default function CancelBookingModal({
         }
       }
 
-      const cancellationFee = (booking.totalPrice * chargePercentage) / 100;
-      const refundAmount = booking.totalPrice - cancellationFee;
+      // Calculate cancellation fee based on total price, but limited to deposit amount
+      const theoreticalFee = (booking.totalPrice * chargePercentage) / 100;
+      const cancellationFee = Math.min(theoreticalFee, depositAmount);
+      const refundAmount = depositAmount - cancellationFee;
 
       let message = "";
       if (chargePercentage === 0) {
         message =
-          "<strong>Aucun frais appliqué.</strong> Le montant total sera <strong>remboursé intégralement</strong>.";
+          "<strong>Aucun frais appliqué.</strong> L'empreinte bancaire sera <strong>annulée intégralement</strong>.";
       } else if (chargePercentage === 100) {
-        message = `<strong>Annulation tardive.</strong> Le montant total de <strong>${booking.totalPrice.toFixed(
+        message = `<strong>Annulation tardive.</strong> L'empreinte bancaire de <strong>${depositAmount.toFixed(
           2
-        )}€</strong> sera <strong>prélevé</strong>.`;
+        )}€</strong> sera <strong>prélevée intégralement</strong>.`;
       } else {
-        message = `Selon nos conditions de vente, <strong>${cancellationFee.toFixed(
+        message = `Selon nos <a href='/CGU#article6' target='_blank' rel='noopener noreferrer' style='color: inherit; text-decoration: underline;'>conditions générales de vente</a>, <strong>${cancellationFee.toFixed(
           2
         )}€</strong> sera <strong>prélevé</strong> (${chargePercentage}% du montant total).`;
       }
@@ -119,6 +177,7 @@ export default function CancelBookingModal({
         cancellationFee,
         refundAmount,
         message,
+        depositAmount,
       });
     } catch (err) {
       setError(
@@ -160,11 +219,8 @@ export default function CancelBookingModal({
 
       setSuccess(data.data.cancellationMessage);
 
-      // Call onCancelled callback after short delay
-      setTimeout(() => {
-        if (onCancelled) onCancelled();
-        onHide();
-      }, 2000);
+      // Call onCancelled callback immediately
+      if (onCancelled) onCancelled();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {
@@ -256,18 +312,32 @@ export default function CancelBookingModal({
                   >
                     {booking.status === "pending" ? (
                       // For pending bookings, show only the message
-                      <p className="text-muted mb-0">
-                        <i className="bi bi-check-circle-fill text-success me-2"></i>
-                        <span
-                          dangerouslySetInnerHTML={{ __html: preview.message }}
-                        />
-                      </p>
+                      <>
+                        <p className="text-muted mb-0">
+                          <i className="bi bi-check-circle-fill text-success me-2"></i>
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: preview.message,
+                            }}
+                          />
+                        </p>
+                        <p className="text-muted mb-0 mt-3">
+                          Vous vous êtes trompé ? Contactez-nous par email{" "}
+                          <ProtectedEmail
+                            user="strasbourg"
+                            domain="coworkingcafe.fr"
+                            className="text-muted"
+                          />
+                        </p>
+                      </>
                     ) : (
                       // For confirmed bookings, show details
                       <>
                         <p className="text-muted mb-2">
                           <strong>Empreinte bancaire :</strong>{" "}
-                          {booking.totalPrice.toFixed(2)}€
+                          {preview.depositAmount?.toFixed(2) ||
+                            booking.totalPrice.toFixed(2)}
+                          €
                         </p>
                         <p className="text-muted mb-2">
                           <strong>Temps restant :</strong>{" "}
@@ -298,7 +368,9 @@ export default function CancelBookingModal({
                             } me-2`}
                           ></i>
                           <span
-                            dangerouslySetInnerHTML={{ __html: preview.message }}
+                            dangerouslySetInnerHTML={{
+                              __html: preview.message,
+                            }}
                           />
                         </p>
                       </>

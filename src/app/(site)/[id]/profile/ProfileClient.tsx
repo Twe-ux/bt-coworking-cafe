@@ -10,9 +10,10 @@ interface ProfileClientProps {
   username: string;
   roleName: string;
   phone?: string;
+  companyName?: string;
 }
 
-export default function ProfileClient({ name, email, username, roleName, phone }: ProfileClientProps) {
+export default function ProfileClient({ name, email, username, roleName, phone, companyName }: ProfileClientProps) {
   const router = useRouter();
   const { data: session, update } = useSession();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -25,6 +26,7 @@ export default function ProfileClient({ name, email, username, roleName, phone }
     name: name || '',
     email: email || '',
     phone: phone || '',
+    companyName: companyName || '',
   });
 
   // Update profile data when props change
@@ -33,8 +35,9 @@ export default function ProfileClient({ name, email, username, roleName, phone }
       name: name || '',
       email: email || '',
       phone: phone || '',
+      companyName: companyName || '',
     });
-  }, [name, email, phone]);
+  }, [name, email, phone, companyName]);
 
   // Password form state
   const [passwordData, setPasswordData] = useState({
@@ -246,6 +249,27 @@ export default function ProfileClient({ name, email, username, roleName, phone }
             </div>
 
             <div className="mb-3">
+              <label htmlFor="companyName" className="form-label fw-semibold">
+                Raison sociale
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="companyName"
+                value={profileData.companyName}
+                onChange={(e) => setProfileData({ ...profileData, companyName: e.target.value })}
+                disabled={!isEditingProfile}
+                placeholder="Nom de votre société (optionnel)"
+                style={{
+                  borderRadius: '8px',
+                  border: '2px solid #e3ece7',
+                  padding: '12px',
+                  backgroundColor: isEditingProfile ? '#fff' : '#f8f9fa',
+                }}
+              />
+            </div>
+
+            <div className="mb-3">
               <label htmlFor="role" className="form-label fw-semibold">
                 Rôle
               </label>
@@ -286,7 +310,7 @@ export default function ProfileClient({ name, email, username, roleName, phone }
                   className="btn"
                   onClick={() => {
                     setIsEditingProfile(false);
-                    setProfileData({ name: name || '', email: email || '', phone: phone || '' });
+                    setProfileData({ name: name || '', email: email || '', phone: phone || '', companyName: companyName || '' });
                     setMessage({ type: '', text: '' });
                   }}
                   style={{

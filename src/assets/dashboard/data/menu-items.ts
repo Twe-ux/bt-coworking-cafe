@@ -133,7 +133,7 @@ export const MENU_ITEMS: MenuItemType[] = [
       {
         key: "booking-reservations",
         label: "Reservations",
-        url: "/dashboard/reservations",
+        url: "/dashboard/booking/reservations",
         parentKey: "booking",
       },
       {
@@ -146,6 +146,12 @@ export const MENU_ITEMS: MenuItemType[] = [
         key: "booking-services",
         label: "Services sup.",
         url: "/dashboard/booking/services",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-settings",
+        label: "Settings",
+        url: "/dashboard/booking/settings",
         parentKey: "booking",
       },
     ],

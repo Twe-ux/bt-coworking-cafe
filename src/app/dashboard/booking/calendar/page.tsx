@@ -9,6 +9,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { Icon } from "@iconify/react";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Badge, Button, Card, Modal } from "react-bootstrap";
+import { useSession } from "next-auth/react";
 import MoreEventsModal from "./components/MoreEventsModal";
 import CreateReservationModal from "./components/CreateReservationModal";
 import EditReservationModal from "./components/EditReservationModal";
@@ -27,6 +28,7 @@ interface Reservation {
   numberOfPeople: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
+  attendanceStatus?: "present" | "absent";
   paymentStatus: string;
   contactName?: string;
   contactEmail?: string;
@@ -89,16 +91,19 @@ const spaceTypeLabels: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  pending: "En attente",
-  confirmed: "Confirmée",
-  cancelled: "Annulée",
-  completed: "Terminée",
+  pending: "À confirmer",
+  confirmed: "Confirmé",
+  cancelled: "Annulé",
+  completed: "Terminé",
+  present: "Présenté",
+  absent: "Non présenté",
 };
 
 // Force dynamic rendering
 export const dynamic = "force-dynamic";
 
 const CalendarPage = () => {
+  const { data: session } = useSession();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{
@@ -130,6 +135,9 @@ const CalendarPage = () => {
   const [exceptionalClosures, setExceptionalClosures] = useState<any[]>([]);
   const calendarRef = useRef<FullCalendar>(null);
   const { setPageTitle, setPageActions } = useTopbarContext();
+
+  // Check if user is admin (level >= 80)
+  const isAdmin = session?.user?.role?.level >= 80;
 
   // Get selected space configuration
   const selectedSpaceConfig = spaceConfigurations.find(
@@ -566,15 +574,16 @@ const CalendarPage = () => {
   const updateReservationStatus = async (
     id: string,
     status: string,
-    paymentStatus?: string
+    paymentStatus?: string,
+    attendanceStatus?: string
   ) => {
     try {
-      const updates: any = { id, status };
+      const updates: any = { status, attendanceStatus };
       if (paymentStatus) {
         updates.paymentStatus = paymentStatus;
       }
 
-      const response = await fetch("/api/admin/reservations", {
+      const response = await fetch(`/api/admin/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updates),
@@ -691,7 +700,14 @@ const CalendarPage = () => {
 
   // Convert reservations to calendar events
   const reservationEvents = reservations
-    .filter((reservation) => reservation.status !== "cancelled") // Exclure uniquement les annulées
+    .filter((reservation) => {
+      // Admin: show all except cancelled
+      if (isAdmin) {
+        return reservation.status !== "cancelled";
+      }
+      // Staff: show confirmed and completed reservations (to manage attendance)
+      return reservation.status === "confirmed" || reservation.status === "completed";
+    })
     .map((reservation) => {
       const date = new Date(reservation.date);
 
@@ -710,8 +726,30 @@ const CalendarPage = () => {
       const end = new Date(date);
       end.setHours(parseInt(endHour), parseInt(endMin));
 
-      // Title enrichi avec plus d'informations
-      const title = `${spaceTypeLabels[reservation.spaceType]} • ${
+      // Title enrichi avec plus d'informations et statut
+      let statusIcon = "";
+      let statusText = "";
+
+      if (reservation.status === "pending") {
+        statusIcon = "⏳";
+        statusText = statusLabels.pending;
+      } else if (reservation.status === "confirmed") {
+        statusIcon = "✓";
+        statusText = statusLabels.confirmed;
+      } else if (reservation.status === "completed") {
+        if (reservation.attendanceStatus === "present") {
+          statusIcon = "✓✓";
+          statusText = statusLabels.present;
+        } else if (reservation.attendanceStatus === "absent") {
+          statusIcon = "✗";
+          statusText = statusLabels.absent;
+        } else {
+          statusIcon = "";
+          statusText = statusLabels.completed;
+        }
+      }
+
+      const title = `${statusIcon} ${spaceTypeLabels[reservation.spaceType]} • ${
         reservation.contactName || reservation.user.name
       } (${reservation.numberOfPeople}p)`;
 
@@ -731,11 +769,14 @@ const CalendarPage = () => {
         extendedProps: {
           reservation,
           gradient,
+          statusText,
         },
         classNames: [
           reservation.status === "pending" ? "event-pending" : "",
           reservation.status === "confirmed" ? "event-confirmed" : "",
           reservation.status === "completed" ? "event-completed" : "",
+          reservation.attendanceStatus === "present" ? "event-present" : "",
+          reservation.attendanceStatus === "absent" ? "event-absent" : "",
           `event-${reservation.spaceType}`,
         ].filter(Boolean),
       };

@@ -5,6 +5,7 @@ import Link from "next/link";
 import "./client-dashboard.scss";
 import { connectDB } from "@/lib/mongodb";
 import { Reservation } from "@/models/reservation";
+import UpcomingReservationCard from "@/components/site/dashboard/UpcomingReservationCard";
 
 // Force dynamic rendering - don't pre-render at build time
 export const dynamic = "force-dynamic";
@@ -40,6 +41,10 @@ export default async function ClientDashboard({
   await connectDB();
   const userId = session.user.id;
 
+  const now = new Date();
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+
   const [
     activeReservations,
     completedReservations,
@@ -49,7 +54,7 @@ export default async function ClientDashboard({
     Reservation.countDocuments({
       user: userId,
       status: { $in: ["pending", "confirmed"] },
-      date: { $gte: new Date() },
+      date: { $gte: todayStart },
     }),
     Reservation.countDocuments({
       user: userId,
@@ -64,15 +69,36 @@ export default async function ClientDashboard({
     Reservation.find({
       user: userId,
       status: { $in: ["pending", "confirmed"] },
-      date: { $gte: new Date() },
+      date: { $gte: todayStart },
     })
       .select(
-        "spaceType date startTime endTime numberOfPeople totalPrice paymentStatus"
+        "spaceType date startTime endTime numberOfPeople totalPrice status paymentStatus"
       )
       .sort({ date: 1, startTime: 1 })
-      .limit(3)
       .lean(),
   ]);
+
+  // Filter out reservations that have already started today
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentTimeInMinutes = currentHour * 60 + currentMinute;
+
+  const filteredUpcomingReservations = upcomingReservations.filter((reservation: any) => {
+    const reservationDate = new Date(reservation.date);
+    reservationDate.setHours(0, 0, 0, 0);
+    const isToday = reservationDate.getTime() === todayStart.getTime();
+
+    if (!isToday) {
+      // If not today, include all future dates
+      return true;
+    }
+
+    // If today, check if the start time hasn't passed yet
+    const [startHour, startMinute] = (reservation.startTime || "0:0").split(":").map(Number);
+    const startTimeInMinutes = startHour * 60 + startMinute;
+
+    return startTimeInMinutes > currentTimeInMinutes;
+  }).slice(0, 3); // Limit to 3 after filtering
 
   // Calculate total hours booked
   const totalHours = allReservations.reduce((total, reservation) => {
@@ -141,7 +167,7 @@ export default async function ClientDashboard({
         </div>
 
         {/* Upcoming Reservations */}
-        {upcomingReservations.length > 0 && (
+        {filteredUpcomingReservations.length > 0 && (
           <div className="row mb-5">
             <div className="col-12">
               <div className="d-flex justify-content-between align-items-center mb-4">
@@ -155,78 +181,22 @@ export default async function ClientDashboard({
               </div>
             </div>
 
-            {upcomingReservations.map((reservation: any) => {
-              const getSpaceLabel = (spaceType: string) => {
-                const labels: Record<string, string> = {
-                  "open-space": "Open-space",
-                  "salle-verriere": "Salle Verrière",
-                  "salle-etage": "Salle Étage",
-                  evenementiel: "Événementiel",
-                };
-                return labels[spaceType] || spaceType;
-              };
-
-              const formatDate = (dateString: string) => {
-                return new Date(dateString).toLocaleDateString("fr-FR", {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                });
-              };
-
-              return (
-                <div key={reservation._id.toString()} className="col-md-4 mb-4">
-                  <Link
-                    href={`/booking/confirmation/${reservation._id.toString()}`}
-                    className="reservation-card"
-                  >
-                    <div className="d-flex justify-content-between align-items-start mb-3">
-                      <h5 className="reservation-space mb-0">
-                        {getSpaceLabel(reservation.spaceType)}
-                      </h5>
-                      <div className="info-item mb-0">
-                        <i className="bi bi-people"></i>
-                        <span>
-                          {reservation.numberOfPeople}{" "}
-                          {reservation.numberOfPeople > 1 ? "pers." : "pers."}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="reservation-info">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="info-item mb-0">
-                          <i className="bi bi-calendar"></i>
-                          <span>{formatDate(reservation.date)}</span>
-                        </div>
-                        <div className="info-item mb-0">
-                          <i className="bi bi-clock"></i>
-                          <span>
-                            {reservation.startTime} - {reservation.endTime}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="reservation-footer">
-                      <span
-                        className={`status-badge ${
-                          reservation.paymentStatus === "paid"
-                            ? "paid"
-                            : "pending"
-                        }`}
-                      >
-                        {reservation.paymentStatus === "paid"
-                          ? "Payé"
-                          : "En attente"}
-                      </span>
-                      <span className="price">
-                        {reservation.totalPrice?.toFixed(2) || "0.00"}€
-                      </span>
-                    </div>
-                  </Link>
-                </div>
-              );
-            })}
+            {filteredUpcomingReservations.map((reservation: any) => (
+              <UpcomingReservationCard
+                key={reservation._id.toString()}
+                reservation={{
+                  _id: reservation._id.toString(),
+                  spaceType: reservation.spaceType,
+                  date: reservation.date,
+                  startTime: reservation.startTime,
+                  endTime: reservation.endTime,
+                  numberOfPeople: reservation.numberOfPeople,
+                  totalPrice: reservation.totalPrice,
+                  status: reservation.status,
+                  paymentStatus: reservation.paymentStatus,
+                }}
+              />
+            ))}
           </div>
         )}
 

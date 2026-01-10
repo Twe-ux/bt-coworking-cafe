@@ -50,11 +50,14 @@ export default function BookingDetailsPage() {
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [contactCompanyName, setContactCompanyName] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [createAccount, setCreateAccount] = useState(false);
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Auto-save contact data to sessionStorage when fields change
   useEffect(() => {
@@ -64,11 +67,12 @@ export default function BookingDetailsPage() {
         contactName,
         contactEmail,
         contactPhone,
+        contactCompanyName,
         specialRequests,
       };
       sessionStorage.setItem("bookingData", JSON.stringify(updatedData));
     }
-  }, [contactName, contactEmail, contactPhone, specialRequests, bookingData]);
+  }, [contactName, contactEmail, contactPhone, contactCompanyName, specialRequests, bookingData]);
   const [loading, setLoading] = useState(false);
   const [availableServices, setAvailableServices] = useState<
     AdditionalService[]
@@ -125,6 +129,13 @@ export default function BookingDetailsPage() {
       fetchUserPhone();
     }
 
+    if (data.contactCompanyName) {
+      setContactCompanyName(data.contactCompanyName);
+    } else if (session?.user) {
+      // Charger la raison sociale depuis le profil utilisateur
+      fetchUserProfile();
+    }
+
     if (data.specialRequests) {
       setSpecialRequests(data.specialRequests);
     }
@@ -153,6 +164,18 @@ export default function BookingDetailsPage() {
       }
     } catch (error) {
       console.error("Error fetching user phone:", error);
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await fetch("/api/user/profile");
+      const data = await response.json();
+      if (data.user?.companyName) {
+        setContactCompanyName(data.user.companyName);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
     }
   };
 
@@ -277,8 +300,8 @@ export default function BookingDetailsPage() {
 
     setLoading(true);
 
-    // Si utilisateur connecté et téléphone renseigné, sauvegarder dans le profil
-    if (session?.user && contactPhone) {
+    // Si utilisateur connecté et téléphone/raison sociale renseigné, sauvegarder dans le profil
+    if (session?.user && (contactPhone || contactCompanyName)) {
       try {
         await fetch("/api/user/profile", {
           method: "PUT",
@@ -287,10 +310,11 @@ export default function BookingDetailsPage() {
             name: contactName,
             email: contactEmail,
             phone: contactPhone,
+            companyName: contactCompanyName,
           }),
         });
       } catch (error) {
-        console.error("Error saving phone to profile:", error);
+        console.error("Error saving to profile:", error);
         // Continue anyway, don't block the booking flow
       }
     }
@@ -301,6 +325,7 @@ export default function BookingDetailsPage() {
       contactName,
       contactEmail,
       contactPhone,
+      contactCompanyName,
       specialRequests,
       createAccount,
       subscribeNewsletter,
@@ -474,54 +499,137 @@ export default function BookingDetailsPage() {
                   {/* Two column layout */}
                   <div className="row mb-4">
                     {/* Left column: Contact info */}
-                    <div className="col-md-6 mb-4 mb-md-0">
+                    <div className={session ? "col-12 mb-4 mb-md-0" : "col-md-6 mb-4 mb-md-0"}>
                       <div className="stat-card h-100">
                         <div className="w-100">
                           <div className="d-flex align-items-center gap-2 mb-4">
                             <i className="bi bi-person-lines-fill text-success"></i>
                             <h2 className="h6 mb-0 fw-semibold">Coordonnées</h2>
                           </div>
-                          <div className="mb-3">
-                            <label className="form-label">
-                              Nom complet <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Votre nom complet"
-                              value={contactName}
-                              onChange={(e) => setContactName(e.target.value)}
-                              required
-                            />
-                          </div>
 
-                          <div className="mb-3">
-                            <label className="form-label">
-                              Email <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="email"
-                              className="form-control"
-                              placeholder="vous@email.com"
-                              value={contactEmail}
-                              onChange={(e) => setContactEmail(e.target.value)}
-                              required
-                            />
-                          </div>
+                          {session ? (
+                            // Layout en 2 colonnes pour utilisateurs connectés
+                            <div className="row">
+                              <div className="col-md-6 mb-3">
+                                <label className="form-label">
+                                  Nom complet <span className="text-danger">*</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Votre nom complet"
+                                  value={contactName}
+                                  onChange={(e) => setContactName(e.target.value)}
+                                  required
+                                />
+                              </div>
 
-                          <div className="mb-0">
-                            <label className="form-label">
-                              Téléphone <span className="text-danger">*</span>
-                            </label>
-                            <input
-                              type="tel"
-                              className="form-control"
-                              placeholder="06 XX XX XX XX"
-                              value={contactPhone}
-                              onChange={(e) => setContactPhone(e.target.value)}
-                              required
-                            />
-                          </div>
+                              <div className="col-md-6 mb-3">
+                                <label className="form-label">
+                                  Email <span className="text-danger">*</span>
+                                </label>
+                                <input
+                                  type="email"
+                                  className="form-control"
+                                  placeholder="vous@email.com"
+                                  value={contactEmail}
+                                  onChange={(e) => setContactEmail(e.target.value)}
+                                  required
+                                />
+                              </div>
+
+                              <div className="col-md-6 mb-0">
+                                <label className="form-label">
+                                  Téléphone <span className="text-danger">*</span>
+                                </label>
+                                <input
+                                  type="tel"
+                                  className="form-control"
+                                  placeholder="06 XX XX XX XX"
+                                  value={contactPhone}
+                                  onChange={(e) => setContactPhone(e.target.value)}
+                                  required
+                                />
+                              </div>
+
+                              <div className="col-md-6 mb-0">
+                                <label className="form-label">
+                                  Raison sociale{" "}
+                                  <span className="text-muted">(optionnel)</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Nom de votre société"
+                                  value={contactCompanyName}
+                                  onChange={(e) =>
+                                    setContactCompanyName(e.target.value)
+                                  }
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            // Layout en 1 colonne pour invités
+                            <>
+                              <div className="mb-3">
+                                <label className="form-label">
+                                  Nom complet <span className="text-danger">*</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Votre nom complet"
+                                  value={contactName}
+                                  onChange={(e) => setContactName(e.target.value)}
+                                  required
+                                />
+                              </div>
+
+                              <div className="mb-3">
+                                <label className="form-label">
+                                  Email <span className="text-danger">*</span>
+                                </label>
+                                <input
+                                  type="email"
+                                  className="form-control"
+                                  placeholder="vous@email.com"
+                                  value={contactEmail}
+                                  onChange={(e) => setContactEmail(e.target.value)}
+                                  required
+                                />
+                              </div>
+
+                              <div className="mb-3">
+                                <label className="form-label">
+                                  Téléphone <span className="text-danger">*</span>
+                                </label>
+                                <input
+                                  type="tel"
+                                  className="form-control"
+                                  placeholder="06 XX XX XX XX"
+                                  value={contactPhone}
+                                  onChange={(e) => setContactPhone(e.target.value)}
+                                  required
+                                />
+                              </div>
+
+                              <div className="mb-0">
+                                <label className="form-label">
+                                  Raison sociale{" "}
+                                  <span className="text-muted">(optionnel)</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Nom de votre société"
+                                  value={contactCompanyName}
+                                  onChange={(e) =>
+                                    setContactCompanyName(e.target.value)
+                                  }
+                                />
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -616,31 +724,65 @@ export default function BookingDetailsPage() {
                                     <label className="form-label small">
                                       Mot de passe
                                     </label>
-                                    <input
-                                      type="password"
-                                      className="form-control"
-                                      placeholder="Minimum 8 caractères"
-                                      value={password}
-                                      onChange={(e) =>
-                                        setPassword(e.target.value)
-                                      }
-                                      required={createAccount}
-                                    />
+                                    <div className="position-relative">
+                                      <input
+                                        type={showPassword ? "text" : "password"}
+                                        className="form-control"
+                                        placeholder="Minimum 8 caractères"
+                                        value={password}
+                                        onChange={(e) =>
+                                          setPassword(e.target.value)
+                                        }
+                                        required={createAccount}
+                                        style={{ paddingRight: "2.5rem" }}
+                                      />
+                                      <button
+                                        type="button"
+                                        className="btn btn-link position-absolute"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        style={{
+                                          top: "50%",
+                                          right: "0.5rem",
+                                          transform: "translateY(-50%)",
+                                          padding: "0.25rem 0.5rem",
+                                          color: "#666",
+                                        }}
+                                      >
+                                        <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                      </button>
+                                    </div>
                                   </div>
                                   <div className="mb-3">
                                     <label className="form-label small">
                                       Confirmer le mot de passe
                                     </label>
-                                    <input
-                                      type="password"
-                                      className="form-control"
-                                      placeholder="Retapez votre mot de passe"
-                                      value={confirmPassword}
-                                      onChange={(e) =>
-                                        setConfirmPassword(e.target.value)
-                                      }
-                                      required={createAccount}
-                                    />
+                                    <div className="position-relative">
+                                      <input
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        className="form-control"
+                                        placeholder="Retapez votre mot de passe"
+                                        value={confirmPassword}
+                                        onChange={(e) =>
+                                          setConfirmPassword(e.target.value)
+                                        }
+                                        required={createAccount}
+                                        style={{ paddingRight: "2.5rem" }}
+                                      />
+                                      <button
+                                        type="button"
+                                        className="btn btn-link position-absolute"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        style={{
+                                          top: "50%",
+                                          right: "0.5rem",
+                                          transform: "translateY(-50%)",
+                                          padding: "0.25rem 0.5rem",
+                                          color: "#666",
+                                        }}
+                                      >
+                                        <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                      </button>
+                                    </div>
                                     {createAccount &&
                                       password &&
                                       confirmPassword &&

@@ -7,6 +7,7 @@ export interface UserDocument extends Document {
   username?: string;
   givenName?: string;
   phone?: string;
+  companyName?: string;
   role: ObjectId;
   emailVerifiedAt?: Date;
   lastLoginAt?: Date;
@@ -37,6 +38,7 @@ export const UserSchema = new Schema<UserDocument>(
     username: { type: String, trim: true },
     givenName: { type: String, trim: true },
     phone: { type: String, trim: true },
+    companyName: { type: String, trim: true },
     role: {
       type: Types.ObjectId,
       ref: "Role",

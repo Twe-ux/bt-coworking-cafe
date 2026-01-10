@@ -4,8 +4,8 @@ import ProtectedEmail from "@/components/common/ProtectedEmail";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BookingHelper from "./booking/BookingHelper";
-import SubscribeForm from "./SubscribeForm";
 import Helper from "./Helper";
+import SubscribeForm from "./SubscribeForm";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -56,19 +56,38 @@ const Footer = () => {
       pathname
     ) &&
     ![
+      // Homme page
       "/",
+      // Concept
+      "/concept",
+      "/take-away",
+      "/history",
+      "/manifest",
+      //Espcaces
+      "/spaces",
+      // Tarifs
+      "/pricing",
+      "/members-program",
+      "/student-offers",
+      // Menu
+      "/boissons",
+      "/menu/boissons",
+      "/menu/food",
+      // Professionnels
+      // Le Mag'
+
       "/about",
       "/blog",
       "/blog-details",
       "/contact",
       "/faq",
       "/home-2",
-      "/pricing",
+
       "/projects",
       "/project-details",
       "/services",
       "/service-details",
-      "/concept",
+
       "/espaces",
       "/tarifs",
       "/menu",
@@ -193,13 +212,15 @@ const Footer = () => {
               <h3 className="footer__info_group">???</h3>
               <ul>
                 <li>
-                  <Link href={"#"}>Mentions légales</Link>
+                  <Link href={"/mentions-legales"}>Mentions légales</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Conditions générales de vente</Link>
+                  <Link href={"/CGU"}>Conditions générales de vente</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Politique de confidentialité</Link>
+                  <Link href={"/confidentiality"}>
+                    Politique de confidentialité
+                  </Link>
                 </li>
               </ul>
             </div>

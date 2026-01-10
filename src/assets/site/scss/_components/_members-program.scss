@@ -2,12 +2,6 @@
   font-size: 18px;
 }
 
-.members__wapper {
-  .row {
-    margin-bottom: 250px;
-  }
-}
-
 .member__card {
   min-height: 445px;
   display: flex;
@@ -30,6 +24,15 @@
       color: black;
     }
   }
+}
+
+.mantra {
+  font-size: 20px !important;
+  font-weight: 600;
+  font-style: italic;
+  margin-top: 40px;
+  color: black;
+  line-height: 30px;
 }
 
 .mb__15 {
@@ -257,7 +260,6 @@
 
 // ---------------- members_2 for home page 2 and it exteds home page one member code
 .members__2 {
-  padding-bottom: 130px;
   @include breakpoint(lg) {
     padding-bottom: 266px;
   }
@@ -274,10 +276,6 @@
   }
   &_wapper {
     margin-top: 60px;
-    margin-bottom: -368px;
-    @include breakpoint(sm) {
-      margin-bottom: -265px;
-    }
 
     .members__2_card {
       background-color: #588983;

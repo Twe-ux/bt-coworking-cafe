@@ -14,6 +14,7 @@ interface Reservation {
   numberOfPeople: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
+  attendanceStatus?: "present" | "absent";
   paymentStatus: string;
   contactName?: string;
   contactEmail?: string;
@@ -36,7 +37,8 @@ interface EditReservationModalProps {
   updateReservationStatus: (
     id: string,
     status: string,
-    paymentStatus?: string
+    paymentStatus?: string,
+    attendanceStatus?: string
   ) => void;
 }
 
@@ -640,11 +642,12 @@ const EditReservationModal: React.FC<EditReservationModalProps> = ({
                       updateReservationStatus(
                         selectedEvent._id,
                         "completed",
-                        "paid"
+                        "paid",
+                        "present"
                       )
                     }
                     style={{
-                      background: "#6366F1",
+                      background: "#10B981",
                       border: "none",
                       borderRadius: "8px",
                       padding: "0.5rem 1rem",
@@ -653,11 +656,36 @@ const EditReservationModal: React.FC<EditReservationModalProps> = ({
                     }}
                   >
                     <Icon
-                      icon="ri:check-double-line"
+                      icon="ri:checkbox-circle-line"
                       width={16}
                       style={{ marginRight: "6px" }}
                     />
-                    Marquer terminée
+                    Présenté
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      updateReservationStatus(
+                        selectedEvent._id,
+                        "completed",
+                        "paid",
+                        "absent"
+                      )
+                    }
+                    style={{
+                      background: "#F59E0B",
+                      border: "none",
+                      borderRadius: "8px",
+                      padding: "0.5rem 1rem",
+                      fontWeight: 500,
+                      color: "white",
+                    }}
+                  >
+                    <Icon
+                      icon="ri:close-circle-line"
+                      width={16}
+                      style={{ marginRight: "6px" }}
+                    />
+                    Non présenté
                   </Button>
                   <Button
                     onClick={() =>

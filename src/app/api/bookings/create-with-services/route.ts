@@ -6,6 +6,7 @@ import { User } from '@/models/user';
 import { getServerSession } from 'next-auth';
 import { options as authOptions } from '@/lib/auth-options';
 import { sendBookingConfirmation } from '@/lib/email/emailService';
+import { urlToDbSpaceType } from '@/lib/space-types';
 import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
@@ -156,14 +157,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Map URL space types to database spaceType values
-    const spaceTypeMap: Record<string, string> = {
-      'open-space': 'open-space',
-      'meeting-room-glass': 'salle-verriere',
-      'meeting-room-floor': 'salle-etage',
-      'event-space': 'evenementiel',
-    };
-
-    const dbSpaceType = spaceTypeMap[spaceType] || spaceType;
+    const dbSpaceType = urlToDbSpaceType(spaceType);
 
     // Find space configuration
     const spaceConfig = await SpaceConfiguration.findOne({
@@ -289,6 +283,15 @@ export async function POST(request: NextRequest) {
         // Determine capture method based on booking date
         const daysUntilBooking = Math.ceil((bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
         captureMethod = daysUntilBooking <= 7 ? 'manual' : 'automatic';
+
+        console.log('📧 EMAIL DEBUG - Deposit calculation:', {
+          totalPrice,
+          basePrice,
+          totalPriceInCents,
+          policyPercentage: policy.percentage,
+          depositInCents,
+          depositInEuros: depositInCents / 100
+        });
       }
 
       await sendBookingConfirmation(contactEmail, {
@@ -307,6 +310,7 @@ export async function POST(request: NextRequest) {
         depositAmount,
         captureMethod,
         additionalServices: emailServices,
+        numberOfPeople,
       });
     } catch (emailError) {
       console.error('Error sending confirmation email:', emailError);

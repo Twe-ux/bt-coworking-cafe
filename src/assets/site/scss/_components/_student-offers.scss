@@ -1,8 +1,3 @@
-.py__20 {
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
 .students {
   background-color: var(--main-clr);
 
@@ -263,8 +258,6 @@
   }
 
   &_wapper {
-    margin-top: 60px;
-
     .students__2_card {
       background-color: #588983;
       h3 {
@@ -337,6 +330,9 @@
 
   .projects__usecase {
     margin-top: 0;
+  }
+  h2 {
+    color: var(--grayWhite-clr);
   }
 
   p {
@@ -443,6 +439,13 @@
       color: var(--grayWhite-clr);
     }
   }
+}
+
+.p-offer {
+  // font-weight: bold;
+  font-style: italic;
+  font-size: 20px !important;
+  margin-top: 30px;
 }
 
 .all__students {

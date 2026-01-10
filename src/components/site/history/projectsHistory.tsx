@@ -4,13 +4,15 @@ import ProjectCard from "../projects/projectCard";
 
 const ProjectsHistory = () => {
   return (
-    <section className="all__project py__130">
+    <section className="all__project py__90">
       <div className="container">
-        <h4>L’équipe : six personnalités, un même lieu à faire vivre</h4>
+        <h2 className="t__54">
+          L’équipe : des personnalités, un même lieu à faire vivre
+        </h2>
         <p className="text-black mt__20">
           Derrière Coworking Café by Anticafé, il n’y a pas qu’un concept : il y
-          a une équipe. Une petite tribu de six personnes qui font battre le
-          cœur du lieu au quotidien ☕✨
+          a une équipe. Une petite tribu qui font battre le cœur du lieu au
+          quotidien ☕✨
         </p>
         <p className="text-black mt__20">
           Nous sommes baristas, hôtes, conseillers improvisés, techniciens du
@@ -23,7 +25,7 @@ const ProjectsHistory = () => {
             {historyData.map(({ categories, id, imgSrc, title }) => (
               <SlideUp
                 key={id}
-                className={`col-xl-4 col-md-6 mb-5 mb-xl-0`}
+                className={`col-xl-3 col-md-6 mb-5 mb-xl-0`}
                 delay={id}
               >
                 <ProjectCard
@@ -45,9 +47,9 @@ const ProjectsHistory = () => {
           gigantesques.
         </p>
         <p className="text-black mt__20">
-          Nous sommes six, avec des personnalités différentes, des parcours
-          variés, et une énergie commune : 🎯 accueillir, accompagner,
-          faciliter, et créer un lieu où travailler devient un plaisir.
+          Nous avons des personnalités différentes, des parcours variés, mais
+          une énergie commune : 🎯 accueillir, accompagner, faciliter, et créer
+          un lieu où travailler devient un plaisir.
         </p>
         <p className="text-black mt__20">
           Christèle et Thierry sont aux commandes, mais le lieu vit grâce à

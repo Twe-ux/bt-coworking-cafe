@@ -3,6 +3,22 @@
     {
       "path": "/api/cron/publish-scheduled",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/create-holds",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/capture-deposits",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/check-attendance",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/daily-report",
+      "schedule": "0 19 * * *"
     }
   ]
 }

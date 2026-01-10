@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposition 3 - Résumé + Prix à gauche, Paiement à droite</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .proposal-label {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .content {
+            display: flex;
+            gap: 20px;
+            padding: 30px;
+            align-items: stretch;
+        }
+        .left-column {
+            flex: 0 0 55%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .right-column {
+            flex: 0 0 45%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .card-header i {
+            font-size: 24px;
+            color: #588983;
+        }
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+        .detail-value {
+            color: #333;
+            text-align: right;
+        }
+        .switch-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .price-table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 700;
+            color: #666;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .price-table th:first-child {
+            text-align: left;
+        }
+        .price-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .price-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+        .total-row {
+            background: linear-gradient(135deg, rgba(88, 137, 131, 0.1) 0%, rgba(88, 137, 131, 0.05) 100%);
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .payment-form {
+            background: #f9f9f9;
+            border: 2px dashed #588983;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .payment-form .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .payment-form p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #588983;
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #417972;
+        }
+        .info-box {
+            background: rgba(88, 137, 131, 0.1);
+            border-left: 4px solid #588983;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .info-box p {
+            margin: 0;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        .highlight-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #333;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .highlight-box strong {
+            color: #7c3aed;
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="proposal-label">PROPOSITION 3 - RECOMMANDÉE ⭐</div>
+            <h1>✨ Résumé + Prix à gauche, Paiement à droite</h1>
+            <p style="margin-top: 10px; opacity: 0.9;">Layout optimisé : Tout le récap à gauche (55%), action à droite (45%)</p>
+        </div>
+
+        <div class="content">
+            <!-- LEFT COLUMN (55%) - SUMMARY + PRICING -->
+            <div class="left-column" style="display: flex; flex-direction: column; height: 100%;">
+                <!-- Booking Summary Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <i>📋</i>
+                        <h2>Résumé de la réservation</h2>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Espace</span>
+                        <span class="detail-value">Salle de réunion - Verrière</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value">À l'heure</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">Lundi 6 janvier 2026</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Horaires</span>
+                        <span class="detail-value">14:00 - 17:00 <small style="color: #999;">(3h)</small></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Personnes</span>
+                        <span class="detail-value">4 personnes</span>
+                    </div>
+                    <div class="detail-row" style="border-bottom: none;">
+                        <span class="detail-label">Contact</span>
+                        <span class="detail-value">
+                            <div>Jean Dupont</div>
+                            <small style="color: #999;">jean.dupont@email.com</small><br>
+                            <small style="color: #999;">06 12 34 56 78</small>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Price Breakdown Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <i>💰</i>
+                        <h2>Récapitulatif des prix</h2>
+                    </div>
+
+                    <div class="switch-container">
+                        <span style="font-weight: 600;">Prix TTC</span>
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" style="width: 48px; height: 24px;">
+                        </label>
+                        <span style="color: #999;">Prix HT</span>
+                    </div>
+
+                    <table class="price-table">
+                        <thead>
+                            <tr>
+                                <th>Prestation</th>
+                                <th>Qté</th>
+                                <th>Prix unit.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tarif</td>
+                                <td style="color: #999;">4</td>
+                                <td style="color: #999;">30.00€</td>
+                                <td>120.00€</td>
+                            </tr>
+                            <tr>
+                                <td>Pizza Forestière</td>
+                                <td style="color: #999;">2</td>
+                                <td style="color: #999;">8.90€</td>
+                                <td>17.80€</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="3">Total TTC</td>
+                                <td style="color: #588983; font-size: 22px;">137.80€</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN (45%) - PAYMENT ONLY -->
+            <div class="right-column" style="display: flex;">
+                <div class="card" style="flex: 1; display: flex; flex-direction: column; height: 100%;">
+                    <div class="card-header">
+                        <i>💳</i>
+                        <h2>Paiement sécurisé</h2>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>ℹ️ Empreinte bancaire</strong><br>
+                        Une autorisation de <strong>137.80€</strong> sera effectuée sur votre carte. Le montant sera capturé 48h avant la réservation.</p>
+                    </div>
+
+                    <div class="payment-form" style="flex: 1;">
+                        <div class="icon">💳</div>
+                        <p><strong>Formulaire de paiement Stripe Elements</strong></p>
+                        <p style="color: #999; font-size: 14px;">Les champs du formulaire Stripe apparaîtront ici :<br>
+                        • Numéro de carte<br>
+                        • Date d'expiration<br>
+                        • CVC<br>
+                        • Code postal</p>
+                        <button class="btn">🔒 Valider la réservation</button>
+                    </div>
+
+                    <p style="text-align: center; margin-top: 16px; color: #999; font-size: 13px;">
+                        🔒 Paiement sécurisé par Stripe
+                    </p>
+
+                    <div style="margin-top: 20px; padding: 16px; background: rgba(139, 92, 246, 0.05); border-radius: 8px; text-align: center;">
+                        <p style="margin: 0; font-size: 13px; color: #666;">
+                            <strong style="color: #7c3aed;">🎯 Cette proposition combine le meilleur des deux :</strong><br>
+                            Colonne gauche = Informations<br>
+                            Colonne droite = Action (paiement)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

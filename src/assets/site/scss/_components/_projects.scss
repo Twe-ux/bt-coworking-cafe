@@ -75,20 +75,42 @@
       .prj__title {
         font-family: Kanit;
         color: var(--grayWhite-clr);
-        margin-top: 40px;
+        margin-top: 20px;
 
         @include breakpoint(md) {
           margin-top: 20px;
         }
       }
+      .d-flex {
+        gap: 1rem;
+      }
 
       .project__group {
-        margin-top: 20px;
-        color: var(--btn-clr);
+        color: var(--pra-clr);
+        margin-top: 7px;
 
         @include breakpoint(md) {
           margin-top: 5px;
         }
+      }
+      &_circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid var(--btn-clr);
+        transition: all 0.5s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        flex-direction: column;
+        color: var(--btn-clr);
+      }
+      i {
+        transform: rotate(-45deg);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
       }
     }
   }

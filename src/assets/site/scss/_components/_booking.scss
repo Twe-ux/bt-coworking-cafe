@@ -41,6 +41,8 @@
   cursor: pointer;
   overflow: hidden;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     box-shadow: var(--shadow-lg);
@@ -66,6 +68,7 @@
     hsl(var(--primary)) 0%,
     hsl(var(--primary) / 0.8) 100%
   );
+  flex-shrink: 0;
 
   @media (min-width: 769px) {
     height: 180px;
@@ -122,6 +125,10 @@
 
 .card-content {
   padding: var(--spacing-5);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 .card-title {
@@ -147,11 +154,100 @@
   font-size: 0.8125rem;
 }
 
+.price-badge-hourly {
+  @include badge-secondary;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.price-badge-daily {
+  @include badge-primary;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #588983;
+  color: white;
+}
+
+.p-19 {
+  padding: 19px 0;
+}
+
+.price-badge-quote {
+  @include badge-primary;
+  padding: var(--spacing-2) var(--spacing-6);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: #588983;
+  color: white;
+  min-height: 30px;
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.capacity-info {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: hsl(var(--foreground));
+
+  i {
+    color: #588983;
+  }
+}
+
+.pricing-badges {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+// TTC/HT Toggle Switch
+.tax-toggle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  @include transition-all;
+
+  &.active {
+    color: #588983;
+    font-weight: 600;
+  }
+
+  &:hover {
+    color: #588983;
+  }
+}
+
+.form-check-input {
+  &:checked {
+    background-color: #588983;
+    border-color: #588983;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.25rem rgba(88, 137, 131, 0.25);
+    border-color: #588983;
+  }
+}
+
 .card-description {
   color: hsl(var(--muted-foreground));
   font-size: 0.875rem;
   margin: var(--spacing-3) 0;
   line-height: 1.5;
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .card-meta {
@@ -174,6 +270,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-2);
+  min-height: 32px;
+  flex-shrink: 0;
 }
 
 .feature-badge {
@@ -491,6 +589,34 @@
   }
 }
 
+// Checkout Page
+// --------------------------------
+.checkout-page {
+  background-color: hsl(var(--background));
+  min-height: 100vh;
+  padding: var(--spacing-6) 0 15rem !important;
+
+  @media (min-width: 470px) {
+    padding: var(--spacing-6) 0 18rem !important;
+  }
+
+  @media (min-width: 769px) {
+    padding: var(--spacing-10) 0 20rem !important;
+  }
+
+  .text-success {
+    color: #588983 !important;
+  }
+
+  .bg-success {
+    background-color: #588983 !important;
+  }
+
+  .spinner-border.text-success {
+    color: #588983 !important;
+  }
+}
+
 // Carte principale
 .booking-card {
   box-shadow: var(--shadow-sm);
@@ -710,7 +836,7 @@
     hsl(var(--border)),
     transparent
   );
-  margin: var(--spacing-3) 0;
+  margin: var(--spacing-1) 0;
 }
 
 .total-price {

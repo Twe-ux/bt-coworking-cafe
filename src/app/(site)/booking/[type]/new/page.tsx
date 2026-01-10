@@ -946,6 +946,16 @@ export default function BookingDatePage({
                               today.getDate()
                             ).padStart(2, "0")}`;
                           })()}
+                          maxDate={(() => {
+                            // 10 semaines = 70 jours
+                            const maxDate = new Date();
+                            maxDate.setDate(maxDate.getDate() + 70);
+                            return `${maxDate.getFullYear()}-${String(
+                              maxDate.getMonth() + 1
+                            ).padStart(2, "0")}-${String(
+                              maxDate.getDate()
+                            ).padStart(2, "0")}`;
+                          })()}
                           reservationType={reservationType}
                           endDate={endDate}
                         />

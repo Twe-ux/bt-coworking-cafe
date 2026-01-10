@@ -12,12 +12,13 @@ export interface AdditionalServiceItem {
 export interface ReservationDocument extends Document {
   user: ObjectId;
   space?: ObjectId; // DEPRECATED: Old reference to Space model (kept for backward compatibility)
-  spaceType: "open-space" | "salle-verriere" | "salle-etage" | "evenementiel"; // New: spaceType from SpaceConfiguration
+  spaceType: "open-space" | "salle-verriere" | "salle-etage" | "evenementiel" | "desk" | "meeting-room" | "meeting-room-glass" | "meeting-room-floor" | "private-office" | "event-space"; // New: spaceType from SpaceConfiguration
   date: Date;
   startTime?: string; // Format: "HH:mm" - Optional for full day reservations
   endTime?: string; // Format: "HH:mm" - Optional for full day reservations
   numberOfPeople: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
+  attendanceStatus?: "present" | "absent"; // Pour marquer la présence/absence le jour J
 
   // Pricing
   basePrice: number; // Prix de base de l'espace
@@ -47,11 +48,16 @@ export interface ReservationDocument extends Document {
   stripeSessionId?: string;
   stripeCustomerId?: string;
   stripeSetupIntentId?: string; // Pour les réservations > 7 jours (save card for later charge)
-  captureMethod?: "automatic" | "manual"; // Type de capture pour l'empreinte
+  captureMethod?: "automatic" | "manual" | "deferred"; // Type de capture pour l'empreinte
+
+  // Cancellation
+  cancelledAt?: Date;
+  cancellationFee?: number; // Frais d'annulation appliqués
+  refundAmount?: number; // Montant remboursé après annulation
+  cancelledBy?: ObjectId; // Utilisateur qui a effectué l'annulation
 
   createdAt: Date;
   updatedAt: Date;
-  cancelledAt?: Date;
   completedAt?: Date;
 }
 
@@ -73,7 +79,7 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     spaceType: {
       type: String,
       enum: {
-        values: ["open-space", "salle-verriere", "salle-etage", "evenementiel", "desk", "meeting-room", "private-office", "event-space"],
+        values: ["open-space", "salle-verriere", "salle-etage", "evenementiel", "desk", "meeting-room", "meeting-room-glass", "meeting-room-floor", "private-office", "event-space"],
         message: "{VALUE} is not a valid space type",
       },
       required: [true, "Space type is required"],
@@ -109,6 +115,14 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       },
       default: "pending",
       index: true,
+    },
+    attendanceStatus: {
+      type: String,
+      enum: {
+        values: ["present", "absent"],
+        message: "{VALUE} is not a valid attendance status",
+      },
+      required: false,
     },
     basePrice: {
       type: Number,
@@ -231,7 +245,7 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     stripePaymentIntentId: {
       type: String,
       trim: true,
-      index: true,
+      unique: true, // Prevent duplicate reservations for same payment intent
       sparse: true, // Allow multiple null values
     },
     stripeSessionId: {
@@ -251,12 +265,26 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     captureMethod: {
       type: String,
       enum: {
-        values: ["automatic", "manual"],
+        values: ["automatic", "manual", "deferred"],
         message: "{VALUE} is not a valid capture method",
       },
     },
     cancelledAt: {
       type: Date,
+    },
+    cancellationFee: {
+      type: Number,
+      min: [0, "Cancellation fee cannot be negative"],
+      default: 0,
+    },
+    refundAmount: {
+      type: Number,
+      min: [0, "Refund amount cannot be negative"],
+      default: 0,
+    },
+    cancelledBy: {
+      type: Types.ObjectId,
+      ref: "User",
     },
     completedAt: {
       type: Date,

@@ -6,6 +6,7 @@ interface CustomDatePickerProps {
   selectedDate: string;
   onDateChange: (date: string) => void;
   minDate?: string;
+  maxDate?: string;
   reservationType: 'hourly' | 'daily' | 'weekly' | 'monthly';
   endDate?: string;
 }
@@ -14,6 +15,7 @@ export default function CustomDatePicker({
   selectedDate,
   onDateChange,
   minDate,
+  maxDate,
   reservationType,
   endDate,
 }: CustomDatePickerProps) {
@@ -55,14 +57,26 @@ export default function CustomDatePicker({
   };
 
   const isDateDisabled = (date: Date) => {
-    if (!minDate) return false;
-    // Parse minDate manually to avoid timezone issues
-    const [minYear, minMonth, minDay] = minDate.split('-').map(Number);
-    const min = new Date(minYear, minMonth - 1, minDay);
-    min.setHours(0, 0, 0, 0);
     const dateToCheck = new Date(date);
     dateToCheck.setHours(0, 0, 0, 0);
-    return dateToCheck < min;
+
+    // Check minDate
+    if (minDate) {
+      const [minYear, minMonth, minDay] = minDate.split('-').map(Number);
+      const min = new Date(minYear, minMonth - 1, minDay);
+      min.setHours(0, 0, 0, 0);
+      if (dateToCheck < min) return true;
+    }
+
+    // Check maxDate
+    if (maxDate) {
+      const [maxYear, maxMonth, maxDay] = maxDate.split('-').map(Number);
+      const max = new Date(maxYear, maxMonth - 1, maxDay);
+      max.setHours(0, 0, 0, 0);
+      if (dateToCheck > max) return true;
+    }
+
+    return false;
   };
 
   const handleDateClick = (day: number) => {

@@ -4,6 +4,7 @@ import { Reservation } from '@/models/reservation';
 import Payment from '@/models/payment';
 import { getAuthUser, handleApiError } from '@/lib/api-helpers';
 import { createPaymentIntent, createSetupIntent, formatAmountForStripe, getOrCreateStripeCustomer } from '@/lib/stripe';
+import { urlToDbSpaceType } from '@/lib/space-types';
 import mongoose from 'mongoose';
 import SpaceConfiguration from '@/models/spaceConfiguration';
 
@@ -29,11 +30,123 @@ export async function POST(request: NextRequest) {
     const user = await getAuthUser();
     const body = await request.json();
 
-    const { bookingId } = body;
+    const { bookingId, reservationData } = body;
 
+    // NEW WORKFLOW: Support creating payment intent with reservation data (no booking ID yet)
+    if (reservationData) {
+      // NEW: Create payment intent with reservation data in metadata
+      // The booking will be created by the webhook after payment authorization
+
+      const { spaceType, date, totalPrice, contactEmail, contactName } = reservationData;
+
+      // Map URL space types to database spaceType values
+      const dbSpaceType = urlToDbSpaceType(spaceType);
+
+      // Get space configuration
+      const spaceConfig = await SpaceConfiguration.findOne({ spaceType: dbSpaceType });
+
+      console.log('🔍 CREATE-INTENT DEBUG:', {
+        spaceTypeFromFrontend: spaceType,
+        dbSpaceType,
+        spaceConfigFound: !!spaceConfig,
+        spaceConfigName: spaceConfig?.name,
+        depositPolicyEnabled: spaceConfig?.depositPolicy?.enabled,
+        depositPolicyPercentage: spaceConfig?.depositPolicy?.percentage,
+        depositPolicyFixedAmount: spaceConfig?.depositPolicy?.fixedAmount,
+        depositPolicyMinimumAmount: spaceConfig?.depositPolicy?.minimumAmount,
+      });
+
+      // Calculate days until booking
+      const now = new Date();
+      const bookingDate = new Date(date);
+      const daysUntilBooking = Math.ceil((bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+      // Convert amount to cents
+      const amountInCents = formatAmountForStripe(totalPrice);
+
+      console.log('💰 AMOUNT CALCULATION:', {
+        totalPrice,
+        amountInCents,
+      });
+
+      // Get or create Stripe customer
+      const customer = await getOrCreateStripeCustomer(
+        contactEmail,
+        contactName,
+        { userId: user?.id }
+      );
+
+      // Calculate deposit amount
+      let depositAmount = amountInCents;
+      if (spaceConfig?.depositPolicy?.enabled) {
+        const policy = spaceConfig.depositPolicy;
+        console.log('📋 DEPOSIT POLICY:', {
+          percentage: policy.percentage,
+          fixedAmount: policy.fixedAmount,
+          minimumAmount: policy.minimumAmount,
+        });
+
+        if (policy.fixedAmount) {
+          depositAmount = policy.fixedAmount;
+          console.log('✅ Using fixedAmount:', depositAmount);
+        } else if (policy.percentage) {
+          depositAmount = Math.round(amountInCents * (policy.percentage / 100));
+          console.log('✅ Using percentage:', {
+            percentage: policy.percentage,
+            calculation: `${amountInCents} * ${policy.percentage} / 100 = ${depositAmount}`,
+          });
+        }
+        if (policy.minimumAmount && depositAmount < policy.minimumAmount) {
+          console.log('⚠️ Applying minimumAmount:', policy.minimumAmount, 'was:', depositAmount);
+          depositAmount = policy.minimumAmount;
+        }
+      }
+
+      console.log('💳 FINAL DEPOSIT AMOUNT:', {
+        depositAmount,
+        depositInEuros: depositAmount / 100,
+        percentage: spaceConfig?.depositPolicy?.percentage,
+      });
+
+      // Store ALL reservation data in metadata (will be used by webhook to create booking)
+      const metadata = {
+        ...reservationData,
+        userId: user?.id,
+        createBookingOnAuthorization: 'true', // Flag for webhook
+        depositAmount: depositAmount.toString(), // Store deposit amount in cents
+      };
+
+      // Create description
+      const description = `Booking for ${spaceConfig?.name || spaceType} on ${new Date(date).toLocaleDateString('fr-FR')}`;
+
+      // UPDATED: Always use manual capture PaymentIntent (works for all dates)
+      // PaymentIntents can be held for up to 90 days, unlike SetupIntents
+      const paymentIntent = await createPaymentIntent(
+        depositAmount,
+        'eur',
+        metadata,
+        customer.id,
+        'manual'
+      );
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          clientSecret: paymentIntent.client_secret,
+          amount: depositAmount,
+          currency: 'EUR',
+          customerId: customer.id,
+          type: 'manual_capture',
+          message: 'Une empreinte bancaire sera effectuée. Elle sera annulée si vous vous présentez, ou encaissée en cas de no-show.',
+        },
+        message: 'Payment intent created successfully',
+      });
+    }
+
+    // OLD WORKFLOW: Support existing booking ID (for admin-created bookings)
     if (!bookingId) {
       return NextResponse.json(
-        { success: false, error: 'Booking ID is required' },
+        { success: false, error: 'Booking ID or reservation data is required' },
         { status: 400 }
       );
     }
@@ -165,82 +278,53 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Determine payment flow based on booking date
-    if (daysUntilBooking <= 7) {
-      // For bookings ≤7 days: Manual capture (authorization hold)
-      const paymentIntent = await createPaymentIntent(
-        depositAmount,
-        'eur',
-        {
-          bookingId: bookingId.toString(),
-          userId: userIdForDb,
-          type: 'deposit_hold',
-        },
-        customer.id,
-        'manual' // Manual capture for hold
-      );
+    // UPDATED: Always use manual capture PaymentIntent (works for all dates)
+    // PaymentIntents can be held for up to 90 days
+    const paymentIntent = await createPaymentIntent(
+      depositAmount,
+      'eur',
+      {
+        bookingId: bookingId.toString(),
+        userId: userIdForDb,
+        type: 'deposit_hold',
+      },
+      customer.id,
+      'manual' // Manual capture for hold
+    );
 
-      // Create Payment record in database
-      const payment = await Payment.create({
-        booking: bookingId,
-        user: userIdForDb,
+    // Create Payment record in database
+    const payment = await Payment.create({
+      booking: bookingId,
+      user: userIdForDb,
+      amount: depositAmount,
+      currency: 'EUR',
+      status: 'pending',
+      paymentMethod: 'card',
+      stripePaymentIntentId: paymentIntent.id,
+      stripeCustomerId: customer.id,
+      description: `${description} - Empreinte bancaire`,
+    });
+
+    // Update booking
+    booking.stripePaymentIntentId = paymentIntent.id;
+    booking.stripeCustomerId = customer.id;
+    booking.captureMethod = 'manual';
+    booking.requiresPayment = true;
+    await booking.save();
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        paymentId: payment._id,
+        clientSecret: paymentIntent.client_secret,
         amount: depositAmount,
         currency: 'EUR',
-        status: 'pending',
-        paymentMethod: 'card',
-        stripePaymentIntentId: paymentIntent.id,
-        stripeCustomerId: customer.id,
-        description: `${description} - Empreinte bancaire`,
-      });
-
-      // Update booking
-      booking.stripePaymentIntentId = paymentIntent.id;
-      booking.stripeCustomerId = customer.id;
-      booking.captureMethod = 'manual';
-      await booking.save();
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          paymentId: payment._id,
-          clientSecret: paymentIntent.client_secret,
-          amount: depositAmount,
-          currency: 'EUR',
-          customerId: customer.id,
-          type: 'manual_capture',
-          message: 'Une empreinte bancaire sera effectuée. Elle sera annulée si vous vous présentez, ou encaissée en cas de no-show.',
-        },
-        message: 'Payment intent created successfully',
-      });
-    } else {
-      // For bookings >7 days: Setup Intent (save card for later charge)
-      const setupIntent = await createSetupIntent(
-        customer.id,
-        {
-          bookingId: bookingId.toString(),
-          userId: userIdForDb,
-        }
-      );
-
-      // Update booking
-      booking.stripeSetupIntentId = setupIntent.id;
-      booking.stripeCustomerId = customer.id;
-      booking.captureMethod = 'automatic';
-      await booking.save();
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          clientSecret: setupIntent.client_secret,
-          amount: depositAmount,
-          currency: 'EUR',
-          customerId: customer.id,
-          type: 'setup_intent',
-          message: 'Votre carte sera enregistrée. Un paiement sera effectué 7 jours avant la réservation.',
-        },
-        message: 'Setup intent created successfully',
-      });
-    }
+        customerId: customer.id,
+        type: 'manual_capture',
+        message: 'Une empreinte bancaire sera effectuée. Elle sera annulée si vous vous présentez, ou encaissée en cas de no-show.',
+      },
+      message: 'Payment intent created successfully',
+    });
   } catch (error) {
     console.error('Error creating payment intent:', error);
 

@@ -6,18 +6,18 @@ const StudentsOffersPage = () => {
     <>
       <PageTitle title="Offres étudiantes" />
 
-      <section className="students students__2 py__20" id="student-offers">
+      <section className="students students__2" id="student-offers">
         <div className="container position-relative">
           <div className="students__wapper students__2_wapper">
-            <section className="tools__concept py__110">
+            <section className="tools__concept py__90">
               <div className="container">
                 <div className="projects__usecase">
                   <div className="row align-items-center">
+                    <h2 className="t__54 mb-4">
+                      Happy Hours , spécial étudiants 🎓
+                    </h2>
                     <SlideUp className="col-lg-6">
                       <div className="projects__usecase_content">
-                        <h3 className="t__54">
-                          Happy Hours , 🎓 spécial étudiants
-                        </h3>
                         <p className="pt__50">
                           Du lundi au vendredi, de 17h à 20h.
                         </p>
@@ -55,6 +55,13 @@ const StudentsOffersPage = () => {
                             </li>
                           </ul>
                         </p>
+                        <p className="mt-2">
+                          Pas besoin de réserver : tu viens, finaliser un rendu
+                          ou un projet rester productif sans exploser ton budget
+                          t’offrir un vrai espace de focus avant la soirée 😎
+                          Pas besoin de réserver : tu viens, tu donnes ton
+                          prénom, et on lance ton timer. Facile, non ? <br />{" "}
+                        </p>
                       </div>
                     </SlideUp>
                     <div className="students__carousel">
@@ -68,29 +75,23 @@ const StudentsOffersPage = () => {
                     </div>
                   </div>
                 </div>
-                <p className=" mt-2">
-                  Pas besoin de réserver : tu viens, finaliser un rendu ou un
-                  projet rester productif sans exploser ton budget t’offrir un
-                  vrai espace de focus avant la soirée 😎 Pas besoin de réserver
-                  : tu viens, tu donnes ton prénom, et on lance ton timer.
-                  Facile, non ? <br />{" "}
-                </p>
-                <p className="bold mt-3">
+
+                <p className="p-offer">
                   Profite de nos Happy Hours Étudiants et transforme tes fins de
                   journée en sessions de travail efficaces et agréables, le tout
                   à petit prix !
                 </p>
               </div>
             </section>
-            <section className="tools__concept py__110">
+            <section className="tools__concept ">
               <div className="container">
                 <div className="projects__usecase">
                   <div className="row align-items-center">
+                    <h2 className="t__54 mb-4">
+                      Happy Weekend, spécial étudiants 🎓
+                    </h2>
                     <SlideUp className="col-lg-6">
                       <div className="projects__usecase_content">
-                        <h3 className="t__54">
-                          Happy Weekend, 🎓 spécial étudiants
-                        </h3>
                         <p className="pt__50 mt-2">
                           Tous les samedis, dimanches et jours fériés.
                         </p>
@@ -128,6 +129,11 @@ const StudentsOffersPage = () => {
                             <li>retrouver un peu d’air et de motivation</li>
                           </ul>
                         </p>
+                        <p className="mt-2">
+                          Pas de réservation nécessaire : tu arrives, tu montres
+                          ta carte étudiante, et tu peux profiter de ton espace
+                          toute la journée 😎.
+                        </p>
                       </div>
                     </SlideUp>
                     <div className="students__carousel">
@@ -139,12 +145,8 @@ const StudentsOffersPage = () => {
                     </div>
                   </div>
                 </div>
-                <p className="mt-2">
-                  Pas de réservation nécessaire : tu arrives, tu montres ta
-                  carte étudiante, et tu peux profiter de ton espace toute la
-                  journée 😎.
-                </p>
-                <p className="bold mt-3">
+
+                <p className="p-offer">
                   Profite de nos Happy Weekend Étudiants pour allier
                   productivité et détente, tout en respectant ton budget
                   étudiant !

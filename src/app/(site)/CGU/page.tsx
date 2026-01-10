@@ -1,9 +1,91 @@
 "use client";
 
 import ProtectedEmail from "@/components/common/ProtectedEmail";
+import { useState, useEffect } from "react";
+
+interface CancellationTier {
+  daysBeforeBooking: number;
+  chargePercentage: number;
+}
+
+interface CancellationPolicy {
+  tiers: CancellationTier[];
+  spaceType: string;
+}
 
 export default function CGUPage() {
   const lastUpdate = "1 décembre 2025";
+  const [openSpacePolicy, setOpenSpacePolicy] = useState<CancellationPolicy | null>(null);
+  const [meetingRoomPolicy, setMeetingRoomPolicy] = useState<CancellationPolicy | null>(null);
+
+  useEffect(() => {
+    // Fetch open-space policy
+    const fetchOpenSpacePolicy = async () => {
+      try {
+        const response = await fetch('/api/cancellation-policy?spaceType=open-space');
+        if (response.ok) {
+          const data = await response.json();
+          setOpenSpacePolicy(data.data.cancellationPolicy);
+        }
+      } catch (error) {
+        console.error('Error fetching open-space policy:', error);
+      }
+    };
+
+    // Fetch meeting room policy
+    const fetchMeetingRoomPolicy = async () => {
+      try {
+        const response = await fetch('/api/cancellation-policy?spaceType=salle-verriere');
+        if (response.ok) {
+          const data = await response.json();
+          setMeetingRoomPolicy(data.data.cancellationPolicy);
+        }
+      } catch (error) {
+        console.error('Error fetching meeting room policy:', error);
+      }
+    };
+
+    fetchOpenSpacePolicy();
+    fetchMeetingRoomPolicy();
+  }, []);
+
+  // Helper function to format cancellation policy tiers correctly
+  const formatPolicyTiers = (tiers: CancellationTier[]) => {
+    // Sort tiers by daysBeforeBooking descending
+    const sortedTiers = [...tiers].sort((a, b) => b.daysBeforeBooking - a.daysBeforeBooking);
+
+    return sortedTiers.map((tier, index) => {
+      const nextTier = sortedTiers[index + 1];
+
+      if (index === sortedTiers.length - 1) {
+        // Last tier (0 days)
+        if (sortedTiers.length > 1) {
+          const previousTier = sortedTiers[index - 1];
+          return {
+            label: `Entre 0 et ${previousTier.daysBeforeBooking} jours avant`,
+            percentage: tier.chargePercentage
+          };
+        }
+        return {
+          label: `Moins de ${tier.daysBeforeBooking} jour avant`,
+          percentage: tier.chargePercentage
+        };
+      } else if (index === 0) {
+        // First tier (highest days)
+        return {
+          label: `Plus de ${tier.daysBeforeBooking} jours avant`,
+          percentage: tier.chargePercentage
+        };
+      } else {
+        // Middle tiers
+        const previousTier = sortedTiers[index - 1];
+        return {
+          label: `Entre ${tier.daysBeforeBooking} et ${previousTier.daysBeforeBooking} jours avant`,
+          percentage: tier.chargePercentage
+        };
+      }
+    });
+  };
 
   return (
     <main className="bg-white pb__180">
@@ -355,20 +437,19 @@ export default function CGUPage() {
                     className="h6 fw-semibold mb-2"
                     style={{ color: "#f57c00" }}
                   >
-                    Espaces de travail partagés :
+                    Espaces de travail partagés (Open-space) :
                   </h4>
-                  <ul className="mb-3" style={{ color: "#f57c00" }}>
-                    <li className="mb-1">
-                      <strong>Plus de 48h avant :</strong> Remboursement
-                      intégral
-                    </li>
-                    <li className="mb-1">
-                      <strong>24h à 48h avant :</strong> Remboursement à 50%
-                    </li>
-                    <li className="mb-1">
-                      <strong>Moins de 24h :</strong> Aucun remboursement
-                    </li>
-                  </ul>
+                  {openSpacePolicy && openSpacePolicy.tiers ? (
+                    <ul className="mb-3" style={{ color: "#f57c00" }}>
+                      {formatPolicyTiers(openSpacePolicy.tiers).map((tier, index) => (
+                        <li key={index} className="mb-1">
+                          <strong>{tier.label} :</strong> {tier.percentage === 0 ? 'Aucun frais' : `${tier.percentage}% de frais`}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mb-3" style={{ color: "#f57c00" }}>Chargement des conditions...</p>
+                  )}
 
                   <h4
                     className="h6 fw-semibold mb-2"
@@ -376,21 +457,17 @@ export default function CGUPage() {
                   >
                     Salles de réunion privées :
                   </h4>
-                  <ul className="mb-0" style={{ color: "#f57c00" }}>
-                    <li className="mb-1">
-                      <strong>Plus de 72h avant :</strong> Remboursement
-                      intégral
-                    </li>
-                    <li className="mb-1">
-                      <strong>48h à 72h avant :</strong> Remboursement à 70%
-                    </li>
-                    <li className="mb-1">
-                      <strong>24h à 48h avant :</strong> Remboursement à 30%
-                    </li>
-                    <li className="mb-1">
-                      <strong>Moins de 24h :</strong> Aucun remboursement
-                    </li>
-                  </ul>
+                  {meetingRoomPolicy && meetingRoomPolicy.tiers ? (
+                    <ul className="mb-0" style={{ color: "#f57c00" }}>
+                      {formatPolicyTiers(meetingRoomPolicy.tiers).map((tier, index) => (
+                        <li key={index} className="mb-1">
+                          <strong>{tier.label} :</strong> {tier.percentage === 0 ? 'Aucun frais' : `${tier.percentage}% de frais`}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mb-0" style={{ color: "#f57c00" }}>Chargement des conditions...</p>
+                  )}
                 </div>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">

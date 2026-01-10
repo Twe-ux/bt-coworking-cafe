@@ -11,6 +11,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const callbackUrl = searchParams.get("callbackUrl") || null;
 
@@ -96,16 +97,33 @@ export default function LoginForm() {
                   <label htmlFor="password" className="form-label">
                     Mot de passe
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    className="form-control auth-input"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isLoading}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      className="form-control auth-input"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      style={{ paddingRight: "2.5rem" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-link position-absolute"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        top: "50%",
+                        right: "0.5rem",
+                        transform: "translateY(-50%)",
+                        padding: "0.25rem 0.5rem",
+                        color: "#666",
+                      }}
+                    >
+                      <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center mb-4">

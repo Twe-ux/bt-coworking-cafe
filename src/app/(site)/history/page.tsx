@@ -6,7 +6,7 @@ export default function historyPage() {
   return (
     <>
       <PageTitle title={"Notre histoire"} />
-      <article className="service__details py__130">
+      <article className="service__details py__110">
         <div className="container">
           <img
             src="/images/history/histoire-coworking-strasbourg.webp"
@@ -90,27 +90,24 @@ export default function historyPage() {
             </p>
           </div>
           <div className="second__para pt__60">
-            <div className="row justify-content-between align-items-center">
+            <h4 className="t__28">
+              Aujourd’hui : un espace pour toutes les manières de travailler
+            </h4>
+
+            <div className="row align-items-center mt__40">
               <SlideUp className="col-md-6">
                 <img
                   src="/images/history/histoire-anticafe-strasbourg.webp"
                   alt="img"
-                  className="w-100"
+                  className="w-100 rounded-3"
                 />
               </SlideUp>
+
               <SlideUp className="col-md-5 mt-4 mt-md-0">
                 <div>
-                  <h4 className="t__28">
-                    Aujourd’hui : un espace pour toutes les manières de
-                    travailler
-                  </h4>
-                  <p className="text-black mt__20">
-                    Le lieu accueille chaque jour :
-                  </p>
+                  <p className="text-black">Le lieu accueille chaque jour :</p>
                   <ul className="text-black mt__20 d-flex flex-column gap-3">
-                    <li >
-                      ✨ des freelances en quête d’un refuge productif
-                    </li>
+                    <li>✨ des freelances en quête d’un refuge productif</li>
 
                     <li>
                       ✨ des étudiants en mode révisions ou projets de groupe
@@ -138,8 +135,8 @@ export default function historyPage() {
               </p>
             </div>
           </div>
-          <ProjectsHistory />
         </div>
+        <ProjectsHistory />
       </article>
     </>
   );

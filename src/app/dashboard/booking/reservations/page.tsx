@@ -5,6 +5,8 @@ import { Card, Table, Badge, Button, Form, Row, Col, Alert } from "react-bootstr
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
 import { useTopbarContext } from "@/context/useTopbarContext";
 import { useSearchParams } from "next/navigation";
+import AdminCancelReservationModal from "@/components/site/booking/AdminCancelReservationModal";
+import { getDbSpaceTypeLabel } from "@/lib/space-types";
 
 interface Reservation {
   _id: string;
@@ -23,6 +25,7 @@ interface Reservation {
   servicesPrice: number;
   totalPrice: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
+  attendanceStatus?: "present" | "absent";
   paymentStatus: "pending" | "paid" | "refunded" | "failed";
   requiresPayment: boolean;
   contactName?: string;
@@ -41,6 +44,8 @@ const statusColors: Record<string, string> = {
   confirmed: "success",
   cancelled: "danger",
   completed: "secondary",
+  present: "success",
+  absent: "danger",
 };
 
 const statusLabels: Record<string, string> = {
@@ -48,6 +53,8 @@ const statusLabels: Record<string, string> = {
   confirmed: "Confirmée",
   cancelled: "Annulée",
   completed: "Terminée",
+  present: "Présenté",
+  absent: "Non présenté",
 };
 
 const paymentStatusColors: Record<string, string> = {
@@ -64,12 +71,7 @@ const paymentStatusLabels: Record<string, string> = {
   refunded: "Remboursé",
 };
 
-const spaceTypeLabels: Record<string, string> = {
-  "open-space": "Open-space",
-  "salle-verriere": "Salle Verrière",
-  "salle-etage": "Salle Étage",
-  "evenementiel": "Événementiel",
-};
+// Removed: using centralized getDbSpaceTypeLabel from @/lib/space-types instead
 
 export default function AdminReservationsPage() {
   const searchParams = useSearchParams();
@@ -81,6 +83,8 @@ export default function AdminReservationsPage() {
   const [filterSpaceType, setFilterSpaceType] = useState<string>("");
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Reservation | null>(null);
   const { setPageTitle, setPageActions } = useTopbarContext();
 
   useEffect(() => {
@@ -136,6 +140,54 @@ export default function AdminReservationsPage() {
           Confirmées
         </button>
         <button
+          onClick={() => setFilterStatus('cancelled')}
+          style={{
+            padding: '8px 16px',
+            background: filterStatus === 'cancelled' ? '#667eea' : 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: filterStatus === 'cancelled' ? 'white' : '#374151',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          Annulées
+        </button>
+        <button
+          onClick={() => setFilterStatus('present')}
+          style={{
+            padding: '8px 16px',
+            background: filterStatus === 'present' ? '#667eea' : 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: filterStatus === 'present' ? 'white' : '#374151',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          Présentés
+        </button>
+        <button
+          onClick={() => setFilterStatus('absent')}
+          style={{
+            padding: '8px 16px',
+            background: filterStatus === 'absent' ? '#667eea' : 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: filterStatus === 'absent' ? 'white' : '#374151',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          Non présentés
+        </button>
+        <button
           onClick={() => setShowFilters(!showFilters)}
           style={{
             padding: '8px 16px',
@@ -168,7 +220,15 @@ export default function AdminReservationsPage() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (filterStatus) params.append("status", filterStatus);
+
+      // Handle attendance status filters (present/absent)
+      if (filterStatus === "present" || filterStatus === "absent") {
+        params.append("attendanceStatus", filterStatus);
+      } else if (filterStatus) {
+        // Regular status filters (pending/confirmed/cancelled/completed)
+        params.append("status", filterStatus);
+      }
+
       if (filterSpaceType) params.append("spaceType", filterSpaceType);
 
       const response = await fetch(`/api/admin/reservations?${params.toString()}`);
@@ -209,27 +269,20 @@ export default function AdminReservationsPage() {
     }
   };
 
-  const handleCancelReservation = async (id: string) => {
-    if (!confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
-      return;
-    }
+  const handleCancelReservation = (reservation: Reservation) => {
+    setSelectedBooking(reservation);
+    setShowCancelModal(true);
+  };
 
-    try {
-      const response = await fetch(`/api/admin/reservations/${id}`, {
-        method: "DELETE",
-      });
+  const handleCancelModalClose = () => {
+    setShowCancelModal(false);
+    setSelectedBooking(null);
+  };
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage({ type: "success", text: "Réservation annulée avec succès" });
-        fetchReservations();
-      } else {
-        setMessage({ type: "error", text: data.error || "Erreur lors de l'annulation" });
-      }
-    } catch (error) {
-      setMessage({ type: "error", text: "Erreur lors de l'annulation" });
-    }
+  const handleCancellationComplete = () => {
+    setMessage({ type: "success", text: "Réservation annulée avec succès" });
+    fetchReservations();
+    handleCancelModalClose();
   };
 
   const formatDate = (dateString: string) => {
@@ -284,6 +337,8 @@ export default function AdminReservationsPage() {
                   <option value="confirmed">Confirmée</option>
                   <option value="cancelled">Annulée</option>
                   <option value="completed">Terminée</option>
+                  <option value="present">Présenté</option>
+                  <option value="absent">Non présenté</option>
                 </Form.Select>
               </Form.Group>
             </Card.Body>
@@ -345,7 +400,7 @@ export default function AdminReservationsPage() {
                           {reservation.contactEmail || reservation.user.email}
                         </small>
                       </td>
-                      <td>{spaceTypeLabels[reservation.spaceType] || reservation.spaceType}</td>
+                      <td>{getDbSpaceTypeLabel(reservation.spaceType)}</td>
                       <td>
                         <div>{formatDate(reservation.date)}</div>
                         <small className="text-muted">
@@ -365,6 +420,14 @@ export default function AdminReservationsPage() {
                         <Badge bg={statusColors[reservation.status] || "secondary"}>
                           {statusLabels[reservation.status] || reservation.status}
                         </Badge>
+                        {reservation.attendanceStatus && (
+                          <Badge
+                            bg={statusColors[reservation.attendanceStatus] || "secondary"}
+                            className="ms-1"
+                          >
+                            {statusLabels[reservation.attendanceStatus] || reservation.attendanceStatus}
+                          </Badge>
+                        )}
                       </td>
                       <td>
                         {reservation.requiresPayment ? (
@@ -393,7 +456,8 @@ export default function AdminReservationsPage() {
                             <Button
                               size="sm"
                               variant="outline-danger"
-                              onClick={() => handleCancelReservation(reservation._id)}
+                              onClick={() => handleCancelReservation(reservation)}
+                              title="Annuler la réservation"
                             >
                               <IconifyIcon icon="ri:close-line" />
                             </Button>
@@ -408,6 +472,13 @@ export default function AdminReservationsPage() {
           </div>
         </Card.Body>
       </Card>
+
+      <AdminCancelReservationModal
+        reservation={selectedBooking}
+        show={showCancelModal}
+        onHide={handleCancelModalClose}
+        onCancelled={handleCancellationComplete}
+      />
     </div>
   );
 }
