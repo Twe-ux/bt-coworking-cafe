@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateConfirmationEmail } from '@/lib/email/templates/confirmation';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function GET(request: NextRequest) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     // Email de test - vous pouvez changer cette adresse
     const testEmail = 'milone.thierry@gmail.com';
 
