@@ -302,7 +302,6 @@ export async function POST(
           cancellationFee: cancellationFee / 100,
           refundAmount: refundAmount / 100,
           confirmationNumber: booking.confirmationNumber,
-          isPending: wasPending, // Use stored status (booking was pending before cancellation)
         });
 
         logger.info("Cancellation email sent", {
