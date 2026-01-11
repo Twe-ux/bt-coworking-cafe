@@ -5,7 +5,7 @@
  * Pour modifier ce template, éditez directement ce fichier.
  */
 
-import { getSpaceDisplayName } from './helpers';
+import { getSpaceDisplayName } from "./helpers";
 
 interface DepositCapturedEmailData {
   name: string;
@@ -14,7 +14,9 @@ interface DepositCapturedEmailData {
   depositAmount: number;
 }
 
-export function generateDepositCapturedEmail(data: DepositCapturedEmailData): string {
+export function generateDepositCapturedEmail(
+  data: DepositCapturedEmailData
+): string {
   const displaySpaceName = getSpaceDisplayName(data.spaceName);
   return `
 <!DOCTYPE html>
@@ -32,7 +34,7 @@ export function generateDepositCapturedEmail(data: DepositCapturedEmailData): st
       .email-content p, .email-content strong { color: #f3f4f6 !important; }
       .warning-box { background: #7f1d1d !important; border-color: #dc2626 !important; }
       .warning-box p { color: #fecaca !important; }
-      .details-box { background: #111827 !important; border-color: #374151 !important; }
+      .details-box { background: #111827 !important; border-color: #EF4444 !important; }
       .details-box h3 { color: #EF4444 !important; }
       .detail-row { border-color: #374151 !important; }
       .detail-label { color: #9ca3af !important; }
@@ -55,14 +57,18 @@ export function generateDepositCapturedEmail(data: DepositCapturedEmailData): st
 
     <!-- Contenu -->
     <div class="email-content" style="padding: 36px 24px; line-height: 1.7; color: #1f2937;">
-      <p style="margin: 0 0 16px 0; font-size: 16px;">Bonjour <strong style="color: #EF4444;">${data.name}</strong>,</p>
+      <p style="margin: 0 0 16px 0; font-size: 16px;">Bonjour <strong style="color: #EF4444;">${
+        data.name
+      }</strong>,</p>
 
       <p style="margin: 0 0 24px 0; font-size: 16px;">Nous constatons que vous ne vous êtes pas présenté à votre réservation.</p>
 
       <!-- Warning Box -->
       <div class="warning-box" style="background: #FEE2E2; border-left: 4px solid #EF4444; padding: 20px; border-radius: 8px; margin: 28px 0;">
         <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B; font-size: 16px;">
-          L'empreinte bancaire de ${data.depositAmount.toFixed(2)}€ a été encaissée.
+          L'empreinte bancaire de ${data.depositAmount.toFixed(
+            2
+          )}€ a été encaissée.
         </p>
         <p style="margin: 0; color: #991B1B; font-size: 15px; line-height: 1.7;">
           Ce montant correspond aux frais de non-présentation conformément à nos conditions générales de vente.
@@ -70,7 +76,7 @@ export function generateDepositCapturedEmail(data: DepositCapturedEmailData): st
       </div>
 
       <!-- Détails de la réservation manquée -->
-      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #e5e7eb;">
+      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #EF4444;">
         <h3 style="margin: 0 0 20px 0; color: #EF4444; font-size: 19px; font-weight: 700; letter-spacing: -0.3px;">📋 Réservation concernée</h3>
 
         <div class="detail-row" style="padding: 14px 0; border-bottom: 1px solid #e5e7eb;">
@@ -86,7 +92,9 @@ export function generateDepositCapturedEmail(data: DepositCapturedEmailData): st
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 600; color: #6b7280; font-size: 15px;">Date</td>
-              <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500;">${data.date}</td>
+              <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500;">${
+                data.date
+              }</td>
             </tr>
           </table>
         </div>
@@ -95,7 +103,9 @@ export function generateDepositCapturedEmail(data: DepositCapturedEmailData): st
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 700; color: #111827; font-size: 16px;">Montant prélevé</td>
-              <td class="price-value" style="text-align: right; color: #EF4444; font-weight: 700; font-size: 22px; letter-spacing: -0.5px;">${data.depositAmount.toFixed(2)}€</td>
+              <td class="price-value" style="text-align: right; color: #EF4444; font-weight: 700; font-size: 22px; letter-spacing: -0.5px;">${data.depositAmount.toFixed(
+                2
+              )}€</td>
             </tr>
           </table>
         </div>
@@ -106,17 +116,17 @@ export function generateDepositCapturedEmail(data: DepositCapturedEmailData): st
       <p style="margin: 0 0 28px 0; font-size: 16px; line-height: 1.7;">Nous restons à votre disposition pour toute future réservation.</p>
 
       <!-- Contact -->
-      <div style="background: #fee2e2; border-left: 4px solid #EF4444; padding: 20px; border-radius: 8px; margin: 28px 0;">
-        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B; font-size: 16px;">📞 Pour toute question :</p>
+      <div style="background: #fee2e2; border-left: 4px solid #EF4444 !important; padding: 20px; border-radius: 8px; margin: 28px 0;">
+        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B !important; font-size: 16px;">📞 Pour toute question :</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%;">
           <tr>
-            <td style="padding: 4px 0; font-size: 15px; color: #991B1B;">
-              <strong>Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444; text-decoration: none;">09 87 33 45 19</a>
+            <td style="padding: 4px 0; font-size: 15px; color: #991B1B !important;">
+              <strong style="color: #991B1B !important;">Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444 !important; text-decoration: none;">09 87 33 45 19</a>
             </td>
           </tr>
           <tr>
             <td style="padding: 4px 0; font-size: 15px; color: #991B1B;">
-              <strong>Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
+              <strong style="color: #991B1B !important;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
             </td>
           </tr>
         </table>

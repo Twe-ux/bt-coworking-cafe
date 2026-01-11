@@ -3,7 +3,7 @@
  * Red theme (#EF4444) to indicate rejection
  */
 
-import { getSpaceDisplayName } from './helpers';
+import { getSpaceDisplayName } from "./helpers";
 
 interface ReservationRejectedData {
   name: string;
@@ -79,7 +79,9 @@ export function generateReservationRejectedEmail(
         Nous sommes désolés de vous informer que votre demande de réservation a été refusée par notre équipe.
       </p>
 
-      ${data.reason ? `
+      ${
+        data.reason
+          ? `
       <!-- Reason Box -->
       <div class="reason-box" style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 20px; border-radius: 8px; margin: 28px 0;">
         <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B; font-size: 16px;">Raison du refus :</p>
@@ -87,10 +89,12 @@ export function generateReservationRejectedEmail(
           ${data.reason}
         </p>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
 
       <!-- Booking details box -->
-      <div class="details-box" style="background-color: #fef2f2; border-radius: 12px; padding: 24px; margin: 28px 0; border: 1px solid #fecaca;">
+      <div class="details-box" style="background-color: #fef2f2; border-radius: 12px; padding: 24px; margin: 28px 0; border: 1px solid #EF4444;">
         <h2 style="margin: 0 0 20px 0; color: #991B1B; font-size: 19px; font-weight: 700; letter-spacing: -0.3px; border-bottom: 2px solid #EF4444; padding-bottom: 10px;">
           📋 Détails de la demande
         </h2>
@@ -108,7 +112,9 @@ export function generateReservationRejectedEmail(
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 600; color: #7F1D1D; font-size: 15px;">Date</td>
-              <td class="detail-value" style="text-align: right; color: #1F2937; font-size: 15px; font-weight: 500;">${data.date}</td>
+              <td class="detail-value" style="text-align: right; color: #1F2937; font-size: 15px; font-weight: 500;">${
+                data.date
+              }</td>
             </tr>
           </table>
         </div>
@@ -126,7 +132,9 @@ export function generateReservationRejectedEmail(
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 600; color: #7F1D1D; font-size: 15px;">Nombre de personnes</td>
-              <td class="detail-value" style="text-align: right; color: #1F2937; font-size: 15px; font-weight: 500;">${data.numberOfPeople} ${data.numberOfPeople > 1 ? "personnes" : "personne"}</td>
+              <td class="detail-value" style="text-align: right; color: #1F2937; font-size: 15px; font-weight: 500;">${
+                data.numberOfPeople
+              } ${data.numberOfPeople > 1 ? "personnes" : "personne"}</td>
             </tr>
           </table>
         </div>
@@ -135,7 +143,9 @@ export function generateReservationRejectedEmail(
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 700; color: #7F1D1D; font-size: 16px;">Montant</td>
-              <td class="price-value" style="text-align: right; color: #991B1B; font-weight: 700; font-size: 22px; letter-spacing: -0.5px;">${data.totalPrice.toFixed(2)} €</td>
+              <td class="price-value" style="text-align: right; color: #991B1B; font-weight: 700; font-size: 22px; letter-spacing: -0.5px;">${data.totalPrice.toFixed(
+                2
+              )} €</td>
             </tr>
           </table>
         </div>
@@ -161,16 +171,16 @@ export function generateReservationRejectedEmail(
 
       <!-- Contact -->
       <div style="background: #fee2e2; border-left: 4px solid #EF4444; padding: 20px; border-radius: 8px; margin: 28px 0;">
-        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B; font-size: 16px;">📞 Pour toute question :</p>
+        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B !important; font-size: 16px;">📞 Pour toute question :</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%;">
           <tr>
-            <td style="padding: 4px 0; font-size: 15px; color: #991B1D;">
-              <strong>Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444; text-decoration: none;">09 87 33 45 19</a>
+            <td style="padding: 4px 0; font-size: 15px; color: #991B1D !important;">
+              <strong style="color: #991B1D !important;">Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444 !important; text-decoration: none;">09 87 33 45 19</a>
             </td>
           </tr>
           <tr>
-            <td style="padding: 4px 0; font-size: 15px; color: #991B1D;">
-              <strong>Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
+            <td style="padding: 4px 0; font-size: 15px; color: #991B1D !important;">
+              <strong style="color: #991B1D !important;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444 !important; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
             </td>
           </tr>
         </table>

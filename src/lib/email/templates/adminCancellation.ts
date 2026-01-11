@@ -5,7 +5,7 @@
  * Pour modifier ce template, éditez directement ce fichier.
  */
 
-import { getSpaceDisplayName } from './helpers';
+import { getSpaceDisplayName } from "./helpers";
 
 export interface ReservationCancelledEmailData {
   name: string;
@@ -38,7 +38,7 @@ export function generateReservationCancelledEmail(
       .email-content p, .email-content strong { color: #f3f4f6 !important; }
       .warning-box { background: #7f1d1d !important; border-color: #dc2626 !important; }
       .warning-box p { color: #fecaca !important; }
-      .details-box { background: #111827 !important; border-color: #374151 !important; }
+      .details-box { background: #111827 !important; border-color: #EF4444 !important; }
       .details-box h3 { color: #EF4444 !important; }
       .detail-row { border-color: #374151 !important; }
       .detail-label { color: #9ca3af !important; }
@@ -78,7 +78,7 @@ export function generateReservationCancelledEmail(
       </div>
 
       <!-- Détails de la réservation annulée -->
-      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #e5e7eb;">
+      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #EF4444;">
         <h3 style="margin: 0 0 20px 0; color: #EF4444; font-size: 19px; font-weight: 700; letter-spacing: -0.3px; border-bottom: 2px solid #EF4444; padding-bottom: 10px;">📋 Détails de la réservation annulée</h3>
 
         ${
@@ -162,16 +162,16 @@ export function generateReservationCancelledEmail(
 
       <!-- Contact -->
       <div style="background: #fee2e2; border-left: 4px solid #EF4444; padding: 20px; border-radius: 8px; margin: 28px 0;">
-        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B; font-size: 16px;">📞 Pour toute question :</p>
+        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B !important; font-size: 16px;">📞 Pour toute question :</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%;">
           <tr>
             <td style="padding: 4px 0; font-size: 15px; color: #991B1B;">
-              <strong>Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444; text-decoration: none;">09 87 33 45 19</a>
+              <strong style="color: #991B1B !important;">Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444; text-decoration: none;">09 87 33 45 19</a>
             </td>
           </tr>
           <tr>
             <td style="padding: 4px 0; font-size: 15px; color: #991B1B;">
-              <strong>Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
+              <strong style="color: #991B1B !important;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
             </td>
           </tr>
         </table>

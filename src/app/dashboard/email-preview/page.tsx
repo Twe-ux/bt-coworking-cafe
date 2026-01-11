@@ -7,10 +7,12 @@ import { generateConfirmationEmail } from "@/lib/email/templates/confirmation";
 import { generateCancellationEmail } from "@/lib/email/templates/clientCancellation";
 import { generateDepositHoldEmail } from "@/lib/email/templates/depositHold";
 import { generateDepositCapturedEmail } from "@/lib/email/templates/noShowPenalty";
+import { generateDepositReleasedEmail } from "@/lib/email/templates/depositReleased";
 import { generateReminderEmail } from "@/lib/email/templates/reminder";
 import { generateReservationCancelledEmail } from "@/lib/email/templates/adminCancellation";
 import { generateReservationRejectedEmail } from "@/lib/email/templates/adminRejection";
 import { generateCardSavedEmail } from "@/lib/email/templates/cardSaved";
+import { passwordResetEmail } from "@/lib/email/templates/passwordReset";
 
 type EmailType =
   | "bookingInitial"
@@ -19,10 +21,12 @@ type EmailType =
   | "cancellation"
   | "depositHold"
   | "depositCaptured"
+  | "depositReleased"
   | "reminder"
   | "reservationCancelledByAdmin"
   | "reservationRejected"
-  | "cardSaved";
+  | "cardSaved"
+  | "passwordReset";
 
 export default function EmailPreviewPage() {
   const [emailType, setEmailType] = useState<EmailType>("bookingInitial");
@@ -141,6 +145,20 @@ export default function EmailPreviewPage() {
     totalPrice: 100,
   };
 
+  // Sample data for depositReleased
+  const depositReleasedData = {
+    name: "Antoine Dubois",
+    spaceName: "Salle de l'Étage",
+    date: "Mercredi 24 janvier 2026",
+    depositAmount: 90,
+  };
+
+  // Sample data for passwordReset
+  const passwordResetData = {
+    userName: "Marie Durand",
+    resetUrl: "http://localhost:3000/auth/reset-password?token=sample-token-12345",
+  };
+
   const getHtmlContent = () => {
     switch (emailType) {
       case "bookingInitial":
@@ -155,6 +173,8 @@ export default function EmailPreviewPage() {
         return generateDepositHoldEmail(depositHoldData);
       case "depositCaptured":
         return generateDepositCapturedEmail(depositCapturedData);
+      case "depositReleased":
+        return generateDepositReleasedEmail(depositReleasedData);
       case "reminder":
         return generateReminderEmail(reminderData);
       case "reservationCancelledByAdmin":
@@ -163,6 +183,8 @@ export default function EmailPreviewPage() {
         return generateReservationRejectedEmail(reservationRejectedData);
       case "cardSaved":
         return generateCardSavedEmail(cardSavedData);
+      case "passwordReset":
+        return passwordResetEmail(passwordResetData);
       default:
         return "";
     }
@@ -191,6 +213,7 @@ export default function EmailPreviewPage() {
             <option value="reservationCancelledByAdmin">Annulée par admin</option>
             <option value="reservationRejected">Réservation refusée</option>
             <option value="cardSaved">Carte sauvegardée</option>
+            <option value="passwordReset">Réinitialisation mot de passe</option>
           </select>
         </div>
 

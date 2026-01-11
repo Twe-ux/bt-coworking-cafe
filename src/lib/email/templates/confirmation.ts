@@ -5,7 +5,7 @@
  * Pour modifier ce template, éditez directement ce fichier.
  */
 
-import { getSpaceDisplayName } from './helpers';
+import { getSpaceDisplayName } from "./helpers";
 
 interface ConfirmationEmailData {
   name: string;
@@ -70,7 +70,7 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
       }
       .details-box {
         background: #111827 !important;
-        border-color: #374151 !important;
+        border-color: #10B981 !important;
       }
       .details-box h3 {
         color: #10B981 !important;
@@ -168,7 +168,9 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
             <tr>
               <td class="email-content" style="padding: 36px 24px; line-height: 1.7; color: #1f2937;">
                 <p class="text-body" style="margin: 0 0 16px 0; font-size: 16px; color: #1f2937;">
-                  Bonjour <strong class="name-highlight" style="color: #10B981;">${data.name}</strong>,
+                  Bonjour <strong class="name-highlight" style="color: #10B981;">${
+                    data.name
+                  }</strong>,
                 </p>
 
                 <p class="text-body" style="margin: 0 0 24px 0; font-size: 16px; color: #1f2937;">
@@ -186,7 +188,11 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
                         💳 Empreinte bancaire effectuée
                       </p>
                       <p class="info-box-text" style="margin: 0; color: #065f46; font-size: 15px; line-height: 1.7;">
-                        Une empreinte bancaire de <strong style="color: #065f46;">${(data.depositAmount / 100).toFixed(2)}€</strong> soit <strong style="color: #065f46;">70%</strong> du montant de la réservation a été effectuée sur votre carte. Cette empreinte sera automatiquement annulée lors de votre venue.
+                        Une empreinte bancaire de <strong style="color: #065f46;">${(
+                          data.depositAmount / 100
+                        ).toFixed(
+                          2
+                        )}€</strong> soit <strong style="color: #065f46;">70%</strong> du montant de la réservation a été effectuée sur votre carte. Cette empreinte sera automatiquement annulée lors de votre venue.
                       </p>
                       <p class="info-box-text" style="margin: 12px 0 0 0; color: #065f46; font-size: 14px; line-height: 1.6;">
                         Si vous annulez votre réservation ou ne vous présentez pas le jour de votre réservation, des frais d'annulation seront débités selon nos <a href="https://new.coworkingcafe.fr/cgv" style="color: #10B981; text-decoration: underline;">CGVs</a>.
@@ -201,7 +207,7 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
                 <!-- Détails de la réservation -->
                 <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin: 28px 0;">
                   <tr>
-                    <td class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; border: 1px solid #e5e7eb;">
+                    <td class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; border: 1px solid #10B981;">
                       <h3 style="margin: 0 0 20px 0; color: #10B981; font-size: 19px; font-weight: 700; letter-spacing: -0.3px;">
                         📋 Détails de votre réservation
                       </h3>
@@ -218,7 +224,11 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
                       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" class="detail-row" style="padding: 14px 0; border-bottom: 1px solid #e5e7eb;">
                         <tr>
                           <td class="detail-label" style="font-weight: 600; color: #6b7280; font-size: 15px; padding: 4px 0;">Nombre de personnes</td>
-                          <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500; padding: 4px 0;">${data.numberOfPeople} ${data.numberOfPeople > 1 ? "personnes" : "personne"}</td>
+                          <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500; padding: 4px 0;">${
+                            data.numberOfPeople
+                          } ${
+    data.numberOfPeople > 1 ? "personnes" : "personne"
+  }</td>
                         </tr>
                       </table>
 
@@ -226,7 +236,9 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
                       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" class="detail-row" style="padding: 14px 0; border-bottom: 1px solid #e5e7eb;">
                         <tr>
                           <td class="detail-label" style="font-weight: 600; color: #6b7280; font-size: 15px; padding: 4px 0;">Date</td>
-                          <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500; padding: 4px 0;">${data.date}</td>
+                          <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500; padding: 4px 0;">${
+                            data.date
+                          }</td>
                         </tr>
                       </table>
 
@@ -234,7 +246,9 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
                       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" class="detail-row" style="padding: 14px 0; border-bottom: 1px solid #e5e7eb;">
                         <tr>
                           <td class="detail-label" style="font-weight: 600; color: #6b7280; font-size: 15px; padding: 4px 0;">Horaires</td>
-                          <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500; padding: 4px 0;">${data.startTime} - ${data.endTime}</td>
+                          <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500; padding: 4px 0;">${
+                            data.startTime
+                          } - ${data.endTime}</td>
                         </tr>
                       </table>
 
@@ -242,7 +256,9 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
                       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="padding: 16px 0 0 0;">
                         <tr>
                           <td class="detail-label" style="font-weight: 700; color: #111827; font-size: 16px; padding: 4px 0;">Prix total</td>
-                          <td class="price-value" style="text-align: right; color: #10B981; font-weight: 700; font-size: 22px; letter-spacing: -0.5px; padding: 4px 0;">${data.totalPrice.toFixed(2)}€</td>
+                          <td class="price-value" style="text-align: right; color: #10B981; font-weight: 700; font-size: 22px; letter-spacing: -0.5px; padding: 4px 0;">${data.totalPrice.toFixed(
+                            2
+                          )}€</td>
                         </tr>
                       </table>
                     </td>
@@ -256,19 +272,19 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
                 <!-- Contact -->
                 <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin: 28px 0;">
                   <tr>
-                    <td class="info-box" style="background: #f0fdf4; border-left: 4px solid #10B981; padding: 20px; border-radius: 8px;">
-                      <p class="info-box-text" style="margin: 0 0 12px 0; font-weight: 700; color: #065f46; font-size: 16px;">
+                    <td class="info-box" style="background: #f0fdf4 !important; border-left: 4px solid #10B981; padding: 20px; border-radius: 8px;">
+                      <p class="info-box-text" style="margin: 0 0 12px 0; font-weight: 700; color: #065f46 !important; font-size: 16px;">
                         📞 Pour toute question :
                       </p>
                       <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
                         <tr>
-                          <td class="info-box-text" style="padding: 4px 0; font-size: 15px; color: #065f46;">
-                            <strong style="color: #065f46;">Téléphone :</strong> <a href="tel:0987334519" style="color: #10B981; text-decoration: none;">09 87 33 45 19</a>
+                          <td class="info-box-text" style="padding: 4px 0; font-size: 15px; color: #065f46 !important;">
+                            <strong style="color: #065f46 !important;">Téléphone :</strong> <a href="tel:0987334519" style="color: #10B981 !important; text-decoration: none;">09 87 33 45 19</a>
                           </td>
                         </tr>
                         <tr>
-                          <td class="info-box-text" style="padding: 4px 0; font-size: 15px; color: #065f46;">
-                            <strong style="color: #065f46;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #10B981; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
+                          <td class="info-box-text" style="padding: 4px 0; font-size: 15px; color: #065f46 !important;">
+                            <strong style="color: #065f46 !important;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #10B981 !important; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
                           </td>
                         </tr>
                       </table>

@@ -5,7 +5,7 @@
  * Pour modifier ce template, éditez directement ce fichier.
  */
 
-import { getSpaceDisplayName } from './helpers';
+import { getSpaceDisplayName } from "./helpers";
 
 interface ValidatedEmailData {
   name: string;
@@ -34,7 +34,7 @@ export function generateValidatedEmail(data: ValidatedEmailData): string {
       .email-header { background: linear-gradient(135deg, #059669 0%, #047857 100%) !important; }
       .email-content { background: #1f2937 !important; color: #f3f4f6 !important; }
       .email-content p, .email-content li, .email-content strong { color: #f3f4f6 !important; }
-      .details-box { background: #111827 !important; border-color: #374151 !important; }
+      .details-box { background: #111827 !important; border-color: #10B981 !important; }
       .details-box h3 { color: #10b981 !important; }
       .detail-row { border-color: #374151 !important; }
       .detail-label { color: #9ca3af !important; }
@@ -71,7 +71,7 @@ export function generateValidatedEmail(data: ValidatedEmailData): string {
       </div>
 
       <!-- Détails de la réservation -->
-      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #e5e7eb;">
+      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #10B981;">
         <h3 style="margin: 0 0 20px 0; color: #059669; font-size: 19px; font-weight: 700; letter-spacing: -0.3px;">📋 Détails de votre réservation</h3>
 
         
@@ -134,16 +134,16 @@ export function generateValidatedEmail(data: ValidatedEmailData): string {
 
       <!-- Contact -->
       <div style="background: #f0fdf4; border-left: 4px solid #059669; padding: 20px; border-radius: 8px; margin: 28px 0;">
-        <p style="margin: 0 0 12px 0; font-weight: 700; color: #065f46; font-size: 16px;">📞 Pour toute question :</p>
+        <p style="margin: 0 0 12px 0; font-weight: 700; color: #065f46 !important; font-size: 16px;">📞 Pour toute question :</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%;">
           <tr>
-            <td style="padding: 4px 0; font-size: 15px; color: #065f46;">
-              <strong>Téléphone :</strong> <a href="tel:0987334519" style="color: #059669; text-decoration: none;">09 87 33 45 19</a>
+            <td style="padding: 4px 0; font-size: 15px; color: #065f46 !important;">
+              <strong style="color: #065f46 !important;">Téléphone :</strong> <a href="tel:0987334519" style="color: #059669 !important; text-decoration: none;">09 87 33 45 19</a>
             </td>
           </tr>
           <tr>
-            <td style="padding: 4px 0; font-size: 15px; color: #065f46;">
-              <strong>Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #059669; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
+            <td style="padding: 4px 0; font-size: 15px; color: #065f46 !important;">
+              <strong style="color: #065f46 !important;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #059669 !important; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
             </td>
           </tr>
         </table>

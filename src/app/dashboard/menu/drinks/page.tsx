@@ -270,6 +270,39 @@ export default function DrinksPage() {
     }
   };
 
+  const handleReorderCategory = async (categoryId: string, direction: 'up' | 'down') => {
+    const sortedCategories = [...categories].sort((a, b) => a.order - b.order);
+    const currentIndex = sortedCategories.findIndex(c => c._id === categoryId);
+
+    if (currentIndex === -1) return;
+    if (direction === 'up' && currentIndex === 0) return;
+    if (direction === 'down' && currentIndex === sortedCategories.length - 1) return;
+
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const currentCategory = sortedCategories[currentIndex];
+    const swapCategory = sortedCategories[newIndex];
+
+    try {
+      // Swap orders
+      await Promise.all([
+        fetch(`/api/admin/drinks/categories/${currentCategory._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order: swapCategory.order })
+        }),
+        fetch(`/api/admin/drinks/categories/${swapCategory._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order: currentCategory.order })
+        })
+      ]);
+
+      fetchData();
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Erreur lors du réarrangement' });
+    }
+  };
+
   // Drink handlers
   const handleSaveDrink = async () => {
     if (!drinkForm.name.trim() || !drinkForm.category) return;
@@ -582,11 +615,33 @@ export default function DrinksPage() {
               </CardBody>
             </Card>
           ) : (
-            categories.map(category => (
+            categories.sort((a, b) => a.order - b.order).map((category, index) => (
               <Card key={category._id} className="mb-4">
                 <CardBody>
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <div className="d-flex align-items-center gap-2">
+                      {canEdit && (
+                        <div className="d-flex flex-column me-2">
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            style={{ padding: '2px 6px', fontSize: '0.75rem', lineHeight: 1 }}
+                            onClick={() => handleReorderCategory(category._id, 'up')}
+                            disabled={index === 0}
+                          >
+                            <IconifyIcon icon="ri:arrow-up-s-line" />
+                          </Button>
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            style={{ padding: '2px 6px', fontSize: '0.75rem', lineHeight: 1, marginTop: '2px' }}
+                            onClick={() => handleReorderCategory(category._id, 'down')}
+                            disabled={index === categories.length - 1}
+                          >
+                            <IconifyIcon icon="ri:arrow-down-s-line" />
+                          </Button>
+                        </div>
+                      )}
                       <h5 className="mb-0">{category.name}</h5>
                       {!category.isActive && (
                         <Badge bg="secondary">Inactif</Badge>

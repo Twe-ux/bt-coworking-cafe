@@ -5,7 +5,7 @@
  * Pour modifier ce template, éditez directement ce fichier.
  */
 
-import { getSpaceDisplayName } from './helpers';
+import { getSpaceDisplayName } from "./helpers";
 
 interface CancellationEmailData {
   name: string;
@@ -41,7 +41,7 @@ export function generateCancellationEmail(data: CancellationEmailData): string {
       .success-box p, .success-box strong { color: #d1fae5 !important; }
       .warning-box { background: #78350f !important; border-color: #f59e0b !important; }
       .warning-box p, .warning-box strong { color: #fef3c7 !important; }
-      .details-box { background: #111827 !important; border-color: #374151 !important; }
+      .details-box { background: #111827 !important; border-color: #EF4444 !important; }
       .details-box h3 { color: #EF4444 !important; }
       .contact-list li { color: #f3f4f6 !important; }
       .footer { background: #111827 !important; color: #9ca3af !important; }
@@ -60,7 +60,9 @@ export function generateCancellationEmail(data: CancellationEmailData): string {
 
     <!-- Contenu -->
     <div class="email-content" style="padding: 36px 24px; line-height: 1.7; color: #1f2937;">
-      <p style="margin: 0 0 16px 0; font-size: 16px;">Bonjour <strong style="color: #EF4444;">${data.name}</strong>,</p>
+      <p style="margin: 0 0 16px 0; font-size: 16px;">Bonjour <strong style="color: #EF4444;">${
+        data.name
+      }</strong>,</p>
 
       <p style="margin: 0 0 24px 0; font-size: 16px;">Votre réservation a bien été annulée.</p>
 
@@ -112,7 +114,7 @@ export function generateCancellationEmail(data: CancellationEmailData): string {
       }
 
       <!-- Détails de la réservation annulée -->
-      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #e5e7eb;">
+      <div class="details-box" style="background: #f9fafb; padding: 24px; border-radius: 12px; margin: 28px 0; border: 1px solid #EF4444;">
         <h3 style="margin: 0 0 20px 0; color: #EF4444; font-size: 19px; font-weight: 700; letter-spacing: -0.3px; border-bottom: 2px solid #EF4444; padding-bottom: 10px;">📋 Réservation annulée</h3>
 
         <div class="detail-row" style="padding: 14px 0; border-bottom: 1px solid #e5e7eb;">
@@ -129,8 +131,8 @@ export function generateCancellationEmail(data: CancellationEmailData): string {
             <tr>
               <td class="detail-label" style="font-weight: 600; color: #6b7280; font-size: 15px;">Date</td>
               <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500;">${
-              data.date
-            }</td>
+                data.date
+              }</td>
             </tr>
           </table>
         </div>
@@ -140,76 +142,76 @@ export function generateCancellationEmail(data: CancellationEmailData): string {
             <tr>
               <td class="detail-label" style="font-weight: 600; color: #6b7280; font-size: 15px;">Horaires</td>
               <td class="detail-value" style="text-align: right; color: #111827; font-size: 15px; font-weight: 500;">${
-              data.startTime
-            } - ${data.endTime}</td>
+                data.startTime
+              } - ${data.endTime}</td>
             </tr>
           </table>
         </div>
 
         ${
-            data.cancellationFee > 0
-              ? `
+          data.cancellationFee > 0
+            ? `
         <div class="detail-row" style="padding: 14px 0; border-bottom: 1px solid #e5e7eb;">
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 600; color: #6b7280; font-size: 15px;">Frais d'annulation</td>
-              <td class="detail-value" style="text-align: right; color: #F59E0B; font-size: 15px; font-weight: 500;">${data.cancellationFee.toFixed(
-              2
-            )}€</td>
+              <td class="detail-value" style="text-align: right; color: #EF4444 !important; font-size: 15px; font-weight: 500;">${data.cancellationFee.toFixed(
+                2
+              )}€</td>
             </tr>
           </table>
         </div>
         `
-              : ""
-          }
+            : ""
+        }
 
         ${
-            data.refundAmount > 0 || data.isPending
-              ? `
-        <div style="padding: 16px 0 0 0; background: #f0fdf4;">
+          data.refundAmount > 0 || data.isPending
+            ? `
+        <div style="padding: 16px 0 0 0;">
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 700; color: #065F46; font-size: 16px; padding: 16px 0;">${
-              data.isPending ? "Empreinte annulée" : "Montant non prélevé"
-            }</td>
-              <td class="price-value" style="text-align: right; color: #10B981; font-weight: 700; font-size: 22px; letter-spacing: -0.5px; padding: 16px 0;">${
-              data.isPending
-                ? totalAmount.toFixed(2)
-                : data.refundAmount.toFixed(2)
-            }€</td>
+                data.isPending ? "Empreinte annulée" : "Montant non prélevé"
+              }</td>
+              <td class="price-value" style="text-align: right; color: #10B981 !important; font-weight: 700; font-size: 22px; letter-spacing: -0.5px; padding: 16px 0;">${
+                data.isPending
+                  ? totalAmount.toFixed(2)
+                  : data.refundAmount.toFixed(2)
+              }€</td>
             </tr>
           </table>
         </div>
         `
-              : `
+            : `
         <div style="padding: 16px 0 0 0; background: #fef2f2;">
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="detail-label" style="font-weight: 700; color: #991B1B; font-size: 16px; padding: 16px 0;">Montant prélevé</td>
               <td class="price-value" style="text-align: right; color: #EF4444; font-weight: 700; font-size: 22px; letter-spacing: -0.5px; padding: 16px 0;">${data.cancellationFee.toFixed(
-              2
-            )}€</td>
+                2
+              )}€</td>
             </tr>
           </table>
         </div>
         `
-          }
+        }
       </div>
 
       <p style="margin: 28px 0 0 0; font-size: 16px; line-height: 1.7;">Nous espérons vous accueillir prochainement dans nos locaux.</p>
 
       <!-- Contact -->
       <div style="background: #fee2e2; border-left: 4px solid #EF4444; padding: 20px; border-radius: 8px; margin: 28px 0;">
-        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B; font-size: 16px;">📞 Pour toute question :</p>
+        <p style="margin: 0 0 12px 0; font-weight: 700; color: #991B1B !important; font-size: 16px;">📞 Pour toute question :</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%;">
           <tr>
-            <td style="padding: 4px 0; font-size: 15px; color: #991B1B;">
-              <strong>Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444; text-decoration: none;">09 87 33 45 19</a>
+            <td style="padding: 4px 0; font-size: 15px; color: #991B1B !important;">
+              <strong style="color: #991B1B !important;">Téléphone :</strong> <a href="tel:0987334519" style="color: #EF4444 !important; text-decoration: none;">09 87 33 45 19</a>
             </td>
           </tr>
           <tr>
-            <td style="padding: 4px 0; font-size: 15px; color: #991B1B;">
-              <strong>Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
+            <td style="padding: 4px 0; font-size: 15px; color: #991B1B !important;">
+              <strong style="color: #991B1B !important;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #EF4444 !important; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
             </td>
           </tr>
         </table>

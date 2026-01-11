@@ -5,7 +5,7 @@
  * Pour modifier ce template, éditez directement ce fichier.
  */
 
-import { getSpaceDisplayName } from './helpers';
+import { getSpaceDisplayName } from "./helpers";
 
 export interface ReminderEmailData {
   name: string;
@@ -57,7 +57,7 @@ export function generateReminderEmail(data: ReminderEmailData): string {
       <p style="margin: 0 0 24px 0; font-size: 16px;">Nous vous rappelons que vous avez une réservation prévue demain dans nos locaux.</p>
 
       <!-- Détails de la réservation - Highlighted -->
-      <div class="details-box" style="background: #FFFBEB; border: 2px solid #F59E0B; padding: 24px; border-radius: 12px; margin: 28px 0;">
+      <div class="details-box" style="background: #FFFBEB; border: 1px solid #F59E0B; padding: 24px; border-radius: 12px; margin: 28px 0;">
         <h3 style="margin: 0 0 20px 0; color: #D97706; text-align: center; font-size: 19px; font-weight: 700; letter-spacing: -0.3px; border-bottom: 2px solid #F59E0B; padding-bottom: 10px;">📅 Détails de votre réservation</h3>
 
         <div class="detail-row" style="padding: 14px 0; border-bottom: 1px solid #FCD34D;">
@@ -92,16 +92,16 @@ export function generateReminderEmail(data: ReminderEmailData): string {
 
       <!-- Contact -->
       <div style="background: #fffbeb; border-left: 4px solid #F59E0B; padding: 20px; border-radius: 8px; margin: 28px 0;">
-        <p style="margin: 0 0 12px 0; font-weight: 700; color: #92400E; font-size: 16px;">📞 Pour toute question :</p>
+        <p style="margin: 0 0 12px 0; font-weight: 700; color: #92400E !important; font-size: 16px;">📞 Pour toute question :</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="width: 100%;">
           <tr>
             <td style="padding: 4px 0; font-size: 15px; color: #92400E;">
-              <strong>Téléphone :</strong> <a href="tel:0987334519" style="color: #F59E0B; text-decoration: none;">09 87 33 45 19</a>
+              <strong style="color: #92400E !important;">Téléphone :</strong> <a href="tel:0987334519" style="color: #F59E0B; text-decoration: none;">09 87 33 45 19</a>
             </td>
           </tr>
           <tr>
             <td style="padding: 4px 0; font-size: 15px; color: #92400E;">
-              <strong>Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #F59E0B; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
+              <strong style="color: #92400E !important;">Email :</strong> <a href="mailto:strasbourg@coworkingcafe.fr" style="color: #F59E0B; text-decoration: none;">strasbourg@coworkingcafe.fr</a>
             </td>
           </tr>
         </table>
