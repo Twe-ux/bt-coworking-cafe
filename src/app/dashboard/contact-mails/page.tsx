@@ -238,7 +238,6 @@ const MessagesPage = () => {
         setMessages(data.messages);
       }
     } catch (error) {
-      console.error("Erreur:", error);
     } finally {
       setLoading(false);
     }
@@ -267,8 +266,7 @@ const MessagesPage = () => {
           setTimeout(() => refreshUnreadCount(), 100);
         }
       } catch (error) {
-        console.error("Erreur:", error);
-      }
+    }
     }
   };
 
@@ -286,7 +284,6 @@ const MessagesPage = () => {
         setShowModal(false);
       }
     } catch (error) {
-      console.error("Erreur:", error);
     }
   };
 
@@ -312,7 +309,6 @@ const MessagesPage = () => {
         setShowModal(false);
       }
     } catch (error) {
-      console.error("Erreur:", error);
     } finally {
       setSending(false);
     }
@@ -332,7 +328,6 @@ const MessagesPage = () => {
         setShowModal(false);
       }
     } catch (error) {
-      console.error("Erreur:", error);
     }
   };
 

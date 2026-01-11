@@ -23,9 +23,7 @@ export async function GET() {
     }
 
     return NextResponse.json({ shiftTypes }, { status: 200 });
-  } catch (error: any) {
-    console.error("Error fetching shift types:", error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: error.message || "Erreur lors de la récupération des shift types" },
       { status: 500 }
     );
@@ -52,9 +50,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ shiftType }, { status: 201 });
-  } catch (error: any) {
-    console.error("Error creating shift type:", error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: error.message || "Erreur lors de la création du shift type" },
       { status: 400 }
     );

@@ -72,9 +72,7 @@ export default function ClockingPage() {
       }
 
       setEmployees(activeEmployees);
-    } catch (err: any) {
-      console.error("Erreur lors du chargement des employés:", err);
-      setError(err.message);
+    } catch (err: any) {      setError(err.message);
     } finally {
       setLoading(false);
     }

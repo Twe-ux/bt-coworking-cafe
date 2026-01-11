@@ -48,7 +48,6 @@ export default function NewConversationModal({
         setUsers(data.data);
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
     } finally {
       setLoading(false);
     }
@@ -76,9 +75,7 @@ export default function NewConversationModal({
       } else {
         alert("Erreur lors de la création de la conversation");
       }
-    } catch (error) {
-      console.error("Error creating conversation:", error);
-      alert("Erreur lors de la création de la conversation");
+    } catch (error) {      alert("Erreur lors de la création de la conversation");
     } finally {
       setCreating(false);
     }

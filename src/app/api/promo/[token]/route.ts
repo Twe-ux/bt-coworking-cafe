@@ -30,9 +30,7 @@ export async function GET(
     await promoService.incrementViews();
 
     return NextResponse.json(promo, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération du promo:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
     );

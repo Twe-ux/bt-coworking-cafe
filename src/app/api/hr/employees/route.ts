@@ -55,9 +55,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: employees,
     });
-  } catch (error) {
-    console.error("Error fetching employees:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: "Erreur lors de la récupération des employés" },
       { status: 500 }
     );
@@ -164,9 +162,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error("Error creating employee:", error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { success: false, error: error.message || "Erreur lors de la création de l'employé" },
       { status: 500 }
     );

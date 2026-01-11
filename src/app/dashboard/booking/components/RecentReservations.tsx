@@ -81,7 +81,6 @@ const RecentReservations = () => {
         setReservations(result.data.recentReservations);
       }
     } catch (error) {
-      console.error("Error fetching recent reservations:", error);
     } finally {
       setLoading(false);
     }

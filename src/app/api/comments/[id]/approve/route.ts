@@ -44,9 +44,7 @@ export async function POST(
       .lean();
 
     return NextResponse.json(updatedComment);
-  } catch (error: any) {
-    console.error('Error updating comment status:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to update comment status', details: error.message },
       { status: 500 }
     );

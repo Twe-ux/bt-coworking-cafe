@@ -18,9 +18,7 @@ export async function POST(request: NextRequest) {
     await promoService.trackScan(session_id);
 
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors du tracking du scan:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
     );

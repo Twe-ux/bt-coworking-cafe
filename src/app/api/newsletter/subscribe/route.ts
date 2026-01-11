@@ -109,9 +109,7 @@ export async function POST(request: NextRequest) {
         { status: 201 }
       );
     }
-  } catch (error) {
-    console.error("Newsletter subscription error:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       {
         error:
           error instanceof Error

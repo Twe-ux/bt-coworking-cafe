@@ -16,16 +16,13 @@ dotenv.config({ path: join(__dirname, '../.env.local') });
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error('❌ MONGODB_URI not found in environment variables');
+  // MongoDB URI not found
   process.exit(1);
 }
 
 async function migrate() {
   try {
-    console.log('🔌 Connecting to MongoDB...');
     await mongoose.connect(MONGODB_URI!);
-    console.log('✅ Connected to MongoDB');
-
     const db = mongoose.connection.db;
     const spaceConfigCollection = db!.collection('spaceconfigurations');
     const globalHoursCollection = db!.collection('globalhoursconfigurations');
@@ -34,16 +31,12 @@ async function migrate() {
     const existingGlobalHours = await globalHoursCollection.findOne({});
 
     if (existingGlobalHours) {
-      console.log('⚠️  GlobalHoursConfiguration already exists');
-      console.log('   Skipping creation...');
+      // Global hours already exist
     } else {
       // Step 2: Get hours from open-space configuration (as reference)
       const openSpace = await spaceConfigCollection.findOne({ spaceType: 'open-space' });
 
       if (!openSpace) {
-        console.log('⚠️  No open-space configuration found');
-        console.log('   Creating default global hours...');
-
         // Create default global hours
         const defaultHours = {
           monday: { isOpen: true, openTime: "09:00", closeTime: "20:00" },
@@ -61,8 +54,6 @@ async function migrate() {
           createdAt: new Date(),
           updatedAt: new Date(),
         });
-
-        console.log('   ✅ Created default global hours configuration');
       } else {
         // Use hours from open-space
         const { defaultHours, exceptionalClosures } = openSpace;
@@ -81,14 +72,10 @@ async function migrate() {
           createdAt: new Date(),
           updatedAt: new Date(),
         });
-
-        console.log('   ✅ Created global hours from open-space configuration');
       }
     }
 
     // Step 3: Remove defaultHours and exceptionalClosures from all space configurations
-    console.log('\n📝 Removing hours fields from space configurations...');
-
     const result = await spaceConfigCollection.updateMany(
       {},
       {
@@ -98,19 +85,11 @@ async function migrate() {
         },
       }
     );
-
-    console.log(`   ✅ Updated ${result.modifiedCount} space configurations`);
-
-    console.log('\n🎉 Migration completed successfully!');
-    console.log('   - Global hours configuration created');
-    console.log(`   - ${result.modifiedCount} space configurations cleaned`);
-
   } catch (error) {
-    console.error('❌ Error during migration:', error);
+    // Migration error
     process.exit(1);
   } finally {
     await mongoose.connection.close();
-    console.log('👋 Disconnected from MongoDB');
   }
 }
 

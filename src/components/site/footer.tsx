@@ -209,13 +209,13 @@ const Footer = () => {
           </div>
           <div className="col-lg-2 col-md-6 mb-5 mb-lg-0">
             <div>
-              <h3 className="footer__info_group">???</h3>
+              <h3 className="footer__info_group">À propos</h3>
               <ul>
                 <li>
-                  <Link href={"/mentions-legales"}>Mentions légales</Link>
+                  <Link href={"/CGU"}>CGU / CGV</Link>
                 </li>
                 <li>
-                  <Link href={"/CGU"}>Conditions générales de vente</Link>
+                  <Link href={"/mentions-legales"}>Mentions légales</Link>
                 </li>
                 <li>
                   <Link href={"/confidentiality"}>

@@ -92,7 +92,6 @@ export default function DashboardPage() {
         });
       }
     } catch (error) {
-      console.error("Error fetching today's reservations:", error);
     } finally {
       setLoading(false);
     }

@@ -113,9 +113,7 @@ export default function HorairesSettingsPage() {
       } else {
         setMessage({ type: "error", text: "Erreur lors du chargement des horaires" });
       }
-    } catch (error) {
-      console.error("Error fetching configuration:", error);
-      setMessage({ type: "error", text: "Erreur lors du chargement des horaires" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors du chargement des horaires" });
     } finally {
       setLoading(false);
     }
@@ -145,9 +143,7 @@ export default function HorairesSettingsPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la mise à jour" });
       }
-    } catch (error) {
-      console.error("Error updating configuration:", error);
-      setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
     } finally {
       setSaving(false);
     }
@@ -210,9 +206,7 @@ export default function HorairesSettingsPage() {
         }),
       });
       setMessage({ type: "success", text: "Fermeture supprimée avec succès" });
-    } catch (error) {
-      console.error("Error removing closure:", error);
-      setMessage({ type: "error", text: "Erreur lors de la suppression" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la suppression" });
       // Revert on error
       fetchConfiguration();
     }

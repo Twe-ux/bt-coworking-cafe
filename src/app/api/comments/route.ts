@@ -87,9 +87,7 @@ export async function GET(request: NextRequest) {
       limit,
       pages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
-    console.error('Error fetching comments:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to fetch comments', details: error.message },
       { status: 500 }
     );
@@ -142,9 +140,7 @@ export async function POST(request: NextRequest) {
       .lean();
 
     return NextResponse.json(populatedComment, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating comment:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to create comment', details: error.message },
       { status: 500 }
     );

@@ -29,9 +29,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: conversations,
     });
-  } catch (error) {
-    console.error("Error fetching conversations:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch conversations" },
       { status: 500 }
     );
@@ -113,9 +111,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Error creating conversation:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to create conversation" },
       { status: 500 }
     );

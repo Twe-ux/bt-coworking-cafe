@@ -36,9 +36,7 @@ export async function GET(
       success: true,
       data: configuration,
     });
-  } catch (error) {
-    console.error("Error fetching space configuration:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch configuration" },
       { status: 500 }
     );
@@ -87,9 +85,7 @@ export async function PUT(
       success: true,
       data: configuration,
     });
-  } catch (error) {
-    console.error("Error updating space configuration:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to update configuration" },
       { status: 500 }
     );
@@ -138,9 +134,7 @@ export async function PATCH(
       success: true,
       data: configuration,
     });
-  } catch (error) {
-    console.error("Error updating space configuration:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to update configuration" },
       { status: 500 }
     );
@@ -184,9 +178,7 @@ export async function DELETE(
       success: true,
       message: "Configuration deleted successfully",
     });
-  } catch (error) {
-    console.error("Error deleting space configuration:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to delete configuration" },
       { status: 500 }
     );

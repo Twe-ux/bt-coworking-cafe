@@ -71,9 +71,7 @@ export async function PUT(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error) {
-    console.error("Password update error:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       {
         error:
           error instanceof Error

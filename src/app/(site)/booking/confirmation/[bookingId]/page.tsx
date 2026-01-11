@@ -100,9 +100,7 @@ export default function ConfirmationPage({
       }
 
       setLoading(false);
-    } catch (err) {
-      console.error("Error fetching booking:", err);
-      setError("Une erreur est survenue lors du chargement de la réservation");
+    } catch (err) {      setError("Une erreur est survenue lors du chargement de la réservation");
       setLoading(false);
     }
   };

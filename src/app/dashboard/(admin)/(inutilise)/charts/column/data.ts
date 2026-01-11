@@ -702,9 +702,7 @@ export const distributedColumnOpts: ApexOptions = {
       show: false,
     },
     events: {
-      click: function (chart, w, e) {
-        console.info(chart, w, e)
-      },
+      click: function (chart, w, e) {      },
     },
   },
   colors: ['#4697ce', '#53389f', '#7f56da', '#ff86c8', '#e06d94', '#63b7e6', '#f8ac59', '#7dcc93'],

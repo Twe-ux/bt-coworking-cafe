@@ -37,9 +37,7 @@ export async function GET(request: NextRequest) {
       limit,
       pages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
-    console.error('Error fetching categories:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to fetch categories', details: error.message },
       { status: 500 }
     );
@@ -104,9 +102,7 @@ export async function POST(request: NextRequest) {
       .lean();
 
     return NextResponse.json(populatedCategory, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating category:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to create category', details: error.message },
       { status: 500 }
     );

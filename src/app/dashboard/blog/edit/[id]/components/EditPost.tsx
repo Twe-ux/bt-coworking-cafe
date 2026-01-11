@@ -133,9 +133,7 @@ const EditPost = ({ articleId }: EditPostProps) => {
       success("Article mis à jour avec succès");
 
       // Stay on the edit page after successful update
-    } catch (err: any) {
-      console.error("Error updating article:", err);
-      showError(err?.data?.error || "Erreur lors de la mise à jour de l'article");
+    } catch (err: any) {      showError(err?.data?.error || "Erreur lors de la mise à jour de l'article");
     }
   };
 

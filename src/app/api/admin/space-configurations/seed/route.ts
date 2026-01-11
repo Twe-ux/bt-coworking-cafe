@@ -160,9 +160,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Error seeding space configurations:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to seed configurations" },
       { status: 500 }
     );

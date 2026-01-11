@@ -63,12 +63,6 @@ async function optimizeImage(inputPath, options = {}) {
   try {
     const image = sharp(inputPath);
     const metadata = await image.metadata();
-
-    console.log(`📸 ${path.relative(process.cwd(), inputPath)}`);
-    console.log(`   Catégorie: ${category}`);
-    console.log(`   Original: ${metadata.width}x${metadata.height}`);
-    console.log(`   Cible: ${config.width}x${config.height}`);
-
     await image
       .resize(config.width, config.height, {
         fit: config.fit,
@@ -87,20 +81,9 @@ async function optimizeImage(inputPath, options = {}) {
 
     // Si c'était un WebP, remplacer l'original par le fichier optimisé
     if (isAlreadyWebp) {
-      fs.renameSync(outputPath, inputPath);
-      console.log(`   ✓ ${path.basename(inputPath)} (redimensionné)`);
-    } else {
-      console.log(`   ✓ ${path.basename(outputPath)}`);
-    }
-
-    console.log(`   💾 ${(originalSize / 1024).toFixed(1)}KB → ${(optimizedSize / 1024).toFixed(1)}KB (${savings}% économisé)`);
-    console.log('');
-
+      fs.renameSync(outputPath, inputPath);    } else {    }
     return { success: true, inputPath, outputPath: isAlreadyWebp ? inputPath : outputPath, savings };
-  } catch (error) {
-    console.error(`   ✗ Erreur: ${error.message}`);
-    console.log('');
-    return { success: false, inputPath, error: error.message };
+  } catch (error) {    return { success: false, inputPath, error: error.message };
   }
 }
 
@@ -138,11 +121,6 @@ function findImages(dir, extensions = ['.png', '.jpg', '.jpeg', '.webp']) {
 async function main() {
   const args = process.argv.slice(2);
   const imagesDir = path.join(process.cwd(), 'public', 'images');
-
-  console.log('🖼️  Optimiseur d\'images WebP\n');
-  console.log('═'.repeat(60));
-  console.log('');
-
   // Mode: fichier spécifique ou dossier entier
   if (args.length > 0 && args[0] !== '--all') {
     const targetPath = path.resolve(args[0]);
@@ -156,51 +134,31 @@ async function main() {
       } else if (stats.isDirectory()) {
         // Optimiser tous les fichiers d'un dossier
         const images = findImages(targetPath);
-        console.log(`📁 Trouvé ${images.length} image(s) dans ${path.relative(process.cwd(), targetPath)}\n`);
-
         for (const image of images) {
           await optimizeImage(image, { backup: true });
         }
       }
-    } else {
-      console.error(`❌ Chemin introuvable: ${targetPath}`);
-      process.exit(1);
+    } else {      process.exit(1);
     }
   } else {
     // Optimiser toutes les images
     const images = findImages(imagesDir);
-    console.log(`📁 Trouvé ${images.length} image(s) dans public/images\n`);
-
     const results = [];
     for (const image of images) {
       const result = await optimizeImage(image, { backup: true });
       results.push(result);
     }
 
-    // Statistiques finales
-    console.log('═'.repeat(60));
-    console.log('\n📊 Résumé:\n');
-    const successful = results.filter(r => r.success);
-    const failed = results.filter(r => !r.success);
-
-    console.log(`✓ ${successful.length} image(s) optimisée(s)`);
-    if (failed.length > 0) {
-      console.log(`✗ ${failed.length} erreur(s)`);
-    }
+    // Statistiques finales    const successful = results.filter(r => r.success);
+    const failed = results.filter(r => !r.success);    
 
     if (successful.length > 0) {
-      const avgSavings = successful.reduce((sum, r) => sum + parseFloat(r.savings), 0) / successful.length;
-      console.log(`💾 Économie moyenne: ${avgSavings.toFixed(1)}%`);
-    }
-    console.log('');
-  }
+      const avgSavings = successful.reduce((sum, r) => sum + parseFloat(r.savings), 0) / successful.length;    }  }
 }
 
 // Point d'entrée
 if (require.main === module) {
-  main().catch(error => {
-    console.error('❌ Erreur:', error);
-    process.exit(1);
+  main().catch(error => {    process.exit(1);
   });
 }
 

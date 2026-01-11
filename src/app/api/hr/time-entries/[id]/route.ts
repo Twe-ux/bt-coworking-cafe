@@ -89,9 +89,7 @@ export async function PUT(
       },
     });
 
-  } catch (error: any) {
-    console.error('Erreur lors de la modification du time entry:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       {
         error: 'Erreur lors de la modification',
         details: error.message
@@ -139,9 +137,7 @@ export async function DELETE(
       message: 'Time entry supprimé',
     });
 
-  } catch (error: any) {
-    console.error('Erreur lors de la suppression du time entry:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       {
         error: 'Erreur lors de la suppression',
         details: error.message

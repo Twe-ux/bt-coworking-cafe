@@ -48,7 +48,6 @@ const LeaveReply = ({ articleId }: LeaveReplyProps) => {
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 5000);
         } catch (err: any) {
-            console.error('Error creating comment:', err);
             setError(
                 err?.data?.error ||
                 'Erreur lors de l\'envoi du commentaire. Veuillez réessayer.'

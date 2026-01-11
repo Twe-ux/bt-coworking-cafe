@@ -60,9 +60,7 @@ export async function PUT(
       message: 'Catégorie mise à jour',
       category
     }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour de la catégorie:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (error) {    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
 
@@ -104,8 +102,6 @@ export async function DELETE(
     return NextResponse.json({
       message: 'Catégorie supprimée'
     }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la suppression de la catégorie:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (error) {    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

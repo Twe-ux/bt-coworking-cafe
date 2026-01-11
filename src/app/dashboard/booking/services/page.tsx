@@ -67,9 +67,7 @@ const AdditionalServicesPage = () => {
       if (data.success) {
         setServices(data.data);
       }
-    } catch (error) {
-      console.error('Error fetching services:', error);
-      showError('Erreur lors du chargement des services');
+    } catch (error) {      showError('Erreur lors du chargement des services');
     } finally {
       setLoading(false);
     }
@@ -160,8 +158,6 @@ const AdditionalServicesPage = () => {
     e.preventDefault();
 
     try {
-      console.log('📤 Submitting formData:', formData);
-
       const url = editingService
         ? `/api/additional-services/${editingService._id}`
         : '/api/additional-services';
@@ -185,9 +181,7 @@ const AdditionalServicesPage = () => {
       } else {
         showError(data.error || 'Erreur lors de la sauvegarde');
       }
-    } catch (error) {
-      console.error('Error saving service:', error);
-      showError('Une erreur est survenue');
+    } catch (error) {      showError('Une erreur est survenue');
     }
   };
 
@@ -207,9 +201,7 @@ const AdditionalServicesPage = () => {
       } else {
         showError(data.error || 'Erreur lors de la suppression');
       }
-    } catch (error) {
-      console.error('Error deleting service:', error);
-      showError('Une erreur est survenue');
+    } catch (error) {      showError('Une erreur est survenue');
     }
   };
 
@@ -231,9 +223,7 @@ const AdditionalServicesPage = () => {
       } else {
         showError(data.error || 'Erreur');
       }
-    } catch (error) {
-      console.error('Error toggling service:', error);
-      showError('Une erreur est survenue');
+    } catch (error) {      showError('Une erreur est survenue');
     }
   };
 

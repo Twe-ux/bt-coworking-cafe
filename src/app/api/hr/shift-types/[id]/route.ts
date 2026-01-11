@@ -27,9 +27,7 @@ export async function PUT(
     }
 
     return NextResponse.json({ shiftType }, { status: 200 });
-  } catch (error: any) {
-    console.error("Error updating shift type:", error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: error.message || "Erreur lors de la mise à jour du shift type" },
       { status: 400 }
     );
@@ -58,9 +56,7 @@ export async function DELETE(
     }
 
     return NextResponse.json({ message: "Shift type supprimé" }, { status: 200 });
-  } catch (error: any) {
-    console.error("Error deleting shift type:", error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: error.message || "Erreur lors de la suppression du shift type" },
       { status: 500 }
     );

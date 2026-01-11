@@ -54,8 +54,6 @@ export default function SuccessPage() {
     if (webhookTriggeredRef.current) return; // Only trigger once
 
     webhookTriggeredRef.current = true;
-    console.log("🔧 Déclenchement automatique du webhook de test...");
-
     try {
       const webhookResponse = await fetch("/api/payments/test-webhook", {
         method: "POST",
@@ -65,12 +63,12 @@ export default function SuccessPage() {
       const webhookData = await webhookResponse.json();
 
       if (webhookData.success) {
-        console.log("✅ Webhook de test déclenché avec succès");
+        // Webhook triggered successfully
       } else {
-        console.error("❌ Erreur webhook:", webhookData.error);
+        // Webhook failed
       }
-    } catch (err) {
-      console.error("Erreur lors du déclenchement du webhook de test:", err);
+    } catch (error) {
+      // Error triggering webhook
     }
   };
 
@@ -132,7 +130,7 @@ export default function SuccessPage() {
         }
       }
     } catch (error) {
-      console.error("Erreur lors de la recherche de la réservation:", error);
+      // Error polling for booking
       setStatus("error");
       setMessage(
         "Une erreur est survenue lors de la création de votre réservation"

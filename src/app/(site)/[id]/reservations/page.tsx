@@ -60,16 +60,10 @@ export default function ReservationsPage() {
         credentials: "include", // Include session cookies
       });
       const data = await response.json();
-
-      console.log("📋 Reservations response:", data);
-
       if (data.success) {
         setReservations(data.data || []);
-      } else {
-        console.error("❌ Failed to fetch reservations:", data.error);
-      }
+      } else {      }
     } catch (error) {
-      console.error("Error fetching reservations:", error);
     } finally {
       setLoading(false);
     }

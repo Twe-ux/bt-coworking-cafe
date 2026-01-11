@@ -43,9 +43,7 @@ export async function GET(
       success: true,
       data: employee,
     });
-  } catch (error) {
-    console.error("Error fetching employee:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: "Erreur lors de la récupération de l'employé" },
       { status: 500 }
     );
@@ -158,18 +156,12 @@ export async function PUT(
 
     Object.assign(employee, body);
     await employee.save();
-
-    console.log('=== EMPLOYEE SAVED ===');
-    console.log('step4Completed after save:', employee.onboardingStatus.step4Completed);
-
     return NextResponse.json({
       success: true,
       data: employee,
       message: "Employé mis à jour avec succès",
     });
-  } catch (error: any) {
-    console.error("Error updating employee:", error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { success: false, error: error.message || "Erreur lors de la mise à jour de l'employé" },
       { status: 500 }
     );
@@ -219,9 +211,7 @@ export async function DELETE(
       success: true,
       message: "Employé supprimé avec succès",
     });
-  } catch (error) {
-    console.error("Error deleting employee:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: "Erreur lors de la suppression de l'employé" },
       { status: 500 }
     );

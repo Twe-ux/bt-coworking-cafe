@@ -124,8 +124,7 @@ export default function EmployeeScheduling({
       }
       const data = await response.json();
       setShiftTypes(data.shiftTypes || []);
-    } catch (err: any) {
-      console.error("Error loading shift types:", err);
+    } catch (error) {
     }
   };
 
@@ -400,8 +399,6 @@ export default function EmployeeScheduling({
             endTime: dataToSave.endTime,
           };
 
-      console.log("Sending shift data:", body);
-
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -410,7 +407,6 @@ export default function EmployeeScheduling({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Error response:", errorData);
         throw new Error(errorData.error || "Erreur lors de la sauvegarde");
       }
 

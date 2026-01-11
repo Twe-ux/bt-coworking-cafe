@@ -40,9 +40,7 @@ export async function GET(request: NextRequest) {
       message: `Email de test envoyé à ${testEmail}`,
       data,
     });
-  } catch (error) {
-    console.error('Error sending test email:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: 'Failed to send test email' },
       { status: 500 }
     );

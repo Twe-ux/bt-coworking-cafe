@@ -44,9 +44,7 @@ export async function GET(
         depositPolicy: configuration.depositPolicy,
       },
     });
-  } catch (error) {
-    console.error("Error fetching space configuration:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch configuration" },
       { status: 500 }
     );

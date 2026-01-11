@@ -15,9 +15,7 @@ dotenv.config({ path: join(__dirname, '../.env.local') });
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  console.error('❌ MONGODB_URI not found in environment variables');
-  process.exit(1);
+if (!MONGODB_URI) {  process.exit(1);
 }
 
 const seedData = [
@@ -159,38 +157,16 @@ const SpaceConfiguration = mongoose.models.SpaceConfiguration ||
   mongoose.model('SpaceConfiguration', SpaceConfigurationSchema);
 
 async function seedSpaces() {
-  try {
-    console.log('🔌 Connecting to MongoDB...');
-    await mongoose.connect(MONGODB_URI!);
-    console.log('✅ Connected to MongoDB');
-
+  try {    await mongoose.connect(MONGODB_URI!);
     // Check if configurations already exist
     const existingCount = await SpaceConfiguration.countDocuments();
 
-    if (existingCount > 0) {
-      console.log(`⚠️  Found ${existingCount} existing space configurations`);
-      console.log('   Deleting existing configurations...');
-      await SpaceConfiguration.deleteMany({});
-      console.log('   ✅ Deleted existing configurations');
-    }
+    if (existingCount > 0) {      await SpaceConfiguration.deleteMany({});    }
 
-    // Insert seed data
-    console.log('📝 Inserting space configurations...');
-    const configurations = await SpaceConfiguration.insertMany(seedData);
-    console.log(`✅ Successfully created ${configurations.length} space configurations:`);
-
-    configurations.forEach((config) => {
-      console.log(`   - ${config.name} (${config.spaceType})`);
-    });
-
-    console.log('\n🎉 Database seeded successfully!');
-  } catch (error) {
-    console.error('❌ Error seeding database:', error);
-    process.exit(1);
+    // Insert seed data    const configurations = await SpaceConfiguration.insertMany(seedData);
+    configurations.forEach((config) => {    });  } catch (error) {    process.exit(1);
   } finally {
-    await mongoose.connection.close();
-    console.log('👋 Disconnected from MongoDB');
-  }
+    await mongoose.connection.close();  }
 }
 
 // Run the seed function

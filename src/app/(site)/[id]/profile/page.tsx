@@ -49,8 +49,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       userCompanyName = user.companyName;
     }
   } catch (error) {
-    console.error('Error fetching user profile:', error);
-  }
+    }
 
   return (
     <section className="client-dashboard py__130">

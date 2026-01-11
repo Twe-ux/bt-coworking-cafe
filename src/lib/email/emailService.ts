@@ -43,10 +43,8 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
       text: options.text,
     });
 
-    console.log("✅ Email sent successfully to:", options.to);
     return true;
   } catch (error) {
-    console.error("❌ Email sending error:", error);
     return false;
   }
 }

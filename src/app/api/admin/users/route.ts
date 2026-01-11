@@ -96,9 +96,7 @@ export async function GET(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error) {
-    console.error("Users fetch error:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       {
         error:
           error instanceof Error

@@ -65,9 +65,7 @@ export async function GET(
         totalPages: Math.ceil(total / limit),
       },
     });
-  } catch (error) {
-    console.error("Error fetching messages:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch messages" },
       { status: 500 }
     );
@@ -150,9 +148,7 @@ export async function POST(
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Error sending message:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to send message" },
       { status: 500 }
     );

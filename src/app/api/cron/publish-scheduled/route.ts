@@ -59,9 +59,7 @@ export async function GET(request: NextRequest) {
       articleIds: publishedIds,
       timestamp: now.toISOString(),
     });
-  } catch (error: any) {
-    console.error('Error publishing scheduled articles:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       {
         error: 'Internal server error',
         message: error.message,

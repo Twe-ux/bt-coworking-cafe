@@ -76,9 +76,7 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       );
     }
-  } catch (error) {
-    console.error('Test no-show email error:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',

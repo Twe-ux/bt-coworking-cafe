@@ -145,9 +145,7 @@ const CreatePost = () => {
 
       // Redirect to the edit page or post list
       router.push(`/dashboard/blog/edit/${result._id}`);
-    } catch (err: any) {
-      console.error("Error creating article:", err);
-      showError(err?.data?.error || "Erreur lors de la création de l'article");
+    } catch (err: any) {      showError(err?.data?.error || "Erreur lors de la création de l'article");
     }
   };
 

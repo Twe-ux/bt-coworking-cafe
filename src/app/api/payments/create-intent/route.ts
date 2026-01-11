@@ -44,18 +44,6 @@ export async function POST(request: NextRequest) {
 
       // Get space configuration
       const spaceConfig = await SpaceConfiguration.findOne({ spaceType: dbSpaceType });
-
-      console.log('🔍 CREATE-INTENT DEBUG:', {
-        spaceTypeFromFrontend: spaceType,
-        dbSpaceType,
-        spaceConfigFound: !!spaceConfig,
-        spaceConfigName: spaceConfig?.name,
-        depositPolicyEnabled: spaceConfig?.depositPolicy?.enabled,
-        depositPolicyPercentage: spaceConfig?.depositPolicy?.percentage,
-        depositPolicyFixedAmount: spaceConfig?.depositPolicy?.fixedAmount,
-        depositPolicyMinimumAmount: spaceConfig?.depositPolicy?.minimumAmount,
-      });
-
       // Calculate days until booking
       const now = new Date();
       const bookingDate = new Date(date);
@@ -63,12 +51,6 @@ export async function POST(request: NextRequest) {
 
       // Convert amount to cents
       const amountInCents = formatAmountForStripe(totalPrice);
-
-      console.log('💰 AMOUNT CALCULATION:', {
-        totalPrice,
-        amountInCents,
-      });
-
       // Get or create Stripe customer
       const customer = await getOrCreateStripeCustomer(
         contactEmail,
@@ -80,34 +62,12 @@ export async function POST(request: NextRequest) {
       let depositAmount = amountInCents;
       if (spaceConfig?.depositPolicy?.enabled) {
         const policy = spaceConfig.depositPolicy;
-        console.log('📋 DEPOSIT POLICY:', {
-          percentage: policy.percentage,
-          fixedAmount: policy.fixedAmount,
-          minimumAmount: policy.minimumAmount,
-        });
-
         if (policy.fixedAmount) {
-          depositAmount = policy.fixedAmount;
-          console.log('✅ Using fixedAmount:', depositAmount);
-        } else if (policy.percentage) {
-          depositAmount = Math.round(amountInCents * (policy.percentage / 100));
-          console.log('✅ Using percentage:', {
-            percentage: policy.percentage,
-            calculation: `${amountInCents} * ${policy.percentage} / 100 = ${depositAmount}`,
-          });
-        }
-        if (policy.minimumAmount && depositAmount < policy.minimumAmount) {
-          console.log('⚠️ Applying minimumAmount:', policy.minimumAmount, 'was:', depositAmount);
-          depositAmount = policy.minimumAmount;
+          depositAmount = policy.fixedAmount;        } else if (policy.percentage) {
+          depositAmount = Math.round(amountInCents * (policy.percentage / 100));        }
+        if (policy.minimumAmount && depositAmount < policy.minimumAmount) {          depositAmount = policy.minimumAmount;
         }
       }
-
-      console.log('💳 FINAL DEPOSIT AMOUNT:', {
-        depositAmount,
-        depositInEuros: depositAmount / 100,
-        percentage: spaceConfig?.depositPolicy?.percentage,
-      });
-
       // Store ALL reservation data in metadata (will be used by webhook to create booking)
       const metadata = {
         ...reservationData,
@@ -237,16 +197,6 @@ export async function POST(request: NextRequest) {
     const userEmail = user?.email || bookingUser?.email || booking.contactEmail;
     const userName = user?.name || user?.username || bookingUser?.givenName || booking.contactName;
     const userIdForDb = user?.id || bookingUser?._id?.toString();
-
-    console.log('💳 Payment Intent - User Details:', {
-      sessionUser: user?.email,
-      bookingUserEmail: bookingUser?.email,
-      contactEmail: booking.contactEmail,
-      finalEmail: userEmail,
-      finalName: userName,
-      daysUntilBooking,
-    });
-
     // Get or create Stripe customer
     const customer = await getOrCreateStripeCustomer(
       userEmail,
@@ -326,8 +276,6 @@ export async function POST(request: NextRequest) {
       message: 'Payment intent created successfully',
     });
   } catch (error) {
-    console.error('Error creating payment intent:', error);
-
     // Check if error is due to missing Stripe configuration
     if (error instanceof Error && error.message.includes('STRIPE_SECRET_KEY')) {
       return NextResponse.json(

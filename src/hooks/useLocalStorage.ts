@@ -12,24 +12,10 @@ export default function useLocalStorage<T>(key: string, initialValue: T, overrid
       if (!item) localStorage.setItem(key, JSON.stringify(initialValue))
       return item ? JSON.parse(item) : initialValue
     } catch (error) {
-      console.error(error)
+      // Error reading from localStorage
       return initialValue
     }
   })
-
-  const getStoredItem = () => {
-    if (key) {
-      const item = window.localStorage.getItem(key)
-      if (item) {
-        setStoredValue(JSON.parse(item))
-      }
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('storage', getStoredItem, false)
-    return () => window.removeEventListener('storage', getStoredItem)
-  }, [])
 
   const setValue = (value: T | ((val: T) => T)) => {
     try {
@@ -39,7 +25,7 @@ export default function useLocalStorage<T>(key: string, initialValue: T, overrid
         window.localStorage.setItem(key, JSON.stringify(valueToStore))
       }
     } catch (error) {
-      console.error(error)
+      // Error setting localStorage value
     }
   }
 

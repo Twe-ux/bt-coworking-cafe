@@ -18,32 +18,15 @@ async function resetPassword() {
 
   try {
     await connectDB();
-    console.log('📦 Connected to MongoDB');
-
     // Find user
     const user = await User.findOne({ email });
 
-    if (!user) {
-      console.error(`❌ User ${email} not found`);
-      process.exit(1);
+    if (!user) {      process.exit(1);
     }
-
-    console.log(`✅ User found: ${email}`);
-
-    // Set plain password - the pre-save hook will hash it automatically
-    console.log('🔒 Setting new password (will be hashed by pre-save hook)');
-    user.password = newPassword;
+    // Set plain password - the pre-save hook will hash it automatically    user.password = newPassword;
     await user.save();
-
-    console.log(`✅ Password reset successfully for ${email}`);
-    console.log(`\nNew credentials:`);
-    console.log(`Email: ${email}`);
-    console.log(`Password: ${newPassword}`);
-
     process.exit(0);
-  } catch (error) {
-    console.error('❌ Error:', error);
-    process.exit(1);
+  } catch (error) {    process.exit(1);
   }
 }
 

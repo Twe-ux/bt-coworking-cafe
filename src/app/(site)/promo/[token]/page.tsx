@@ -31,9 +31,7 @@ export default function PromoPage() {
 
         const data = await res.json();
         setPromo(data);
-      } catch (err) {
-        console.error("Erreur:", err);
-        setError("Erreur de connexion");
+      } catch (err) {        setError("Erreur de connexion");
       } finally {
         setLoading(false);
       }
@@ -62,8 +60,7 @@ export default function PromoPage() {
       }
 
       setTimeout(() => setCopied(false), 3000);
-    } catch (err) {
-      console.error("Erreur lors de la copie:", err);
+    } catch (error) {
     }
   };
 

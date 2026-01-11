@@ -18,9 +18,7 @@ export async function GET(
     }
 
     return NextResponse.json(tag);
-  } catch (error: any) {
-    console.error('Error fetching tag:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to fetch tag', details: error.message },
       { status: 500 }
     );
@@ -72,9 +70,7 @@ export async function PATCH(
     await tag.save();
 
     return NextResponse.json(tag);
-  } catch (error: any) {
-    console.error('Error updating tag:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to update tag', details: error.message },
       { status: 500 }
     );
@@ -111,9 +107,7 @@ export async function DELETE(
     await tag.deleteOne();
 
     return NextResponse.json({ message: 'Tag deleted successfully' });
-  } catch (error: any) {
-    console.error('Error deleting tag:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to delete tag', details: error.message },
       { status: 500 }
     );

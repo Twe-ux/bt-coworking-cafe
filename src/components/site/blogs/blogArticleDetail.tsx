@@ -25,9 +25,7 @@ const BlogArticleDetail = ({ article }: BlogArticleDetailProps) => {
     } catch (error) {
       // Revert on error
       setLiked(false);
-      setLikeCount((prev) => prev - 1);
-      console.error("Error liking article:", error);
-    }
+      setLikeCount((prev) => prev - 1);    }
   };
 
   return (

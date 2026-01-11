@@ -242,43 +242,18 @@ export default function BookingSummaryPage() {
     const fetchSpaceConfig = async () => {
       try {
         // Convert URL slug to DB spaceType
-        const dbSpaceType = slugToSpaceType[data.spaceType] || data.spaceType;
-        console.log(
-          "🔍 Fetching space config for:",
-          data.spaceType,
-          "→ DB:",
-          dbSpaceType
-        );
-        const response = await fetch(
+        const dbSpaceType = slugToSpaceType[data.spaceType] || data.spaceType;        const response = await fetch(
           `/api/space-configurations/${dbSpaceType}`
         );
-        console.log("📡 Response status:", response.status, response.ok);
-
         if (response.ok) {
-          const configData = await response.json();
-          console.log("✅ Config data received:", configData);
-          console.log("📋 depositPolicy:", configData.data?.depositPolicy);
-          setSpaceConfig(configData.data);
-        } else {
-          console.error(
-            "❌ Response not OK:",
-            response.status,
-            response.statusText
-          );
-          const errorData = await response.text();
-          console.error("Error response:", errorData);
-        }
+          const configData = await response.json();          setSpaceConfig(configData.data);
+        } else {          const errorData = await response.text();        }
       } catch (error) {
-        console.error("❌ Error fetching space config:", error);
-      }
+    }
     };
 
-    if (data.spaceType) {
-      console.log("🚀 Starting fetch for spaceType:", data.spaceType);
-      fetchSpaceConfig();
-    } else {
-      console.warn("⚠️ No spaceType in booking data");
-    }
+    if (data.spaceType) {      fetchSpaceConfig();
+    } else {    }
 
     // Fetch cancellation policy
     const fetchCancellationPolicy = async () => {
@@ -292,8 +267,7 @@ export default function BookingSummaryPage() {
           setCancellationPolicy(policyData.data.cancellationPolicy);
         }
       } catch (error) {
-        console.error("Error fetching cancellation policy:", error);
-      }
+    }
     };
 
     if (data.spaceType) {
@@ -358,17 +332,7 @@ export default function BookingSummaryPage() {
 
   const calculateDepositAmount = () => {
     const totalPrice = getTotalPrice();
-
-    console.log("💰 Calcul empreinte:", {
-      spaceConfig,
-      depositPolicyEnabled: spaceConfig?.depositPolicy?.enabled,
-      totalPrice,
-      policy: spaceConfig?.depositPolicy,
-    });
-
-    if (!spaceConfig?.depositPolicy?.enabled) {
-      console.log("⚠️ Pas de depositPolicy enabled, retour du prix total");
-      return totalPrice * 100; // Default to full amount if no policy
+    if (!spaceConfig?.depositPolicy?.enabled) {      return totalPrice * 100; // Default to full amount if no policy
     }
 
     const totalPriceInCents = totalPrice * 100;
@@ -378,29 +342,14 @@ export default function BookingSummaryPage() {
 
     // Calculate deposit based on policy
     if (policy.fixedAmount) {
-      depositInCents = policy.fixedAmount;
-      console.log("✅ Montant fixe appliqué:", depositInCents / 100, "€");
-    } else if (policy.percentage) {
+      depositInCents = policy.fixedAmount;    } else if (policy.percentage) {
       depositInCents = Math.round(
         totalPriceInCents * (policy.percentage / 100)
-      );
-      console.log(
-        "✅ Pourcentage appliqué:",
-        policy.percentage,
-        "% =",
-        depositInCents / 100,
-        "€"
-      );
-    }
+      );    }
 
     // Apply minimum if set
     if (policy.minimumAmount && depositInCents < policy.minimumAmount) {
-      depositInCents = policy.minimumAmount;
-      console.log("✅ Minimum appliqué:", depositInCents / 100, "€");
-    }
-
-    console.log("💳 Montant final empreinte:", depositInCents / 100, "€");
-    return depositInCents;
+      depositInCents = policy.minimumAmount;    }    return depositInCents;
   };
 
   const handleCreateReservation = async () => {
@@ -476,9 +425,7 @@ export default function BookingSummaryPage() {
       setIntentType(paymentData.data.type || "manual_capture");
       setShowPaymentForm(true);
       setLoading(false);
-    } catch (error) {
-      console.error("Error creating payment intent:", error);
-      setPaymentError("Une erreur est survenue");
+    } catch (error) {      setPaymentError("Une erreur est survenue");
       setLoading(false);
     }
   };

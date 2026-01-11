@@ -60,8 +60,7 @@ export default function HorairesPage() {
           });
         }
       } catch (error) {
-        console.error("Error fetching hours:", error);
-      } finally {
+    } finally {
         setLoading(false);
       }
     };

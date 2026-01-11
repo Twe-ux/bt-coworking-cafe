@@ -28,9 +28,7 @@ export async function POST(request: NextRequest) {
     const body = await request.text();
     const signature = request.headers.get('stripe-signature');
 
-    if (!signature) {
-      console.error('No Stripe signature found');
-      return NextResponse.json(
+    if (!signature) {      return NextResponse.json(
         { error: 'No stripe signature found' },
         { status: 400 }
       );
@@ -40,9 +38,7 @@ export async function POST(request: NextRequest) {
     let event: Stripe.Event;
     try {
       event = verifyWebhookSignature(body, signature);
-    } catch (err) {
-      console.error('Webhook signature verification failed:', err);
-      return NextResponse.json(
+    } catch (err) {      return NextResponse.json(
         { error: `Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}` },
         { status: 400 }
       );
@@ -54,8 +50,6 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'payment_intent.amount_capturable_updated': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('💳 PaymentIntent authorized (requires_capture):', paymentIntent.id);
-
         // NEW WORKFLOW: Create booking if payment is authorized and metadata flag is set
         await handlePaymentAuthorized(paymentIntent);
         break;
@@ -63,8 +57,6 @@ export async function POST(request: NextRequest) {
 
       case 'setup_intent.succeeded': {
         const setupIntent = event.data.object as Stripe.SetupIntent;
-        console.log('💾 SetupIntent succeeded (card saved):', setupIntent.id);
-
         // NEW WORKFLOW: Create booking if card is saved and metadata flag is set
         await handleSetupIntentSucceeded(setupIntent);
         break;
@@ -72,53 +64,39 @@ export async function POST(request: NextRequest) {
 
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('✅ PaymentIntent succeeded:', paymentIntent.id);
-
         await handlePaymentSuccess(paymentIntent);
         break;
       }
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('❌ PaymentIntent failed:', paymentIntent.id);
-
         await handlePaymentFailure(paymentIntent);
         break;
       }
 
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge;
-        console.log('💰 Charge refunded:', charge.id);
-
         await handleRefund(charge);
         break;
       }
 
       case 'payment_intent.processing': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('🔄 PaymentIntent processing:', paymentIntent.id);
-
         await handlePaymentProcessing(paymentIntent);
         break;
       }
 
       case 'payment_intent.canceled': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('🚫 PaymentIntent canceled:', paymentIntent.id);
-
         await handlePaymentCanceled(paymentIntent);
         break;
       }
 
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
-    }
+      default:    }
 
     // Return 200 to acknowledge receipt of the event
     return NextResponse.json({ received: true });
-  } catch (error) {
-    console.error('Error processing webhook:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }
     );
@@ -135,9 +113,7 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
       stripePaymentIntentId: paymentIntent.id,
     });
 
-    if (!payment) {
-      console.error('Payment not found for paymentIntent:', paymentIntent.id);
-      return;
+    if (!payment) {      return;
     }
 
     // Update payment status
@@ -172,13 +148,8 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
     if (booking) {
       booking.paymentStatus = 'paid';
       booking.status = 'confirmed';
-      await booking.save();
-
-      console.log(`✅ Booking ${booking._id} confirmed and paid`);
-    }
-  } catch (error) {
-    console.error('Error handling payment success:', error);
-    throw error;
+      await booking.save();    }
+  } catch (error) {    throw error;
   }
 }
 
@@ -191,9 +162,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
       stripePaymentIntentId: paymentIntent.id,
     });
 
-    if (!payment) {
-      console.error('Payment not found for paymentIntent:', paymentIntent.id);
-      return;
+    if (!payment) {      return;
     }
 
     // Update payment status
@@ -209,9 +178,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
       booking.paymentStatus = 'failed';
       await booking.save();
     }
-  } catch (error) {
-    console.error('Error handling payment failure:', error);
-    throw error;
+  } catch (error) {    throw error;
   }
 }
 
@@ -230,9 +197,7 @@ async function handlePaymentProcessing(paymentIntent: Stripe.PaymentIntent) {
 
     payment.status = 'processing';
     await payment.save();
-  } catch (error) {
-    console.error('Error handling payment processing:', error);
-    throw error;
+  } catch (error) {    throw error;
   }
 }
 
@@ -251,9 +216,7 @@ async function handlePaymentCanceled(paymentIntent: Stripe.PaymentIntent) {
 
     payment.status = 'cancelled';
     await payment.save();
-  } catch (error) {
-    console.error('Error handling payment canceled:', error);
-    throw error;
+  } catch (error) {    throw error;
   }
 }
 
@@ -266,9 +229,7 @@ async function handleRefund(charge: Stripe.Charge) {
       stripeChargeId: charge.id,
     });
 
-    if (!payment) {
-      console.error('Payment not found for charge:', charge.id);
-      return;
+    if (!payment) {      return;
     }
 
     // Get refund details
@@ -290,14 +251,9 @@ async function handleRefund(charge: Stripe.Charge) {
       const booking = await Reservation.findById(payment.booking);
       if (booking) {
         booking.paymentStatus = 'refunded';
-        await booking.save();
-
-        console.log(`💰 Booking ${booking._id} refunded`);
-      }
+        await booking.save();      }
     }
-  } catch (error) {
-    console.error('Error handling refund:', error);
-    throw error;
+  } catch (error) {    throw error;
   }
 }
 
@@ -307,12 +263,8 @@ async function handleRefund(charge: Stripe.Charge) {
  */
 async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
   try {
-    console.log('🔍 Checking payment intent metadata:', paymentIntent.metadata);
-
     // Check if this payment should create a booking
-    if (paymentIntent.metadata?.createBookingOnAuthorization !== 'true') {
-      console.log('⏭️ Skipping booking creation (not flagged)');
-      return;
+    if (paymentIntent.metadata?.createBookingOnAuthorization !== 'true') {      return;
     }
 
     // CRITICAL: Check if booking already exists BEFORE creating (prevents race condition duplicates)
@@ -321,9 +273,7 @@ async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
       stripePaymentIntentId: paymentIntent.id,
     });
 
-    if (existingBooking) {
-      console.log('⏭️ Booking already exists for this payment intent:', existingBooking._id);
-      // Send email again if needed (in case first one failed)
+    if (existingBooking) {      // Send email again if needed (in case first one failed)
       return;
     }
 
@@ -338,9 +288,8 @@ async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
     if (metadata.additionalServices) {
       try {
         additionalServices = JSON.parse(metadata.additionalServices);
-      } catch (e) {
-        console.error('Error parsing additionalServices:', e);
-      }
+      } catch (error) {
+    }
     }
 
     // Parse invoiceDetails if present
@@ -348,9 +297,8 @@ async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
     if (metadata.invoiceDetails) {
       try {
         invoiceDetails = JSON.parse(metadata.invoiceDetails);
-      } catch (e) {
-        console.error('Error parsing invoiceDetails:', e);
-      }
+      } catch (error) {
+    }
     }
 
     // Create reservation
@@ -380,14 +328,9 @@ async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
         confirmationNumber,
         isPartialPrivatization: metadata.isPartialPrivatization === 'true',
         message: metadata.message || '',
-      });
-
-      console.log(`✅ Reservation created from payment authorization:`, reservation._id);
-    } catch (createError: any) {
+      });    } catch (createError: any) {
       // Handle duplicate key error (E11000) - happens when webhook is called multiple times
-      if (createError.code === 11000 && createError.keyPattern?.stripePaymentIntentId) {
-        console.log('⚠️ Reservation already exists for this payment intent (duplicate webhook call), skipping...');
-        return;
+      if (createError.code === 11000 && createError.keyPattern?.stripePaymentIntentId) {        return;
       }
       // Re-throw other errors
       throw createError;
@@ -416,16 +359,9 @@ async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
         depositAmount: parseInt(metadata.depositAmount || metadata.totalPrice) || parseFloat(metadata.totalPrice) * 100, // Use stored deposit amount in cents
         captureMethod: metadata.captureMethod as 'manual' | 'automatic',
         numberOfPeople: parseInt(metadata.numberOfPeople),
-      });
-
-      console.log('📧 Confirmation email sent to customer');
-    } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError);
-      // Don't fail the booking creation if email fails
+      });    } catch (emailError) {      // Don't fail the booking creation if email fails
     }
-  } catch (error) {
-    console.error('Error handling payment authorization:', error);
-    throw error;
+  } catch (error) {    throw error;
   }
 }
 
@@ -435,12 +371,8 @@ async function handlePaymentAuthorized(paymentIntent: Stripe.PaymentIntent) {
  */
 async function handleSetupIntentSucceeded(setupIntent: Stripe.SetupIntent) {
   try {
-    console.log('🔍 Checking setup intent metadata:', setupIntent.metadata);
-
     // Check if this setup intent should create a booking
-    if (setupIntent.metadata?.createBookingOnAuthorization !== 'true') {
-      console.log('⏭️ Skipping booking creation (not flagged)');
-      return;
+    if (setupIntent.metadata?.createBookingOnAuthorization !== 'true') {      return;
     }
 
     // Check if booking already exists for this setup intent
@@ -448,9 +380,7 @@ async function handleSetupIntentSucceeded(setupIntent: Stripe.SetupIntent) {
       stripeSetupIntentId: setupIntent.id,
     });
 
-    if (existingBooking) {
-      console.log('⏭️ Booking already exists for this setup intent:', existingBooking._id);
-      return;
+    if (existingBooking) {      return;
     }
 
     // Parse reservation data from metadata
@@ -464,9 +394,8 @@ async function handleSetupIntentSucceeded(setupIntent: Stripe.SetupIntent) {
     if (metadata.additionalServices) {
       try {
         additionalServices = JSON.parse(metadata.additionalServices);
-      } catch (e) {
-        console.error('Error parsing additionalServices:', e);
-      }
+      } catch (error) {
+    }
     }
 
     // Parse invoiceDetails if present
@@ -474,9 +403,8 @@ async function handleSetupIntentSucceeded(setupIntent: Stripe.SetupIntent) {
     if (metadata.invoiceDetails) {
       try {
         invoiceDetails = JSON.parse(metadata.invoiceDetails);
-      } catch (e) {
-        console.error('Error parsing invoiceDetails:', e);
-      }
+      } catch (error) {
+    }
     }
 
     // Create reservation
@@ -505,9 +433,6 @@ async function handleSetupIntentSucceeded(setupIntent: Stripe.SetupIntent) {
       isPartialPrivatization: metadata.isPartialPrivatization === 'true',
       message: metadata.message || '',
     });
-
-    console.log(`✅ Reservation created from setup intent:`, reservation._id);
-
     // Send card saved email to customer
     try {
       const SpaceConfiguration = (await import('@/models/spaceConfiguration')).default;
@@ -525,15 +450,8 @@ async function handleSetupIntentSucceeded(setupIntent: Stripe.SetupIntent) {
         startTime: metadata.startTime || '',
         endTime: metadata.endTime || '',
         totalPrice: parseFloat(metadata.totalPrice),
-      });
-
-      console.log('📧 Card saved email sent to customer');
-    } catch (emailError) {
-      console.error('Error sending card saved email:', emailError);
-      // Don't fail the booking creation if email fails
+      });    } catch (emailError) {      // Don't fail the booking creation if email fails
     }
-  } catch (error) {
-    console.error('Error handling setup intent succeeded:', error);
-    throw error;
+  } catch (error) {    throw error;
   }
 }

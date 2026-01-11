@@ -100,8 +100,7 @@ export default function TimesheetsPage() {
       if (data.success) {
         setEmployees(data.data.filter((emp: any) => emp.isActive));
       }
-    } catch (err) {
-      console.error("Erreur lors du chargement des employés:", err);
+    } catch (error) {
     }
   };
 
@@ -168,8 +167,7 @@ export default function TimesheetsPage() {
 
         setDayRows(rows);
       }
-    } catch (err) {
-      console.error("Erreur lors du chargement des pointages:", err);
+    } catch (error) {
     } finally {
       setLoading(false);
     }
@@ -197,8 +195,7 @@ export default function TimesheetsPage() {
       if (data.success) {
         setStats(data.globalStats);
       }
-    } catch (err) {
-      console.error("Erreur lors du chargement des stats:", err);
+    } catch (error) {
     }
   };
 
@@ -224,8 +221,7 @@ export default function TimesheetsPage() {
       }
 
       setShifts(allShifts);
-    } catch (err) {
-      console.error("Erreur lors du chargement des shifts:", err);
+    } catch (error) {
     }
   };
 

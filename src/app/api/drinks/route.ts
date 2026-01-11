@@ -38,8 +38,6 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json({ menu }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération du menu:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (error) {    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

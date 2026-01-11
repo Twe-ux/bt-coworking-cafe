@@ -26,9 +26,7 @@ export async function GET() {
       .lean();
 
     return NextResponse.json({ categories }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération des catégories:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (error) {    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
 
@@ -88,8 +86,6 @@ export async function POST(request: NextRequest) {
       message: 'Catégorie créée avec succès',
       category
     }, { status: 201 });
-  } catch (error) {
-    console.error('Erreur lors de la création de la catégorie:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (error) {    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

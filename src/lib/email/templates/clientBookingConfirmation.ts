@@ -37,14 +37,6 @@ export function generateBookingInitialEmail(
       : 0;
   const displaySpaceName = getSpaceDisplayName(data.spaceName);
 
-  console.log("📧 EMAIL TEMPLATE DEBUG:", {
-    depositAmountCents: data.depositAmount,
-    priceEuros: data.price,
-    depositInEuros,
-    depositPercentage,
-    calculation: `(${data.depositAmount} / 100) / ${data.price} * 100 = ${depositPercentage}%`,
-  });
-
   return `
 <!DOCTYPE html>
 <html lang="fr">

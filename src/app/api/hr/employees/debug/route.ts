@@ -27,9 +27,7 @@ export async function GET(request: NextRequest) {
         endContractReason: emp.endContractReason,
       })),
     });
-  } catch (error) {
-    console.error("Error fetching employees for debug:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: "Erreur lors de la récupération" },
       { status: 500 }
     );

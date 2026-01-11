@@ -162,8 +162,7 @@ export default function BookingPage() {
           setSpaces(displaySpaces);
         }
       } catch (error) {
-        console.error("Error fetching spaces:", error);
-      } finally {
+    } finally {
         setLoading(false);
       }
     };

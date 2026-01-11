@@ -234,9 +234,7 @@ export default function EmployeesPage() {
       } else {
         setMessage({ type: "error", text: "Erreur lors du chargement des employés" });
       }
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-      setMessage({ type: "error", text: "Erreur lors du chargement des employés" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors du chargement des employés" });
     } finally {
       setLoading(false);
     }
@@ -318,9 +316,7 @@ export default function EmployeesPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la création" });
       }
-    } catch (error) {
-      console.error("Error creating employee:", error);
-      setMessage({ type: "error", text: "Erreur lors de la création" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la création" });
     } finally {
       setSaving(false);
     }
@@ -342,9 +338,7 @@ export default function EmployeesPage() {
         setSelectedEmployee(employeeData);
         setShowEditModal(true);
       }
-    } catch (error) {
-      console.error("Error loading employee:", error);
-      setMessage({ type: "error", text: "Erreur lors du chargement de l'employé" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors du chargement de l'employé" });
     }
   };
 
@@ -371,9 +365,7 @@ export default function EmployeesPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la mise à jour" });
       }
-    } catch (error) {
-      console.error("Error updating employee:", error);
-      setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
     } finally {
       setSaving(false);
     }
@@ -468,9 +460,7 @@ export default function EmployeesPage() {
           setMessage({ type: "error", text: data.error || "Erreur lors de l'archivage" });
         }
       }
-    } catch (error) {
-      console.error("Error resigning employee:", error);
-      setMessage({ type: "error", text: "Erreur lors de l'archivage" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de l'archivage" });
     } finally {
       setSaving(false);
     }
@@ -503,9 +493,7 @@ export default function EmployeesPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la mise à jour du statut" });
       }
-    } catch (error) {
-      console.error("Error updating contract status:", error);
-      setMessage({ type: "error", text: "Erreur lors de la mise à jour du statut" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la mise à jour du statut" });
     }
   };
 

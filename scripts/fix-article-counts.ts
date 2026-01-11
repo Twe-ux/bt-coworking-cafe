@@ -15,16 +15,9 @@ async function fixArticleCounts() {
     const mongoUri = process.env.MONGODB_URI;
     if (!mongoUri) {
       throw new Error("MONGODB_URI is not defined in environment variables");
-    }
-
-    console.log("🔌 Connecting to MongoDB...");
-    await mongoose.connect(mongoUri);
-    console.log("✅ Connected to MongoDB");
-
+    }    await mongoose.connect(mongoUri);
     // Get all categories
     const categories = await Category.find({});
-    console.log(`\n📊 Found ${categories.length} categories`);
-
     // Reset all article counts and recalculate
     for (const category of categories) {
       // Count published articles in this category
@@ -36,21 +29,9 @@ async function fixArticleCounts() {
       // Update the category with the correct count
       await Category.findByIdAndUpdate(category._id, {
         articleCount: publishedCount,
-      });
-
-      console.log(
-        `📝 ${category.name}: ${category.articleCount} → ${publishedCount} articles`
-      );
-    }
-
-    console.log("\n✅ Article counts fixed successfully!");
-
+      });    }
     // Disconnect
-    await mongoose.disconnect();
-    console.log("👋 Disconnected from MongoDB");
-  } catch (error) {
-    console.error("❌ Error fixing article counts:", error);
-    process.exit(1);
+    await mongoose.disconnect();  } catch (error) {    process.exit(1);
   }
 }
 

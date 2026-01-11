@@ -89,9 +89,7 @@ export default function ContractTemplate({
       // Marquer le contrat comme généré
       onValidate();
       onHide();
-    } catch (error) {
-      console.error("Erreur lors de la génération du PDF:", error);
-      alert("Erreur lors de la génération du PDF");
+    } catch (error) {      alert("Erreur lors de la génération du PDF");
     } finally {
       setGenerating(false);
     }

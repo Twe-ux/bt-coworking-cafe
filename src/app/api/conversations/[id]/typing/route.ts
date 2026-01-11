@@ -68,9 +68,7 @@ export async function POST(
       success: true,
       message: "Typing status updated",
     });
-  } catch (error) {
-    console.error("Error updating typing status:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to update typing status" },
       { status: 500 }
     );
@@ -124,9 +122,7 @@ export async function GET(
       success: true,
       typingUsers: typingUserIds,
     });
-  } catch (error) {
-    console.error("Error getting typing status:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to get typing status" },
       { status: 500 }
     );

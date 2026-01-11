@@ -36,9 +36,7 @@ export async function GET(request: NextRequest) {
       limit,
       pages: Math.ceil(total / limit),
     });
-  } catch (error: any) {
-    console.error('Error fetching tags:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to fetch tags', details: error.message },
       { status: 500 }
     );
@@ -81,9 +79,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(tag, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating tag:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to create tag', details: error.message },
       { status: 500 }
     );

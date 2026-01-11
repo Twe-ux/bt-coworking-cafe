@@ -33,9 +33,7 @@ export async function GET(
       success: true,
       data: service,
     });
-  } catch (error) {
-    console.error('Error fetching additional service:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: 'Failed to fetch additional service' },
       { status: 500 }
     );
@@ -62,10 +60,6 @@ export async function PATCH(
 
     const { id } = params;
     const body = await request.json();
-
-    console.log('📥 Received body for UPDATE:', body);
-    console.log('📥 vatRate in body:', body.vatRate, 'type:', typeof body.vatRate);
-
     let service;
     if (mongoose.Types.ObjectId.isValid(id)) {
       service = await AdditionalService.findById(id);
@@ -104,20 +98,13 @@ export async function PATCH(
     // Si le nom change, regénérer le slug
     if (body.name && body.name !== service.name) {
       service.slug = ''; // Sera regénéré par le hook
-    }
-
-    console.log('💾 About to save service with vatRate:', service.vatRate);
-    await service.save();
-    console.log('✅ Service saved. Current vatRate:', service.vatRate);
-
+    }    await service.save();
     return NextResponse.json({
       success: true,
       data: service,
       message: 'Additional service updated successfully',
     });
-  } catch (error) {
-    console.error('Error updating additional service:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: 'Failed to update additional service' },
       { status: 500 }
     );
@@ -182,9 +169,7 @@ export async function DELETE(
         message: 'Additional service deleted',
       });
     }
-  } catch (error) {
-    console.error('Error deleting additional service:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: 'Failed to delete additional service' },
       { status: 500 }
     );

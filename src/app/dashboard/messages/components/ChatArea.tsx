@@ -382,7 +382,6 @@ const ChatArea = ({ conversation }: { conversation: Conversation }) => {
       await sendMessage(values.newMessage.trim());
       reset();
     } catch (error) {
-      console.error("Error sending message:", error);
     }
   };
 
@@ -543,50 +542,33 @@ const ChatArea = ({ conversation }: { conversation: Conversation }) => {
                       <EmojiPicker
                         data={data}
                         theme={theme}
-                        onEmojiSelect={(e: any) => console.info(e.native)}
+                        onEmojiSelect={(e: any) => {
+                          // Emoji selection handler - to be implemented
+                        }}
                       />
                     </DropdownMenu>
                   </Dropdown>
                   <TextFormInput
-                    noValidate
-                    control={control}
                     name="newMessage"
-                    containerClassName="w-100"
-                    className="border-0 h-100"
+                    type="text"
+                    className="form-control border-0 chat-input"
                     placeholder="Tapez votre message..."
+                    containerClassName="w-100"
+                    control={control}
                   />
                 </div>
               </Col>
-              <Col sm={"auto"}>
-                <div className="d-flex gap-2">
-                  <Button variant="soft-success" size="sm">
-                    <IconifyIcon
-                      icon="ri:attachment-2"
-                      width={18}
-                      height={27}
-                      className="fs-18"
-                    />
-                  </Button>
-                  <Button variant="soft-warning" size="sm">
-                    <IconifyIcon
-                      icon="ri:video-on-line"
-                      width={18}
-                      height={27}
-                      className="fs-18"
-                    />
-                  </Button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-sm chat-send"
-                  >
-                    <IconifyIcon
-                      icon="ri:send-plane-2-line"
-                      width={18}
-                      height={18}
-                      className=" fs-18"
-                    />
-                  </button>
-                </div>
+              <Col xs="auto">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="chat-send w-100 btn btn-primary"
+                >
+                  <IconifyIcon
+                    icon="ri:send-plane-2-line"
+                    className="align-middle"
+                  />
+                </Button>
               </Col>
             </Row>
           </form>

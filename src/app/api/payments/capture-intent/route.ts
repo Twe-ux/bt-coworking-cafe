@@ -84,8 +84,6 @@ export async function POST(request: NextRequest) {
       },
       message: 'Payment intent captured successfully (no-show charged)',
     });
-  } catch (error) {
-    console.error('Error capturing payment intent:', error);
-    return handleApiError(error);
+  } catch (error) {    return handleApiError(error);
   }
 }

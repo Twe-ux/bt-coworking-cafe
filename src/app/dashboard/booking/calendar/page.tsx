@@ -458,7 +458,6 @@ const CalendarPage = () => {
         setSpaceConfigurations(data.data);
       }
     } catch (error) {
-      console.error("Error fetching space configurations:", error);
     }
   };
 
@@ -567,7 +566,6 @@ const CalendarPage = () => {
         setExceptionalClosures(data.data.exceptionalClosures);
       }
     } catch (error) {
-      console.error("Error fetching exceptional closures:", error);
     }
   };
 

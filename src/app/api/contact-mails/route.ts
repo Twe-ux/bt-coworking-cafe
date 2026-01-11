@@ -55,9 +55,7 @@ export async function POST(request: NextRequest) {
           )}</small></p>
         `,
       });
-    } catch (emailError) {
-      console.error("Erreur envoi email notification:", emailError);
-      // Continue even if email fails
+    } catch (emailError) {      // Continue even if email fails
     }
 
     return NextResponse.json(
@@ -68,9 +66,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Erreur création message:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Erreur lors de l'envoi du message" },
       { status: 500 }
     );
@@ -108,9 +104,7 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit),
       },
     });
-  } catch (error: any) {
-    console.error("Error fetching messages:", error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: "Erreur lors de la récupération des messages", details: error?.message },
       { status: 500 }
     );

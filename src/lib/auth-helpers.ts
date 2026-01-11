@@ -198,8 +198,6 @@ export async function initializeRoles() {
   for (const roleData of roles) {
     const exists = await Role.findOne({ slug: roleData.slug });
     if (!exists) {
-      await Role.create(roleData);
-      console.log(`✅ Role "${roleData.name}" created`);
-    }
+      await Role.create(roleData);    }
   }
 }

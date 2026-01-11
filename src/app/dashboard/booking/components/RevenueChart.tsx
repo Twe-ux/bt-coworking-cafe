@@ -30,7 +30,6 @@ const RevenueChart = () => {
         setData(result.data.revenuePerDay);
       }
     } catch (error) {
-      console.error("Error fetching revenue data:", error);
     } finally {
       setLoading(false);
     }

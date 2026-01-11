@@ -24,9 +24,7 @@ export async function GET() {
       success: true,
       data: config,
     });
-  } catch (error) {
-    console.error("Error fetching global hours:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch global hours configuration" },
       { status: 500 }
     );

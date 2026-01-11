@@ -42,8 +42,7 @@ const Menu = ({
           setMenu(data.menu);
         }
       } catch (error) {
-        console.error("Erreur lors du chargement du menu:", error);
-      } finally {
+    } finally {
         setLoading(false);
       }
     };

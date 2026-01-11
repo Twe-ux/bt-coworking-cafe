@@ -181,9 +181,7 @@ export async function POST(request: NextRequest) {
             : "months",
       },
     });
-  } catch (error) {
-    console.error("Error calculating price:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to calculate price" },
       { status: 500 }
     );

@@ -53,9 +53,7 @@ export async function GET(request: NextRequest) {
       .lean();
 
     return NextResponse.json({ shifts }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération des shifts:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur lors de la récupération des shifts' },
       { status: 500 }
     );
@@ -148,8 +146,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ shift: populatedShift }, { status: 201 });
   } catch (error: any) {
-    console.error('Erreur lors de la création du shift:', error);
-
     // Gérer les erreurs de validation Mongoose
     if (error.name === 'ValidationError') {
       return NextResponse.json(

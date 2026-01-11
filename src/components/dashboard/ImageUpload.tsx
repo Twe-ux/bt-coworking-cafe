@@ -59,9 +59,7 @@ const ImageUpload = ({
       const data = await response.json();
       setPreview(data.url);
       onImageUpload(data.url);
-    } catch (err: any) {
-      console.error('Upload error:', err);
-      setError(err.message || 'Erreur lors de l\'upload de l\'image');
+    } catch (err: any) {      setError(err.message || 'Erreur lors de l\'upload de l\'image');
     } finally {
       setUploading(false);
     }

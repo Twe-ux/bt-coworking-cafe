@@ -32,9 +32,7 @@ export async function GET() {
       weekly_stats: weeklyStats,
       top_hours: topHours
     }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération des données promo:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
     );
@@ -90,9 +88,7 @@ export async function POST(request: NextRequest) {
       message: 'Code promo créé avec succès',
       promo: newPromo
     }, { status: 201 });
-  } catch (error) {
-    console.error('Erreur lors de la création du promo:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
     );

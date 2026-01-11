@@ -16,12 +16,8 @@ import { createUser, initializeRoles } from './auth-helpers';
 async function seedUsers() {
   try {
     await connectDB();
-    console.log('📦 Connected to MongoDB');
-
     // Initialize roles first
     await initializeRoles();
-    console.log('✅ Roles initialized');
-
     // Create test users for each role
     const testUsers = [
       {
@@ -57,27 +53,21 @@ async function seedUsers() {
     for (const userData of testUsers) {
       try {
         const user = await createUser(userData);
-        console.log(`✅ Created ${userData.roleSlug} user: ${user.email}`);
+        // User created successfully
       } catch (error: any) {
-        if (error.code === 11000) {
-          console.log(`⚠️  User ${userData.email} already exists`);
+        if (error.message?.includes('already exists')) {
+          // User already exists
         } else {
-          console.error(`❌ Error creating ${userData.roleSlug} user:`, error.message);
+          // Error creating user
         }
       }
     }
-
-    console.log('\n🎉 Seed completed!');
-    console.log('\nTest Credentials:');
-    console.log('─────────────────────────────────────────');
     testUsers.forEach((user) => {
-      console.log(`${user.roleSlug.toUpperCase().padEnd(8)} | ${user.email.padEnd(25)} | ${user.password}`);
+      // Process user
     });
-    console.log('─────────────────────────────────────────\n');
-
     process.exit(0);
   } catch (error) {
-    console.error('❌ Seed error:', error);
+    // Error seeding users
     process.exit(1);
   }
 }

@@ -39,13 +39,6 @@ export async function POST(request: NextRequest) {
     // Get the payment intent from Stripe
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-
-    console.log('🔍 Payment Intent retrieved:', {
-      id: paymentIntent.id,
-      status: paymentIntent.status,
-      metadata: paymentIntent.metadata,
-    });
-
     // Check if this payment should create a booking
     if (paymentIntent.metadata?.createBookingOnAuthorization !== 'true') {
       return NextResponse.json(
@@ -81,9 +74,8 @@ export async function POST(request: NextRequest) {
     if (metadata.additionalServices) {
       try {
         additionalServices = JSON.parse(metadata.additionalServices);
-      } catch (e) {
-        console.error('Error parsing additionalServices:', e);
-      }
+      } catch (error) {
+    }
     }
 
     // Parse invoiceDetails if present
@@ -91,9 +83,8 @@ export async function POST(request: NextRequest) {
     if (metadata.invoiceDetails) {
       try {
         invoiceDetails = JSON.parse(metadata.invoiceDetails);
-      } catch (e) {
-        console.error('Error parsing invoiceDetails:', e);
-      }
+      } catch (error) {
+    }
     }
 
     // Map URL space type to database value
@@ -125,9 +116,6 @@ export async function POST(request: NextRequest) {
       isPartialPrivatization: metadata.isPartialPrivatization === 'true',
       message: metadata.message || '',
     });
-
-    console.log(`✅ Reservation created from manual webhook trigger:`, reservation._id);
-
     // Send confirmation email to customer
     try {
       const spaceConfig = await SpaceConfiguration.findOne({ spaceType: dbSpaceType });
@@ -150,12 +138,7 @@ export async function POST(request: NextRequest) {
         depositAmount: parseInt(metadata.depositAmount || metadata.totalPrice) || parseFloat(metadata.totalPrice) * 100, // Use stored deposit amount in cents
         captureMethod: metadata.captureMethod as 'manual' | 'automatic',
         numberOfPeople: parseInt(metadata.numberOfPeople),
-      });
-
-      console.log('📧 Confirmation email sent to customer');
-    } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError);
-      // Don't fail the booking creation if email fails
+      });    } catch (emailError) {      // Don't fail the booking creation if email fails
     }
 
     return NextResponse.json({
@@ -166,9 +149,7 @@ export async function POST(request: NextRequest) {
         confirmationNumber: reservation.confirmationNumber,
       },
     });
-  } catch (error) {
-    console.error('Error in test webhook:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       {
         error: 'Failed to create reservation',
         details: error instanceof Error ? error.message : 'Unknown error',

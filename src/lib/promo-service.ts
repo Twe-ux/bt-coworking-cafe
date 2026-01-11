@@ -102,9 +102,7 @@ class PromoService {
         events: []
       };
 
-      doc = await PromoConfig.create(defaultConfig);
-      console.log('📁 Configuration promo créée en base de données');
-    }
+      doc = await PromoConfig.create(defaultConfig);    }
 
     return doc;
   }
@@ -364,9 +362,7 @@ class PromoService {
         { $set: { marketing: content } }
       );
       return true;
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du marketing:', error);
-      return false;
+    } catch (error) {      return false;
     }
   }
 

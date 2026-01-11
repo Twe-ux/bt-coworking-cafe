@@ -10,9 +10,7 @@ export async function GET() {
   try {
     const marketing = await promoService.getMarketingContent();
     return NextResponse.json(marketing, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération du marketing:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
     );
@@ -56,9 +54,7 @@ export async function POST(request: NextRequest) {
     } else {
       return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500 });
     }
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour du marketing:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
     );

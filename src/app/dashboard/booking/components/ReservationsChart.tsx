@@ -30,7 +30,6 @@ const ReservationsChart = () => {
         setData(result.data.reservationsPerDay);
       }
     } catch (error) {
-      console.error("Error fetching reservations data:", error);
     } finally {
       setLoading(false);
     }

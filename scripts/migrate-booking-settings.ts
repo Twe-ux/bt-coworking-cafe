@@ -11,8 +11,6 @@ import mongoose from 'mongoose';
 async function migrateBookingSettings() {
   try {
     await connectDB();
-    console.log('Connected to MongoDB');
-
     const db = mongoose.connection.db;
     const collection = db?.collection('bookingsettings');
 
@@ -22,9 +20,6 @@ async function migrateBookingSettings() {
 
     // Find all documents with old field names
     const documents = await collection.find({}).toArray();
-
-    console.log(`Found ${documents.length} documents to check`);
-
     for (const doc of documents) {
       let needsUpdate = false;
       const updates: any = {};
@@ -60,23 +55,12 @@ async function migrateBookingSettings() {
       }
 
       // Update document if needed
-      if (needsUpdate) {
-        console.log(`Updating document ${doc._id}...`);
-        await collection.updateOne(
+      if (needsUpdate) {        await collection.updateOne(
           { _id: doc._id },
           { $set: updates }
-        );
-        console.log(`✓ Updated document ${doc._id}`);
-      } else {
-        console.log(`✓ Document ${doc._id} already up to date`);
-      }
-    }
-
-    console.log('\n✅ Migration completed successfully');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Migration failed:', error);
-    process.exit(1);
+        );      } else {      }
+    }    process.exit(0);
+  } catch (error) {    process.exit(1);
   }
 }
 

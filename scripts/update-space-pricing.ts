@@ -14,8 +14,6 @@ import SpaceConfiguration from "../src/models/spaceConfiguration/index.js";
 async function updateSpacePricing() {
   try {
     await connectDB();
-    console.log("Connected to database");
-
     // Open-space: Prix horaire à la personne, si plus de 5h -> 29€ max par personne
     await SpaceConfiguration.findOneAndUpdate(
       { spaceType: "open-space" },
@@ -36,8 +34,6 @@ async function updateSpacePricing() {
       },
       { upsert: false }
     );
-    console.log("✅ Updated open-space pricing");
-
     // Verriere: 1-4 pers: 24€/h, si pers sup: +6€/h | Journée: 120€ (1-4), +30€ per extra
     await SpaceConfiguration.findOneAndUpdate(
       { spaceType: "salle-verriere" },
@@ -67,8 +63,6 @@ async function updateSpacePricing() {
       },
       { upsert: false }
     );
-    console.log("✅ Updated salle-verriere pricing");
-
     // Etage: 1-10 pers: 60€/h, +6€/h per extra | Journée: 300€, +30€ per extra
     await SpaceConfiguration.findOneAndUpdate(
       { spaceType: "salle-etage" },
@@ -98,8 +92,6 @@ async function updateSpacePricing() {
       },
       { upsert: false }
     );
-    console.log("✅ Updated salle-etage pricing");
-
     // Evenementiel: Sur devis
     await SpaceConfiguration.findOneAndUpdate(
       { spaceType: "evenementiel" },
@@ -119,14 +111,8 @@ async function updateSpacePricing() {
         },
       },
       { upsert: false }
-    );
-    console.log("✅ Updated evenementiel to quote-based");
-
-    console.log("\n✅ All space pricing configurations updated successfully!");
-    process.exit(0);
-  } catch (error) {
-    console.error("❌ Error updating space pricing:", error);
-    process.exit(1);
+    );    process.exit(0);
+  } catch (error) {    process.exit(1);
   }
 }
 

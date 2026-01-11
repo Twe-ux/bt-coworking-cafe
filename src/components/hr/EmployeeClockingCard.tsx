@@ -76,8 +76,7 @@ export default function EmployeeClockingCard({
       if (todayData.success) {
         setShiftsToday(todayData.timeEntries.length);
       }
-    } catch (err) {
-      console.error("Erreur lors du chargement du shift actif:", err);
+    } catch (error) {
     }
   };
 

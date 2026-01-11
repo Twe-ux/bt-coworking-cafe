@@ -15,17 +15,11 @@ dotenv.config({ path: join(__dirname, '../.env.local') });
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  console.error('❌ MONGODB_URI not found in environment variables');
-  process.exit(1);
+if (!MONGODB_URI) {  process.exit(1);
 }
 
 async function migrate() {
-  try {
-    console.log('🔌 Connecting to MongoDB...');
-    await mongoose.connect(MONGODB_URI!);
-    console.log('✅ Connected to MongoDB');
-
+  try {    await mongoose.connect(MONGODB_URI!);
     const db = mongoose.connection.db;
     const collection = db!.collection('spaceconfigurations');
 
@@ -33,12 +27,7 @@ async function migrate() {
     const docsWithoutField = await collection.find({
       availableReservationTypes: { $exists: false }
     }).toArray();
-
-    console.log(`📊 Found ${docsWithoutField.length} documents without availableReservationTypes`);
-
-    if (docsWithoutField.length === 0) {
-      console.log('✅ All documents already have availableReservationTypes field');
-      return;
+    if (docsWithoutField.length === 0) {      return;
     }
 
     // Update each document
@@ -76,22 +65,10 @@ async function migrate() {
       const result = await collection.updateOne(
         { _id: doc._id },
         { $set: { availableReservationTypes } }
-      );
-
-      console.log(`  ✓ Updated ${doc.name} (${spaceType})`);
-      console.log(`    Added: hourly=${availableReservationTypes.hourly}, daily=${availableReservationTypes.daily}, weekly=${availableReservationTypes.weekly}, monthly=${availableReservationTypes.monthly}`);
-    }
-
-    console.log('\n🎉 Migration completed successfully!');
-    console.log(`   Updated ${docsWithoutField.length} documents`);
-
-  } catch (error) {
-    console.error('❌ Error during migration:', error);
-    process.exit(1);
+      );    }
+  } catch (error) {    process.exit(1);
   } finally {
-    await mongoose.connection.close();
-    console.log('👋 Disconnected from MongoDB');
-  }
+    await mongoose.connection.close();  }
 }
 
 // Run the migration

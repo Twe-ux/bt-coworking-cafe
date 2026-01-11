@@ -156,8 +156,6 @@ export async function POST(
       message: amount ? 'Partial refund processed successfully' : 'Full refund processed successfully',
     });
   } catch (error) {
-    console.error('Error processing refund:', error);
-
     // Check if error is due to missing Stripe configuration
     if (error instanceof Error && error.message.includes('STRIPE')) {
       return NextResponse.json(

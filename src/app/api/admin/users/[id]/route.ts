@@ -51,9 +51,7 @@ export async function DELETE(
       { error: "Utilisateur ou email non trouvé" },
       { status: 404 }
     );
-  } catch (error) {
-    console.error("User delete error:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       {
         error:
           error instanceof Error

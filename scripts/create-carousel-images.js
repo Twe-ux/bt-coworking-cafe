@@ -21,9 +21,6 @@ async function processImage(inputPath, outputPath) {
 
   try {
     const metadata = await sharp(inputPath).metadata();
-    console.log(`📸 ${filename}`);
-    console.log(`   Original: ${metadata.width}x${metadata.height}`);
-
     // Recadrer au centre avec le ratio 3:2
     await sharp(inputPath)
       .resize(TARGET_WIDTH, TARGET_HEIGHT, {
@@ -37,23 +34,12 @@ async function processImage(inputPath, outputPath) {
       .toFile(outputPath);
 
     const outputStats = fs.statSync(outputPath);
-    console.log(`   ✓ Optimisé: ${TARGET_WIDTH}x${TARGET_HEIGHT}`);
-    console.log(`   💾 ${(outputStats.size / 1024).toFixed(1)}KB`);
-    console.log('');
-
     return { success: true, filename };
-  } catch (error) {
-    console.error(`   ✗ Erreur: ${error.message}`);
-    console.log('');
-    return { success: false, filename, error: error.message };
+  } catch (error) {    return { success: false, filename, error: error.message };
   }
 }
 
 async function main() {
-  console.log('🖼️  Création des images carrousel uniformes\n');
-  console.log('═'.repeat(60));
-  console.log('');
-
   // Créer le dossier de sortie
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -63,9 +49,6 @@ async function main() {
   const files = fs.readdirSync(SOURCE_DIR)
     .filter(f => f.endsWith('.webp'))
     .map(f => path.join(SOURCE_DIR, f));
-
-  console.log(`📁 Trouvé ${files.length} image(s) à traiter\n`);
-
   const results = [];
   for (const inputPath of files) {
     const filename = path.basename(inputPath);
@@ -74,21 +57,8 @@ async function main() {
     results.push(result);
   }
 
-  // Statistiques
-  console.log('═'.repeat(60));
-  console.log('\n📊 Résumé:\n');
-  const successful = results.filter(r => r.success);
-  const failed = results.filter(r => !r.success);
+  // Statistiques  const successful = results.filter(r => r.success);
+  const failed = results.filter(r => !r.success);  }
 
-  console.log(`✓ ${successful.length} image(s) créée(s) (${TARGET_WIDTH}x${TARGET_HEIGHT})`);
-  if (failed.length > 0) {
-    console.log(`✗ ${failed.length} erreur(s)`);
-  }
-  console.log(`\n📂 Dossier: ${OUTPUT_DIR}`);
-  console.log('');
-}
-
-main().catch(error => {
-  console.error('❌ Erreur:', error);
-  process.exit(1);
+main().catch(error => {  process.exit(1);
 });

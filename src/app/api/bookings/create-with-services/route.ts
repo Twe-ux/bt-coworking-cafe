@@ -72,8 +72,7 @@ export async function POST(request: NextRequest) {
         try {
           await User.findByIdAndUpdate(userId, { newsletter: subscribeNewsletter });
         } catch (error) {
-          console.error('Error updating newsletter preference:', error);
-        }
+    }
       }
     } else {
       // Create or find guest user by email
@@ -84,9 +83,7 @@ export async function POST(request: NextRequest) {
         const Role = mongoose.model('Role');
         const clientRole = await Role.findOne({ slug: 'client' });
 
-        if (!clientRole) {
-          console.error('❌ No client role found in database');
-          return NextResponse.json(
+        if (!clientRole) {          return NextResponse.json(
             { success: false, error: 'Default client role not found in database' },
             { status: 500 }
           );
@@ -147,9 +144,7 @@ export async function POST(request: NextRequest) {
         }
 
         userId = user._id;
-      } catch (userError) {
-        console.error('❌ Error creating/finding guest user:', userError);
-        return NextResponse.json(
+      } catch (userError) {        return NextResponse.json(
           { success: false, error: 'Failed to create guest user: ' + (userError as Error).message },
           { status: 500 }
         );
@@ -282,17 +277,7 @@ export async function POST(request: NextRequest) {
 
         // Determine capture method based on booking date
         const daysUntilBooking = Math.ceil((bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-        captureMethod = daysUntilBooking <= 7 ? 'manual' : 'automatic';
-
-        console.log('📧 EMAIL DEBUG - Deposit calculation:', {
-          totalPrice,
-          basePrice,
-          totalPriceInCents,
-          policyPercentage: policy.percentage,
-          depositInCents,
-          depositInEuros: depositInCents / 100
-        });
-      }
+        captureMethod = daysUntilBooking <= 7 ? 'manual' : 'automatic';      }
 
       await sendBookingConfirmation(contactEmail, {
         name: contactName,
@@ -312,9 +297,7 @@ export async function POST(request: NextRequest) {
         additionalServices: emailServices,
         numberOfPeople,
       });
-    } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError);
-      // Don't fail the whole request if email fails
+    } catch (emailError) {      // Don't fail the whole request if email fails
     }
 
     return NextResponse.json(
@@ -325,9 +308,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error('Error creating reservation:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: 'Failed to create reservation' },
       { status: 500 }
     );

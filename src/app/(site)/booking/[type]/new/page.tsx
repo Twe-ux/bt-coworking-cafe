@@ -196,8 +196,7 @@ export default function BookingDatePage({
           if (data.duration) setDuration(data.duration);
         }
       } catch (error) {
-        console.error("Error loading stored booking data:", error);
-      }
+    }
     }
   }, [params.type]);
 
@@ -370,8 +369,7 @@ export default function BookingDatePage({
           setGlobalHours(data.data);
         }
       } catch (error) {
-        console.error("Error fetching global hours:", error);
-      }
+    }
     };
 
     fetchGlobalHours();
@@ -397,9 +395,7 @@ export default function BookingDatePage({
         } else {
           setError("Configuration de l'espace non disponible");
         }
-      } catch (err) {
-        console.error("Error fetching space config:", err);
-        setError("Erreur lors du chargement de la configuration");
+      } catch (err) {        setError("Erreur lors du chargement de la configuration");
       } finally {
         setLoading(false);
       }
@@ -583,9 +579,7 @@ export default function BookingDatePage({
         if (data.success) {
           setCalculatedPrice(data.data.totalPrice);
         }
-      } catch (err) {
-        console.error("Error calculating daily price:", err);
-        // Fallback to simple calculation
+      } catch (err) {        // Fallback to simple calculation
         const basePrice = spaceConfig.pricing.daily;
         setCalculatedPrice(
           spaceConfig.pricing.perPerson ? basePrice * numberOfPeople : basePrice
@@ -676,9 +670,7 @@ export default function BookingDatePage({
       if (data.success) {
         setCalculatedPrice(data.data.totalPrice);
       }
-    } catch (err) {
-      console.error("Error calculating price:", err);
-      const basePrice = durationHours * spaceConfig.pricing.hourly;
+    } catch (err) {      const basePrice = durationHours * spaceConfig.pricing.hourly;
       setCalculatedPrice(
         spaceConfig.pricing.perPerson ? basePrice * numberOfPeople : basePrice
       );

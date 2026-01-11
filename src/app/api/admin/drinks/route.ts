@@ -35,9 +35,7 @@ export async function GET(request: NextRequest) {
       .lean();
 
     return NextResponse.json({ categories, drinks }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération des boissons:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (error) {    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
 
@@ -89,8 +87,6 @@ export async function POST(request: NextRequest) {
       message: 'Boisson créée avec succès',
       drink: populatedDrink
     }, { status: 201 });
-  } catch (error) {
-    console.error('Erreur lors de la création de la boisson:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (error) {    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }

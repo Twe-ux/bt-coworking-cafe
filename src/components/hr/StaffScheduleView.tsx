@@ -94,7 +94,6 @@ export default function StaffScheduleView({ employees }: StaffScheduleViewProps)
 
       setWeekDates(weeks);
     } catch (err: any) {
-      console.error("Erreur lors du chargement du planning:", err);
       setError(err.message);
     } finally {
       setLoading(false);

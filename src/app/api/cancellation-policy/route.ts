@@ -61,9 +61,7 @@ export async function GET(request: NextRequest) {
         },
       },
     });
-  } catch (error) {
-    console.error("Error fetching cancellation policy:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch cancellation policy" },
       { status: 500 }
     );

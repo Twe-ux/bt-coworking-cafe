@@ -46,26 +46,17 @@ function extractLocalImports(content) {
 
 // Convert a page file
 function convertPage(filePath) {
-  console.log(`\n📝 Converting: ${filePath}`);
-
   let content = fs.readFileSync(filePath, 'utf-8');
 
   // Check if already converted
-  if (isAlreadyConverted(content)) {
-    console.log(`  ⏭️  Already converted, skipping`);
-    return false;
+  if (isAlreadyConverted(content)) {    return false;
   }
 
   // Extract local imports
   const localImports = extractLocalImports(content);
 
-  if (localImports.length === 0) {
-    console.log(`  ⏭️  No local component imports found, skipping`);
-    return false;
+  if (localImports.length === 0) {    return false;
   }
-
-  console.log(`  🔍 Found ${localImports.length} local component import(s)`);
-
   // Remove static metadata export (conflicts with dynamic)
   content = content.replace(/export const metadata[^;]*;?\n?/g, '');
 
@@ -108,18 +99,12 @@ function convertPage(filePath) {
 
   // Write the modified content
   fs.writeFileSync(filePath, content, 'utf-8');
-  console.log(`  ✅ Converted successfully`);
-
   return true;
 }
 
 // Main execution
 function main() {
-  console.log('🚀 Starting automatic conversion to dynamic imports...\n');
-
   const pages = findPagesToConvert();
-  console.log(`📋 Found ${pages.length} page(s) with local component imports\n`);
-
   let convertedCount = 0;
   let skippedCount = 0;
 
@@ -131,19 +116,7 @@ function main() {
       skippedCount++;
     }
   });
-
-  console.log('\n' + '='.repeat(60));
-  console.log(`\n✨ Conversion complete!`);
-  console.log(`   ✅ Converted: ${convertedCount} page(s)`);
-  console.log(`   ⏭️  Skipped: ${skippedCount} page(s)`);
-  console.log('\n' + '='.repeat(60));
-
-  if (convertedCount > 0) {
-    console.log('\n💡 Next steps:');
-    console.log('   1. Review the changes: git diff');
-    console.log('   2. Commit: git add -A && git commit -m "Auto-convert pages to dynamic imports"');
-    console.log('   3. Push: git push');
-  }
+  
 }
 
 main();

@@ -90,9 +90,7 @@ export default function RegisterPage() {
         router.push("/id");
         router.refresh();
       }
-    } catch (error) {
-      console.error("Registration error:", error);
-      setError(
+    } catch (error) {      setError(
         error instanceof Error
           ? error.message
           : "Une erreur est survenue lors de l'inscription"

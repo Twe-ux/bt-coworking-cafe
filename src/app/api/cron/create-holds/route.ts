@@ -42,9 +42,6 @@ export async function POST(request: NextRequest) {
 
     const endOfTargetDate = new Date(targetDate);
     endOfTargetDate.setHours(23, 59, 59, 999); // End of day
-
-    console.log('🔍 Searching for bookings on:', targetDate.toISOString());
-
     // Find all confirmed bookings that:
     // 1. Are scheduled for exactly 7 days from now
     // 2. Have a setupIntentId (card saved)
@@ -63,9 +60,6 @@ export async function POST(request: NextRequest) {
     })
       .populate('user', 'email givenName username')
       .populate('space', 'name type');
-
-    console.log(`📋 Found ${bookings.length} bookings to process`);
-
     const results = {
       success: [],
       failed: [],
@@ -75,8 +69,6 @@ export async function POST(request: NextRequest) {
     // Process each booking
     for (const booking of bookings) {
       try {
-        console.log(`\n💳 Processing booking ${booking._id}...`);
-
         // Get space configuration for deposit policy
         const spaceConfig = await SpaceConfiguration.findOne({
           spaceType: booking.spaceType
@@ -105,9 +97,7 @@ export async function POST(request: NextRequest) {
         const userEmail = bookingUser?.email || booking.contactEmail;
         const userName = bookingUser?.givenName || booking.contactName;
 
-        if (!booking.stripeCustomerId) {
-          console.error(`❌ Booking ${booking._id} has no stripeCustomerId`);
-          results.failed.push({
+        if (!booking.stripeCustomerId) {          results.failed.push({
             bookingId: booking._id.toString(),
             error: 'No Stripe customer ID',
           });
@@ -127,9 +117,6 @@ export async function POST(request: NextRequest) {
           booking.stripeCustomerId,
           'manual' // Manual capture for hold
         );
-
-        console.log(`✅ Payment Intent created: ${paymentIntent.id}`);
-
         // Create Payment record in database
         await Payment.create({
           booking: booking._id,
@@ -147,9 +134,6 @@ export async function POST(request: NextRequest) {
         booking.stripePaymentIntentId = paymentIntent.id;
         booking.captureMethod = 'manual';
         await booking.save();
-
-        console.log(`📧 Sending email notification to ${userEmail}...`);
-
         // Send email notification
         const spaceName = typeof booking.space === 'object' && booking.space !== null && 'name' in booking.space
           ? (booking.space as { name: string }).name
@@ -169,9 +153,6 @@ export async function POST(request: NextRequest) {
           depositAmount: depositAmount / 100,
           totalPrice: booking.totalPrice,
         });
-
-        console.log(`✅ Successfully processed booking ${booking._id}`);
-
         results.success.push({
           bookingId: booking._id.toString(),
           paymentIntentId: paymentIntent.id,
@@ -179,29 +160,19 @@ export async function POST(request: NextRequest) {
           customerEmail: userEmail,
         });
 
-      } catch (error) {
-        console.error(`❌ Error processing booking ${booking._id}:`, error);
-        results.failed.push({
+      } catch (error) {        results.failed.push({
           bookingId: booking._id.toString(),
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
-
-    console.log('\n📊 Summary:');
-    console.log(`Total: ${results.total}`);
-    console.log(`Success: ${results.success.length}`);
-    console.log(`Failed: ${results.failed.length}`);
-
     return NextResponse.json({
       success: true,
       message: `Processed ${results.total} bookings`,
       results,
     });
 
-  } catch (error) {
-    console.error('❌ Cron job error:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',

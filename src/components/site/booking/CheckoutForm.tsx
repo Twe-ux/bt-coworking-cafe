@@ -89,7 +89,6 @@ export default function CheckoutForm({ bookingId, amount, intentType, clientSecr
         }
       }
     } catch (err) {
-      console.error('Payment error:', err);
       setErrorMessage('Une erreur est survenue lors du paiement');
       setProcessing(false);
     }

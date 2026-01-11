@@ -18,9 +18,7 @@ export async function POST(request: NextRequest) {
     await promoService.trackReveal(session_id);
 
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors du tracking de la révélation:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur' },
       { status: 500 }
     );

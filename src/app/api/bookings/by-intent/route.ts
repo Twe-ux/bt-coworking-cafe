@@ -40,9 +40,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: booking,
     });
-  } catch (error) {
-    console.error('Error finding booking by intent:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Failed to find booking' },
       { status: 500 }
     );

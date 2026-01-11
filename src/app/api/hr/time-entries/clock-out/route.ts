@@ -76,9 +76,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-  } catch (error: any) {
-    console.error('Erreur lors du clock-out:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       {
         error: 'Erreur lors du pointage de départ',
         details: error.message

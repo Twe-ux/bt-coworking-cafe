@@ -19,7 +19,9 @@ const BlogDetails = () => {
       // Call the view endpoint
       fetch(`/api/articles/${slug}/view`, {
         method: "POST",
-      }).catch((err) => console.error("Failed to increment view count:", err));
+      }).catch((err) => {
+        // Error incrementing view count silently handled
+      });
     }
   }, [article?._id, slug]);
 

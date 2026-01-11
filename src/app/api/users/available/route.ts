@@ -43,9 +43,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: users,
     });
-  } catch (error) {
-    console.error("Error fetching available users:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch users" },
       { status: 500 }
     );

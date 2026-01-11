@@ -151,9 +151,7 @@ export async function GET(request: NextRequest) {
       employeeStats: formattedStats,
     });
 
-  } catch (error: any) {
-    console.error('Erreur lors du calcul des statistiques:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       {
         error: 'Erreur lors du calcul des statistiques',
         details: error.message,

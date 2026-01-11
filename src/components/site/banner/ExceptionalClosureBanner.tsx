@@ -42,8 +42,7 @@ export default function ExceptionalClosureBanner() {
           setUpcomingClosures(upcoming);
         }
       } catch (error) {
-        console.error("Error fetching closures:", error);
-      } finally {
+    } finally {
         setLoading(false);
       }
     };

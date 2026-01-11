@@ -226,9 +226,7 @@ export default function SpacesSettingsPage() {
       } else {
         setMessage({ type: "error", text: "Erreur lors du chargement des configurations" });
       }
-    } catch (error) {
-      console.error("Error fetching configurations:", error);
-      setMessage({ type: "error", text: "Erreur lors du chargement des configurations" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors du chargement des configurations" });
     } finally {
       setLoading(false);
     }
@@ -249,9 +247,7 @@ export default function SpacesSettingsPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la création" });
       }
-    } catch (error) {
-      console.error("Error seeding data:", error);
-      setMessage({ type: "error", text: "Erreur lors de la création" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la création" });
     } finally {
       setSaving(false);
     }
@@ -276,9 +272,7 @@ export default function SpacesSettingsPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la suppression" });
       }
-    } catch (error) {
-      console.error("Error deleting space:", error);
-      setMessage({ type: "error", text: "Erreur lors de la suppression" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la suppression" });
     } finally {
       setSaving(false);
     }
@@ -335,9 +329,7 @@ export default function SpacesSettingsPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la création" });
       }
-    } catch (error) {
-      console.error("Error creating space:", error);
-      setMessage({ type: "error", text: "Erreur lors de la création" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la création" });
     } finally {
       setSaving(false);
     }
@@ -362,9 +354,7 @@ export default function SpacesSettingsPage() {
       } else {
         setMessage({ type: "error", text: data.error || "Erreur lors de la mise à jour" });
       }
-    } catch (error) {
-      console.error("Error updating configuration:", error);
-      setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de la mise à jour" });
     } finally {
       setSaving(false);
     }
@@ -379,40 +369,22 @@ export default function SpacesSettingsPage() {
   };
 
   const handleImageUpload = async (spaceType: string, file: File) => {
-    try {
-      console.log("🖼️ [Upload] Starting upload for:", spaceType, "File:", file.name, file.type, file.size);
-      setUploadingImage(spaceType);
+    try {      setUploadingImage(spaceType);
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("folder", "spaces");
-
-      console.log("🖼️ [Upload] Sending request to /api/admin/space-configurations/upload");
-      const response = await fetch("/api/admin/space-configurations/upload", {
+      formData.append("folder", "spaces");      const response = await fetch("/api/admin/space-configurations/upload", {
         method: "POST",
         body: formData,
-      });
-
-      console.log("🖼️ [Upload] Response status:", response.status);
-      const data = await response.json();
-      console.log("🖼️ [Upload] Response data:", data);
-
+      });      const data = await response.json();
       if (response.ok && data.url) {
-        // Update configuration with new image URL
-        console.log("🖼️ [Upload] Image uploaded successfully, updating config");
-        const config = configurations.find((c) => c.spaceType === spaceType);
+        // Update configuration with new image URL        const config = configurations.find((c) => c.spaceType === spaceType);
         if (config) {
-          const updatedConfig = { ...config, imageUrl: data.url };
-          console.log("🖼️ [Upload] Updated config:", updatedConfig);
-          await handleUpdateConfiguration(updatedConfig);
+          const updatedConfig = { ...config, imageUrl: data.url };          await handleUpdateConfiguration(updatedConfig);
         }
         setMessage({ type: "success", text: "Image uploadée avec succès" });
-      } else {
-        console.error("🖼️ [Upload] Upload failed:", data);
-        setMessage({ type: "error", text: data.error || "Erreur lors de l'upload" });
+      } else {        setMessage({ type: "error", text: data.error || "Erreur lors de l'upload" });
       }
-    } catch (error) {
-      console.error("🖼️ [Upload] Error uploading image:", error);
-      setMessage({ type: "error", text: "Erreur lors de l'upload de l'image" });
+    } catch (error) {      setMessage({ type: "error", text: "Erreur lors de l'upload de l'image" });
     } finally {
       setUploadingImage(null);
     }

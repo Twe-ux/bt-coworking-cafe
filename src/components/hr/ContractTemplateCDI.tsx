@@ -286,37 +286,27 @@ export default function ContractTemplateCDI({
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Erreur lors de la mise à jour du statut:', errorText);
-          alert("Erreur lors de l'enregistrement");
+          const errorText = await response.text();          alert("Erreur lors de l'enregistrement");
           return;
-        } else {
-          console.log('Statut mis à jour avec succès');
-        }
+        } else {        }
       }
 
       onValidate();
       onHide();
-    } catch (error) {
-      console.error("Erreur lors de l'enregistrement:", error);
-      alert("Erreur lors de l'enregistrement");
+    } catch (error) {      alert("Erreur lors de l'enregistrement");
     } finally {
       setSaving(false);
     }
   };
 
   const handleGeneratePDF = async () => {
-    console.log('=== DÉBUT handleGeneratePDF ===');
     if (!contractRef.current) {
-      console.log('contractRef.current est null');
       return;
     }
 
     setGenerating(true);
     try {
       const element = contractRef.current;
-      console.log('Génération du canvas...');
-
       // Utiliser html2canvas avec une échelle réduite pour éviter les fichiers trop lourds
       const canvas = await html2canvas(element, {
         scale: 1, // Réduire de 2 à 1 pour alléger le fichier
@@ -325,8 +315,6 @@ export default function ContractTemplateCDI({
         imageTimeout: 0,
         backgroundColor: '#ffffff'
       });
-
-      console.log('Canvas généré, création du PDF...');
       const imgData = canvas.toDataURL("image/jpeg", 0.7); // JPEG avec compression à 70% au lieu de PNG
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -348,12 +336,9 @@ export default function ContractTemplateCDI({
         pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
         heightLeft -= pdfHeight;
       }
-
-      console.log('Sauvegarde du PDF...');
       pdf.save(`Contrat_CDI_${employee.lastName}_${employee.firstName}.pdf`);
 
       // Marquer le contrat comme généré et step 4 complétée
-      console.log('Mise à jour du statut, employee._id:', employee._id);
       if (employee._id) {
         const updatePayload = {
           onboardingStatus: {
@@ -376,38 +361,28 @@ export default function ContractTemplateCDI({
             contractSent: employee.onboardingStatus?.contractSent || false,
           }
         };
-
-        console.log('Payload:', JSON.stringify(updatePayload, null, 2));
-        console.log('URL:', `/api/hr/employees/${employee._id}`);
-
         const response = await fetch(`/api/hr/employees/${employee._id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatePayload)
         });
-
-        console.log('Response status:', response.status);
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Erreur lors de la mise à jour du statut:', errorText);
           alert('Erreur lors de la mise à jour du statut');
         } else {
           const result = await response.json();
-          console.log('✅ Statut mis à jour avec succès:', result);
+          // Status updated successfully
         }
       } else {
-        console.log('❌ employee._id est undefined');
+        // No employee ID provided
       }
-
-      console.log('Appel de onValidate() et onHide()');
       onValidate();
       onHide();
     } catch (error) {
-      console.error("❌ Erreur lors de la génération du PDF:", error);
+      // Error generating PDF
       alert("Erreur lors de la génération du PDF");
     } finally {
       setGenerating(false);
-      console.log('=== FIN handleGeneratePDF ===');
     }
   };
 

@@ -243,7 +243,6 @@ export default function OnboardingWizard({
         setMessage({ type: "error", text: data.error || "Erreur lors de l'enregistrement" });
       }
     } catch (error) {
-      console.error("Error saving step 2:", error);
       setMessage({ type: "error", text: "Erreur lors de l'enregistrement" });
     } finally {
       setSaving(false);
@@ -299,7 +298,6 @@ export default function OnboardingWizard({
         setMessage({ type: "error", text: data.error || "Erreur lors de l'enregistrement" });
       }
     } catch (error) {
-      console.error("Error saving step 3:", error);
       setMessage({ type: "error", text: "Erreur lors de l'enregistrement" });
     } finally {
       setSaving(false);

@@ -53,8 +53,7 @@ export default function ScanPage() {
           body: JSON.stringify({ session_id: storedSessionId }),
         });
       } catch (error) {
-        console.error("Erreur lors du chargement:", error);
-      } finally {
+    } finally {
         setLoading(false);
       }
     };
@@ -75,9 +74,7 @@ export default function ScanPage() {
 
       // Rediriger vers la page promo
       router.push(`/promo/${token}`);
-    } catch (error) {
-      console.error("Erreur lors de la révélation:", error);
-      setRevealing(false);
+    } catch (error) {      setRevealing(false);
     }
   };
 

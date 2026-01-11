@@ -78,8 +78,6 @@ export async function POST(request: NextRequest) {
       },
       message: 'Payment intent cancelled successfully (hold released)',
     });
-  } catch (error) {
-    console.error('Error cancelling payment intent:', error);
-    return handleApiError(error);
+  } catch (error) {    return handleApiError(error);
   }
 }

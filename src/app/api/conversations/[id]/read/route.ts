@@ -75,9 +75,7 @@ export async function POST(
       success: true,
       message: "Messages marked as read",
     });
-  } catch (error) {
-    console.error("Error marking messages as read:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to mark messages as read" },
       { status: 500 }
     );

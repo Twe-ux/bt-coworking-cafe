@@ -132,9 +132,6 @@ const CreateReservationModal: React.FC<CreateReservationModalProps> = ({
               invoiceOption: formData.get("invoiceOption") === "true",
               isPartialPrivatization: isPartialPrivatization,
             };
-
-            console.log("Creating reservation:", reservation);
-
             fetch("/api/admin/reservations", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -162,14 +159,10 @@ const CreateReservationModal: React.FC<CreateReservationModalProps> = ({
                       data.validationErrors
                         .map((e: any) => `${e.field} - ${e.message}`)
                         .join(", ");
-                  }
-                  console.error("Reservation creation error:", data);
-                  setMessage({ type: "error", text: errorMsg });
+                  }                  setMessage({ type: "error", text: errorMsg });
                 }
               })
-              .catch((err) => {
-                console.error("Reservation creation error:", err);
-                setMessage({
+              .catch((err) => {                setMessage({
                   type: "error",
                   text: "Erreur lors de la création",
                 });

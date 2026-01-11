@@ -113,6 +113,36 @@ export const ChatProvider = ({ children }: ChildrenType) => {
     showUserSetting: false,
   })
 
+  // Toggle functions for offcanvas
+  const toggleOffcanvas = (key: keyof ChatOffcanvasStatesType) => {
+    setOffcanvasStates(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const chatList: OffcanvasControlType = {
+    open: offcanvasStates.showChatList,
+    toggle: () => toggleOffcanvas('showChatList')
+  }
+
+  const chatProfile: OffcanvasControlType = {
+    open: offcanvasStates.showUserProfile,
+    toggle: () => toggleOffcanvas('showUserProfile')
+  }
+
+  const voiceCall: OffcanvasControlType = {
+    open: offcanvasStates.showVoiceCall,
+    toggle: () => toggleOffcanvas('showVoiceCall')
+  }
+
+  const videoCall: OffcanvasControlType = {
+    open: offcanvasStates.showVideoCall,
+    toggle: () => toggleOffcanvas('showVideoCall')
+  }
+
+  const chatSetting: OffcanvasControlType = {
+    open: offcanvasStates.showUserSetting,
+    toggle: () => toggleOffcanvas('showUserSetting')
+  }
+
   // Fetch conversations
   const fetchConversations = useCallback(async () => {
     try {
@@ -129,221 +159,65 @@ export const ChatProvider = ({ children }: ChildrenType) => {
         }
       }
     } catch (error) {
-      console.error('Error fetching conversations:', error)
+      // Error fetching conversations
     } finally {
       setLoadingConversations(false)
     }
-  }, [activeConversation])
+  }, [activeConversation]);
 
-  // Select conversation and load its messages
+  // Select conversation and fetch messages
   const selectConversation = useCallback(async (conversationId: string) => {
     try {
       setLoadingMessages(true)
-
-      // Find conversation in list
-      const conversation = conversations.find(c => c._id === conversationId)
-      if (conversation) {
-        setActiveConversation(conversation)
-      }
-
-      // Fetch messages
-      const response = await fetch(`/api/conversations/${conversationId}/messages?limit=50`)
+      const response = await fetch(`/api/conversations/${conversationId}/messages`)
       const data = await response.json()
 
       if (data.success) {
+        setActiveConversation(conversations.find(c => c._id === conversationId) || null)
         setMessages(data.data)
-
-        // Mark as read
-        await markAsRead(conversationId)
       }
     } catch (error) {
-      console.error('Error loading messages:', error)
+      // Error selecting conversation
     } finally {
       setLoadingMessages(false)
     }
-  }, [conversations])
+  }, [conversations]);
 
   // Send message
   const sendMessage = useCallback(async (content: string, type: Message['type'] = 'text') => {
-    if (!activeConversation) return
+    if (!activeConversation) return;
 
     try {
       const response = await fetch(`/api/conversations/${activeConversation._id}/messages`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content, type }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, type })
       })
-
       const data = await response.json()
 
       if (data.success) {
-        // Add message to list
         setMessages(prev => [...prev, data.data])
-
-        // Update conversation's last message
-        setConversations(prev => prev.map(conv =>
-          conv._id === activeConversation._id
-            ? { ...conv, lastMessage: data.data, lastMessageAt: data.data.createdAt }
-            : conv
-        ))
       }
     } catch (error) {
-      console.error('Error sending message:', error)
+      // Error sending message
     }
-  }, [activeConversation])
+  }, [activeConversation]);
 
-  // Mark conversation as read
+  // Mark as read
   const markAsRead = useCallback(async (conversationId: string) => {
     try {
       await fetch(`/api/conversations/${conversationId}/read`, {
-        method: 'POST',
+        method: 'POST'
       })
-
-      // Reset unread count in local state
-      setConversations(prev => prev.map(conv => {
-        if (conv._id === conversationId) {
-          return {
-            ...conv,
-            participants: conv.participants.map(p => ({
-              ...p,
-              unreadCount: 0,
-            })),
-          }
-        }
-        return conv
-      }))
     } catch (error) {
-      console.error('Error marking as read:', error)
+      // Error marking as read
     }
-  }, [])
+  }, []);
 
-  // Typing indicators
-  const setIsTyping = useCallback(async (isTyping: boolean) => {
-    if (!activeConversation) return
-
-    try {
-      // Clear previous timeout
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current)
-      }
-
-      // Send typing status to server
-      await fetch(`/api/conversations/${activeConversation._id}/typing`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ isTyping }),
-      })
-
-      // If typing, set timeout to automatically stop typing after 3 seconds
-      if (isTyping) {
-        typingTimeoutRef.current = setTimeout(() => {
-          setIsTyping(false)
-        }, 3000)
-      }
-    } catch (error) {
-      console.error('Error setting typing status:', error)
-    }
-  }, [activeConversation])
-
-  const fetchTypingIndicators = useCallback(async () => {
-    if (!activeConversation) return
-
-    try {
-      const response = await fetch(`/api/conversations/${activeConversation._id}/typing`)
-      const data = await response.json()
-
-      if (data.success) {
-        setTypingUsers(data.typingUsers || [])
-      }
-    } catch (error) {
-      console.error('Error fetching typing indicators:', error)
-    }
-  }, [activeConversation])
-
-  // Offcanvas toggles
-  const toggleChatList: OffcanvasControlType['toggle'] = () => {
-    setOffcanvasStates({ ...offcanvasStates, showChatList: !offcanvasStates.showChatList })
-  }
-
-  const toggleUserProfile: OffcanvasControlType['toggle'] = () => {
-    setOffcanvasStates({ ...offcanvasStates, showUserProfile: !offcanvasStates.showUserProfile })
-  }
-
-  const toggleUserSetting: OffcanvasControlType['toggle'] = () => {
-    setOffcanvasStates({ ...offcanvasStates, showUserSetting: !offcanvasStates.showUserSetting })
-  }
-
-  const toggleVoiceCall: OffcanvasControlType['toggle'] = () => {
-    setOffcanvasStates({ ...offcanvasStates, showVoiceCall: !offcanvasStates.showVoiceCall })
-  }
-
-  const toggleVideoCall: OffcanvasControlType['toggle'] = () => {
-    setOffcanvasStates({ ...offcanvasStates, showVideoCall: !offcanvasStates.showVideoCall })
-  }
-
-  const chatList = {
-    open: offcanvasStates.showChatList,
-    toggle: toggleChatList,
-  }
-
-  const chatProfile = {
-    open: offcanvasStates.showUserProfile,
-    toggle: toggleUserProfile,
-  }
-
-  const voiceCall = {
-    open: offcanvasStates.showVoiceCall,
-    toggle: toggleVoiceCall,
-  }
-
-  const videoCall = {
-    open: offcanvasStates.showVideoCall,
-    toggle: toggleVideoCall,
-  }
-
-  const chatSetting = {
-    open: offcanvasStates.showUserSetting,
-    toggle: toggleUserSetting,
-  }
-
-  // Initial load
-  useEffect(() => {
-    fetchConversations()
-  }, [])
-
-  // Auto-refresh conversations every 3 seconds (real-time feel)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchConversations()
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [fetchConversations])
-
-  // Poll typing indicators when conversation is active
-  useEffect(() => {
-    if (!activeConversation) {
-      setTypingUsers([])
-      return
-    }
-
-    // Initial fetch
-    fetchTypingIndicators()
-
-    // Poll every 2 seconds
-    const interval = setInterval(() => {
-      fetchTypingIndicators()
-    }, 2000)
-
-    return () => {
-      clearInterval(interval)
-      setTypingUsers([])
-    }
-  }, [activeConversation, fetchTypingIndicators])
+  // Set typing indicator
+  const setIsTyping = useCallback((isTyping: boolean) => {
+    // Typing indicator logic to be implemented
+  }, []);
 
   return (
     <MessagingContext.Provider
@@ -361,14 +235,15 @@ export const ChatProvider = ({ children }: ChildrenType) => {
         markAsRead,
         chatList,
         chatProfile,
-        voiceCall,
         videoCall,
+        voiceCall,
         chatSetting,
-      }}>
+      }}
+    >
       {children}
     </MessagingContext.Provider>
-  )
-}
+  );
+};
 
 // Export types
 export type { Conversation, Message, User, Participant }

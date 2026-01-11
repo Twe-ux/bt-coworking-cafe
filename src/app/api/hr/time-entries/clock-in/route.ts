@@ -106,9 +106,7 @@ export async function POST(request: NextRequest) {
       },
     }, { status: 201 });
 
-  } catch (error: any) {
-    console.error('Erreur lors du clock-in:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       {
         error: 'Erreur lors du pointage d\'arrivée',
         details: error.message

@@ -56,11 +56,7 @@ export async function POST(request: NextRequest) {
             width: optimized.metadata.width,
             height: optimized.metadata.height
           }
-        };
-        console.log('✅ Image optimisée avant upload Cloudinary:', optimizationInfo);
-      } catch (error) {
-        console.warn('⚠️ Échec de l\'optimisation, upload de l\'image originale:', error);
-        // Continue avec l'image originale en cas d'erreur
+        };      } catch (error) {        // Continue avec l'image originale en cas d'erreur
       }
     }
 
@@ -90,9 +86,7 @@ export async function POST(request: NextRequest) {
       format: uploadResult.format,
       optimization: optimizationInfo, // Inclure les infos d'optimisation
     });
-  } catch (error: any) {
-    console.error('Upload error:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to upload image', details: error.message },
       { status: 500 }
     );
@@ -119,9 +113,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({
       message: 'Image deleted successfully',
     });
-  } catch (error: any) {
-    console.error('Delete error:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to delete image', details: error.message },
       { status: 500 }
     );

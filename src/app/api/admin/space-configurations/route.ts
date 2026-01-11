@@ -28,9 +28,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: configurations,
     });
-  } catch (error) {
-    console.error("Error fetching space configurations:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch configurations" },
       { status: 500 }
     );
@@ -62,9 +60,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Error creating space configuration:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to create configuration" },
       { status: 500 }
     );

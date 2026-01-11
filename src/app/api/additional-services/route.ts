@@ -55,9 +55,7 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit),
       },
     });
-  } catch (error) {
-    console.error('Error fetching additional services:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { success: false, error: 'Failed to fetch additional services' },
       { status: 500 }
     );
@@ -121,20 +119,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    console.log('Creating additional service with data:', {
-      name,
-      description,
-      category,
-      price,
-      dailyPrice,
-      priceUnit,
-      vatRate: vatRate || 20,
-      availableForSpaceTypes: availableForSpaceTypes || [],
-      icon,
-      order: order || 0,
-    });
-
     const service = await AdditionalService.create({
       name,
       description,
@@ -147,9 +131,6 @@ export async function POST(request: NextRequest) {
       icon,
       order: order || 0,
     });
-
-    console.log('Service created successfully:', service);
-
     return NextResponse.json(
       {
         success: true,
@@ -159,11 +140,6 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    console.error('❌ Error creating additional service:', error);
-    console.error('Error name:', error?.name);
-    console.error('Error message:', error?.message);
-    console.error('Error stack:', error?.stack);
-
     // Mongoose validation errors
     if (error?.name === 'ValidationError') {
       const validationErrors = Object.values(error.errors || {}).map(

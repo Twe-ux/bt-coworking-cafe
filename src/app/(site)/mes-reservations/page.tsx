@@ -76,7 +76,6 @@ export default function ClientReservationsPage() {
         setReservations(data.data);
       }
     } catch (error) {
-      console.error("Error fetching reservations:", error);
     } finally {
       setLoading(false);
     }

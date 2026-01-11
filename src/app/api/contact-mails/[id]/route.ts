@@ -28,9 +28,7 @@ export async function GET(
     }
 
     return NextResponse.json({ message });
-  } catch (error) {
-    console.error("Erreur récupération message:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Erreur lors de la récupération du message" },
       { status: 500 }
     );
@@ -162,9 +160,8 @@ export async function PUT(
               </html>
             `,
           });
-        } catch (emailError: any) {
-          console.error("Error sending reply email:", emailError);
-        }
+        } catch (error) {
+    }
       }
     }
 
@@ -182,9 +179,7 @@ export async function PUT(
     }
 
     return NextResponse.json({ message });
-  } catch (error) {
-    console.error("Error updating message:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Erreur lors de la mise à jour du message" },
       { status: 500 }
     );
@@ -210,9 +205,7 @@ export async function DELETE(
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Erreur suppression message:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Erreur lors de la suppression du message" },
       { status: 500 }
     );

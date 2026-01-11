@@ -27,9 +27,7 @@ export async function GET(
     }
 
     return NextResponse.json(comment);
-  } catch (error: any) {
-    console.error('Error fetching comment:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to fetch comment', details: error.message },
       { status: 500 }
     );
@@ -106,9 +104,7 @@ export async function PATCH(
       .lean();
 
     return NextResponse.json(updatedComment);
-  } catch (error: any) {
-    console.error('Error updating comment:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to update comment', details: error.message },
       { status: 500 }
     );
@@ -160,9 +156,7 @@ export async function DELETE(
     return NextResponse.json({
       message: 'Comment deleted successfully',
     });
-  } catch (error: any) {
-    console.error('Error deleting comment:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       { error: 'Failed to delete comment', details: error.message },
       { status: 500 }
     );

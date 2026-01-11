@@ -104,10 +104,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-
-    console.log('Received reservation data:', body);
-    console.log('Session user:', session.user.id);
-
     await connectDB();
 
     const reservation = await Reservation.create({

@@ -101,7 +101,6 @@ export default function ChatWindow({ onBack }: ChatWindowProps) {
       await sendMessage(data.message.trim());
       reset();
     } catch (error) {
-      console.error("Error sending message:", error);
     } finally {
       setIsSending(false);
     }

@@ -8,8 +8,6 @@ export const resetLayoutSettings = () => {
 
     // Remove old settings
     localStorage.removeItem(key);
-
-    console.log('[Layout] Settings reset to default');
   }
 };
 

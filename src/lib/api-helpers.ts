@@ -57,8 +57,6 @@ export async function requireAuth(allowedRoles: string[] = ['admin', 'staff', 'd
  * Helper to handle API errors
  */
 export function handleApiError(error: unknown) {
-  console.error('API Error:', error);
-
   if (error instanceof ApiError) {
     return NextResponse.json(
       { error: error.message, ...error.data },

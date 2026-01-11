@@ -82,48 +82,7 @@ const useCalendar = () => {
     onCloseModal()
   }
 
-  const onUpdateEvent = (data: SubmitEventType) => {
-    console.info(data)
-    setEvents(
-      events.map((e) => {
-        if (e.id === eventData?.id) {
-          return {
-            ...e,
-            title: data.title,
-            className: data.category,
-          }
-        } else {
-          return e
-        }
-      }),
-    )
-    onCloseModal()
-    setIsEditable(false)
-  }
-
-  const onRemoveEvent = () => {
-    const modifiedEvents = [...events]
-    const idx = modifiedEvents.findIndex((e) => e.id === eventData?.id)
-    modifiedEvents.splice(idx, 1)
-    setEvents(modifiedEvents)
-    onCloseModal()
-  }
-
-  const onEventDrop = (arg: EventDropArg) => {
-    const modifiedEvents = [...events]
-    const idx = modifiedEvents.findIndex((e: EventInput) => e.id === arg.event.id)
-    modifiedEvents[idx].title = arg.event.title
-    modifiedEvents[idx].className = arg.event.classNames
-    modifiedEvents[idx].start = arg.event.start as DateInput
-    modifiedEvents[idx].end = arg.event.end as DateInput
-    setEvents(modifiedEvents)
-    setIsEditable(false)
-  }
-
-  const createNewEvent = () => {
-    setIsEditable(false)
-    onOpenModal()
-  }
+  const onUpdateEvent = (data: SubmitEventType) => {  }
 
   return {
     createNewEvent,

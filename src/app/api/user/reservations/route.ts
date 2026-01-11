@@ -56,9 +56,7 @@ export async function GET(request: NextRequest) {
         hasMore: total > skip + limit,
       },
     });
-  } catch (error) {
-    console.error("Error fetching user reservations:", error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: "Failed to fetch reservations" },
       { status: 500 }
     );

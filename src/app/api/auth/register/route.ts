@@ -84,8 +84,6 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Registration error:', error);
-
     // Handle duplicate email error
     if ((error as MongoError).code === 11000) {
       return NextResponse.json(

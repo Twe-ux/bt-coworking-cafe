@@ -87,16 +87,6 @@ export async function optimizeImage(
       ? Math.round(((originalSize - optimizedBuffer.length) / originalSize) * 100)
       : 0;
 
-    console.log('📸 Image optimisée:', {
-      category,
-      original: `${originalMetadata.width}x${originalMetadata.height}`,
-      optimized: `${optimizedMetadata.width}x${optimizedMetadata.height}`,
-      format: optimizedMetadata.format,
-      originalSize: `${(originalSize / 1024).toFixed(1)}KB`,
-      optimizedSize: `${(optimizedBuffer.length / 1024).toFixed(1)}KB`,
-      savings: `${savings}%`
-    });
-
     return {
       buffer: optimizedBuffer,
       metadata: {
@@ -109,7 +99,6 @@ export async function optimizeImage(
       }
     };
   } catch (error) {
-    console.error('Erreur lors de l\'optimisation de l\'image:', error);
     // En cas d'erreur, retourner l'image originale
     const metadata = await sharp(buffer).metadata();
     return {

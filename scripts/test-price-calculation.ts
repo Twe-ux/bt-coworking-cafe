@@ -98,10 +98,6 @@ async function testPriceCalculation() {
       expected: 450, // 300€ + (5 extra people * 30€) = 450€
     },
   ];
-
-  console.log('🧪 TESTING PRICE CALCULATION API\n');
-  console.log('='.repeat(80));
-
   let passed = 0;
   let failed = 0;
 
@@ -125,38 +121,17 @@ async function testPriceCalculation() {
 
       const data = await response.json();
 
-      if (!data.success) {
-        console.log(`❌ FAILED: ${spaceType} - ${reservationType} - ${numberOfPeople} people`);
-        console.log(`   Error: ${data.error}`);
-        failed++;
+      if (!data.success) {        failed++;
         continue;
       }
 
       const actual = data.data.totalPrice;
       const match = Math.abs(actual - expected) < 0.01;
 
-      if (match) {
-        console.log(`✅ PASSED: ${spaceType} - ${reservationType} - ${numberOfPeople} people`);
-        console.log(`   Expected: ${expected}€, Got: ${actual}€`);
-        passed++;
-      } else {
-        console.log(`❌ FAILED: ${spaceType} - ${reservationType} - ${numberOfPeople} people`);
-        console.log(`   Expected: ${expected}€, Got: ${actual}€`);
-        console.log(`   Difference: ${(actual - expected).toFixed(2)}€`);
-        failed++;
+      if (match) {        passed++;
+      } else {        failed++;
       }
-    } catch (error) {
-      console.log(`❌ ERROR: ${spaceType} - ${reservationType} - ${numberOfPeople} people`);
-      console.log(`   ${error instanceof Error ? error.message : 'Unknown error'}`);
-      failed++;
-    }
-
-    console.log('-'.repeat(80));
-  }
-
-  console.log('\n' + '='.repeat(80));
-  console.log(`📊 RESULTS: ${passed} passed, ${failed} failed out of ${testCases.length} tests`);
-  console.log('='.repeat(80));
-}
+    } catch (error) {      failed++;
+    }  }}
 
 testPriceCalculation();

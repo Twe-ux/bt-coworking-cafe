@@ -27,12 +27,8 @@ const VerticalNavigationBar = () => {
   // Fetch unread count
   useEffect(() => {
     const fetchUnreadCount = async () => {
-      try {
-        console.log("🔄 [Menu Badge] Fetching unread count...");
-        // Add timestamp to bypass cache
-        const cacheBuster = `${Date.now()}-${Math.random()}`;
-        console.log("🔄 [Menu Badge] Cache buster:", cacheBuster);
-        const response = await fetch(`/api/contact-mails/unread-count?_=${cacheBuster}`, {
+      try {        // Add timestamp to bypass cache
+        const cacheBuster = `${Date.now()}-${Math.random()}`;        const response = await fetch(`/api/contact-mails/unread-count?_=${cacheBuster}`, {
           cache: 'reload',
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
@@ -40,32 +36,16 @@ const VerticalNavigationBar = () => {
             'Expires': '0'
           }
         });
-        console.log("🔄 [Menu Badge] Response status:", response.status);
-
         if (response.ok) {
-          const data = await response.json();
-          console.log("🔄 [Menu Badge] Received data:", data);
-          const count = data.count || 0;
-          console.log("🔄 [Menu Badge] Setting unread count to:", count);
-          setUnreadCount(count);
+          const data = await response.json();          const count = data.count || 0;          setUnreadCount(count);
         } else {
-          const errorData = await response.json().catch(() => ({}));
-          console.error("❌ [Menu Badge] Error response:", errorData);
-        }
+          const errorData = await response.json().catch(() => ({}));        }
       } catch (error) {
-        console.error("❌ [Menu Badge] Fetch error:", error);
-      }
-    };
-
-    console.log("🎯 [Menu Badge] User role:", userRole);
-    if (userRole === "dev" || userRole === "admin") {
-      console.log("✅ [Menu Badge] Setting up badge polling for admin/dev");
-      fetchUnreadCount();
+    }
+    };    if (userRole === "dev" || userRole === "admin") {      fetchUnreadCount();
 
       // Listen for custom event to refresh count
-      const handleRefresh = () => {
-        console.log("🔔 [Menu Badge] Refresh event triggered");
-        fetchUnreadCount();
+      const handleRefresh = () => {        fetchUnreadCount();
       };
       window.addEventListener("refreshUnreadCount", handleRefresh);
 
@@ -76,9 +56,7 @@ const VerticalNavigationBar = () => {
         clearInterval(interval);
         window.removeEventListener("refreshUnreadCount", handleRefresh);
       };
-    } else {
-      console.log("⏭️ [Menu Badge] Skipping badge setup - user is not admin/dev");
-    }
+    } else {    }
   }, [userRole]);
 
   // Update menu items with dynamic badge count

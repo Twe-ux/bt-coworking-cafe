@@ -32,8 +32,7 @@ export default function CGUPage() {
           setOpenSpacePolicy(data.data.cancellationPolicy);
         }
       } catch (error) {
-        console.error("Error fetching open-space policy:", error);
-      }
+    }
     };
 
     // Fetch meeting room policy
@@ -47,8 +46,7 @@ export default function CGUPage() {
           setMeetingRoomPolicy(data.data.cancellationPolicy);
         }
       } catch (error) {
-        console.error("Error fetching meeting room policy:", error);
-      }
+    }
     };
 
     fetchOpenSpacePolicy();

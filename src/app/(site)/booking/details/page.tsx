@@ -163,7 +163,6 @@ export default function BookingDetailsPage() {
         setContactPhone(data.user.phone);
       }
     } catch (error) {
-      console.error("Error fetching user phone:", error);
     }
   };
 
@@ -175,7 +174,6 @@ export default function BookingDetailsPage() {
         setContactCompanyName(data.user.companyName);
       }
     } catch (error) {
-      console.error("Error fetching user profile:", error);
     }
   };
 
@@ -211,7 +209,6 @@ export default function BookingDetailsPage() {
         }
       }
     } catch (error) {
-      console.error("Error fetching services:", error);
     } finally {
       setServicesLoading(false);
     }
@@ -313,9 +310,7 @@ export default function BookingDetailsPage() {
             companyName: contactCompanyName,
           }),
         });
-      } catch (error) {
-        console.error("Error saving to profile:", error);
-        // Continue anyway, don't block the booking flow
+      } catch (error) {        // Continue anyway, don't block the booking flow
       }
     }
 

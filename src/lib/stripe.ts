@@ -16,12 +16,7 @@ import Stripe from 'stripe';
 // Runtime will fail if actually used without proper key
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_build_placeholder';
 
-if (!process.env.STRIPE_SECRET_KEY && process.env.NODE_ENV !== 'production') {
-  console.warn(
-    'STRIPE_SECRET_KEY is not defined. Please add it to your .env.local file.\n' +
-    'Get your keys from: https://dashboard.stripe.com/test/apikeys'
-  );
-}
+
 
 /**
  * Initialize Stripe with the secret key
@@ -80,7 +75,6 @@ export async function createPaymentIntent(
 
     return paymentIntent;
   } catch (error) {
-    console.error('Error creating payment intent:', error);
     throw error;
   }
 }
@@ -96,7 +90,6 @@ export async function retrievePaymentIntent(
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     return paymentIntent;
   } catch (error) {
-    console.error('Error retrieving payment intent:', error);
     throw error;
   }
 }
@@ -112,7 +105,6 @@ export async function cancelPaymentIntent(
     const paymentIntent = await stripe.paymentIntents.cancel(paymentIntentId);
     return paymentIntent;
   } catch (error) {
-    console.error('Error canceling payment intent:', error);
     throw error;
   }
 }
@@ -131,7 +123,6 @@ export async function capturePaymentIntent(
     });
     return paymentIntent;
   } catch (error) {
-    console.error('Error capturing payment intent:', error);
     throw error;
   }
 }
@@ -152,7 +143,6 @@ export async function createSetupIntent(
 
     return setupIntent;
   } catch (error) {
-    console.error('Error creating setup intent:', error);
     throw error;
   }
 }
@@ -174,7 +164,6 @@ export async function createRefund(
 
     return refund;
   } catch (error) {
-    console.error('Error creating refund:', error);
     throw error;
   }
 }
@@ -205,7 +194,6 @@ export function verifyWebhookSignature(
 
     return event;
   } catch (error) {
-    console.error('Error verifying webhook signature:', error);
     throw new Error(`Webhook signature verification failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
@@ -271,7 +259,6 @@ export async function getOrCreateStripeCustomer(
 
     return customer;
   } catch (error) {
-    console.error('Error getting or creating Stripe customer:', error);
     throw error;
   }
 }

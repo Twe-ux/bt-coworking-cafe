@@ -112,9 +112,7 @@ export async function GET(request: NextRequest) {
       timeEntries: timeEntriesWithAnomalies,
     });
 
-  } catch (error: any) {
-    console.error('Erreur lors de la récupération des time entries:', error);
-    return NextResponse.json(
+  } catch (error: any) {    return NextResponse.json(
       {
         error: 'Erreur lors de la récupération des pointages',
         details: error.message

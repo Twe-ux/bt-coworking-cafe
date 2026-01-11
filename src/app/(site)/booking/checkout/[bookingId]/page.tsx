@@ -114,9 +114,7 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
       setClientSecret(intentData.data.clientSecret);
       setIntentType(intentData.data.type);
       setLoading(false);
-    } catch (err) {
-      console.error('Error fetching booking or creating payment intent:', err);
-      setError('Une erreur est survenue lors de la préparation du paiement');
+    } catch (err) {      setError('Une erreur est survenue lors de la préparation du paiement');
       setLoading(false);
     }
   };

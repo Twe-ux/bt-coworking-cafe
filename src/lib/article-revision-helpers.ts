@@ -41,9 +41,7 @@ export async function createArticleRevision(
       revisionNumber,
       changeDescription,
     });
-  } catch (error) {
-    console.error('Error creating article revision:', error);
-    // Don't throw error - revision creation should not break article update
+  } catch (error) {    // Don't throw error - revision creation should not break article update
   }
 }
 
@@ -80,8 +78,6 @@ export async function restoreArticleRevision(
 
     await article.save();
     return true;
-  } catch (error) {
-    console.error('Error restoring article revision:', error);
-    return false;
+  } catch (error) {    return false;
   }
 }

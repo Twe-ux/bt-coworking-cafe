@@ -31,9 +31,7 @@ export async function GET(
     }
 
     return NextResponse.json({ shift }, { status: 200 });
-  } catch (error) {
-    console.error('Erreur lors de la récupération du shift:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur lors de la récupération du shift' },
       { status: 500 }
     );
@@ -123,8 +121,6 @@ export async function PUT(
 
     return NextResponse.json({ shift: updatedShift }, { status: 200 });
   } catch (error: any) {
-    console.error('Erreur lors de la mise à jour du shift:', error);
-
     if (error.name === 'ValidationError') {
       return NextResponse.json(
         { error: 'Données de shift invalides', details: error.message },
@@ -171,9 +167,7 @@ export async function DELETE(
       { message: 'Shift supprimé avec succès', shift },
       { status: 200 }
     );
-  } catch (error) {
-    console.error('Erreur lors de la suppression du shift:', error);
-    return NextResponse.json(
+  } catch (error) {    return NextResponse.json(
       { error: 'Erreur serveur lors de la suppression du shift' },
       { status: 500 }
     );
