@@ -118,6 +118,97 @@ export const MENU_ITEMS: MenuItemType[] = [
     roles: ["dev", "admin"],
     url: "/dashboard/contact-mails",
   },
+  {
+    key: "booking",
+    label: "Booking",
+    icon: "ri:calendar-check-line",
+    roles: ["dev", "admin", "staff"],
+    children: [
+      {
+        key: "booking-overview",
+        label: "Overview",
+        url: "/dashboard/booking",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-reservations",
+        label: "Reservations",
+        url: "/dashboard/booking/reservations",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-calendar",
+        label: "Calendar",
+        url: "/dashboard/booking/calendar",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-services",
+        label: "Services sup.",
+        url: "/dashboard/booking/services",
+        parentKey: "booking",
+      },
+      {
+        key: "booking-settings",
+        label: "Settings",
+        url: "/dashboard/booking/settings",
+        parentKey: "booking",
+      },
+    ],
+  },
+  {
+    key: "clocking",
+    label: "Pointage",
+    icon: "ri:time-line",
+    roles: ["staff"],
+    url: "/dashboard/hr/clocking",
+  },
+  {
+    key: "hr",
+    label: "Ressources Humaines",
+    icon: "ri:user-settings-line",
+    roles: ["dev", "admin", "manager"],
+    children: [
+      {
+        key: "hr-employees",
+        label: "Employés",
+        url: "/dashboard/hr/employees",
+        parentKey: "hr",
+      },
+      {
+        key: "hr-planning",
+        label: "Planning",
+        url: "/dashboard/hr/schedule",
+        parentKey: "hr",
+      },
+      {
+        key: "hr-timesheets",
+        label: "Pointages",
+        url: "/dashboard/hr/timesheets",
+        parentKey: "hr",
+      },
+    ],
+  },
+  {
+    key: "settings",
+    label: "Settings",
+    icon: "ri:settings-3-line",
+    roles: ["dev", "admin"],
+    children: [
+      {
+        key: "settings-spaces",
+        label: "Spaces",
+        url: "/dashboard/settings/spaces",
+        parentKey: "settings",
+      },
+      {
+        key: "settings-horaires",
+        label: "Horaires",
+        url: "/dashboard/settings/horaires",
+        parentKey: "settings",
+      },
+    ],
+  },
 
   // {
   //   key: "dashboards",

@@ -41,3 +41,4 @@ build-test.log
 
 # Image optimization backups
 public/images/**/_originals/
+tmp_for_planning/

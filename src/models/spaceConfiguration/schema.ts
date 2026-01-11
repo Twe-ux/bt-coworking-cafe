@@ -1,6 +1,40 @@
 import { Schema } from "mongoose";
 import { SpaceConfigurationDocument } from "./document";
 
+const pricingTierSchema = new Schema(
+  {
+    minPeople: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    maxPeople: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    hourlyRate: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    dailyRate: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    extraPersonHourly: {
+      type: Number,
+      min: 0,
+    },
+    extraPersonDaily: {
+      type: Number,
+      min: 0,
+    },
+  },
+  { _id: false }
+);
+
 const pricingStructureSchema = new Schema(
   {
     hourly: {
@@ -27,6 +61,18 @@ const pricingStructureSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    maxHoursBeforeDaily: {
+      type: Number,
+      min: 0,
+    },
+    dailyRatePerPerson: {
+      type: Number,
+      min: 0,
+    },
+    tiers: {
+      type: [pricingTierSchema],
+      default: [],
+    },
   },
   { _id: false }
 );
@@ -48,6 +94,29 @@ const availableReservationTypesSchema = new Schema(
     monthly: {
       type: Boolean,
       default: false,
+    },
+  },
+  { _id: false }
+);
+
+const depositPolicySchema = new Schema(
+  {
+    enabled: {
+      type: Boolean,
+      default: false,
+    },
+    percentage: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
+    fixedAmount: {
+      type: Number,
+      min: 0,
+    },
+    minimumAmount: {
+      type: Number,
+      min: 0,
     },
   },
   { _id: false }
@@ -85,6 +154,9 @@ const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
       type: Boolean,
       default: false,
     },
+    depositPolicy: {
+      type: depositPolicySchema,
+    },
     minCapacity: {
       type: Number,
       required: true,
@@ -106,6 +178,10 @@ const spaceConfigurationSchema = new Schema<SpaceConfigurationDocument>(
     displayOrder: {
       type: Number,
       default: 0,
+    },
+    features: {
+      type: [String],
+      default: [],
     },
     isDeleted: {
       type: Boolean,

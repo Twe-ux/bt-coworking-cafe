@@ -1,17 +1,24 @@
 /**
- * Email Service
+ * Email Service using Resend
  *
- * This is a placeholder for email functionality.
- * To enable emails, install nodemailer:
- * npm install nodemailer @types/nodemailer
- *
- * Then configure SMTP settings in .env.local:
- * EMAIL_HOST=smtp.gmail.com
- * EMAIL_PORT=587
- * EMAIL_USER=your-email@gmail.com
- * EMAIL_PASSWORD=your-app-password
- * EMAIL_FROM=Coworking Café <noreply@coworkingcafe.fr>
+ * Configure in .env.local:
+ * RESEND_API_KEY=re_...
+ * RESEND_FROM_EMAIL=Coworking Café <noreply@coworkingcafe.fr>
  */
+
+import { Resend } from "resend";
+import {
+  generateConfirmationEmail,
+  generateDepositHoldEmail,
+  generateDepositCapturedEmail,
+  generateCancellationEmail,
+  generateValidatedEmail,
+  generateBookingInitialEmail,
+  generateReminderEmail,
+  generateReservationCancelledEmail,
+  generateCardSavedEmail,
+  generateReservationRejectedEmail,
+} from "./templates";
 
 interface EmailOptions {
   to: string;
@@ -20,45 +27,28 @@ interface EmailOptions {
   text?: string;
 }
 
+const getResendClient = () => {
+  return new Resend(process.env.RESEND_API_KEY);
+};
+
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
-  // TODO: Implement actual email sending with nodemailer
-  console.log("📧 Email would be sent:", {
-    to: options.to,
-    subject: options.subject,
-  });
-
-  // Placeholder - return true for now
-  return true;
-
-  /*
-  // Uncomment when nodemailer is installed and configured:
-
-  const nodemailer = require('nodemailer');
-
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT || '587'),
-    secure: process.env.EMAIL_PORT === '465',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-
   try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
+    const resend = getResendClient();
+
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
       to: options.to,
       subject: options.subject,
       html: options.html,
       text: options.text,
     });
+
+    console.log("✅ Email sent successfully to:", options.to);
     return true;
   } catch (error) {
-    console.error('Email sending error:', error);
+    console.error("❌ Email sending error:", error);
     return false;
   }
-  */
 }
 
 export async function sendBookingConfirmation(
@@ -71,87 +61,38 @@ export async function sendBookingConfirmation(
     price: number;
     bookingId: string;
     requiresPayment: boolean;
+    depositAmount?: number;
+    captureMethod?: "manual" | "automatic";
+    additionalServices?: Array<{
+      name: string;
+      quantity: number;
+      price: number;
+    }>;
+    numberOfPeople?: number;
   }
 ): Promise<boolean> {
   const subject = "Confirmation de réservation - Coworking Café";
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #417972; color: white; padding: 20px; text-align: center; }
-          .content { background: #f9f9f9; padding: 30px; }
-          .details { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; }
-          .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-          .button { display: inline-block; background: #f2d381; color: #142220; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-          .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Coworking Café</h1>
-            <p>Confirmation de réservation</p>
-          </div>
-
-          <div class="content">
-            <h2>Bonjour ${bookingDetails.name},</h2>
-            <p>Nous avons bien reçu votre ${bookingDetails.requiresPayment ? 'réservation' : 'demande de réservation'}.</p>
-
-            <div class="details">
-              <h3>Détails de votre réservation</h3>
-              <div class="detail-row">
-                <strong>Espace :</strong>
-                <span>${bookingDetails.spaceName}</span>
-              </div>
-              <div class="detail-row">
-                <strong>Date :</strong>
-                <span>${bookingDetails.date}</span>
-              </div>
-              <div class="detail-row">
-                <strong>Heure :</strong>
-                <span>${bookingDetails.time}</span>
-              </div>
-              <div class="detail-row">
-                <strong>Prix :</strong>
-                <span>${bookingDetails.price.toFixed(2)}€</span>
-              </div>
-              <div class="detail-row">
-                <strong>Numéro de réservation :</strong>
-                <span>${bookingDetails.bookingId}</span>
-              </div>
-            </div>
-
-            ${
-              !bookingDetails.requiresPayment
-                ? '<p><strong>Note :</strong> Votre réservation sera confirmée sous 24h. Vous recevrez un email de confirmation.</p>'
-                : '<p><strong>Note :</strong> Votre paiement a été effectué avec succès. À bientôt !</p>'
-            }
-
-            <p>Pour toute question, n'hésitez pas à nous contacter :</p>
-            <ul>
-              <li>📞 Téléphone : 09 87 33 45 19</li>
-              <li>📧 Email : strasbourg@coworkingcafe.fr</li>
-            </ul>
-          </div>
-
-          <div class="footer">
-            <p>Coworking Café - 1 rue de la Division Leclerc, 67000 Strasbourg</p>
-            <p>L-V: 09h-20h | S-D & JF: 10h-20h</p>
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
+  const html = generateBookingInitialEmail({
+    name: bookingDetails.name,
+    spaceName: bookingDetails.spaceName,
+    date: bookingDetails.date,
+    time: bookingDetails.time,
+    price: bookingDetails.price,
+    bookingId: bookingDetails.bookingId,
+    requiresPayment: bookingDetails.requiresPayment,
+    depositAmount: bookingDetails.depositAmount,
+    captureMethod: bookingDetails.captureMethod,
+    additionalServices: bookingDetails.additionalServices,
+    numberOfPeople: bookingDetails.numberOfPeople,
+  });
 
   const text = `
 Bonjour ${bookingDetails.name},
 
-Nous avons bien reçu votre ${bookingDetails.requiresPayment ? 'réservation' : 'demande de réservation'}.
+Nous avons bien reçu votre ${
+    bookingDetails.requiresPayment ? "réservation" : "demande de réservation"
+  }.
 
 Détails de votre réservation :
 - Espace : ${bookingDetails.spaceName}
@@ -161,12 +102,96 @@ Détails de votre réservation :
 - Numéro de réservation : ${bookingDetails.bookingId}
 
 ${
+  bookingDetails.additionalServices &&
+  bookingDetails.additionalServices.length > 0
+    ? `Services supplémentaires :\n${bookingDetails.additionalServices
+        .map(
+          (s) =>
+            `- ${s.name} (x${s.quantity}) : ${(s.price * s.quantity).toFixed(
+              2
+            )}€`
+        )
+        .join("\n")}\n\n`
+    : ""
+}${
     !bookingDetails.requiresPayment
-      ? 'Votre réservation sera confirmée sous 24h. Vous recevrez un email de confirmation.'
-      : 'Votre paiement a été effectué avec succès. À bientôt !'
+      ? "Votre réservation sera confirmée. Vous recevrez un email de confirmation."
+      : "Votre paiement a été effectué avec succès. À bientôt !"
   }
 
 Pour toute question, contactez-nous :
+Téléphone : 09 87 33 45 19
+Email : strasbourg@coworkingcafe.fr
+
+Coworking Café
+1 rue de la Division Leclerc, 67000 Strasbourg
+L-V: 09h-20h | S-D & JF: 10h-20h
+  `;
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+    text,
+  });
+}
+
+export async function sendReservationConfirmed(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    numberOfPeople: number;
+    totalPrice: number;
+    confirmationNumber?: string;
+    paymentStatus: string;
+    invoiceOption?: boolean;
+  }
+): Promise<boolean> {
+  const subject = "✅ Réservation confirmée - Coworking Café";
+
+  const html = generateValidatedEmail({
+    name: reservationDetails.name,
+    spaceName: reservationDetails.spaceName,
+    date: reservationDetails.date,
+    startTime: reservationDetails.startTime,
+    endTime: reservationDetails.endTime,
+    numberOfPeople: reservationDetails.numberOfPeople,
+    totalPrice: reservationDetails.totalPrice,
+    confirmationNumber: reservationDetails.confirmationNumber,
+  });
+
+  const text = `
+🎉 Réservation Confirmée !
+
+Bonjour ${reservationDetails.name},
+
+Bonne nouvelle ! Votre réservation a été confirmée.
+
+✓ Réservation validée
+
+Détails de votre réservation :
+- Espace : ${reservationDetails.spaceName}
+- Date : ${reservationDetails.date}
+- Horaire : ${reservationDetails.startTime} - ${reservationDetails.endTime}
+- Nombre de personnes : ${reservationDetails.numberOfPeople}
+- Prix total : ${
+    reservationDetails.totalPrice === 0
+      ? "Sur devis"
+      : reservationDetails.totalPrice.toFixed(2) + "€"
+  }
+${
+  reservationDetails.confirmationNumber
+    ? `- Numéro de confirmation : ${reservationDetails.confirmationNumber}`
+    : ""
+}
+
+Nous avons hâte de vous accueillir ! 😊
+
+Pour toute question :
 Téléphone : 09 87 33 45 19
 Email : strasbourg@coworkingcafe.fr
 
@@ -194,44 +219,239 @@ export async function sendBookingReminder(
 ): Promise<boolean> {
   const subject = "Rappel : Votre réservation demain - Coworking Café";
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #417972; color: white; padding: 20px; text-align: center; }
-          .content { background: #f9f9f9; padding: 30px; }
-          .highlight { background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Coworking Café</h1>
-            <p>Rappel de réservation</p>
-          </div>
+  const html = generateReminderEmail({
+    name: bookingDetails.name,
+    spaceName: bookingDetails.spaceName,
+    date: bookingDetails.date,
+    time: bookingDetails.time,
+  });
 
-          <div class="content">
-            <h2>Bonjour ${bookingDetails.name},</h2>
-            <p>Nous vous rappelons que vous avez une réservation demain :</p>
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+  });
+}
 
-            <div class="highlight">
-              <p><strong>Espace :</strong> ${bookingDetails.spaceName}</p>
-              <p><strong>Date :</strong> ${bookingDetails.date}</p>
-              <p><strong>Heure :</strong> ${bookingDetails.time}</p>
-            </div>
+export async function sendReservationCancelled(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    numberOfPeople: number;
+    totalPrice: number;
+    confirmationNumber?: string;
+  }
+): Promise<boolean> {
+  const subject = "❌ Réservation annulée - Coworking Café";
 
-            <p>Nous serons ravis de vous accueillir ! À demain 😊</p>
+  const html = generateReservationCancelledEmail({
+    name: reservationDetails.name,
+    spaceName: reservationDetails.spaceName,
+    date: reservationDetails.date,
+    startTime: reservationDetails.startTime,
+    endTime: reservationDetails.endTime,
+    numberOfPeople: reservationDetails.numberOfPeople,
+    totalPrice: reservationDetails.totalPrice,
+    confirmationNumber: reservationDetails.confirmationNumber,
+  });
 
-            <p>L'équipe du Coworking Café</p>
-          </div>
-        </div>
-      </body>
-    </html>
+  const text = `
+Réservation Annulée
+
+Bonjour ${reservationDetails.name},
+
+Nous vous informons que votre réservation a été annulée.
+
+✗ Réservation annulée
+
+Détails de la réservation annulée :
+- Espace : ${reservationDetails.spaceName}
+- Date : ${reservationDetails.date}
+- Horaire : ${reservationDetails.startTime} - ${reservationDetails.endTime}
+- Nombre de personnes : ${reservationDetails.numberOfPeople}
+- Prix : ${reservationDetails.totalPrice.toFixed(2)}€
+${
+  reservationDetails.confirmationNumber
+    ? `- Numéro de confirmation : ${reservationDetails.confirmationNumber}`
+    : ""
+}
+
+Si vous avez effectué un paiement, un remboursement sera traité dans les meilleurs délais.
+
+Si vous souhaitez effectuer une nouvelle réservation, n'hésitez pas à nous contacter ou à consulter notre site.
+
+Pour toute question :
+Téléphone : 09 87 33 45 19
+Email : strasbourg@coworkingcafe.fr
+
+Coworking Café
+1 rue de la Division Leclerc, 67000 Strasbourg
+L-V: 09h-20h | S-D & JF: 10h-20h
   `;
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+    text,
+  });
+}
+
+export async function sendDepositHoldConfirmation(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    depositAmount: number;
+    totalPrice: number;
+  }
+): Promise<boolean> {
+  const subject = "Empreinte bancaire effectuée - Coworking Café";
+
+  const html = generateDepositHoldEmail({
+    name: reservationDetails.name,
+    spaceName: reservationDetails.spaceName,
+    date: reservationDetails.date,
+    startTime: reservationDetails.startTime,
+    endTime: reservationDetails.endTime,
+    depositAmount: reservationDetails.depositAmount,
+    totalPrice: reservationDetails.totalPrice,
+  });
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+  });
+}
+
+export async function sendDepositCaptured(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    depositAmount: number;
+  }
+): Promise<boolean> {
+  const subject = "Prélèvement effectué (no-show) - Coworking Café";
+
+  const html = generateDepositCapturedEmail({
+    name: reservationDetails.name,
+    spaceName: reservationDetails.spaceName,
+    date: reservationDetails.date,
+    depositAmount: reservationDetails.depositAmount,
+  });
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+  });
+}
+
+export async function sendCardSavedConfirmation(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    totalPrice: number;
+  }
+): Promise<boolean> {
+  const subject = "Carte enregistrée - Paiement dans 7 jours - Coworking Café";
+
+  const html = generateCardSavedEmail({
+    name: reservationDetails.name,
+    spaceName: reservationDetails.spaceName,
+    date: reservationDetails.date,
+    startTime: reservationDetails.startTime,
+    endTime: reservationDetails.endTime,
+    totalPrice: reservationDetails.totalPrice,
+  });
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+  });
+}
+
+/**
+ * Send cancellation confirmation email
+ */
+export async function sendCancellationConfirmation(
+  email: string,
+  cancellationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    cancellationFee: number;
+    refundAmount: number;
+    confirmationNumber?: string;
+  }
+): Promise<boolean> {
+  const subject = "Confirmation d'annulation - Coworking Café";
+
+  const html = generateCancellationEmail({
+    name: cancellationDetails.name,
+    spaceName: cancellationDetails.spaceName,
+    date: cancellationDetails.date,
+    startTime: cancellationDetails.startTime,
+    endTime: cancellationDetails.endTime,
+    confirmationNumber: cancellationDetails.confirmationNumber,
+    cancellationFee: cancellationDetails.cancellationFee,
+    refundAmount: cancellationDetails.refundAmount,
+  });
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+  });
+}
+
+/**
+ * Send reservation rejected by admin email
+ */
+export async function sendReservationRejected(
+  email: string,
+  reservationDetails: {
+    name: string;
+    spaceName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    numberOfPeople: number;
+    totalPrice: number;
+    confirmationNumber: string;
+    reason?: string;
+  }
+): Promise<boolean> {
+  const subject = "❌ Demande de réservation refusée - Coworking Café";
+
+  const html = generateReservationRejectedEmail({
+    name: reservationDetails.name,
+    spaceName: reservationDetails.spaceName,
+    date: reservationDetails.date,
+    startTime: reservationDetails.startTime,
+    endTime: reservationDetails.endTime,
+    numberOfPeople: reservationDetails.numberOfPeople,
+    totalPrice: reservationDetails.totalPrice,
+    confirmationNumber: reservationDetails.confirmationNumber,
+    reason: reservationDetails.reason,
+  });
 
   return sendEmail({
     to: email,

@@ -169,10 +169,13 @@
         }
 
         .describe {
-          max-width: 501px;
+          max-width: 590px;
           color: var(--grayWhite-clr);
           text-align: justify;
           // font-size: 18px;
+        }
+        p {
+          font-size: 15px;
         }
       }
     }

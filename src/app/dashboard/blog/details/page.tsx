@@ -1,8 +1,10 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useTopbarContext } from '@/context/useTopbarContext';
 import blogImg from "@/assets/dashboard/images/blog/blog.jpg";
 import avatarImg from "@/assets/dashboard/images/users/avatar-6.jpg";
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
 import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
-import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -25,9 +27,20 @@ import PhotoCard from './components/PhotoCard';
 export const dynamic = 'force-dynamic';
 
 const PostDetailsPage = () => {
+  const { setPageTitle, setPageActions } = useTopbarContext();
+
+  useEffect(() => {
+    setPageTitle('Blog Details');
+    setPageActions(null);
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
+
   return (
     <>
-      <DashboardPageTitle title="Blog Details" subName="Blog" />
       <Row>
         <Col lg={8}>
           <Card>

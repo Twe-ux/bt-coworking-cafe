@@ -1,44 +1,46 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import '../login/auth.scss';
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import "../login/auth.scss";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    givenName: '',
-    username: '',
+    email: "",
+    password: "",
+    confirmPassword: "",
+    givenName: "",
+    username: "",
     newsletter: true,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError("Les mots de passe ne correspondent pas");
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères');
+      setError("Le mot de passe doit contenir au moins 8 caractères");
       return;
     }
 
@@ -46,17 +48,17 @@ export default function RegisterPage() {
 
     try {
       // Call registration API
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
           givenName: formData.givenName,
           username: formData.username || undefined,
-          roleSlug: 'client', // Default role for public registration
+          roleSlug: "client", // Default role for public registration
           newsletter: formData.newsletter,
         }),
       });
@@ -64,40 +66,44 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de l\'inscription');
+        throw new Error(data.error || "Erreur lors de l'inscription");
       }
 
       // Auto login after successful registration
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
         redirect: false,
       });
 
       if (result?.error) {
-        setError('Inscription réussie mais erreur de connexion. Veuillez vous connecter manuellement.');
+        setError(
+          "Inscription réussie mais erreur de connexion. Veuillez vous connecter manuellement."
+        );
         setTimeout(() => {
-          router.push('/auth/login');
+          router.push("/auth/login");
         }, 2000);
         return;
       }
 
       if (result?.ok) {
-        router.push('/id');
+        router.push("/id");
         router.refresh();
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error("Registration error:", error);
       setError(
-        error instanceof Error ? error.message : 'Une erreur est survenue lors de l\'inscription'
+        error instanceof Error
+          ? error.message
+          : "Une erreur est survenue lors de l'inscription"
       );
       setIsLoading(false);
     }
   };
 
   return (
-    <section className="auth-section py__130">
-      <div className="container">
+    <section className="auth-section py__130 ">
+      <div className="container pb__130">
         <div className="row justify-content-center">
           <div className="col-lg-6 col-md-8">
             <div className="auth-card">
@@ -169,35 +175,69 @@ export default function RegisterPage() {
                   <label htmlFor="password" className="form-label">
                     Mot de passe * (min. 8 caractères)
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    className="form-control auth-input"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    minLength={8}
-                    disabled={isLoading}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      className="form-control auth-input"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      minLength={8}
+                      disabled={isLoading}
+                      style={{ paddingRight: "2.5rem" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-link position-absolute"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        top: "50%",
+                        right: "0.5rem",
+                        transform: "translateY(-50%)",
+                        padding: "0.25rem 0.5rem",
+                        color: "#666",
+                      }}
+                    >
+                      <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="confirmPassword" className="form-label">
                     Confirmer le mot de passe *
                   </label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    className="form-control auth-input"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      className="form-control auth-input"
+                      placeholder="••••••••"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                      disabled={isLoading}
+                      style={{ paddingRight: "2.5rem" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-link position-absolute"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      style={{
+                        top: "50%",
+                        right: "0.5rem",
+                        transform: "translateY(-50%)",
+                        padding: "0.25rem 0.5rem",
+                        color: "#666",
+                      }}
+                    >
+                      <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mb-4">
@@ -232,14 +272,14 @@ export default function RegisterPage() {
                       Inscription en cours...
                     </>
                   ) : (
-                    'Créer mon compte'
+                    "Créer mon compte"
                   )}
                 </button>
               </form>
 
               <div className="auth-footer text-center mt-4">
                 <p>
-                  Vous avez déjà un compte ?{' '}
+                  Vous avez déjà un compte ?{" "}
                   <Link href="/auth/login" className="auth-link fw-bold">
                     Se connecter
                   </Link>

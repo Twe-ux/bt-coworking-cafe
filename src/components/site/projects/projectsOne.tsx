@@ -25,11 +25,24 @@ const ProjectsOne: React.FC<ProjectsOneProps> = ({ isProjectUseCaseShow }) => {
         {/* title End */}
         <div className="projects__wapper">
           {projectsOneData.map(
-            ({ categories, subCategories, id, imgSrc, title, link }) => {
+            ({
+              categories,
+              subCategories,
+              id,
+              imgSrc,
+              imgSrc2,
+              title,
+              link,
+            }) => {
               return (
                 <SlideUp delay={id} key={id} className="projects__wapper_card">
                   <Link href={`/spaces#${link}`}>
-                    <img src={imgSrc} alt="photos des salles de réunion" />
+                    <div className="d-flex flex-column gap-5">
+                      <img src={imgSrc} alt="photos des salles de réunion" />
+                      {imgSrc2 && (
+                        <img src={imgSrc2} alt="photos des salles de réunion" />
+                      )}
+                    </div>
                   </Link>
                   <div>
                     <div className="d-flex align-items-center">

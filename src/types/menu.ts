@@ -14,7 +14,7 @@ export type MenuItemType = {
   target?: HTMLAttributeAnchorTarget
   isDisabled?: boolean
   children?: MenuItemType[]
-  roles?: Array<'dev' | 'admin' | 'staff' | 'client'> // Roles allowed to see this menu item
+  roles?: Array<'dev' | 'admin' | 'manager' | 'staff' | 'client'> // Roles allowed to see this menu item
 }
 
 export type SubMenus = {

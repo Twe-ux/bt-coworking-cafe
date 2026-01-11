@@ -34,21 +34,16 @@
 }
 
 .menu__category .cat-p {
-  margin: 0 20px;
-  max-width: 100;
+  margin: 0 10px;
+  max-width: 100%;
 }
 
 .menu__drinks-scroll {
   display: flex;
   gap: 20px;
-  overflow-x: auto;
+
   overflow-y: hidden;
-  padding: 20px 10px 30px 10px;
-  overflow: scroll;
-  // Firefox - force scrollbar to always show
-  scrollbar-width: thin;
-  scrollbar-color: var(--btn-clr) transparent;
-  overflow-x: scroll; // Force scrollbar presence
+  padding: 30px 10px 30px 10px;
 
   // Webkit browsers (Chrome, Safari, Edge)
   &::-webkit-scrollbar {
@@ -130,14 +125,14 @@
 
 .menu__drink-name {
   color: var(--grayWhite-clr, #ffffff);
-  font-size: 1.25rem;
+  font-size: 18px !important;
   font-weight: 600;
   margin-bottom: 8px;
 }
 
 .menu__drink-description {
   color: var(--pra-clr, #a0a0a0);
-  font-size: 0.9rem;
+  font-size: 15px !important;
   margin-bottom: 0;
   line-height: 1.5;
 }

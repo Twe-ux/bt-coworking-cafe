@@ -1,6 +1,5 @@
 import PageTitle from "@/components/site/pageTitle";
 import SlideUp from "@/utils/animations/slideUp";
-import React from "react";
 
 const ProjectDetails = () => {
   return (
@@ -43,7 +42,7 @@ const ProjectDetails = () => {
           </SlideUp>
           <div className="first__para">
             <img
-              src="/images/projects/project-3.png"
+              src="/images/projects/project-3.webp"
               alt="img"
               className="w-100"
             />

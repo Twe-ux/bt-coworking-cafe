@@ -5,24 +5,32 @@ import { NextResponse } from "next/server";
 // Public routes that don't require authentication
 const publicRoutes = [
   "/",
+
+  // Static pages - legal and info
   "/CGU",
   "/confidentiality",
   "/mentions-legales",
   "/contact",
+
+  // Promotional pages
   "/scan",
   "/promo",
 
+  // Site pages
   "/concept",
   "/take-away",
+  "/history",
+  "/manifest",
   "/spaces",
   "/pricing",
-  "/blog",
+  "/members-program",
+  "/student-offers",
 
   "/boissons",
-  "/menu/boissons",
-  "/menu/food",
+  // "/menu/boissons",
+  // "/menu/food",
 
-  "/professionnels",
+  "/blog",
 
   "/robots.txt",
   "/sitemap.xml",
@@ -31,13 +39,14 @@ const publicRoutes = [
 // Public route patterns (dynamic routes)
 const publicRoutePatterns = [
   /^\/promo\/[^\/]+$/, // /promo/[token]
+  /^\/booking(\/.*)?$/, // /booking and all sub-routes
 ];
 
 // Auth routes
 const authRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password"];
 
 // Protected routes that require authentication but are accessible to all authenticated users
-const protectedRoutes = ["/messages", "/booking", "/mes-reservations", "/horaires"];
+const protectedRoutes = ["/messages", "/mes-reservations", "/horaires"];
 
 // Admin dashboard routes
 const adminDashboardPattern = /^\/dashboard(\/.*)?$/;
@@ -85,9 +94,13 @@ export async function middleware(req: NextRequest) {
   }
 
   // 2. Protected routes - require authentication but accessible to all authenticated users
-  if (protectedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+  if (
+    protectedRoutes.some(
+      (route) => pathname === route || pathname.startsWith(route + "/")
+    )
+  ) {
     if (!isAuthenticated) {
-      console.log("❌ Protected route requires auth, redirecting to login");
+      // console.log("❌ Protected route requires auth, redirecting to login");
       return NextResponse.redirect(
         new URL(
           `/auth/login?callbackUrl=${encodeURIComponent(pathname)}`,
@@ -95,7 +108,7 @@ export async function middleware(req: NextRequest) {
         )
       );
     }
-    console.log("✅ Protected route, user authenticated, allowing access");
+    // console.log("✅ Protected route, user authenticated, allowing access");
     return NextResponse.next();
   }
 

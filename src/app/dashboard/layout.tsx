@@ -3,6 +3,7 @@ import "@/assets/dashboard/scss/app.scss";
 import Footer from "@/components/dashboard/layout/Footer";
 import AppProvidersWrapper from "@/components/dashboard/wrappers/AppProvidersWrapper";
 import AuthProtectionWrapper from "@/components/dashboard/wrappers/AuthProtectionWrapper";
+import LayoutSettingsReset from "@/components/dashboard/wrappers/LayoutSettingsReset";
 import dynamic from "next/dynamic";
 import { Figtree } from "next/font/google";
 import Image from "next/image";
@@ -75,6 +76,7 @@ export default function DashboardLayout({
           />
         </div>
         <NextTopLoader color="#604ae3" showSpinner={false} />
+        <LayoutSettingsReset />
         <div id="__next_splash">
           <AppProvidersWrapper>
             <AuthProtectionWrapper>
@@ -84,7 +86,7 @@ export default function DashboardLayout({
                 </Suspense>
                 <VerticalNavigationBar />
                 <div className="page-content">
-                  <Container fluid>{children}</Container>
+                  <Container fluid className="px-2 py-2">{children}</Container>
                   <Footer />
                 </div>
               </div>

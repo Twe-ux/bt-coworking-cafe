@@ -1,5 +1,8 @@
-import DashboardPageTitle from "@/components/dashboard/DashboardPageTitle";
+'use client';
+
+import { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import { useTopbarContext } from "@/context/useTopbarContext";
 import EditPost from './components/EditPost';
 
 // Force dynamic rendering
@@ -12,9 +15,20 @@ interface PageProps {
 }
 
 const PostEditPage = ({ params }: PageProps) => {
+  const { setPageTitle, setPageActions } = useTopbarContext();
+
+  useEffect(() => {
+    setPageTitle("Modifier l'article");
+    setPageActions(null);
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [setPageTitle, setPageActions]);
+
   return (
     <>
-      <DashboardPageTitle title="Modifier l'article" subName="Blog" />
       <Row>
         <Col lg={12}>
           <EditPost articleId={params.id} />

@@ -8,6 +8,7 @@ import LogoBox from "../../LogoBox";
 import SimplebarReactClient from "../../wrappers/SimplebarReactClient";
 import AppMenu from "./components/AppMenu";
 import HoverMenuToggle from "./components/HoverMenuToggle";
+import SidebarFooter from "./components/SidebarFooter";
 
 const VerticalNavigationBar = () => {
   const { data: session } = useSession();
@@ -106,6 +107,7 @@ const VerticalNavigationBar = () => {
       <SimplebarReactClient className="scrollbar" data-simplebar>
         <AppMenu menuItems={menuItems} />
       </SimplebarReactClient>
+      <SidebarFooter />
     </div>
   );
 };

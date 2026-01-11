@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design 2 - Modern Rounded Calendar</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Google Sans', 'Roboto', -apple-system, sans-serif;
+      background: #f8f9fa;
+      padding: 24px;
+    }
+
+    .calendar-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* Toolbar */
+    .calendar-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .today-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .today-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .current-date {
+      font-size: 24px;
+      font-weight: 600;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .view-selector {
+      display: flex;
+      gap: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 4px;
+      backdrop-filter: blur(10px);
+    }
+
+    .view-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .view-btn.active {
+      background: white;
+      color: #667eea;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .view-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Calendar Grid */
+    .calendar-grid {
+      display: flex;
+      height: 800px;
+    }
+
+    /* Time labels */
+    .time-labels {
+      width: 80px;
+      border-right: 1px solid #e9ecef;
+      padding-top: 68px;
+      background: #fafbfc;
+    }
+
+    .time-label {
+      height: 60px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      font-size: 12px;
+      color: #6c757d;
+      font-weight: 500;
+      transform: translateY(-10px);
+    }
+
+    /* Days grid */
+    .days-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Day headers */
+    .day-headers {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 2px solid #e9ecef;
+      height: 68px;
+      background: #fafbfc;
+    }
+
+    .day-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-right: 1px solid #e9ecef;
+      transition: background 0.2s;
+    }
+
+    .day-header:last-child {
+      border-right: none;
+    }
+
+    .day-header:hover {
+      background: #f1f3f5;
+    }
+
+    .day-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #868e96;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .day-number {
+      font-size: 20px;
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .day-number.today {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Time grid */
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      flex: 1;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .day-column {
+      border-right: 1px solid #e9ecef;
+      position: relative;
+    }
+
+    .day-column:last-child {
+      border-right: none;
+    }
+
+    /* Hour lines */
+    .hour-lines {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hour-line {
+      height: 60px;
+      border-bottom: 1px solid #f1f3f5;
+    }
+
+    .hour-line:nth-child(2n) {
+      border-bottom-color: #e9ecef;
+    }
+
+    /* Events */
+    .event {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+    }
+
+    .event:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      z-index: 10;
+    }
+
+    .event.green {
+      background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+      box-shadow: 0 2px 8px rgba(86, 171, 47, 0.25);
+    }
+
+    .event.green:hover {
+      box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
+    }
+
+    .event.orange {
+      background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+      box-shadow: 0 2px 8px rgba(242, 153, 74, 0.25);
+    }
+
+    .event.orange:hover {
+      box-shadow: 0 6px 20px rgba(242, 153, 74, 0.4);
+    }
+
+    .event.red {
+      background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+      box-shadow: 0 2px 8px rgba(235, 51, 73, 0.25);
+    }
+
+    .event.red:hover {
+      box-shadow: 0 6px 20px rgba(235, 51, 73, 0.4);
+    }
+
+    .event-title {
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .event-time {
+      font-size: 11px;
+      opacity: 0.95;
+      font-weight: 500;
+    }
+
+    /* Current time indicator */
+    .current-time-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #ea4335;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .current-time-line::before {
+      content: '';
+      position: absolute;
+      left: -7px;
+      top: -6px;
+      width: 14px;
+      height: 14px;
+      background: #ea4335;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(234, 67, 53, 0.4);
+    }
+
+    /* Scrollbar */
+    .time-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .time-grid::-webkit-scrollbar-track {
+      background: #f1f3f5;
+    }
+
+    .time-grid::-webkit-scrollbar-thumb {
+      background: #dee2e6;
+      border-radius: 4px;
+    }
+
+    .time-grid::-webkit-scrollbar-thumb:hover {
+      background: #adb5bd;
+    }
+  </style>
+</head>
+<body>
+  <div class="calendar-container">
+    <!-- Toolbar -->
+    <div class="calendar-toolbar">
+      <div class="toolbar-left">
+        <button class="today-btn">Aujourd'hui</button>
+        <div class="nav-buttons">
+          <button class="nav-btn">‹</button>
+          <button class="nav-btn">›</button>
+        </div>
+        <div class="current-date">18 - 24 novembre 2024</div>
+      </div>
+      <div class="view-selector">
+        <button class="view-btn">Jour</button>
+        <button class="view-btn active">Semaine</button>
+        <button class="view-btn">Mois</button>
+      </div>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="calendar-grid">
+      <!-- Time labels -->
+      <div class="time-labels">
+        <div class="time-label">8:00</div>
+        <div class="time-label">9:00</div>
+        <div class="time-label">10:00</div>
+        <div class="time-label">11:00</div>
+        <div class="time-label">12:00</div>
+        <div class="time-label">13:00</div>
+        <div class="time-label">14:00</div>
+        <div class="time-label">15:00</div>
+        <div class="time-label">16:00</div>
+        <div class="time-label">17:00</div>
+        <div class="time-label">18:00</div>
+        <div class="time-label">19:00</div>
+      </div>
+
+      <!-- Days container -->
+      <div class="days-container">
+        <!-- Day headers -->
+        <div class="day-headers">
+          <div class="day-header">
+            <div class="day-name">Lun</div>
+            <div class="day-number">18</div>
+          </div>
+          <div class="day-header">
+            <div class="day-name">Mar</div>
+            <div class="day-number">19</div>
+          </div>
+          <div class="day-header">
+            <div class="day-name">Mer</div>
+            <div class="day-number today">20</div>
+          </div>
+          <div class="day-header">
+            <div class="day-name">Jeu</div>
+            <div class="day-number">21</div>
+          </div>
+          <div class="day-header">
+            <div class="day-name">Ven</div>
+            <div class="day-number">22</div>
+          </div>
+          <div class="day-header">
+            <div class="day-name">Sam</div>
+            <div class="day-number">23</div>
+          </div>
+          <div class="day-header">
+            <div class="day-name">Dim</div>
+            <div class="day-number">24</div>
+          </div>
+        </div>
+
+        <!-- Time grid -->
+        <div class="time-grid">
+          <!-- Day columns with hour lines -->
+          <div class="day-column">
+            <div class="hour-lines">
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+            </div>
+            <div class="event" style="top: 120px; height: 90px;">
+              <div class="event-title">Open-space</div>
+              <div class="event-time">10:00 - 11:30 • Client A</div>
+            </div>
+          </div>
+
+          <div class="day-column">
+            <div class="hour-lines">
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+            </div>
+          </div>
+
+          <div class="day-column">
+            <div class="hour-lines">
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+            </div>
+            <div class="current-time-line" style="top: 220px;"></div>
+            <div class="event green" style="top: 180px; height: 120px;">
+              <div class="event-title">Salle Verrière</div>
+              <div class="event-time">11:00 - 13:00 • Réunion</div>
+            </div>
+            <div class="event orange" style="top: 360px; height: 60px;">
+              <div class="event-title">Salle Étage</div>
+              <div class="event-time">14:00 - 15:00 • Formation</div>
+            </div>
+          </div>
+
+          <div class="day-column">
+            <div class="hour-lines">
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+            </div>
+          </div>
+
+          <div class="day-column">
+            <div class="hour-lines">
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+            </div>
+            <div class="event red" style="top: 60px; height: 180px;">
+              <div class="event-title">Événementiel</div>
+              <div class="event-time">09:00 - 12:00 • Lancement</div>
+            </div>
+          </div>
+
+          <div class="day-column">
+            <div class="hour-lines">
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+            </div>
+          </div>
+
+          <div class="day-column">
+            <div class="hour-lines">
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+              <div class="hour-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -51,6 +51,8 @@ export async function POST(request: NextRequest) {
 
     let basePrice = 0;
     let duration = 0;
+    let extraCharge = 0;
+    let applicableTier = null;
 
     // Calculate based on reservation type
     switch (reservationType) {
@@ -69,12 +71,66 @@ export async function POST(request: NextRequest) {
         }
 
         basePrice = pricing.hourly * duration;
+
+        // Check for tier-based pricing
+        if (pricing.tiers && pricing.tiers.length > 0) {
+          // Sort tiers by minPeople to process them in order
+          const sortedTiers = [...pricing.tiers].sort((a, b) => a.minPeople - b.minPeople);
+
+          // Find the applicable tier (the last tier where people >= minPeople)
+          for (const tier of sortedTiers) {
+            if (people >= tier.minPeople) {
+              // This tier might apply, but check if we're within its range
+              if (people <= tier.maxPeople) {
+                // We're within this tier's range - use base rate only
+                applicableTier = tier;
+                basePrice = tier.hourlyRate * duration;
+                extraCharge = 0; // No extra charge within tier range
+                break;
+              } else if (tier.extraPersonHourly) {
+                // We exceed this tier's max - apply base + extras for people beyond maxPeople
+                applicableTier = tier;
+                basePrice = tier.hourlyRate * duration;
+                const extraPeople = people - tier.maxPeople;
+                extraCharge = extraPeople * tier.extraPersonHourly * duration;
+                // Continue to see if there's a higher tier
+              }
+            }
+          }
+        }
         break;
       }
 
       case "daily": {
         basePrice = pricing.daily;
         duration = 1;
+
+        // Check for tier-based pricing
+        if (pricing.tiers && pricing.tiers.length > 0) {
+          // Sort tiers by minPeople to process them in order
+          const sortedTiers = [...pricing.tiers].sort((a, b) => a.minPeople - b.minPeople);
+
+          // Find the applicable tier (the last tier where people >= minPeople)
+          for (const tier of sortedTiers) {
+            if (people >= tier.minPeople) {
+              // This tier might apply, but check if we're within its range
+              if (people <= tier.maxPeople) {
+                // We're within this tier's range - use base rate only
+                applicableTier = tier;
+                basePrice = tier.dailyRate;
+                extraCharge = 0; // No extra charge within tier range
+                break;
+              } else if (tier.extraPersonDaily) {
+                // We exceed this tier's max - apply base + extras for people beyond maxPeople
+                applicableTier = tier;
+                basePrice = tier.dailyRate;
+                const extraPeople = people - tier.maxPeople;
+                extraCharge = extraPeople * tier.extraPersonDaily;
+                // Continue to see if there's a higher tier
+              }
+            }
+          }
+        }
         break;
       }
 
@@ -97,8 +153,13 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Apply per-person multiplier if configured
-    const totalPrice = pricing.perPerson ? basePrice * people : basePrice;
+    // Apply per-person multiplier if configured AND no tiers exist
+    let totalPrice = basePrice;
+    if (!applicableTier && pricing.perPerson) {
+      totalPrice = basePrice * people;
+    } else if (applicableTier) {
+      totalPrice = basePrice + extraCharge;
+    }
 
     return NextResponse.json({
       success: true,

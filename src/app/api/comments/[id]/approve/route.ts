@@ -11,8 +11,7 @@ export async function POST(
   try {
     await connectDB();
 
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     const body = await request.json();
     const { status } = body;

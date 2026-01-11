@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import DashboardPageTitle from '@/components/dashboard/DashboardPageTitle';
+import { useTopbarContext } from '@/context/useTopbarContext';
 import {
   Card,
   CardBody,
@@ -39,6 +39,7 @@ export default function PromoDashboardPage() {
   const { data: session } = useSession();
   const userRole = session?.user?.role?.slug;
   const isStaff = userRole === 'staff';
+  const { setPageTitle, setPageActions } = useTopbarContext();
 
   const [data, setData] = useState<PromoData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,6 +65,16 @@ export default function PromoDashboardPage() {
     max_uses: 0
   });
   const [savingPromo, setSavingPromo] = useState(false);
+
+  useEffect(() => {
+    setPageTitle(isStaff ? 'Code Promo en cours' : 'Codes Promo');
+    setPageActions(null);
+
+    return () => {
+      setPageTitle('Dashboard');
+      setPageActions(null);
+    };
+  }, [isStaff, setPageTitle, setPageActions]);
 
   useEffect(() => {
     fetchData();
@@ -141,23 +152,17 @@ export default function PromoDashboardPage() {
 
   if (loading) {
     return (
-      <>
-        <DashboardPageTitle subName="Marketing" title="Codes Promo" />
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Chargement...</span>
-          </div>
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Chargement...</span>
         </div>
-      </>
+      </div>
     );
   }
 
   if (error || !data) {
     return (
-      <>
-        <DashboardPageTitle subName="Marketing" title="Codes Promo" />
-        <Alert variant="danger">{error || 'Erreur de chargement'}</Alert>
-      </>
+      <Alert variant="danger">{error || 'Erreur de chargement'}</Alert>
     );
   }
 
@@ -167,8 +172,6 @@ export default function PromoDashboardPage() {
   if (isStaff) {
     return (
       <>
-        <DashboardPageTitle subName="Marketing" title="Code Promo en cours" />
-
         <Row className="justify-content-center">
           <Col lg={6}>
             <Card className="mb-4">
@@ -246,8 +249,6 @@ export default function PromoDashboardPage() {
   // Vue complète pour admin/dev
   return (
     <>
-      <DashboardPageTitle subName="Marketing" title="Codes Promo" />
-
       {message && (
         <Alert
           variant={message.type === 'success' ? 'success' : 'danger'}

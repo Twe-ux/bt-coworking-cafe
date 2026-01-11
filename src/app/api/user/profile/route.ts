@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     await dbConnect();
 
     const user = await User.findOne({ email: session.user.email }).select(
-      "email username givenName newsletter emailVerifiedAt createdAt"
+      "email username givenName phone companyName newsletter emailVerifiedAt createdAt"
     );
 
     if (!user) {
@@ -36,6 +36,8 @@ export async function GET(request: NextRequest) {
           email: user.email,
           username: user.username,
           givenName: user.givenName,
+          phone: user.phone,
+          companyName: user.companyName,
           newsletter: user.newsletter,
           emailVerifiedAt: user.emailVerifiedAt,
           createdAt: user.createdAt,
@@ -71,7 +73,7 @@ export async function PUT(request: NextRequest) {
     await dbConnect();
 
     const body = await request.json();
-    const { name, email } = body;
+    const { name, email, phone, companyName } = body;
 
     // Validate input
     if (!name || !email) {
@@ -92,16 +94,27 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    // Prepare update object
+    const updateData: any = {
+      givenName: name,
+      email: email,
+    };
+
+    // Add phone if provided
+    if (phone !== undefined) {
+      updateData.phone = phone;
+    }
+
+    // Add companyName if provided
+    if (companyName !== undefined) {
+      updateData.companyName = companyName;
+    }
+
     // Update user
     const updatedUser = await User.findOneAndUpdate(
       { email: session.user.email },
-      {
-        $set: {
-          givenName: name,
-          email: email,
-        },
-      },
-      { new: true, select: "email username givenName" }
+      { $set: updateData },
+      { new: true, select: "email username givenName phone companyName" }
     );
 
     if (!updatedUser) {
@@ -118,6 +131,8 @@ export async function PUT(request: NextRequest) {
           email: updatedUser.email,
           username: updatedUser.username,
           name: updatedUser.givenName,
+          phone: updatedUser.phone,
+          companyName: updatedUser.companyName,
         },
       },
       { status: 200 }

@@ -1,6 +1,7 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Navbar from "./navbar";
 import TopHeader from "./topHeader";
@@ -9,6 +10,7 @@ const Header = () => {
   const [activeNavbar, setActiveNavebar] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   const getDashboardUrl = () => {
     if (!session?.user?.role?.slug) return "/dashboard";
@@ -22,7 +24,7 @@ const Header = () => {
   return (
     <>
       <header className="header header__1">
-        <TopHeader />
+        {pathname === "/" && <TopHeader />}
       </header>
       <div className="header__bottom">
         <div className="container">
@@ -73,10 +75,7 @@ const Header = () => {
                 </Link>
               </div>
               <div className="d-xl-block d-none">
-                <Link
-                  href="https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1"
-                  className="common__btn"
-                >
+                <Link href="/booking" className="common__btn">
                   <span>Réserver</span>
                   <img src="/icons/arrow-up-right.svg" alt="img" />
                 </Link>

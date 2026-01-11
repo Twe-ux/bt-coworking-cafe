@@ -12,8 +12,12 @@
 
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error(
+// Use a placeholder during build if env var is not set
+// Runtime will fail if actually used without proper key
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_build_placeholder';
+
+if (!process.env.STRIPE_SECRET_KEY && process.env.NODE_ENV !== 'production') {
+  console.warn(
     'STRIPE_SECRET_KEY is not defined. Please add it to your .env.local file.\n' +
     'Get your keys from: https://dashboard.stripe.com/test/apikeys'
   );
@@ -23,10 +27,23 @@ if (!process.env.STRIPE_SECRET_KEY) {
  * Initialize Stripe with the secret key
  * Uses the latest API version
  */
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+export const stripe = new Stripe(STRIPE_SECRET_KEY, {
   apiVersion: '2025-10-29.clover',
   typescript: true,
 });
+
+/**
+ * Validate that Stripe is properly configured
+ * Throws error if used at runtime without proper key
+ */
+function validateStripeConfig(): void {
+  if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_build_placeholder') {
+    throw new Error(
+      'STRIPE_SECRET_KEY is not properly configured. Please add it to your environment variables.\n' +
+      'Get your keys from: https://dashboard.stripe.com/test/apikeys'
+    );
+  }
+}
 
 /**
  * Get Stripe publishable key for client-side usage
@@ -46,16 +63,19 @@ export function getStripePublishableKey(): string {
 export async function createPaymentIntent(
   amount: number,
   currency: string = 'eur',
-  metadata?: Stripe.MetadataParam
+  metadata?: Stripe.MetadataParam,
+  customerId?: string,
+  captureMethod?: 'automatic' | 'manual'
 ): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount), // Amount in cents
       currency: currency.toLowerCase(),
       metadata: metadata || {},
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      customer: customerId, // Link to Stripe customer
+      capture_method: captureMethod || 'automatic',
+      payment_method_types: ['card'], // Only card payments (no Klarna, Amazon Pay, etc.)
     });
 
     return paymentIntent;
@@ -71,11 +91,68 @@ export async function createPaymentIntent(
 export async function retrievePaymentIntent(
   paymentIntentId: string
 ): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     return paymentIntent;
   } catch (error) {
     console.error('Error retrieving payment intent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Cancel a Payment Intent (for hold release when customer shows up)
+ */
+export async function cancelPaymentIntent(
+  paymentIntentId: string
+): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
+  try {
+    const paymentIntent = await stripe.paymentIntents.cancel(paymentIntentId);
+    return paymentIntent;
+  } catch (error) {
+    console.error('Error canceling payment intent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Capture a Payment Intent (for no-show charges)
+ */
+export async function capturePaymentIntent(
+  paymentIntentId: string,
+  amount?: number
+): Promise<Stripe.PaymentIntent> {
+  validateStripeConfig();
+  try {
+    const paymentIntent = await stripe.paymentIntents.capture(paymentIntentId, {
+      amount_to_capture: amount ? Math.round(amount) : undefined,
+    });
+    return paymentIntent;
+  } catch (error) {
+    console.error('Error capturing payment intent:', error);
+    throw error;
+  }
+}
+
+/**
+ * Create a Setup Intent for saving payment method without charging
+ */
+export async function createSetupIntent(
+  customerId: string,
+  metadata?: Stripe.MetadataParam
+): Promise<Stripe.SetupIntent> {
+  try {
+    const setupIntent = await stripe.setupIntents.create({
+      customer: customerId,
+      metadata: metadata || {},
+      payment_method_types: ['card'], // Only card payments (no Klarna, Amazon Pay, etc.)
+    });
+
+    return setupIntent;
+  } catch (error) {
+    console.error('Error creating setup intent:', error);
     throw error;
   }
 }

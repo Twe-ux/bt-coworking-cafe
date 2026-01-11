@@ -35,8 +35,7 @@ export async function PATCH(
   try {
     await connectDB();
 
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     const body = await request.json();
     const tag = await Tag.findById(params.id);
@@ -90,8 +89,7 @@ export async function DELETE(
   try {
     await connectDB();
 
-    const authError = await requireAuth(['admin', 'staff', 'dev']);
-    if (authError) return authError;
+    await requireAuth(['admin', 'staff', 'dev']);
 
     const tag = await Tag.findById(params.id);
 

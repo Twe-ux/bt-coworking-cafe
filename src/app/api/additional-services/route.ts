@@ -85,7 +85,9 @@ export async function POST(request: NextRequest) {
       description,
       category,
       price,
+      dailyPrice,
       priceUnit,
+      vatRate,
       availableForSpaceTypes,
       icon,
       order,
@@ -120,16 +122,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('Creating additional service with data:', {
+      name,
+      description,
+      category,
+      price,
+      dailyPrice,
+      priceUnit,
+      vatRate: vatRate || 20,
+      availableForSpaceTypes: availableForSpaceTypes || [],
+      icon,
+      order: order || 0,
+    });
+
     const service = await AdditionalService.create({
       name,
       description,
       category,
       price,
+      dailyPrice,
       priceUnit,
+      vatRate: vatRate || 20,
       availableForSpaceTypes: availableForSpaceTypes || [],
       icon,
       order: order || 0,
     });
+
+    console.log('Service created successfully:', service);
 
     return NextResponse.json(
       {
@@ -139,10 +158,44 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error('Error creating additional service:', error);
+  } catch (error: any) {
+    console.error('❌ Error creating additional service:', error);
+    console.error('Error name:', error?.name);
+    console.error('Error message:', error?.message);
+    console.error('Error stack:', error?.stack);
+
+    // Mongoose validation errors
+    if (error?.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors || {}).map(
+        (err: any) => err.message
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Validation error',
+          details: validationErrors
+        },
+        { status: 400 }
+      );
+    }
+
+    // Duplicate key error
+    if (error?.code === 11000) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Un service avec ce nom existe déjà'
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
-      { success: false, error: 'Failed to create additional service' },
+      {
+        success: false,
+        error: 'Failed to create additional service',
+        details: error?.message || 'Unknown error'
+      },
       { status: 500 }
     );
   }

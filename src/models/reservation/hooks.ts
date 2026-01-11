@@ -9,6 +9,10 @@ export function attachHooks(): void {
   ReservationSchema.methods.calculateDuration = function (
     this: HydratedReservation
   ): number {
+    // Return 0 if times are not provided (full day reservation)
+    if (!this.startTime || !this.endTime) {
+      return 0;
+    }
     const [startHour, startMinute] = this.startTime.split(":").map(Number);
     const [endHour, endMinute] = this.endTime.split(":").map(Number);
     const startInMinutes = startHour * 60 + startMinute;
@@ -70,14 +74,23 @@ export function attachHooks(): void {
 
   // Pre-save hook to validate times and generate confirmation number
   ReservationSchema.pre("save", function (next) {
-    const [startHour, startMinute] = this.startTime.split(":").map(Number);
-    const [endHour, endMinute] = this.endTime.split(":").map(Number);
-    const startInMinutes = startHour * 60 + startMinute;
-    const endInMinutes = endHour * 60 + endMinute;
+    // Only validate times if both are provided and not both "00:00" (which indicates full day)
+    if (this.startTime && this.endTime && !(this.startTime === "00:00" && this.endTime === "00:00")) {
+      const [startHour, startMinute] = this.startTime.split(":").map(Number);
+      const [endHour, endMinute] = this.endTime.split(":").map(Number);
+      const startInMinutes = startHour * 60 + startMinute;
+      const endInMinutes = endHour * 60 + endMinute;
 
-    if (endInMinutes <= startInMinutes) {
-      next(new Error("End time must be after start time"));
-      return;
+      if (endInMinutes <= startInMinutes) {
+        next(new Error("End time must be after start time"));
+        return;
+      }
+    }
+
+    // Clear times if both are "00:00" (full day reservation)
+    if (this.startTime === "00:00" && this.endTime === "00:00") {
+      this.startTime = undefined;
+      this.endTime = undefined;
     }
 
     // Generate confirmation number if not exists and status is confirmed

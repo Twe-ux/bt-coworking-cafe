@@ -5,6 +5,7 @@ export interface ProjectOne {
   categories: string;
   subCategories?: string;
   imgSrc: string;
+  imgSrc2?: string;
 }
 
 export const projectsOneData: ProjectOne[] = [
@@ -16,7 +17,9 @@ export const projectsOneData: ProjectOne[] = [
     subCategories:
       "Venez directement ou réservez en avance, nous aurons toujours un espace et un sourire pour vous accueillir.",
     imgSrc: "/images/projects/espaces-coworking-strasbourg.webp",
+    imgSrc2: "/images/projects/openspace-coworking-strasbourg-bis.webp",
   },
+
   {
     id: 2,
     title: "La verrière",

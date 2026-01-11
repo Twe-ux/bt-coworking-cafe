@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import PageTitle from "@/components/site/pageTitle";
 import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
+import PageTitle from "@/components/site/pageTitle";
 import Link from "next/link";
-import BookingHelper from "@/components/site/booking/BookingHelper";
+import { useEffect, useState } from "react";
 
 interface SpaceConfig {
   spaceType: string;
@@ -29,6 +28,7 @@ interface SpaceConfig {
   maxCapacity: number;
   imageUrl?: string;
   displayOrder: number;
+  features?: string[];
 }
 
 interface DisplaySpace {
@@ -41,6 +41,8 @@ interface DisplaySpace {
   capacity: string;
   features: string[];
   priceFrom: string;
+  hourlyPrice: string;
+  dailyPrice: string;
   requiresQuote: boolean;
 }
 
@@ -49,40 +51,58 @@ const spaceTypeToSlug: Record<string, string> = {
   "open-space": "open-space",
   "salle-verriere": "meeting-room-glass",
   "salle-etage": "meeting-room-floor",
-  "evenementiel": "event-space",
+  evenementiel: "event-space",
 };
 
-// Static display data (icons, features, etc.)
+// Static display data (icons only - features come from DB)
 const spaceDisplayData: Record<string, Partial<DisplaySpace>> = {
   "open-space": {
     title: "Place",
     subtitle: "Open-space",
     icon: "bi-person-workspace",
-    features: ["WiFi", "Café", "Imprimante"],
   },
   "salle-verriere": {
     title: "Salle de réunion",
     subtitle: "Verrière",
     icon: "bi-briefcase",
-    features: ["Écran", "WiFi", "Tableau blanc"],
   },
   "salle-etage": {
     title: "Salle de réunion",
     subtitle: "Étage",
     icon: "bi-building",
-    features: ["Projecteur", "WiFi", "Climatisation"],
   },
-  "evenementiel": {
+  evenementiel: {
     title: "Événementiel",
     subtitle: "Grand espace",
     icon: "bi-calendar-event",
-    features: ["Sonorisation", "Vidéoprojecteur", "Traiteur possible"],
   },
 };
 
 export default function BookingPage() {
   const [spaces, setSpaces] = useState<DisplaySpace[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showTTC, setShowTTC] = useState(true);
+
+  // Function to convert price string from TTC to HT or vice versa
+  // Hourly = 10% VAT, Daily = 20% VAT
+  const convertPrice = (priceString: string, toTTC: boolean): string => {
+    if (priceString === "Sur devis") return priceString;
+
+    // Extract the numeric price
+    const match = priceString.match(/(\d+(?:\.\d+)?)€/);
+    if (!match) return priceString;
+
+    const price = parseFloat(match[1]);
+
+    // Determine VAT rate based on whether it's hourly or daily
+    const isHourly = priceString.includes("/h");
+    const vatRate = isHourly ? 1.1 : 1.2; // 10% for hourly, 20% for daily
+
+    const convertedPrice = toTTC ? price : (price / vatRate).toFixed(2);
+
+    // Replace the price in the original string
+    return priceString.replace(/\d+(?:\.\d+)?€/, `${convertedPrice}€`);
+  };
 
   useEffect(() => {
     const fetchSpaces = async () => {
@@ -96,19 +116,32 @@ export default function BookingPage() {
             const urlSlug = spaceTypeToSlug[config.spaceType] || config.slug;
 
             // Determine price display
-            let priceFrom = "Sur devis";
+            let hourlyPrice = "Sur devis";
+            let dailyPrice = "Sur devis";
+            let capacityText = "";
+
             if (!config.requiresQuote) {
-              const lowestPrice = config.pricing.hourly > 0 ? config.pricing.hourly : config.pricing.daily;
-              priceFrom = lowestPrice > 0 ? `${lowestPrice}€/h` : "Sur devis";
+              // Hourly price (store TTC values)
+              if (config.pricing.hourly > 0) {
+                hourlyPrice = `${config.pricing.hourly}€/h`;
+              }
+
+              // Daily price (store TTC values)
+              if (config.pricing.daily > 0) {
+                dailyPrice = `${config.pricing.daily}€/jour`;
+              }
             }
 
-            // Format capacity
-            const capacity =
-              config.minCapacity === config.maxCapacity
-                ? `${config.minCapacity} personne${config.minCapacity > 1 ? "s" : ""}`
-                : config.maxCapacity > 50
-                ? `Jusqu'à ${config.maxCapacity} personnes`
-                : `${config.minCapacity}-${config.maxCapacity} personnes`;
+            // Format capacity for bottom display
+            if (config.minCapacity === config.maxCapacity) {
+              capacityText = `${config.minCapacity} personne${
+                config.minCapacity > 1 ? "s" : ""
+              }`;
+            } else if (config.maxCapacity > 50) {
+              capacityText = `Jusqu'à ${config.maxCapacity} personnes`;
+            } else {
+              capacityText = `${config.minCapacity}-${config.maxCapacity} personnes`;
+            }
 
             return {
               id: urlSlug,
@@ -117,9 +150,11 @@ export default function BookingPage() {
               description: config.description || displayData.description || "",
               icon: displayData.icon || "bi-building",
               image: config.imageUrl || `/images/spaces/${config.slug}.jpg`,
-              capacity,
-              features: displayData.features || [],
-              priceFrom,
+              capacity: capacityText,
+              features: config.features || [],
+              priceFrom: hourlyPrice, // Kept for compatibility, but we'll use new fields
+              hourlyPrice,
+              dailyPrice,
               requiresQuote: config.requiresQuote,
             };
           });
@@ -139,11 +174,11 @@ export default function BookingPage() {
   if (loading) {
     return (
       <>
-        <PageTitle title="Réserver un espace" currentPage="Réservation" />
+        <PageTitle title="Réserver un espace" />
         <section className="booking-selection py-5">
           <div className="container">
             <div className="text-center">
-              <div className="spinner-border text-primary" role="status">
+              <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">Chargement...</span>
               </div>
             </div>
@@ -154,33 +189,66 @@ export default function BookingPage() {
   }
   return (
     <>
-      <PageTitle title="Réserver un espace" currentPage="Réservation" />
+      <PageTitle title="Réserver un espace" />
 
-      <section className="booking-selection py-5">
+      <section className="booking-selection py__90">
         <div className="container">
           {/* Progress Bar */}
-          <div className="row justify-content-center mb-5">
+          <div className="row justify-content-center mb-4">
             <div className="col-lg-8">
               <BookingProgressBar currentStep={1} />
-            </div>
-          </div>
 
-          {/* Page Title */}
-          <div className="text-center mb-4">
-            <h2 className="mb-2" style={{ fontSize: "1.75rem" }}>
-              Quel espace souhaitez-vous réserver ?
-            </h2>
-            <p className="text-muted" style={{ fontSize: "0.95rem" }}>
-              Sélectionnez le type d'espace qui correspond à vos besoins
-            </p>
+              {/* Page Title */}
+              <div className="text-center mb-4 mt-4">
+                <h2 className="mb-2" style={{ fontSize: "1.35rem" }}>
+                  Quel espace souhaitez-vous réserver ?
+                </h2>
+                <p className="text-muted" style={{ fontSize: "0.9rem" }}>
+                  Sélectionnez le type d'espace qui correspond à vos besoins
+                </p>
+
+                {/* TTC/HT Switch */}
+                <div className="d-flex justify-content-center align-items-center gap-3 mt-3">
+                  <span
+                    className={`tax-toggle ${showTTC ? "active" : ""}`}
+                    onClick={() => setShowTTC(true)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Prix TTC
+                  </span>
+                  <div className="form-check form-switch mb-0">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="taxSwitch"
+                      checked={!showTTC}
+                      onChange={() => setShowTTC(!showTTC)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </div>
+                  <span
+                    className={`tax-toggle ${!showTTC ? "active" : ""}`}
+                    onClick={() => setShowTTC(false)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Prix HT
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Space Type Cards */}
           <div className="row g-4 justify-content-center">
             {spaces.map((space) => (
-              <div key={space.id} className="col-lg-3 col-md-6">
+              <div key={space.id} className="col-lg-3 col-md-6 px-10">
                 <Link
-                  href={space.requiresQuote ? "/contact" : `/booking/${space.id}/new`}
+                  href={
+                    space.requiresQuote
+                      ? "/contact"
+                      : `/booking/${space.id}/new`
+                  }
                   className="text-decoration-none"
                 >
                   <div className="space-card h-100">
@@ -208,37 +276,89 @@ export default function BookingPage() {
                       <div className="card-overlay">
                         <div className="overlay-content">
                           <i className="bi bi-arrow-right-circle"></i>
-                          <span>{space.requiresQuote ? "Demander un devis" : "Réserver"}</span>
+                          <span>
+                            {space.requiresQuote
+                              ? "Demander un devis"
+                              : "Réserver"}
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     <div className="card-content">
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                          <h3 className="card-title mb-0">{space.title}</h3>
-                          <p className="card-subtitle text-muted">
-                            {space.subtitle}
-                          </p>
-                        </div>
-                        <span className="price-badge">{space.priceFrom}</span>
+                      <div className="d-flex justify-content-between align-items-center mb-1">
+                        <h3 className="card-title">{space.title}</h3>
+                        <p className="card-subtitle text-muted">
+                          {space.subtitle}
+                        </p>
+                      </div>
+                      <div className="capacity-info mb-3">
+                        <i className="bi bi-people me-2 text-success"></i>
+                        <span
+                          style={{ fontSize: "0.875rem", fontWeight: "500" }}
+                        >
+                          {space.capacity}
+                        </span>
                       </div>
 
                       <p className="card-description">{space.description}</p>
 
-                      <div className="card-meta">
-                        <div className="meta-item">
-                          <i className="bi bi-people me-2"></i>
-                          <span>{space.capacity}</span>
-                        </div>
-                        <div className="features-list">
-                          {space.features.map((feature, index) => (
-                            <span key={index} className="feature-badge">
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
+                      <div className="features-list mb-3">
+                        {space.features.map((feature, index) => (
+                          <span key={index} className="feature-badge">
+                            {feature}
+                          </span>
+                        ))}
                       </div>
+                    </div>
+
+                    {/* Pricing section at bottom with full width background */}
+                    <div
+                      className={`d-flex mt-auto ${
+                        space.requiresQuote
+                          ? "justify-content-center align-items-center"
+                          : "justify-content-center align-items-center"
+                      }`}
+                      style={{
+                        background:
+                          "linear-gradient(135deg, rgba(242, 211, 129, 0.25) 0%, rgba(65, 121, 114, 0.2) 100%)",
+                        borderBottomLeftRadius: "10px",
+                        borderBottomRightRadius: "10px",
+                        padding: "20px",
+                        marginLeft: "-20px",
+                        marginRight: "-20px",
+                        marginBottom: "-20px",
+                      }}
+                    >
+                      {!space.requiresQuote && (
+                        <>
+                          <div className="d-flex gap-3 align-items-center mb-3">
+                            <span className="text-success fw-bold">
+                              {convertPrice(space.hourlyPrice, showTTC)}{" "}
+                              {showTTC ? "TTC" : "HT"}
+                            </span>
+                            <span
+                              className="rounded-circle bg-black"
+                              style={{
+                                width: "6px",
+                                height: "6px",
+                                display: "inline-block",
+                              }}
+                            ></span>
+                            <span className="text-success fw-bold">
+                              {convertPrice(space.dailyPrice, showTTC)}{" "}
+                              {showTTC ? "TTC" : "HT"}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                      {space.requiresQuote && (
+                        <div className="d-flex gap-3 align-items-center mb-3">
+                          <span className="text-success fw-bold">
+                            Sur devis
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>
@@ -247,159 +367,6 @@ export default function BookingPage() {
           </div>
         </div>
       </section>
-
-      <style jsx>{`
-        .booking-selection {
-          background-color: #f8f9fa;
-          min-height: 60vh;
-          padding: 2.5rem 0 !important;
-        }
-
-        .space-card {
-          background: white;
-          border-radius: 12px;
-          overflow: hidden;
-          transition: all 0.3s ease;
-          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-          cursor: pointer;
-        }
-
-        .space-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-image-container {
-          position: relative;
-          height: 180px;
-          overflow: hidden;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .space-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.3s ease;
-        }
-
-        .space-card:hover .space-image {
-          transform: scale(1.05);
-        }
-
-        .space-icon-placeholder {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 3rem;
-        }
-
-        .card-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(92, 184, 92, 0.9);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .space-card:hover .card-overlay {
-          opacity: 1;
-        }
-
-        .overlay-content {
-          color: white;
-          text-align: center;
-          font-size: 1rem;
-          font-weight: 600;
-        }
-
-        .overlay-content i {
-          font-size: 2.5rem;
-          display: block;
-          margin-bottom: 0.5rem;
-        }
-
-        .card-content {
-          padding: 1.25rem;
-        }
-
-        .card-title {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #333;
-          margin-bottom: 0.25rem;
-        }
-
-        .card-subtitle {
-          font-size: 0.85rem;
-          margin-bottom: 0;
-        }
-
-        .price-badge {
-          background: #417972;
-          color: white;
-          padding: 0.4rem 0.85rem;
-          border-radius: 16px;
-          font-weight: 600;
-          font-size: 0.85rem;
-        }
-
-        .card-description {
-          color: #666;
-          font-size: 0.875rem;
-          margin: 0.85rem 0;
-          line-height: 1.5;
-        }
-
-        .card-meta {
-          border-top: 1px solid #eee;
-          padding-top: 0.85rem;
-        }
-
-        .meta-item {
-          color: #666;
-          font-size: 0.85rem;
-          margin-bottom: 0.65rem;
-          font-weight: 500;
-        }
-
-        .features-list {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.4rem;
-        }
-
-        .feature-badge {
-          background: #f0f0f0;
-          padding: 0.2rem 0.65rem;
-          border-radius: 10px;
-          font-size: 0.75rem;
-          color: #666;
-        }
-
-        @media (max-width: 768px) {
-          .card-image-container {
-            height: 150px;
-          }
-
-          .card-title {
-            font-size: 1.1rem;
-          }
-
-          .space-icon-placeholder {
-            font-size: 2.5rem;
-          }
-        }
-      `}</style>
     </>
   );
 }

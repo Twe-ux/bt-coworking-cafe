@@ -40,6 +40,8 @@ export async function GET(
         minCapacity: configuration.minCapacity,
         maxCapacity: configuration.maxCapacity,
         imageUrl: configuration.imageUrl,
+        features: configuration.features,
+        depositPolicy: configuration.depositPolicy,
       },
     });
   } catch (error) {

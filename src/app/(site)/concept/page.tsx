@@ -20,8 +20,8 @@ const Concept = () => {
       <article className="concept py__130">
         <div className="container">
           <img
-            src="/images/concept/anticafe-paris-strasbourg.webp"
-            alt="anticafe-paris-strasbourg"
+            src="/images/concept/anticafe-strasbourg.webp"
+            alt="anticafe-strasbourg"
             className="w-100 thumb__img"
           />
           <div className="first__para pt__60">

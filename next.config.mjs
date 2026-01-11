@@ -16,8 +16,13 @@ const nextConfig = {
   // Set DISABLE_FONT_OPTIMIZATION=true in .env.local for local dev
   optimizeFonts: process.env.DISABLE_FONT_OPTIMIZATION !== "true",
 
+  // Exclude tmp_for_planning from page detection
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'].map(ext => {
+    return ext;
+  }),
+
   // Explicitly configure webpack to resolve path aliases
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,
       "@": path.resolve(__dirname, "src"),

@@ -12,12 +12,13 @@ export interface AdditionalServiceItem {
 export interface ReservationDocument extends Document {
   user: ObjectId;
   space?: ObjectId; // DEPRECATED: Old reference to Space model (kept for backward compatibility)
-  spaceType: "open-space" | "salle-verriere" | "salle-etage" | "evenementiel"; // New: spaceType from SpaceConfiguration
+  spaceType: "open-space" | "salle-verriere" | "salle-etage" | "evenementiel" | "desk" | "meeting-room" | "meeting-room-glass" | "meeting-room-floor" | "private-office" | "event-space"; // New: spaceType from SpaceConfiguration
   date: Date;
-  startTime: string; // Format: "HH:mm"
-  endTime: string; // Format: "HH:mm"
+  startTime?: string; // Format: "HH:mm" - Optional for full day reservations
+  endTime?: string; // Format: "HH:mm" - Optional for full day reservations
   numberOfPeople: number;
   status: "pending" | "confirmed" | "cancelled" | "completed";
+  attendanceStatus?: "present" | "absent"; // Pour marquer la présence/absence le jour J
 
   // Pricing
   basePrice: number; // Prix de base de l'espace
@@ -38,15 +39,25 @@ export interface ReservationDocument extends Document {
   notes?: string;
   specialRequests?: string;
   confirmationNumber?: string;
-  paymentStatus: "pending" | "paid" | "refunded" | "failed";
+  isPartialPrivatization?: boolean; // Pour événementiel : indique si privatisation partielle (pas de fermeture du café)
+  paymentStatus: "unpaid" | "pending" | "paid" | "refunded" | "failed" | "partial";
   paymentMethod?: "card" | "cash" | "bank-transfer";
+  amountPaid?: number; // Montant déjà payé (pour paiements partiels)
+  invoiceOption?: boolean; // Client souhaite payer sur facture
   stripePaymentIntentId?: string;
   stripeSessionId?: string;
   stripeCustomerId?: string;
+  stripeSetupIntentId?: string; // Pour les réservations > 7 jours (save card for later charge)
+  captureMethod?: "automatic" | "manual" | "deferred"; // Type de capture pour l'empreinte
+
+  // Cancellation
+  cancelledAt?: Date;
+  cancellationFee?: number; // Frais d'annulation appliqués
+  refundAmount?: number; // Montant remboursé après annulation
+  cancelledBy?: ObjectId; // Utilisateur qui a effectué l'annulation
 
   createdAt: Date;
   updatedAt: Date;
-  cancelledAt?: Date;
   completedAt?: Date;
 }
 
@@ -68,7 +79,7 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     spaceType: {
       type: String,
       enum: {
-        values: ["open-space", "salle-verriere", "salle-etage", "evenementiel", "desk", "meeting-room", "private-office", "event-space"],
+        values: ["open-space", "salle-verriere", "salle-etage", "evenementiel", "desk", "meeting-room", "meeting-room-glass", "meeting-room-floor", "private-office", "event-space"],
         message: "{VALUE} is not a valid space type",
       },
       required: [true, "Space type is required"],
@@ -81,12 +92,12 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     },
     startTime: {
       type: String,
-      required: [true, "Start time is required"],
+      required: false,
       match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:mm)"],
     },
     endTime: {
       type: String,
-      required: [true, "End time is required"],
+      required: false,
       match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:mm)"],
     },
     numberOfPeople: {
@@ -104,6 +115,14 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       },
       default: "pending",
       index: true,
+    },
+    attendanceStatus: {
+      type: String,
+      enum: {
+        values: ["present", "absent"],
+        message: "{VALUE} is not a valid attendance status",
+      },
+      required: false,
     },
     basePrice: {
       type: Number,
@@ -193,14 +212,18 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       sparse: true,
       uppercase: true,
     },
+    isPartialPrivatization: {
+      type: Boolean,
+      default: false,
+    },
     paymentStatus: {
       type: String,
       required: true,
       enum: {
-        values: ["pending", "paid", "refunded", "failed"],
+        values: ["unpaid", "pending", "paid", "refunded", "failed", "partial"],
         message: "{VALUE} is not a valid payment status",
       },
-      default: "pending",
+      default: "unpaid",
       index: true,
     },
     paymentMethod: {
@@ -210,10 +233,19 @@ export const ReservationSchema = new Schema<ReservationDocument>(
         message: "{VALUE} is not a valid payment method",
       },
     },
+    amountPaid: {
+      type: Number,
+      min: [0, "Amount paid cannot be negative"],
+      default: 0,
+    },
+    invoiceOption: {
+      type: Boolean,
+      default: false,
+    },
     stripePaymentIntentId: {
       type: String,
       trim: true,
-      index: true,
+      unique: true, // Prevent duplicate reservations for same payment intent
       sparse: true, // Allow multiple null values
     },
     stripeSessionId: {
@@ -224,8 +256,35 @@ export const ReservationSchema = new Schema<ReservationDocument>(
       type: String,
       trim: true,
     },
+    stripeSetupIntentId: {
+      type: String,
+      trim: true,
+      index: true,
+      sparse: true,
+    },
+    captureMethod: {
+      type: String,
+      enum: {
+        values: ["automatic", "manual", "deferred"],
+        message: "{VALUE} is not a valid capture method",
+      },
+    },
     cancelledAt: {
       type: Date,
+    },
+    cancellationFee: {
+      type: Number,
+      min: [0, "Cancellation fee cannot be negative"],
+      default: 0,
+    },
+    refundAmount: {
+      type: Number,
+      min: [0, "Refund amount cannot be negative"],
+      default: 0,
+    },
+    cancelledBy: {
+      type: Types.ObjectId,
+      ref: "User",
     },
     completedAt: {
       type: Date,

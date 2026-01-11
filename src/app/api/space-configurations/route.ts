@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
       maxCapacity: config.maxCapacity,
       imageUrl: config.imageUrl,
       displayOrder: config.displayOrder,
+      features: config.features,
     }));
 
     return NextResponse.json({

@@ -74,7 +74,7 @@ const Blog = () => {
                           // }
                           // comments={0} // À remplacer quand les commentaires seront implémentés
                           imgSrc={
-                            article.featuredImage || "/images/blogs/blog-1.png"
+                            article.featuredImage || "/images/blogs/blog-1.webp"
                           }
                           title={article.title}
                         />

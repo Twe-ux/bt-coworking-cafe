@@ -19,6 +19,7 @@
 // Structure
 @import "structure/topbar";
 @import "structure/vertical";
+@import "structure/vertical-shadcn"; // shadcn/ui enhancements
 @import "structure/page-title";
 @import "structure/footer";
 
@@ -76,3 +77,15 @@
 @import "pages/pricing";
 @import "pages/timeline";
 @import "pages/custom-react";
+@import "pages/booking-calendar";
+
+// shadcn/ui Design System
+@import "../../site/scss/config/shadcn-variables";
+@import "../../site/scss/config/shadcn-mixins";
+@import "../../site/scss/_components/dashboard";
+
+// Désactiver les transitions pendant le changement de thème
+html.theme-changing,
+html.theme-changing * {
+  transition: none !important;
+}

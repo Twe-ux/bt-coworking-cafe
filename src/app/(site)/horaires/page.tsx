@@ -49,11 +49,11 @@ export default function HorairesPage() {
   useEffect(() => {
     const fetchHours = async () => {
       try {
-        // Fetch from open-space config as reference
-        const response = await fetch("/api/space-configurations/open-space");
+        // Fetch global hours configuration
+        const response = await fetch("/api/admin/global-hours");
         const data = await response.json();
 
-        if (data.success) {
+        if (data.success && data.data) {
           setHoursData({
             defaultHours: data.data.defaultHours,
             exceptionalClosures: data.data.exceptionalClosures || [],
@@ -81,14 +81,14 @@ export default function HorairesPage() {
     return closureDate >= today;
   };
 
-  const upcomingClosures = hoursData?.exceptionalClosures.filter((closure) =>
-    isUpcoming(closure.date)
-  ) || [];
+  const upcomingClosures = hoursData?.exceptionalClosures
+    .filter((closure) => isUpcoming(closure.date))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) || [];
 
   if (loading) {
     return (
       <>
-        <PageTitle title="Horaires d'ouverture" currentPage="Horaires" />
+        <PageTitle title="Horaires d'ouverture" />
         <section className="py-5">
           <div className="container">
             <div className="text-center">
@@ -104,7 +104,7 @@ export default function HorairesPage() {
 
   return (
     <>
-      <PageTitle title="Horaires d'ouverture" currentPage="Horaires" />
+      <PageTitle title="Horaires d'ouverture" />
 
       <section className="horaires-section py-5">
         <div className="container">
@@ -162,9 +162,9 @@ export default function HorairesPage() {
                   </h4>
 
                   <div className="hours-list">
-                    {daysOfWeek.map((day) => {
+                    {hoursData && hoursData.defaultHours && daysOfWeek.map((day) => {
                       const dayKey = day.key as keyof WeeklyHours;
-                      const dayHours = hoursData?.defaultHours[dayKey];
+                      const dayHours = hoursData.defaultHours[dayKey];
 
                       return (
                         <div key={day.key} className="hours-item">

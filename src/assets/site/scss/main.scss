@@ -4,6 +4,10 @@
 @import "./_abstracts/_variables";
 @import "./_abstracts/_maxin";
 
+// shadcn/ui Design System
+@import "./config/_shadcn-variables";
+@import "./config/_shadcn-mixins";
+
 @import "./_base/_typography";
 @import "./_base/_button";
 
@@ -22,6 +26,11 @@
 @import "./_components/_confidentialite";
 @import "./_components/scan";
 @import "./_components/promo";
+@import "./_components/_members-program";
+@import "./_components/_student-offers";
+@import "./_components/_history";
+@import "./_components/_take-away";
+@import "./_components/_manifest";
 
 @import "./_components/_pageHeader";
 @import "./_components/_concept";
@@ -31,3 +40,4 @@
 @import "./_components/_faq";
 @import "./_components/_pricing";
 @import "./_components/_menu";
+@import "./_components/_booking";

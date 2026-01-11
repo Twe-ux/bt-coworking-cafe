@@ -4,39 +4,102 @@ import ProtectedEmail from "@/components/common/ProtectedEmail";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import BookingHelper from "./booking/BookingHelper";
+import Helper from "./Helper";
 import SubscribeForm from "./SubscribeForm";
 
 const Footer = () => {
   const pathname = usePathname();
 
   // Check if we're on a client dashboard page (/{username}/...)
+  // Exclude public routes that start with known patterns
+  const isPublicRoute =
+    pathname &&
+    (pathname.startsWith("/blog") ||
+      pathname.startsWith("/promo") ||
+      pathname.startsWith("/booking") ||
+      [
+        "/",
+
+        // Static pages - legal and info
+        "/CGU",
+        "/confidentiality",
+        "/mentions-legales",
+        "/contact",
+        "/history",
+        "/manifest",
+
+        // Promotional pages
+        "/scan",
+        "/promo",
+
+        // Site pages
+        "/concept",
+        "/take-away",
+        "/spaces",
+        "/pricing",
+        "/members-program",
+        "/student-offers",
+
+        "/boissons",
+        // "/menu/boissons",
+        // "/menu/food",
+
+        "/blog",
+
+        "/auth/login",
+        "/auth/register",
+      ].includes(pathname));
+
   const isClientDashboard =
     pathname &&
     /^\/[^\/]+(?:\/(?:profile|reservations|settings))?(?:\/.*)?$/.test(
       pathname
     ) &&
     ![
+      // Homme page
       "/",
+      // Concept
+      "/concept",
+      "/take-away",
+      "/history",
+      "/manifest",
+      //Espcaces
+      "/spaces",
+      // Tarifs
+      "/pricing",
+      "/members-program",
+      "/student-offers",
+      // Menu
+      "/boissons",
+      "/menu/boissons",
+      "/menu/food",
+      // Professionnels
+      // Le Mag'
+
       "/about",
       "/blog",
       "/blog-details",
       "/contact",
       "/faq",
       "/home-2",
-      "/pricing",
+
       "/projects",
       "/project-details",
       "/services",
       "/service-details",
-      "/concept",
+
       "/espaces",
       "/tarifs",
       "/menu",
       "/professionnels",
       "/mag",
       "/booking",
+      "/booking/open-space/new",
+      "/booking/details",
+      "/booking/summary",
       "/signin",
       "/signup",
+      "[id]/reservations",
     ].includes(pathname);
 
   // Check if we're on a booking page
@@ -45,6 +108,7 @@ const Footer = () => {
   // Determine which component to show
   const showSubscribeForm = !isClientDashboard && !isBookingPage;
   const showBookingHelper = !isClientDashboard && isBookingPage;
+  const showHelper = isClientDashboard;
 
   return (
     <footer className="footer">
@@ -54,6 +118,9 @@ const Footer = () => {
 
         {/* Show Booking Helper on booking pages */}
         {showBookingHelper && <BookingHelper />}
+
+        {showHelper && <Helper />}
+
         {/* -------Logo and socal icon */}
         <div className="row footer__lo_co ">
           <div
@@ -129,10 +196,10 @@ const Footer = () => {
               <h3 className="footer__info_group">Liens rapides</h3>
               <ul>
                 <li>
-                  <Link href={"#"}>Réserver</Link>
+                  <Link href={"/booking"}>Réserver</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Fonctionnement</Link>
+                  <Link href={"/concept"}>Fonctionnement</Link>
                 </li>
                 <li>
                   <Link href={"/tarifs"}>Tarifs</Link>
@@ -145,13 +212,15 @@ const Footer = () => {
               <h3 className="footer__info_group">???</h3>
               <ul>
                 <li>
-                  <Link href={"#"}>Mentions légales</Link>
+                  <Link href={"/mentions-legales"}>Mentions légales</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Conditions générales de vente</Link>
+                  <Link href={"/CGU"}>Conditions générales de vente</Link>
                 </li>
                 <li>
-                  <Link href={"#"}>Politique de confidentialité</Link>
+                  <Link href={"/confidentiality"}>
+                    Politique de confidentialité
+                  </Link>
                 </li>
               </ul>
             </div>

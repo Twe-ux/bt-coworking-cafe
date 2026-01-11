@@ -32,12 +32,7 @@ const PricingOpenSpace = () => {
                 ))}
               </ul>
               <p>{plan.condition}</p>
-              <Link
-                href={
-                  "https://coworkingcafe.cosoft.fr/v2/new-reservation/8441947e-ed60-4e45-ac1a-b0ff00eeece1/8dbfad66-4c97-437a-882f-b11b00d46f32/6091955d-706f-47c5-a33f-b11c010b89d7"
-                }
-                className="common__btn"
-              >
+              <Link href={"/booking"} className="common__btn">
                 <span>Réserver</span>
                 <i className="fa-solid fa-arrow-right"></i>
               </Link>
