@@ -31,7 +31,9 @@ export async function GET(request: NextRequest) {
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       logger.warn('Unauthorized cron attempt', {
         component: 'Cron /check-attendance',
-        ip: request.headers.get('x-forwarded-for'),
+        data: {
+          ip: request.headers.get('x-forwarded-for'),
+        },
       });
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -51,7 +53,9 @@ export async function GET(request: NextRequest) {
 
     logger.info('Starting check-attendance cron', {
       component: 'Cron /check-attendance',
-      checkDate: yesterday.toISOString(),
+      data: {
+        checkDate: yesterday.toISOString(),
+      },
     });
 
     // Find confirmed reservations from yesterday that haven't been validated
@@ -72,7 +76,9 @@ export async function GET(request: NextRequest) {
       `Found ${unvalidatedBookings.length} unvalidated bookings from yesterday`,
       {
         component: 'Cron /check-attendance',
-        count: unvalidatedBookings.length,
+        data: {
+          count: unvalidatedBookings.length,
+        },
       }
     );
 
@@ -99,8 +105,10 @@ export async function GET(request: NextRequest) {
         if (paymentIntent.status !== 'requires_capture') {
           logger.warn('Payment intent not in capturable state', {
             component: 'Cron /check-attendance',
-            bookingId: booking._id.toString(),
-            status: paymentIntent.status,
+            data: {
+              bookingId: booking._id.toString(),
+              status: paymentIntent.status,
+            },
           });
           results.skipped.push(booking._id.toString());
           continue;
@@ -120,9 +128,11 @@ export async function GET(request: NextRequest) {
 
         logger.info('Payment captured for no-show', {
           component: 'Cron /check-attendance',
-          bookingId: booking._id.toString(),
-          paymentIntentId: booking.stripePaymentIntentId,
-          amount: paymentIntent.amount,
+          data: {
+            bookingId: booking._id.toString(),
+            paymentIntentId: booking.stripePaymentIntentId,
+            amount: paymentIntent.amount,
+          },
         });
 
         // Send notification email to customer
@@ -150,15 +160,19 @@ export async function GET(request: NextRequest) {
 
             logger.info('No-show email sent', {
               component: 'Cron /check-attendance',
-              bookingId: booking._id.toString(),
-              email: userEmail,
+              data: {
+                bookingId: booking._id.toString(),
+                email: userEmail,
+              },
             });
           }
         } catch (emailError) {
           logger.error('Failed to send no-show email', {
             component: 'Cron /check-attendance',
-            bookingId: booking._id.toString(),
-            error: emailError instanceof Error ? emailError.message : 'Unknown',
+            data: {
+              bookingId: booking._id.toString(),
+              error: emailError instanceof Error ? emailError.message : 'Unknown',
+            },
           });
           // Don't fail the whole process if email fails
         }
@@ -172,18 +186,22 @@ export async function GET(request: NextRequest) {
 
         logger.error('Failed to process unvalidated booking', {
           component: 'Cron /check-attendance',
-          bookingId: booking._id.toString(),
-          error: errorMessage,
+          data: {
+            bookingId: booking._id.toString(),
+            error: errorMessage,
+          },
         });
       }
     }
 
     logger.info('Check-attendance cron completed', {
       component: 'Cron /check-attendance',
-      total: unvalidatedBookings.length,
-      captured: results.captured.length,
-      failed: results.failed.length,
-      skipped: results.skipped.length,
+      data: {
+        total: unvalidatedBookings.length,
+        captured: results.captured.length,
+        failed: results.failed.length,
+        skipped: results.skipped.length,
+      },
     });
 
     return NextResponse.json({
@@ -202,7 +220,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error('Check-attendance cron failed', {
       component: 'Cron /check-attendance',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      data: {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
     });
 
     return NextResponse.json(

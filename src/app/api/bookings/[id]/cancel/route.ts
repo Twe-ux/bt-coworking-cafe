@@ -122,8 +122,10 @@ export async function POST(
       chargePercentage = 0;
       logger.info("Pending booking - no cancellation fee", {
         component: "Booking Cancellation",
-        bookingId: bookingId,
-        status: booking.status,
+        data: {
+          bookingId: bookingId,
+          status: booking.status,
+        },
       });
     } else {
       // For confirmed bookings, apply cancellation policy based on days until booking
@@ -141,9 +143,11 @@ export async function POST(
 
     logger.info("Cancellation fee calculation", {
       component: "Booking Cancellation",
-      bookingId: bookingId,
-      daysUntilBooking,
-      chargePercentage,
+      data: {
+        bookingId: bookingId,
+        daysUntilBooking,
+        chargePercentage,
+      },
     });
 
     // Handle Stripe payment
@@ -173,13 +177,15 @@ export async function POST(
 
       logger.info("Payment intent details", {
         component: "Booking Cancellation",
-        bookingId: bookingId,
-        status: paymentIntent.status,
-        bookingTotal: bookingTotalInCents / 100,
-        depositAmount: depositAmount / 100,
-        chargePercentage,
-        cancellationFee: cancellationFee / 100,
-        refundAmount: refundAmount / 100,
+        data: {
+          bookingId: bookingId,
+          status: paymentIntent.status,
+          bookingTotal: bookingTotalInCents / 100,
+          depositAmount: depositAmount / 100,
+          chargePercentage,
+          cancellationFee: cancellationFee / 100,
+          refundAmount: refundAmount / 100,
+        },
       });
 
       // Handle based on payment intent status
@@ -190,15 +196,19 @@ export async function POST(
           await stripe.paymentIntents.cancel(booking.stripePaymentIntentId);
           logger.info("Payment intent cancelled (no fee)", {
             component: "Booking Cancellation",
-            bookingId: bookingId,
+            data: {
+              bookingId: bookingId,
+            },
           });
         } else if (chargePercentage === 100) {
           // Full fee - capture the full amount
           await stripe.paymentIntents.capture(booking.stripePaymentIntentId);
           logger.info("Payment intent captured (full fee)", {
             component: "Booking Cancellation",
-            bookingId: bookingId,
-            amount: totalAmount,
+            data: {
+              bookingId: bookingId,
+              amount: totalAmount,
+            },
           });
         } else {
           // Partial fee - capture partial amount
@@ -207,8 +217,10 @@ export async function POST(
           });
           logger.info("Payment intent partially captured", {
             component: "Booking Cancellation",
-            bookingId: bookingId,
-            capturedAmount: cancellationFee,
+            data: {
+              bookingId: bookingId,
+              capturedAmount: cancellationFee,
+            },
           });
         }
       } else if (paymentIntent.status === "succeeded") {
@@ -220,8 +232,10 @@ export async function POST(
           });
           logger.info("Refund created", {
             component: "Booking Cancellation",
-            bookingId: bookingId,
-            refundAmount,
+            data: {
+              bookingId: bookingId,
+              refundAmount,
+            },
           });
         }
       }
@@ -247,7 +261,9 @@ export async function POST(
         await stripe.setupIntents.cancel(booking.stripeSetupIntentId);
         logger.info("Setup intent cancelled", {
           component: "Booking Cancellation",
-          bookingId: bookingId,
+          data: {
+            bookingId: bookingId,
+          },
         });
       }
     }
@@ -289,26 +305,32 @@ export async function POST(
 
         logger.info("Cancellation email sent", {
           component: "Booking Cancellation",
-          bookingId: bookingId,
-          email: userEmail,
+          data: {
+            bookingId: bookingId,
+            email: userEmail,
+          },
         });
       }
     } catch (emailError) {
       logger.error("Failed to send cancellation email", {
         component: "Booking Cancellation",
-        bookingId: bookingId,
-        error: emailError instanceof Error ? emailError.message : "Unknown",
+        data: {
+          bookingId: bookingId,
+          error: emailError instanceof Error ? emailError.message : "Unknown",
+        },
       });
       // Don't fail the whole process if email fails
     }
 
     logger.info("Booking cancelled successfully", {
       component: "Booking Cancellation",
-      bookingId: bookingId,
-      daysUntilBooking,
-      chargePercentage,
-      cancellationFee: cancellationFee / 100,
-      refundAmount: refundAmount / 100,
+      data: {
+        bookingId: bookingId,
+        daysUntilBooking,
+        chargePercentage,
+        cancellationFee: cancellationFee / 100,
+        refundAmount: refundAmount / 100,
+      },
     });
 
     return NextResponse.json({
@@ -334,7 +356,9 @@ export async function POST(
   } catch (error) {
     logger.error("Booking cancellation failed", {
       component: "Booking Cancellation",
-      error: error instanceof Error ? error.message : "Unknown error",
+      data: {
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
     });
 
     return NextResponse.json(

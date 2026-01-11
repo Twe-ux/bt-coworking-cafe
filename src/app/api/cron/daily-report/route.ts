@@ -31,7 +31,9 @@ export async function GET(request: NextRequest) {
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       logger.warn('Unauthorized cron attempt', {
         component: 'Cron /daily-report',
-        ip: request.headers.get('x-forwarded-for'),
+        data: {
+          ip: request.headers.get('x-forwarded-for'),
+        },
       });
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -45,7 +47,9 @@ export async function GET(request: NextRequest) {
 
     logger.info('Starting daily-report cron', {
       component: 'Cron /daily-report',
-      recipient: notificationEmail,
+      data: {
+        recipient: notificationEmail,
+      },
     });
 
     const today = new Date();
@@ -107,10 +111,12 @@ export async function GET(request: NextRequest) {
 
     logger.info('Daily report data collected', {
       component: 'Cron /daily-report',
-      unvalidatedYesterday: unvalidatedYesterday.length,
-      pending: pendingReservations.length,
-      upcoming: upcomingReservations.length,
-      depositPending: depositPendingReservations.length,
+      data: {
+        unvalidatedYesterday: unvalidatedYesterday.length,
+        pending: pendingReservations.length,
+        upcoming: upcomingReservations.length,
+        depositPending: depositPendingReservations.length,
+      },
     });
 
     // Generate HTML email
@@ -133,7 +139,9 @@ export async function GET(request: NextRequest) {
 
     logger.info('Daily report email sent', {
       component: 'Cron /daily-report',
-      recipient: notificationEmail,
+      data: {
+        recipient: notificationEmail,
+      },
     });
 
     return NextResponse.json({
@@ -152,7 +160,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error('Daily-report cron failed', {
       component: 'Cron /daily-report',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      data: {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
     });
 
     return NextResponse.json(

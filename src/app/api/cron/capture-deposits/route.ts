@@ -28,7 +28,9 @@ export async function GET(request: NextRequest) {
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       logger.warn('Unauthorized cron attempt', {
         component: 'Cron /capture-deposits',
-        ip: request.headers.get('x-forwarded-for'),
+        data: {
+          ip: request.headers.get('x-forwarded-for'),
+        },
       });
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -45,7 +47,9 @@ export async function GET(request: NextRequest) {
 
     logger.info('Starting capture-deposits cron', {
       component: 'Cron /capture-deposits',
-      targetDate: targetDate.toISOString(),
+      data: {
+        targetDate: targetDate.toISOString(),
+      },
     });
 
     // Find confirmed bookings that:
@@ -69,7 +73,9 @@ export async function GET(request: NextRequest) {
 
     logger.info(`Found ${bookings.length} bookings requiring payment intent creation`, {
       component: 'Cron /capture-deposits',
-      count: bookings.length,
+      data: {
+        count: bookings.length,
+      },
     });
 
     const results = {
@@ -148,9 +154,11 @@ export async function GET(request: NextRequest) {
 
         logger.info('Payment intent created successfully for deferred booking', {
           component: 'Cron /capture-deposits',
-          bookingId: booking._id.toString(),
-          paymentIntentId: paymentIntent.id,
-          amount: depositAmount,
+          data: {
+            bookingId: booking._id.toString(),
+            paymentIntentId: paymentIntent.id,
+            amount: depositAmount,
+          },
         });
 
         // TODO: Send email notification to customer about the hold
@@ -165,17 +173,21 @@ export async function GET(request: NextRequest) {
 
         logger.error('Failed to create payment intent for deferred booking', {
           component: 'Cron /capture-deposits',
-          bookingId: booking._id.toString(),
-          error: errorMessage,
+          data: {
+            bookingId: booking._id.toString(),
+            error: errorMessage,
+          },
         });
       }
     }
 
     logger.info('Capture-deposits cron completed', {
       component: 'Cron /capture-deposits',
-      total: bookings.length,
-      success: results.success.length,
-      failed: results.failed.length,
+      data: {
+        total: bookings.length,
+        success: results.success.length,
+        failed: results.failed.length,
+      },
     });
 
     return NextResponse.json({
@@ -192,7 +204,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logger.error('Capture-deposits cron failed', {
       component: 'Cron /capture-deposits',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      data: {
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
     });
 
     return NextResponse.json(
