@@ -56,7 +56,7 @@ async function createTestReservations() {
       console.log('Visit http://localhost:3000/auth/signup to create an account.\n');
       process.exit(1);
     }
-    console.log(`✅ Found user: ${user.givenName} ${user.familyName || ''} (${user.email})\n`);
+    console.log(`✅ Found user: ${user.givenName || user.email} (${user.email})\n`);
 
     console.log('💳 Preparing test payment methods...');
 
@@ -66,7 +66,7 @@ async function createTestReservations() {
       console.log('   👤 Creating Stripe customer...');
       const customer = await stripe.customers.create({
         email: user.email,
-        name: `${user.givenName} ${user.familyName || ''}`.trim(),
+        name: user.givenName || user.email,
         metadata: {
           userId: user._id.toString(),
         },
