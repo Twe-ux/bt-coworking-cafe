@@ -157,16 +157,26 @@ const SpaceConfiguration = mongoose.models.SpaceConfiguration ||
   mongoose.model('SpaceConfiguration', SpaceConfigurationSchema);
 
 async function seedSpaces() {
-  try {    await mongoose.connect(MONGODB_URI!);
+  try {
+    await mongoose.connect(MONGODB_URI!);
     // Check if configurations already exist
     const existingCount = await SpaceConfiguration.countDocuments();
 
-    if (existingCount > 0) {      await SpaceConfiguration.deleteMany({});    }
+    if (existingCount > 0) {
+      await SpaceConfiguration.deleteMany({});
+    }
 
-    // Insert seed data    const configurations = await SpaceConfiguration.insertMany(seedData);
-    configurations.forEach((config) => {    });  } catch (error) {    process.exit(1);
+    // Insert seed data
+    const configurations = await SpaceConfiguration.insertMany(seedData);
+    configurations.forEach((config) => {
+      // Configuration seeded successfully
+    });
+  } catch (error) {
+    // Error seeding spaces
+    process.exit(1);
   } finally {
-    await mongoose.connection.close();  }
+    await mongoose.connection.close();
+  }
 }
 
 // Run the seed function
