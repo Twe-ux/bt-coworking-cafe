@@ -219,8 +219,19 @@ export default function CancelBookingModal({
 
       setSuccess(data.data.cancellationMessage);
 
-      // Call onCancelled callback immediately
-      if (onCancelled) onCancelled();
+      // Wait 5 seconds to show success message, then refresh and close
+      setTimeout(() => {
+        // Call onCancelled callback to refresh the list
+        if (onCancelled) {
+          onCancelled();
+        }
+
+        // Close modal after a short delay
+        setTimeout(() => {
+          onHide();
+          setSuccess(null);
+        }, 500);
+      }, 5000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {
