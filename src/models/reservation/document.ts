@@ -67,7 +67,7 @@ export const ReservationSchema = new Schema<ReservationDocument>(
     user: {
       type: Types.ObjectId,
       ref: "User",
-      required: [true, "User is required"],
+      required: false, // Optional: allows guest bookings (non-registered users)
       index: true,
     },
     space: {
