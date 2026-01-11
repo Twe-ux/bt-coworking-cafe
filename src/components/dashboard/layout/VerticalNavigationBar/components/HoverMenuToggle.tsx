@@ -17,16 +17,25 @@ const HoverMenuToggle = () => {
     }
   }, [width]);
 
-  const handleHoverMenu = () => {
-    if (size === "sm-hover-active") changeMenuSize("sm-hover");
-    else changeMenuSize("sm-hover-active");
+  const handleToggleMenu = () => {
+    // Toggle between condensed and default (expanded) states
+    if (size === "condensed") {
+      changeMenuSize("default");
+    } else if (size === "default") {
+      changeMenuSize("condensed");
+    } else if (size === "sm-hover-active") {
+      changeMenuSize("sm-hover");
+    } else if (size === "sm-hover") {
+      changeMenuSize("sm-hover-active");
+    }
   };
+
   return (
     <button
       type="button"
-      onClick={handleHoverMenu}
+      onClick={handleToggleMenu}
       className="button-sm-hover"
-      aria-label="Show Full Sidebar"
+      aria-label="Toggle Sidebar"
     >
       <IconifyIcon
         height={24}

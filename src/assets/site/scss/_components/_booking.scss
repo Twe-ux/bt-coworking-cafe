@@ -2,6 +2,9 @@
 // Booking Pages - shadcn/ui Style
 // ================================
 
+@import "../config/shadcn-variables";
+@import "../config/shadcn-mixins";
+
 // Override text-success to use site green color
 .text-success {
   color: #588983 !important;

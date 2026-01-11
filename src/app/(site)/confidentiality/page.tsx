@@ -349,8 +349,8 @@ export default function ConfidentialityPage() {
                           "Support client et assistance",
                           "Sécurité des espaces",
                         ].map((item, i) => (
-                          <li key={i} className="mb-2">
-                            • {item}
+                          <li key={i} className="mb-2 ">
+                            {item}
                           </li>
                         ))}
                       </ul>
@@ -383,7 +383,7 @@ export default function ConfidentialityPage() {
                           "Études de satisfaction",
                         ].map((item, i) => (
                           <li key={i} className="mb-2">
-                            • {item}
+                            {item}
                           </li>
                         ))}
                       </ul>
