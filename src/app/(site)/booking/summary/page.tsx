@@ -1024,14 +1024,7 @@ export default function BookingSummaryPage() {
                               },
                             },
                           },
-                          defaultValues: {
-                            billingDetails: {
-                              name: bookingData.contactName,
-                              email: bookingData.contactEmail,
-                              phone: bookingData.contactPhone,
-                            },
-                          },
-                        }}
+                        } as any}
                       >
                         <PaymentFormContent
                           bookingId={bookingId}
