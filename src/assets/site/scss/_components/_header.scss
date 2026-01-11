@@ -236,3 +236,43 @@
     }
   }
 }
+
+// Overlay pour fermer la navbar en mobile
+.navbar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+// Bouton réserver dans la navbar mobile
+.mobile-cta-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: -100%;
+  width: 300px;
+  padding: 20px;
+  background-color: var(--btn-clr);
+  border-top: 2px solid #e2c26b;
+  transition: left 0.5s ease-in-out;
+  z-index: 1000;
+
+  .mobile-reserve-btn {
+    width: 100%;
+    justify-content: center;
+    background-color: var(--main-clr);
+    gap: 8px;
+    padding: 24px 24px !important;
+    font-size: 22px;
+    font-weight: 700;
+    color: white !important;
+  }
+}
+
+// Quand la navbar est active, afficher le bouton
+.header__bottom_navbar-active + * .mobile-cta-wrapper,
+.header__bottom_navbar-active .mobile-cta-wrapper {
+  left: 0;
+}

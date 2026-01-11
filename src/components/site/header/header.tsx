@@ -36,7 +36,7 @@ const Header = () => {
               <h1 className="hidden">Cow-or-King Café</h1>
             </div>
 
-            <Navbar activeNavbar={activeNavbar} />
+            <Navbar activeNavbar={activeNavbar} onClose={() => setActiveNavebar(false)} />
 
             <div className="d-flex align-items-center gap-3">
               {session && (

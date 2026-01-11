@@ -51,7 +51,7 @@ const authRoutes = [
 ];
 
 // Protected routes that require authentication but are accessible to all authenticated users
-const protectedRoutes = ["/messages", "/mes-reservations", "/horaires"];
+const protectedRoutes = ["/messages", "/horaires"];
 
 // Admin dashboard routes
 const adminDashboardPattern = /^\/dashboard(\/.*)?$/;
