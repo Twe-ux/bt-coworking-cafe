@@ -207,7 +207,7 @@ export async function POST(
             component: "Booking Cancellation",
             data: {
               bookingId: bookingId,
-              amount: totalAmount,
+              amount: depositAmount / 100,
             },
           });
         } else {
