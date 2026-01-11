@@ -276,7 +276,7 @@ export async function POST(
     booking.cancelledAt = new Date();
     booking.cancellationFee = cancellationFee / 100;
     booking.refundAmount = refundAmount / 100;
-    booking.cancelledBy = user?.id;
+    booking.cancelledBy = user?.id ? new mongoose.Types.ObjectId(user.id) : undefined;
     await booking.save();
 
     // Send confirmation email
