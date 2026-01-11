@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   try {
     // Check if user is admin
     const user = await getAuthUser();
-    if (!user || !user.adminLevel || user.adminLevel < 50) {
+    if (!user || !user.role?.level || user.role.level < 50) {
       return NextResponse.json(
         { error: 'Unauthorized - Admin access required' },
         { status: 403 }

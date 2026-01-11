@@ -55,7 +55,7 @@ export async function POST(
     }
 
     // Check authorization
-    const isAdmin = user?.adminLevel && user.adminLevel >= 50;
+    const isAdmin = user?.role?.level && user.role.level >= 50;
     const isOwner =
       user &&
       booking.user &&
