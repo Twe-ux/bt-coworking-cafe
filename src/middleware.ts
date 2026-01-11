@@ -43,7 +43,12 @@ const publicRoutePatterns = [
 ];
 
 // Auth routes
-const authRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password"];
+const authRoutes = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/forgot-password",
+  "/auth/reset-password",
+];
 
 // Protected routes that require authentication but are accessible to all authenticated users
 const protectedRoutes = ["/messages", "/mes-reservations", "/horaires"];

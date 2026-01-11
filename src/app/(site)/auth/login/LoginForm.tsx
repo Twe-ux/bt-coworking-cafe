@@ -113,17 +113,7 @@ export default function LoginForm() {
                   </div>
                 </div>
 
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="remember"
-                    />
-                    <label className="form-check-label" htmlFor="remember">
-                      Se souvenir de moi
-                    </label>
-                  </div>
+                <div className="d-flex justify-content-end mb-4">
                   <Link href="/auth/forgot-password" className="auth-link">
                     Mot de passe oublié ?
                   </Link>

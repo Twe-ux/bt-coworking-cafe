@@ -16,19 +16,32 @@ export default function ForgotPasswordPage() {
     setMessage('');
     setIsLoading(true);
 
-    // TODO: Implement password reset functionality
-    // For now, just show a message
-    setTimeout(() => {
-      setMessage(
-        'Si un compte existe avec cet email, vous recevrez un lien de réinitialisation.'
-      );
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage(data.message);
+        setEmail('');
+      } else {
+        setError(data.message || 'Une erreur est survenue');
+      }
+    } catch (err) {
+      setError('Une erreur est survenue');
+    } finally {
       setIsLoading(false);
-      setEmail('');
-    }, 1500);
+    }
   };
 
   return (
-    <section className="auth-section py__130">
+    <section className="auth-section py-5" style={{ minHeight: '100vh' }}>
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-6 col-md-8">

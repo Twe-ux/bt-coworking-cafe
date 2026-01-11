@@ -25,3 +25,6 @@ export { generateDepositHoldEmail } from './depositHold';
 export { generateDepositReleasedEmail } from './depositReleased';
 export { generateCardSavedEmail } from './cardSaved';
 export { generateReminderEmail } from './reminder';
+
+// ============ Auth templates ============
+export { passwordResetEmail } from './passwordReset';
