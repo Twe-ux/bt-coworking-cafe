@@ -11,6 +11,7 @@ import {
   generateConfirmationEmail,
   generateDepositHoldEmail,
   generateDepositCapturedEmail,
+  generateDepositReleasedEmail,
   generateCancellationEmail,
   generateValidatedEmail,
   generateBookingInitialEmail,
@@ -346,6 +347,31 @@ export async function sendDepositCaptured(
     spaceName: reservationDetails.spaceName,
     date: reservationDetails.date,
     depositAmount: reservationDetails.depositAmount,
+  });
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+  });
+}
+
+export async function sendDepositReleased(
+  email: string,
+  details: {
+    name: string;
+    spaceName: string;
+    date: string;
+    depositAmount: number;
+  }
+): Promise<boolean> {
+  const subject = "Empreinte bancaire levée - Coworking Café";
+
+  const html = generateDepositReleasedEmail({
+    name: details.name,
+    spaceName: details.spaceName,
+    date: details.date,
+    depositAmount: details.depositAmount,
   });
 
   return sendEmail({

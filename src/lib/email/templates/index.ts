@@ -22,5 +22,6 @@ export { generateDepositCapturedEmail } from './noShowPenalty';
 // ============ Autres templates ============
 export { generateConfirmationEmail } from './confirmation';
 export { generateDepositHoldEmail } from './depositHold';
+export { generateDepositReleasedEmail } from './depositReleased';
 export { generateCardSavedEmail } from './cardSaved';
 export { generateReminderEmail } from './reminder';
