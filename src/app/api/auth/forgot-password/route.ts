@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       process.env.NEXTAUTH_URL || `http://localhost:${process.env.PORT || 3000}`;
     const resetUrl = `${baseUrl}/auth/reset-password?token=${token}`;
 
-    // Envoyer l'email
+    // Envoyer l'email avec le sender 'default' (noreply)
     await sendEmail({
       to: user.email,
       subject: "Réinitialisation de votre mot de passe",
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         userName: user.givenName || user.username || user.email,
         resetUrl,
       }),
-    });
+    }, 'default');
 
     return NextResponse.json({
       success: true,
