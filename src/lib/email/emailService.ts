@@ -3,7 +3,11 @@
  *
  * Configure in .env.local:
  * RESEND_API_KEY=re_...
- * RESEND_FROM_EMAIL=Coworking Café <noreply@coworkingcafe.fr>
+ *
+ * Optional - Configure different senders for different email types:
+ * RESEND_FROM_BOOKING=Réservations - Coworking Café <reservations@coworkingcafe.fr>
+ * RESEND_FROM_CONTACT=Contact - Coworking Café <contact@coworkingcafe.fr>
+ * RESEND_FROM_DEFAULT=Coworking Café <noreply@coworkingcafe.fr>
  */
 
 import { Resend } from "resend";
@@ -26,18 +30,48 @@ interface EmailOptions {
   subject: string;
   html: string;
   text?: string;
+  from?: string; // Optional: override sender
 }
+
+/**
+ * Email sender types
+ */
+export type EmailSenderType = 'booking' | 'contact' | 'default';
+
+/**
+ * Get email sender address based on type
+ */
+const getEmailSender = (type: EmailSenderType = 'default'): string => {
+  switch (type) {
+    case 'booking':
+      return process.env.RESEND_FROM_BOOKING
+        || process.env.RESEND_FROM_EMAIL
+        || "Réservations - Coworking Café <reservations@coworkingcafe.fr>";
+    case 'contact':
+      return process.env.RESEND_FROM_CONTACT
+        || process.env.RESEND_FROM_EMAIL
+        || "Contact - Coworking Café <contact@coworkingcafe.fr>";
+    case 'default':
+    default:
+      return process.env.RESEND_FROM_DEFAULT
+        || process.env.RESEND_FROM_EMAIL
+        || "Coworking Café <noreply@coworkingcafe.fr>";
+  }
+};
 
 const getResendClient = () => {
   return new Resend(process.env.RESEND_API_KEY);
 };
 
-export async function sendEmail(options: EmailOptions): Promise<boolean> {
+export async function sendEmail(
+  options: EmailOptions,
+  senderType: EmailSenderType = 'default'
+): Promise<boolean> {
   try {
     const resend = getResendClient();
 
     await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+      from: options.from || getEmailSender(senderType),
       to: options.to,
       subject: options.subject,
       html: options.html,
@@ -134,7 +168,7 @@ L-V: 09h-20h | S-D & JF: 10h-20h
     subject,
     html,
     text,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 export async function sendReservationConfirmed(
@@ -206,7 +240,7 @@ L-V: 09h-20h | S-D & JF: 10h-20h
     subject,
     html,
     text,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 export async function sendBookingReminder(
@@ -231,7 +265,7 @@ export async function sendBookingReminder(
     to: email,
     subject,
     html,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 export async function sendReservationCancelled(
@@ -299,7 +333,7 @@ L-V: 09h-20h | S-D & JF: 10h-20h
     subject,
     html,
     text,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 export async function sendDepositHoldConfirmation(
@@ -330,7 +364,7 @@ export async function sendDepositHoldConfirmation(
     to: email,
     subject,
     html,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 export async function sendDepositCaptured(
@@ -355,7 +389,7 @@ export async function sendDepositCaptured(
     to: email,
     subject,
     html,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 export async function sendDepositReleased(
@@ -380,7 +414,7 @@ export async function sendDepositReleased(
     to: email,
     subject,
     html,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 export async function sendCardSavedConfirmation(
@@ -409,7 +443,7 @@ export async function sendCardSavedConfirmation(
     to: email,
     subject,
     html,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 /**
@@ -445,7 +479,7 @@ export async function sendCancellationConfirmation(
     to: email,
     subject,
     html,
-  });
+  }, 'booking'); // Use booking sender
 }
 
 /**
@@ -483,5 +517,64 @@ export async function sendReservationRejected(
     to: email,
     subject,
     html,
-  });
+  }, 'booking'); // Use booking sender
+}
+
+/**
+ * Send contact form email
+ * This function can be used for contact form submissions
+ */
+export async function sendContactFormEmail(
+  email: string,
+  details: {
+    name: string;
+    subject: string;
+    message: string;
+    replyTo?: string;
+  }
+): Promise<boolean> {
+  const subject = `Nouveau message de contact: ${details.subject}`;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #f3f4f6;">
+  <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 32px; border: 1px solid #e5e7eb;">
+    <h2 style="color: #1f2937; margin: 0 0 24px 0;">Nouveau message de contact</h2>
+
+    <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <p style="margin: 0 0 12px 0;"><strong>De:</strong> ${details.name}</p>
+      ${details.replyTo ? `<p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${details.replyTo}</p>` : ''}
+      <p style="margin: 0;"><strong>Sujet:</strong> ${details.subject}</p>
+    </div>
+
+    <div style="background: white; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+      <p style="margin: 0; white-space: pre-wrap; color: #1f2937; line-height: 1.6;">${details.message}</p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  const text = `
+Nouveau message de contact
+
+De: ${details.name}
+${details.replyTo ? `Email: ${details.replyTo}` : ''}
+Sujet: ${details.subject}
+
+Message:
+${details.message}
+  `;
+
+  return sendEmail({
+    to: email,
+    subject,
+    html,
+    text,
+  }, 'contact'); // Use contact sender
 }
