@@ -27,7 +27,12 @@ interface SpaceConfig {
 }
 
 // Initialize Stripe - this will be loaded once
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+// Validate Stripe publishable key
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripePublishableKey) {
+  console.error('⚠️ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not configured');
+}
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 export default function CheckoutPage({ params }: { params: { bookingId: string } }) {
   const router = useRouter();
@@ -289,14 +294,22 @@ export default function CheckoutPage({ params }: { params: { bookingId: string }
                   <h2 className="h6 mb-0 fw-semibold">Informations de paiement</h2>
                 </div>
 
-                <Elements stripe={stripePromise} options={options}>
-                  <CheckoutForm
-                    bookingId={params.bookingId}
-                    amount={Math.round(booking.totalPrice * 100)}
-                    intentType={intentType || 'manual_capture'}
-                    clientSecret={clientSecret}
-                  />
-                </Elements>
+                {!stripePromise ? (
+                  <div className="alert alert-danger" role="alert">
+                    <i className="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Configuration manquante :</strong> La clé publique Stripe n'est pas configurée.
+                    Veuillez contacter l'administrateur.
+                  </div>
+                ) : (
+                  <Elements stripe={stripePromise} options={options}>
+                    <CheckoutForm
+                      bookingId={params.bookingId}
+                      amount={Math.round(booking.totalPrice * 100)}
+                      intentType={intentType || 'manual_capture'}
+                      clientSecret={clientSecret}
+                    />
+                  </Elements>
+                )}
               </div>
 
               {/* Security Info */}

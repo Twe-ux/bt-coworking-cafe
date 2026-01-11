@@ -9,7 +9,12 @@ import BookingProgressBar from "@/components/site/booking/BookingProgressBar";
 import InfoEmpreinte from "@/components/site/booking/InfoEmpreinte";
 import "../../[id]/client-dashboard.scss";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
+// Validate Stripe publishable key
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripePublishableKey) {
+  console.error('⚠️ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not configured');
+}
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 interface BookingData {
   spaceType: string;
@@ -993,7 +998,13 @@ export default function BookingSummaryPage() {
                     )}
 
                     {/* Payment Form or Button */}
-                    {showPaymentForm && clientSecret ? (
+                    {!stripePromise ? (
+                      <div className="alert alert-danger" role="alert">
+                        <i className="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Configuration manquante :</strong> La clé publique Stripe n'est pas configurée.
+                        Veuillez contacter l'administrateur.
+                      </div>
+                    ) : showPaymentForm && clientSecret ? (
                       <Elements
                         stripe={stripePromise}
                         options={{
