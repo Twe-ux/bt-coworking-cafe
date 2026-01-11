@@ -10,18 +10,15 @@ import SpaceConfiguration from '@/models/spaceConfiguration';
  * TEMPORARY: Manually trigger webhook behavior for testing
  *
  * This endpoint manually creates a reservation from a payment intent ID
- * Used for testing until Stripe CLI is set up
+ * Used for testing until Stripe webhooks are properly configured
  *
  * Body: { paymentIntentId: string }
+ *
+ * TODO: Remove this endpoint once Stripe webhooks are configured in production
  */
 export async function POST(request: NextRequest) {
-  // Only allow in development
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      { error: 'Test routes are disabled in production' },
-      { status: 403 }
-    );
-  }
+  // TEMPORARY: Allow in production until webhooks are configured
+  // This will be removed once proper Stripe webhooks are set up
 
   try {
     await connectDB();

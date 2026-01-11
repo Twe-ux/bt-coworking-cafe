@@ -38,9 +38,9 @@ export default function SuccessPageContent() {
       return;
     }
 
-    const isDevelopment =
-      typeof window !== "undefined" && window.location.hostname === "localhost";
-    if (isDevelopment && paymentIntentId && !webhookTriggeredRef.current) {
+    // TEMPORARY: Trigger test webhook in all environments until Stripe webhooks are configured
+    // This manually creates the booking by calling our test endpoint
+    if (paymentIntentId && !webhookTriggeredRef.current) {
       triggerTestWebhook(paymentIntentId);
     }
 
