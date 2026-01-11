@@ -36,6 +36,12 @@ export async function POST(request: NextRequest) {
     // Get the payment intent from Stripe
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    // DEBUG: Log payment intent metadata
+    console.log('🔍 Payment Intent Metadata:', JSON.stringify(paymentIntent.metadata, null, 2));
+    console.log('🔍 Contact Email from metadata:', paymentIntent.metadata?.contactEmail);
+    console.log('🔍 User ID from metadata:', paymentIntent.metadata?.userId);
+
     // Check if this payment should create a booking
     if (paymentIntent.metadata?.createBookingOnAuthorization !== 'true') {
       return NextResponse.json(
@@ -117,6 +123,13 @@ export async function POST(request: NextRequest) {
     try {
       const spaceConfig = await SpaceConfiguration.findOne({ spaceType: dbSpaceType });
 
+      console.log('📧 Attempting to send email to:', metadata.contactEmail);
+      console.log('📧 Email data:', {
+        name: metadata.contactName,
+        spaceName: spaceConfig?.name || metadata.spaceType,
+        price: parseFloat(metadata.totalPrice),
+      });
+
       await sendBookingConfirmation(metadata.contactEmail, {
         name: metadata.contactName,
         spaceName: spaceConfig?.name || metadata.spaceType,
@@ -135,7 +148,12 @@ export async function POST(request: NextRequest) {
         depositAmount: parseInt(metadata.depositAmount || metadata.totalPrice) || parseFloat(metadata.totalPrice) * 100, // Use stored deposit amount in cents
         captureMethod: metadata.captureMethod as 'manual' | 'automatic',
         numberOfPeople: parseInt(metadata.numberOfPeople),
-      });    } catch (emailError) {      // Don't fail the booking creation if email fails
+      });
+      console.log('✅ Email sent successfully to:', metadata.contactEmail);
+    } catch (emailError) {
+      console.error('❌ Email sending failed:', emailError);
+      console.error('❌ Email error details:', emailError instanceof Error ? emailError.message : 'Unknown error');
+      // Don't fail the booking creation if email fails
     }
 
     return NextResponse.json({
