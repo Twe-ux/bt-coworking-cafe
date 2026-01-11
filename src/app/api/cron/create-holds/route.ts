@@ -61,8 +61,13 @@ export async function POST(request: NextRequest) {
       .populate('user', 'email givenName username')
       .populate('space', 'name type');
     const results = {
-      success: [],
-      failed: [],
+      success: [] as Array<{
+        bookingId: string;
+        paymentIntentId: string;
+        depositAmount: number;
+        customerEmail: string;
+      }>,
+      failed: [] as Array<{ bookingId: string; error: string }>,
       total: bookings.length,
     };
 
@@ -97,8 +102,9 @@ export async function POST(request: NextRequest) {
         const userEmail = bookingUser?.email || booking.contactEmail;
         const userName = bookingUser?.givenName || booking.contactName;
 
-        if (!booking.stripeCustomerId) {          results.failed.push({
-            bookingId: booking._id.toString(),
+        if (!booking.stripeCustomerId) {
+          results.failed.push({
+            bookingId: (booking._id as any).toString(),
             error: 'No Stripe customer ID',
           });
           continue;
@@ -109,7 +115,7 @@ export async function POST(request: NextRequest) {
           depositAmount,
           'eur',
           {
-            bookingId: booking._id.toString(),
+            bookingId: (booking._id as any).toString(),
             userId: bookingUser?._id?.toString(),
             type: 'deposit_hold',
             createdBy: 'cron_j-7',
@@ -154,14 +160,15 @@ export async function POST(request: NextRequest) {
           totalPrice: booking.totalPrice,
         });
         results.success.push({
-          bookingId: booking._id.toString(),
+          bookingId: (booking._id as any).toString(),
           paymentIntentId: paymentIntent.id,
           depositAmount: depositAmount / 100,
           customerEmail: userEmail,
         });
 
-      } catch (error) {        results.failed.push({
-          bookingId: booking._id.toString(),
+      } catch (error) {
+        results.failed.push({
+          bookingId: (booking._id as any).toString(),
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }

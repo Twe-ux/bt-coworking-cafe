@@ -137,7 +137,7 @@ const CalendarPage = () => {
   const { setPageTitle, setPageActions } = useTopbarContext();
 
   // Check if user is admin (level >= 80)
-  const isAdmin = session?.user?.role?.level >= 80;
+  const isAdmin = (session?.user?.role?.level ?? 0) >= 80;
 
   // Get selected space configuration
   const selectedSpaceConfig = spaceConfigurations.find(

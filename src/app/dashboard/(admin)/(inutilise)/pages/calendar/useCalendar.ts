@@ -84,6 +84,29 @@ const useCalendar = () => {
 
   const onUpdateEvent = (data: SubmitEventType) => {  }
 
+  const createNewEvent = () => {
+    onOpenModal()
+    setIsEditable(false)
+  }
+
+  const onEventDrop = (arg: EventDropArg) => {
+    const modifiedEvents = [...events]
+    const idx = modifiedEvents.findIndex((e) => e.id === arg.event.id)
+    if (idx !== -1) {
+      modifiedEvents[idx].start = arg.event.start as DateInput
+      modifiedEvents[idx].end = arg.event.end as DateInput
+      setEvents(modifiedEvents)
+    }
+  }
+
+  const onRemoveEvent = () => {
+    if (eventData) {
+      const modifiedEvents = events.filter((e) => e.id !== eventData.id)
+      setEvents(modifiedEvents)
+      onCloseModal()
+    }
+  }
+
   return {
     createNewEvent,
     show,

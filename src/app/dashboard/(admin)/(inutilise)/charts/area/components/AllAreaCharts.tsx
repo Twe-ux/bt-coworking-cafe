@@ -6,7 +6,6 @@ import {
   areaNullValueChartOpts,
   basicChartOpts,
   dateTimeChartOpts,
-  irregularTimeSeriesOpts,
   negativeValuesChartOpts,
   spilineChart,
   stackedChartOpts,
@@ -109,8 +108,8 @@ const IrregularTimeSeriesChart = () => {
     <ComponentContainerCard id="timeSeries" title="Irregular TimeSeries">
       <ReactApexChart
         height={380}
-        options={irregularTimeSeriesOpts}
-        series={irregularTimeSeriesOpts.series}
+        options={dateTimeChartOpts}
+        series={dateTimeChartOpts.series}
         type="area"
         className="apex-charts"
       />

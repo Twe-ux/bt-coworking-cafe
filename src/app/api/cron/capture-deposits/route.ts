@@ -122,8 +122,8 @@ export async function GET(request: NextRequest) {
           depositAmount,
           'eur',
           {
-            bookingId: booking._id.toString(),
-            userId: booking.user?._id?.toString(),
+            bookingId: (booking._id as any).toString(),
+            userId: (booking.user as any)?._id?.toString(),
             type: 'deferred_deposit_hold',
           },
           booking.stripeCustomerId,
@@ -133,8 +133,8 @@ export async function GET(request: NextRequest) {
 
         // Create Payment record
         await Payment.create({
-          booking: booking._id,
-          user: booking.user?._id,
+          booking: booking._id as any,
+          user: (booking.user as any)?._id,
           amount: depositAmount,
           currency: 'EUR',
           status: 'pending',
@@ -150,12 +150,12 @@ export async function GET(request: NextRequest) {
         booking.requiresPayment = true;
         await booking.save();
 
-        results.success.push(booking._id.toString());
+        results.success.push((booking._id as any).toString());
 
         logger.info('Payment intent created successfully for deferred booking', {
           component: 'Cron /capture-deposits',
           data: {
-            bookingId: booking._id.toString(),
+            bookingId: (booking._id as any).toString(),
             paymentIntentId: paymentIntent.id,
             amount: depositAmount,
           },
@@ -167,14 +167,14 @@ export async function GET(request: NextRequest) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
         results.failed.push({
-          bookingId: booking._id.toString(),
+          bookingId: (booking._id as any).toString(),
           error: errorMessage,
         });
 
         logger.error('Failed to create payment intent for deferred booking', {
           component: 'Cron /capture-deposits',
           data: {
-            bookingId: booking._id.toString(),
+            bookingId: (booking._id as any).toString(),
             error: errorMessage,
           },
         });

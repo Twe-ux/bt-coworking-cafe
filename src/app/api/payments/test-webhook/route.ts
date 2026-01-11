@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
           ? `${metadata.startTime} - ${metadata.endTime}`
           : 'Journée complète',
         price: parseFloat(metadata.totalPrice),
-        bookingId: reservation._id.toString(),
+        bookingId: (reservation._id as any).toString(),
         requiresPayment: true,
         depositAmount: parseInt(metadata.depositAmount || metadata.totalPrice) || parseFloat(metadata.totalPrice) * 100, // Use stored deposit amount in cents
         captureMethod: metadata.captureMethod as 'manual' | 'automatic',

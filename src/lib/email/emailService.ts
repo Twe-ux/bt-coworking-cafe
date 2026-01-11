@@ -82,7 +82,9 @@ export async function sendBookingConfirmation(
     requiresPayment: bookingDetails.requiresPayment,
     depositAmount: bookingDetails.depositAmount,
     captureMethod: bookingDetails.captureMethod,
-    additionalServices: bookingDetails.additionalServices,
+    additionalServices: bookingDetails.additionalServices?.map(
+      (s) => `${s.name} (x${s.quantity}) - ${s.price}€`
+    ),
     numberOfPeople: bookingDetails.numberOfPeople,
   });
 

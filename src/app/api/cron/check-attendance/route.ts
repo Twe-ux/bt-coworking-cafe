@@ -106,11 +106,11 @@ export async function GET(request: NextRequest) {
           logger.warn('Payment intent not in capturable state', {
             component: 'Cron /check-attendance',
             data: {
-              bookingId: booking._id.toString(),
+              bookingId: (booking._id as any).toString(),
               status: paymentIntent.status,
             },
           });
-          results.skipped.push(booking._id.toString());
+          results.skipped.push((booking._id as any).toString());
           continue;
         }
 
@@ -124,12 +124,12 @@ export async function GET(request: NextRequest) {
         booking.paymentStatus = 'paid';
         await booking.save();
 
-        results.captured.push(booking._id.toString());
+        results.captured.push((booking._id as any).toString());
 
         logger.info('Payment captured for no-show', {
           component: 'Cron /check-attendance',
           data: {
-            bookingId: booking._id.toString(),
+            bookingId: (booking._id as any).toString(),
             paymentIntentId: booking.stripePaymentIntentId,
             amount: paymentIntent.amount,
           },
@@ -161,7 +161,7 @@ export async function GET(request: NextRequest) {
             logger.info('No-show email sent', {
               component: 'Cron /check-attendance',
               data: {
-                bookingId: booking._id.toString(),
+                bookingId: (booking._id as any).toString(),
                 email: userEmail,
               },
             });
@@ -170,7 +170,7 @@ export async function GET(request: NextRequest) {
           logger.error('Failed to send no-show email', {
             component: 'Cron /check-attendance',
             data: {
-              bookingId: booking._id.toString(),
+              bookingId: (booking._id as any).toString(),
               error: emailError instanceof Error ? emailError.message : 'Unknown',
             },
           });
@@ -180,14 +180,14 @@ export async function GET(request: NextRequest) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
         results.failed.push({
-          bookingId: booking._id.toString(),
+          bookingId: (booking._id as any).toString(),
           error: errorMessage,
         });
 
         logger.error('Failed to process unvalidated booking', {
           component: 'Cron /check-attendance',
           data: {
-            bookingId: booking._id.toString(),
+            bookingId: (booking._id as any).toString(),
             error: errorMessage,
           },
         });

@@ -60,7 +60,8 @@ export async function createPaymentIntent(
   currency: string = 'eur',
   metadata?: Stripe.MetadataParam,
   customerId?: string,
-  captureMethod?: 'automatic' | 'manual'
+  captureMethod?: 'automatic' | 'manual',
+  paymentMethod?: string
 ): Promise<Stripe.PaymentIntent> {
   validateStripeConfig();
   try {
@@ -71,6 +72,10 @@ export async function createPaymentIntent(
       customer: customerId, // Link to Stripe customer
       capture_method: captureMethod || 'automatic',
       payment_method_types: ['card'], // Only card payments (no Klarna, Amazon Pay, etc.)
+      ...(paymentMethod && {
+        payment_method: paymentMethod,
+        confirm: true, // Auto-confirm when payment method is provided
+      }),
     });
 
     return paymentIntent;

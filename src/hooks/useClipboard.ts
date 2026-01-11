@@ -7,7 +7,17 @@ const useClipboard = (): [CopiedValue, CopyFn] => {
   const [copiedText, setCopiedText] = useState<CopiedValue>(null)
 
   const copy: CopyFn = async (text: string) => {
-    if (!navigator.clipboard) {      return null
+    if (!navigator.clipboard) {
+      return null
+    }
+
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedText(text)
+      return text
+    } catch (error) {
+      setCopiedText(null)
+      return null
     }
   }
 

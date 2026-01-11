@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       const customer = await getOrCreateStripeCustomer(
         contactEmail,
         contactName,
-        { userId: user?.id }
+        { userId: user?.id || null }
       );
 
       // Calculate deposit amount

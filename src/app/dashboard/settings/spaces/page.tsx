@@ -377,9 +377,11 @@ export default function SpacesSettingsPage() {
         body: formData,
       });      const data = await response.json();
       if (response.ok && data.url) {
-        // Update configuration with new image URL        const config = configurations.find((c) => c.spaceType === spaceType);
-        if (config) {
-          const updatedConfig = { ...config, imageUrl: data.url };          await handleUpdateConfiguration(updatedConfig);
+        // Update configuration with new image URL
+        const foundConfig = configurations.find((c) => c.spaceType === spaceType);
+        if (foundConfig) {
+          const updatedConfig = { ...foundConfig, imageUrl: data.url };
+          await handleUpdateConfiguration(updatedConfig);
         }
         setMessage({ type: "success", text: "Image uploadée avec succès" });
       } else {        setMessage({ type: "error", text: data.error || "Erreur lors de l'upload" });
