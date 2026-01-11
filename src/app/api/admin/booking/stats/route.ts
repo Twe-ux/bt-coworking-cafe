@@ -5,6 +5,9 @@ import connectDB from "@/lib/db";
 import { Reservation } from "@/models/reservation";
 import { logger } from "@/lib/logger";
 
+// Force dynamic rendering for this route (uses session/headers)
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(options);

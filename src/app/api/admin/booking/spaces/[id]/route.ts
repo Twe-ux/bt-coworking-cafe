@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic';
 import { getServerSession } from "next-auth";
 import { options as authOptions } from "@/lib/auth-options";
 import { connectDB } from "@/lib/mongodb";

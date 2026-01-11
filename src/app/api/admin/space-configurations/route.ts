@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic';
 import { getServerSession } from "next-auth";
 import connectDB from "@/lib/db";
 import SpaceConfiguration from "@/models/spaceConfiguration";
