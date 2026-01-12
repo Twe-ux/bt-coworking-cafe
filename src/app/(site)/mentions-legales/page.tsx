@@ -94,7 +94,7 @@ export default function MentionsLegalesPage() {
                 <h2 className="h3 fw-bold text-dark mb-4">
                   1. Éditeur du site
                 </h2>
-                <div className="rounded-3 p-4">
+                <div className="rounded-3 p-4 bg-light">
                   <h3 className="h5 fw-semibold mb-3">
                     ILY SARL - Cow or King Café
                   </h3>
@@ -163,7 +163,10 @@ export default function MentionsLegalesPage() {
                     <div className="col-md-6">
                       <div
                         className="border rounded-3 p-3 h-100"
-                        style={{ borderColor: "#dee2e6" }}
+                        style={{
+                          borderColor: "#dee2e6",
+                          backgroundColor: "#ffffff",
+                        }}
                       >
                         <h4 className="h6 fw-semibold mb-2">
                           Northflank (Hébergement web)
@@ -185,7 +188,10 @@ export default function MentionsLegalesPage() {
                     <div className="col-md-6">
                       <div
                         className="border rounded-3 p-3 h-100"
-                        style={{ borderColor: "#dee2e6" }}
+                        style={{
+                          borderColor: "#dee2e6",
+                          backgroundColor: "#ffffff",
+                        }}
                       >
                         <h4 className="h6 fw-semibold mb-2">
                           MongoDB, Inc. (Base de données)
@@ -645,10 +651,7 @@ export default function MentionsLegalesPage() {
                 style={{ scrollMarginTop: 150 }}
               >
                 <h2 className="h3 fw-bold text-dark mb-4">10. Contact</h2>
-                <div
-                  className="rounded-3 p-4"
-                  style={{ backgroundColor: "rgba(65, 121, 114, 0.05)" }}
-                >
+                <div className="rounded-3 p-4 bg-light">
                   <h3
                     className="h5 fw-semibold mb-3"
                     style={{ color: "#417972" }}
@@ -690,8 +693,10 @@ export default function MentionsLegalesPage() {
 
               {/* Footer du document */}
               <div className="border-top pt-4 text-center small text-muted">
-                <p className="mb-2">Document mis à jour le {lastUpdate}</p>
-                <p className="mb-0">
+                <p className="mb-2 text-muted">
+                  Document mis à jour le {lastUpdate}
+                </p>
+                <p className="mb-0 text-muted">
                   Version 1.0 - Mentions Légales - Cow or King Café
                 </p>
               </div>

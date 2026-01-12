@@ -793,12 +793,12 @@ export default function ConfidentialityPage() {
                   >
                     📞 Délégué à la Protection des Données (DPO)
                   </h3>
-                  <p className="mb-3" style={{ color: "#2e7d32" }}>
+                  <p className="mb-3 text-muted">
                     Pour toute question ou exercer vos droits :
                   </p>
                   <div className="row g-3" style={{ color: "#388e3c" }}>
                     <div className="col-md-6">
-                      <p className="mb-2">
+                      <p className="mb-2 text-muted">
                         <strong>Email :</strong>{" "}
                         <ProtectedEmail
                           user="dpo"
@@ -811,10 +811,10 @@ export default function ConfidentialityPage() {
                       </p> */}
                     </div>
                     <div className="col-md-6">
-                      <p className="mb-2">
+                      <p className="mb-2 text-muted">
                         <strong>Horaires :</strong> Lun-Ven 9h-17h
                       </p>
-                      <p className="mb-2">
+                      <p className="mb-2 text-muted">
                         <strong>Délai :</strong> 1 mois maximum
                       </p>
                     </div>
@@ -837,7 +837,7 @@ export default function ConfidentialityPage() {
                   >
                     🏛️ Réclamation auprès de la CNIL
                   </h3>
-                  <p className="mb-3" style={{ color: "#d32f2f" }}>
+                  <p className="mb-3 " style={{ color: "#d32f2f" }}>
                     Si vous n&apos;êtes pas satisfait(e) de notre réponse :
                   </p>
                   <ul className="mb-0" style={{ color: "#e53935" }}>
@@ -862,12 +862,14 @@ export default function ConfidentialityPage() {
 
               {/* Footer du document */}
               <div className="border-top pt-4 text-center small text-muted">
-                <p className="mb-2">Document mis à jour le {lastUpdate}</p>
-                <p className="mb-2">
+                <p className="mb-2 text-muted">
+                  Document mis à jour le {lastUpdate}
+                </p>
+                <p className="mb-2 text-muted">
                   Version 1.0 - Politique de Confidentialité RGPD - Cow or King
                   Café
                 </p>
-                <p className="mb-0">
+                <p className="mb-0 text-muted">
                   Conforme au Règlement Général sur la Protection des Données
                   (UE) 2016/679
                 </p>

@@ -100,7 +100,8 @@
       }
     }
 
-    ul, ol {
+    ul,
+    ol {
       margin-bottom: 1rem;
 
       &:last-child {
@@ -142,7 +143,9 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    h3, h4, h5 {
+    h3,
+    h4,
+    h5 {
       &:first-child {
         margin-top: 0;
       }
@@ -150,8 +153,15 @@
   }
 
   // Style pour les encadrés d'information
+  .bg-light {
+    background-color: #f0fdf4 !important;
+  }
+
   .bg-light.rounded-3 {
     border-left: 4px solid #417972;
+    p {
+      color: #212529;
+    }
 
     p:first-child {
       margin-top: 0;

@@ -31,8 +31,7 @@ export default function CGUPage() {
           const data = await response.json();
           setOpenSpacePolicy(data.data.cancellationPolicy);
         }
-      } catch (error) {
-    }
+      } catch (error) {}
     };
 
     // Fetch meeting room policy
@@ -45,8 +44,7 @@ export default function CGUPage() {
           const data = await response.json();
           setMeetingRoomPolicy(data.data.cancellationPolicy);
         }
-      } catch (error) {
-    }
+      } catch (error) {}
     };
 
     fetchOpenSpacePolicy();
@@ -927,10 +925,7 @@ export default function CGUPage() {
                 style={{ scrollMarginTop: 150 }}
               >
                 <h2 className="h3 fw-bold text-dark mb-4">Contact</h2>
-                <div
-                  className="rounded-3 p-4"
-                  style={{ backgroundColor: "rgba(65, 121, 114, 0.05)" }}
-                >
+                <div className="rounded-3 p-4 bg-light">
                   <h3
                     className="h5 fw-semibold mb-3"
                     style={{ color: "#417972" }}
@@ -962,9 +957,11 @@ export default function CGUPage() {
               </section>
 
               {/* Footer du document */}
-              <div className="border-top pt-4 text-center small text-muted">
-                <p className="mb-2">Document mis à jour le {lastUpdate}</p>
-                <p className="mb-0">
+              <div className="border-top pt-4 text-center small ">
+                <p className="mb-2 text-muted">
+                  Document mis à jour le {lastUpdate}
+                </p>
+                <p className="mb-0 text-muted">
                   Version 1.0 - Conditions Générales d&apos;Utilisation Cow or
                   King Café
                 </p>
