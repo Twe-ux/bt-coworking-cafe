@@ -71,6 +71,7 @@
         min-width: 300px;
         background-color: var(--btn-clr);
         transition: all 0.5s ease-in-out;
+        z-index: 1001;
       }
 
       .menu__list {
@@ -257,7 +258,7 @@
   background-color: var(--btn-clr);
   border-top: 2px solid #e2c26b;
   transition: left 0.5s ease-in-out;
-  z-index: 1000;
+  z-index: 1002;
 
   .mobile-reserve-btn {
     width: 100%;
@@ -275,4 +276,53 @@
 .header__bottom_navbar-active + * .mobile-cta-wrapper,
 .header__bottom_navbar-active .mobile-cta-wrapper {
   left: 0;
+}
+
+// Bouton scroll to top
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: var(--main-clr);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 998;
+
+  @media (min-width: 992px) {
+    display: none;
+  }
+
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  &:hover {
+    background: var(--secondary-clr);
+    color: var(--main-clr);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  i {
+    font-size: 24px;
+  }
 }

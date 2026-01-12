@@ -8,6 +8,7 @@ import Bootstrap from "@/components/site/Bootstrap";
 import Footer from "@/components/site/footer";
 import Header from "@/components/site/header/header";
 import ExceptionalClosureBanner from "@/components/site/banner/ExceptionalClosureBanner";
+import ScrollToTop from "@/components/site/ui/ScrollToTop";
 import PathNameLoad from "@/utils/pathNameLoad";
 import { ReactNode } from "react";
 
@@ -31,6 +32,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
           <ExceptionalClosureBanner />
           {children}
           <Footer />
+          <ScrollToTop />
         </SiteProvidersWrapper>
       </body>
     </html>

@@ -17,6 +17,7 @@
     @include breakpoint(sm) {
       padding: 2rem 2rem;
       max-width: 95%;
+      max-height: 400px;
       margin: 0 auto;
     }
 
@@ -206,6 +207,9 @@
     }
     p {
       padding: 25px 0;
+      @include breakpoint(md) {
+        padding: 25px 30px;
+      }
       a {
         color: var(--btn-clr);
         font-weight: 600;
