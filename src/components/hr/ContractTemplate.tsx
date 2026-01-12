@@ -89,7 +89,8 @@ export default function ContractTemplate({
       // Marquer le contrat comme généré
       onValidate();
       onHide();
-    } catch (error) {      alert("Erreur lors de la génération du PDF");
+    } catch (error) {
+      alert("Erreur lors de la génération du PDF");
     } finally {
       setGenerating(false);
     }
@@ -187,7 +188,7 @@ export default function ContractTemplate({
                     Société (raison sociale)
                   </td>
                   <td style={{ border: "1px solid #000", padding: "8px" }}>
-                    COW-OR-KING CAFÉ
+                    CoworKing Café by Anticafé
                   </td>
                 </tr>
                 <tr>
@@ -533,7 +534,7 @@ export default function ContractTemplate({
               <li>Accueillir, servir et être à l'écoute des clients ;</li>
               <li>
                 Promouvoir la Société auprès des clients en expliquant le
-                concept du Coworking Café ;
+                concept du CoworKing Café by Anticafé ;
               </li>
               <li>
                 Préparer et servir les boissons et la nourriture proposés dans
@@ -975,9 +976,9 @@ export default function ContractTemplate({
               Article 14 - Déclarations diverses
             </h4>
             <p style={{ marginBottom: "10px" }}>
-              Le Salarié déclare être informé du fait que le Coworking Café
-              dispose de caméras de surveillance et qu'il sera ainsi filmé
-              durant ses horaires de travail.
+              Le Salarié déclare être informé du fait que le CoworKing Café by
+              Anticafé dispose de caméras de surveillance et qu'il sera ainsi
+              filmé durant ses horaires de travail.
             </p>
             <p style={{ marginBottom: "10px" }}>
               Le Salarié déclare formellement que toutes les informations
@@ -1061,7 +1062,7 @@ export default function ContractTemplate({
               <div style={{ width: "45%", textAlign: "center" }}>
                 <p style={{ marginBottom: "5px" }}>Pour la Société</p>
                 <p style={{ fontWeight: "bold", marginBottom: "60px" }}>
-                  COW-OR-KING CAFÉ
+                  CoworKing Café by Anticafé
                 </p>
                 <p style={{ marginTop: "60px" }}>Signature</p>
               </div>

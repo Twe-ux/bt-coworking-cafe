@@ -121,7 +121,8 @@ export default function CGUPage() {
                 className="lead text-muted mb-3 mx-auto"
                 style={{ maxWidth: "600px" }}
               >
-                Règles d&apos;utilisation de notre espace de coworking café
+                Règles d&apos;utilisation de notre espace de CoworKing Café by
+                Anticafé
               </p>
               <p className="text-muted small">
                 Dernière mise à jour : {lastUpdate}
@@ -244,8 +245,8 @@ export default function CGUPage() {
                 <h2 className="h3 fw-bold text-dark mb-4">1. Définitions</h2>
                 <div className="bg-light rounded-3 p-4">
                   <p className="mb-3">
-                    <strong>&quot;Cow or King Café&quot;</strong> : désigne
-                    l&apos;espace de café coworking situé au 1 rue de la
+                    <strong>&quot;CoworKing Café by Anticafé&quot;</strong> :
+                    désigne l&apos;espace de café coworking situé au 1 rue de la
                     Division Leclerc, 67000 Strasbourg, exploité par ILY SARL.
                   </p>
                   <p className="mb-3">
@@ -257,10 +258,10 @@ export default function CGUPage() {
                   </p>
                   <p className="mb-3">
                     <strong>&quot;Services&quot;</strong> : désigne
-                    l&apos;ensemble des prestations proposées par Cow or King
-                    Café, incluant l&apos;accès aux espaces de travail, salles
-                    de réunion, services de restauration et équipements mis à
-                    disposition.
+                    l&apos;ensemble des prestations proposées par CoworKing Café
+                    by Anticafé Café, incluant l&apos;accès aux espaces de
+                    travail, salles de réunion, services de restauration et
+                    équipements mis à disposition.
                   </p>
                   <p className="mb-0">
                     <strong>&quot;Plateforme&quot;</strong> : désigne le site
@@ -280,8 +281,8 @@ export default function CGUPage() {
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   Les présentes Conditions Générales d&apos;Utilisation (CGU)
                   définissent les termes et conditions d&apos;utilisation des
-                  services proposés par Cow or King Café, espace de coworking
-                  café situé à Strasbourg.
+                  services proposés par CoworKing Café by Anticafé, espace de
+                  CoworKing Café by Anticafé situé à Strasbourg.
                 </p>
                 <p className="text-dark" style={{ lineHeight: "1.8" }}>
                   Elles s&apos;appliquent à toute utilisation de nos services,
@@ -300,8 +301,9 @@ export default function CGUPage() {
                   3. Acceptation des CGU
                 </h2>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  L&apos;utilisation des services de Cow or King Café implique
-                  l&apos;acceptation pleine et entière des présentes CGU.
+                  L&apos;utilisation des services de CoworKing Café by Anticafé
+                  implique l&apos;acceptation pleine et entière des présentes
+                  CGU.
                 </p>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
                   En cas de non-acceptation des CGU, l&apos;utilisateur doit
@@ -800,15 +802,15 @@ export default function CGUPage() {
                 <h2 className="h3 fw-bold text-dark mb-4">9. Responsabilité</h2>
 
                 <h3 className="h5 fw-semibold text-dark mb-3">
-                  9.1 Responsabilité de Cow or King Café
+                  9.1 Responsabilité de CoworKing Café by Anticafé
                 </h3>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  Cow or King Café s&apos;engage à fournir ses services avec
-                  diligence et professionnalisme. Toutefois, sa responsabilité
-                  est limitée aux dommages directs prouvés.
+                  CoworKing Café by Anticafé s&apos;engage à fournir ses
+                  services avec diligence et professionnalisme. Toutefois, sa
+                  responsabilité est limitée aux dommages directs prouvés.
                 </p>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  Cow or King Café ne peut être tenu responsable :
+                  CoworKing Café by Anticafé ne peut être tenu responsable :
                 </p>
                 <ul className="text-dark mb-4">
                   <li className="mb-2">
@@ -865,9 +867,9 @@ export default function CGUPage() {
                   11. Modification des CGU
                 </h2>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  Cow or King Café se réserve le droit de modifier les présentes
-                  CGU à tout moment. Les modifications entrent en vigueur dès
-                  leur publication sur le site internet.
+                  CoworKing Café by Anticafé se réserve le droit de modifier les
+                  présentes CGU à tout moment. Les modifications entrent en
+                  vigueur dès leur publication sur le site internet.
                 </p>
                 <p className="text-dark" style={{ lineHeight: "1.8" }}>
                   Les utilisateurs sont invités à consulter régulièrement les
@@ -930,7 +932,7 @@ export default function CGUPage() {
                     className="h5 fw-semibold mb-3"
                     style={{ color: "#417972" }}
                   >
-                    Cow or King Café
+                    CoworKing Café by Anticafé
                   </h3>
                   <div className="text-dark">
                     <p className="mb-2">

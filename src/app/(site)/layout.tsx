@@ -4,18 +4,18 @@ import "@/assets/site/font/font-awsome/css-js/all.min.js";
 import "@/assets/site/scss/main.scss";
 import { SiteProvidersWrapper } from "@/components/providers/SiteProvidersWrapper";
 import AhrefsAnalytics from "@/components/site/AhrefsWebAnalytics";
+import ExceptionalClosureBanner from "@/components/site/banner/ExceptionalClosureBanner";
 import Bootstrap from "@/components/site/Bootstrap";
 import Footer from "@/components/site/footer";
 import Header from "@/components/site/header/header";
-import ExceptionalClosureBanner from "@/components/site/banner/ExceptionalClosureBanner";
 import ScrollToTop from "@/components/site/ui/ScrollToTop";
 import PathNameLoad from "@/utils/pathNameLoad";
 import { ReactNode } from "react";
 
 export const metadata = {
-  title: "Cow-or-King Café by Anticafé",
+  title: "CoworKing Café by Anticafé",
   description:
-    "Cow-or-King Café à Strasbourg : espace coworking chaleureux avec Wi-Fi rapide, cafés de qualité et ambiance idéale pour travailler.",
+    "CoworKing Café by Anticafé à Strasbourg : espace coworking chaleureux avec Wi-Fi rapide, cafés de qualité et ambiance idéale pour travailler.",
 };
 
 export default function SiteLayout({ children }: { children: ReactNode }) {

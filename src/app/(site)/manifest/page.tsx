@@ -7,7 +7,7 @@ const ManifestPage = () => {
     <>
       <PageTitle title="Notre manifeste" />
       <section
-        className="manifest__section  spaces spaces__2 py__90"
+        className="manifest__section spaces spaces__2 py__90"
         id="spaces"
       >
         <div className="container position-relative pb__130">

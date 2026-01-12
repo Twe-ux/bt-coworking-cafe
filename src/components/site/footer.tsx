@@ -232,7 +232,7 @@ const Footer = () => {
             <hr className="footer__border" />
             <p className="text-center">
               © Copyright 2025 All Rights Reserved by{" "}
-              <Link href={"#"}>Cow or King Café</Link>
+              <Link href={"#"}>CoworKing Café by Anticafé</Link>
             </p>
           </div>
         </div>

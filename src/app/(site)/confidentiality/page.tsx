@@ -192,8 +192,8 @@ export default function ConfidentialityPage() {
                 </h2>
                 <div className="bg-light rounded-3 p-4">
                   <p className="mb-3">
-                    <strong>Responsable de traitement :</strong> Cow or King
-                    Café (ILY SARL)
+                    <strong>Responsable de traitement :</strong> CoworKing Café
+                    by Anticafé Café (ILY SARL)
                   </p>
                   <p className="mb-3">
                     <strong>Adresse :</strong> 1 rue de la Division Leclerc,
@@ -445,7 +445,7 @@ export default function ConfidentialityPage() {
                 </h3>
                 <ul className="text-dark mb-4">
                   <li className="mb-2">
-                    Personnel autorisé de Cow or King Café
+                    Personnel autorisé de CoworKing Café by Anticafé
                   </li>
                   <li className="mb-2">Équipe de gestion et administration</li>
                   <li className="mb-2">Service client et support technique</li>
@@ -634,8 +634,8 @@ export default function ConfidentialityPage() {
                       />
                     </li>
                     <li className="mb-2">
-                      <strong>Courrier :</strong> DPO - Cow or King Café, 1 rue
-                      de la Division Leclerc, 67000 Strasbourg
+                      <strong>Courrier :</strong> DPO - CoworKing Café by
+                      Anticafé, 1 rue de la Division Leclerc, 67000 Strasbourg
                     </li>
                   </ul>
                   <p className="mb-0 small" style={{ color: "#1976d2" }}>
@@ -866,8 +866,8 @@ export default function ConfidentialityPage() {
                   Document mis à jour le {lastUpdate}
                 </p>
                 <p className="mb-2 text-muted">
-                  Version 1.0 - Politique de Confidentialité RGPD - Cow or King
-                  Café
+                  Version 1.0 - Politique de Confidentialité RGPD - CoworKing
+                  Café Café
                 </p>
                 <p className="mb-0 text-muted">
                   Conforme au Règlement Général sur la Protection des Données

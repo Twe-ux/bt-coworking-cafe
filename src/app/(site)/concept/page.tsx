@@ -4,11 +4,11 @@ import SlideUp from "@/utils/animations/slideUp";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Concept | Cow-or-King Café",
-  description: `Découvrez Cow-or-King Café by Anticafé à Strasbourg : un espace chaleureux né du concept Anticafé, où l’on paie au temps et où l’on travaille comme à la maison, mais en mieux. Parfait pour freelances, étudiants, voyageurs et télétravailleurs.`,
+  title: "Concept | CoworKing Café by Anticafé",
+  description: `Découvrez CoworKing Café by Anticafé à Strasbourg : un espace chaleureux né du concept Anticafé, où l’on paie au temps et où l’on travaille comme à la maison, mais en mieux. Parfait pour freelances, étudiants, voyageurs et télétravailleurs.`,
   openGraph: {
-    title: "Concept - Cow-or-King Café",
-    description: "Découvrez Cow-or-King Café by Anticafé à Strasbourg.",
+    title: "Concept - CoworKing Café by Anticafé",
+    description: "Découvrez CoworKing Café by Anticafé à Strasbourg.",
     type: "website",
   },
 };
@@ -71,7 +71,7 @@ const Concept = () => {
           </div>
           <div className="thred__para pt__50">
             <h2 className="t__54">
-              Coworking Café by Anticafé : le meilleur café pour travailler à
+              CoworKing Café by Anticafé : le meilleur café pour travailler à
               Strasbourg
             </h2>
             <h3 className="t__28">
@@ -85,7 +85,7 @@ const Concept = () => {
               le monde adopte ce format “comme à la maison, mais en mieux” .
               Avec le temps, l’équipe a choisi de faire évoluer le lieu pour
               l’ancrer pleinement dans la vie locale. C’est ainsi qu’est né
-              Coworking Café – by Anticafé : un espace indépendant dans son
+              CoworKing Café by Anticafé : un espace indépendant dans son
               fonctionnement, mais qui garde l’ADN et l’esprit du concept
               originel.
             </p>
@@ -133,7 +133,9 @@ const Concept = () => {
               </SlideUp>
               <SlideUp className="col-md-5 mt-4 mt-md-0">
                 <div>
-                  <h3 className="t__28">Pour qui est fait Coworking Café ?</h3>
+                  <h3 className="t__28">
+                    Pour qui est fait CoworKing Café by Anticafé ?
+                  </h3>
                   <p> Nous accueillons aussi bien :</p>
                   <ul>
                     <li>les indépendants qui veulent un QG sans engagement,</li>
@@ -152,7 +154,7 @@ const Concept = () => {
                     </li>
                   </ul>
                   <p>
-                    Coworking Café by Anticafé, c’est un cocon urbain, un
+                    CoworKing Café by Anticafé, c’est un cocon urbain, un
                     tiers-lieu moderne, un espace de travail vivant, pensé pour
                     s’adapter à chaque rythme, chaque besoin, chaque journée.
                   </p>

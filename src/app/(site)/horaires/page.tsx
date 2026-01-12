@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import PageTitle from "@/components/site/pageTitle";
+import { useEffect, useState } from "react";
 
 interface DayHours {
   isOpen: boolean;
@@ -60,7 +60,7 @@ export default function HorairesPage() {
           });
         }
       } catch (error) {
-    } finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -80,9 +80,12 @@ export default function HorairesPage() {
     return closureDate >= today;
   };
 
-  const upcomingClosures = hoursData?.exceptionalClosures
-    .filter((closure) => isUpcoming(closure.date))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) || [];
+  const upcomingClosures =
+    hoursData?.exceptionalClosures
+      .filter((closure) => isUpcoming(closure.date))
+      .sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      ) || [];
 
   if (loading) {
     return (
@@ -113,7 +116,8 @@ export default function HorairesPage() {
               <div className="text-center mb-5">
                 <h2 className="mb-3">Nos horaires d'ouverture</h2>
                 <p className="text-muted">
-                  Le Coworking Café vous accueille toute la semaine pour travailler dans un cadre convivial
+                  Le CoworKing Café by Anticafé vous accueille toute la semaine
+                  pour travailler dans un cadre convivial
                 </p>
               </div>
 
@@ -123,23 +127,32 @@ export default function HorairesPage() {
                   <div className="d-flex align-items-start">
                     <i className="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
                     <div>
-                      <h5 className="alert-heading mb-2">Fermetures exceptionnelles à venir</h5>
+                      <h5 className="alert-heading mb-2">
+                        Fermetures exceptionnelles à venir
+                      </h5>
                       <ul className="mb-0">
                         {upcomingClosures.map((closure, index) => {
-                          const isPartialClosure = closure.isFullDay === false && closure.startTime && closure.endTime;
+                          const isPartialClosure =
+                            closure.isFullDay === false &&
+                            closure.startTime &&
+                            closure.endTime;
                           return (
                             <li key={index}>
                               <strong>
-                                {new Date(closure.date).toLocaleDateString("fr-FR", {
-                                  weekday: "long",
-                                  day: "numeric",
-                                  month: "long",
-                                  year: "numeric",
-                                })}
+                                {new Date(closure.date).toLocaleDateString(
+                                  "fr-FR",
+                                  {
+                                    weekday: "long",
+                                    day: "numeric",
+                                    month: "long",
+                                    year: "numeric",
+                                  }
+                                )}
                               </strong>
                               {isPartialClosure && (
                                 <span className="text-muted">
-                                  {" "}(de {closure.startTime} à {closure.endTime})
+                                  {" "}
+                                  (de {closure.startTime} à {closure.endTime})
                                 </span>
                               )}
                               {closure.reason && ` - ${closure.reason}`}
@@ -161,36 +174,41 @@ export default function HorairesPage() {
                   </h4>
 
                   <div className="hours-list">
-                    {hoursData && hoursData.defaultHours && daysOfWeek.map((day) => {
-                      const dayKey = day.key as keyof WeeklyHours;
-                      const dayHours = hoursData.defaultHours[dayKey];
+                    {hoursData &&
+                      hoursData.defaultHours &&
+                      daysOfWeek.map((day) => {
+                        const dayKey = day.key as keyof WeeklyHours;
+                        const dayHours = hoursData.defaultHours[dayKey];
 
-                      return (
-                        <div key={day.key} className="hours-item">
-                          <div className="row align-items-center py-3 border-bottom">
-                            <div className="col-md-4">
-                              <div className="d-flex align-items-center">
-                                <i className={`${day.icon} me-3 fs-5 text-primary`}></i>
-                                <strong>{day.label}</strong>
+                        return (
+                          <div key={day.key} className="hours-item">
+                            <div className="row align-items-center py-3 border-bottom">
+                              <div className="col-md-4">
+                                <div className="d-flex align-items-center">
+                                  <i
+                                    className={`${day.icon} me-3 fs-5 text-primary`}
+                                  ></i>
+                                  <strong>{day.label}</strong>
+                                </div>
+                              </div>
+                              <div className="col-md-8 text-md-end mt-2 mt-md-0">
+                                {dayHours?.isOpen ? (
+                                  <span className="badge bg-success-subtle text-success px-3 py-2">
+                                    <i className="bi bi-clock me-2"></i>
+                                    {formatTime(dayHours.openTime)} -{" "}
+                                    {formatTime(dayHours.closeTime)}
+                                  </span>
+                                ) : (
+                                  <span className="badge bg-danger-subtle text-danger px-3 py-2">
+                                    <i className="bi bi-x-circle me-2"></i>
+                                    Fermé
+                                  </span>
+                                )}
                               </div>
                             </div>
-                            <div className="col-md-8 text-md-end mt-2 mt-md-0">
-                              {dayHours?.isOpen ? (
-                                <span className="badge bg-success-subtle text-success px-3 py-2">
-                                  <i className="bi bi-clock me-2"></i>
-                                  {formatTime(dayHours.openTime)} - {formatTime(dayHours.closeTime)}
-                                </span>
-                              ) : (
-                                <span className="badge bg-danger-subtle text-danger px-3 py-2">
-                                  <i className="bi bi-x-circle me-2"></i>
-                                  Fermé
-                                </span>
-                              )}
-                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </div>
               </div>
@@ -205,18 +223,25 @@ export default function HorairesPage() {
                     </h5>
                     <p className="mb-2">
                       <i className="bi bi-telephone me-2 text-primary"></i>
-                      <a href="tel:+33987334519" className="text-decoration-none">
+                      <a
+                        href="tel:+33987334519"
+                        className="text-decoration-none"
+                      >
                         09 87 33 45 19
                       </a>
                     </p>
                     <p className="mb-2">
                       <i className="bi bi-envelope me-2 text-primary"></i>
-                      <a href="mailto:strasbourg@coworkingcafe.fr" className="text-decoration-none">
+                      <a
+                        href="mailto:strasbourg@coworkingcafe.fr"
+                        className="text-decoration-none"
+                      >
                         strasbourg@coworkingcafe.fr
                       </a>
                     </p>
                     <p className="mb-0 text-muted small">
-                      Les horaires peuvent être modifiés pendant les jours fériés et événements spéciaux.
+                      Les horaires peuvent être modifiés pendant les jours
+                      fériés et événements spéciaux.
                     </p>
                   </div>
                 </div>

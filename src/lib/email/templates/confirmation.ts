@@ -294,7 +294,7 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
 
                 <p class="text-body" style="margin: 32px 0 0 0; font-size: 16px; line-height: 1.8; color: #1f2937;">
                   À très bientôt,<br>
-                  <strong style="color: #10B981; font-size: 17px;">L'équipe Coworking Café</strong>
+                  <strong style="color: #10B981; font-size: 17px;">L'équipe CoworKing Café by Anticafé</strong>
                 </p>
               </td>
             </tr>
@@ -304,7 +304,7 @@ export function generateConfirmationEmail(data: ConfirmationEmailData): string {
           <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
             <tr>
               <td class="footer" style="background: #f9fafb; padding: 24px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb;">
-                <p class="footer-text" style="margin: 0 0 8px 0; font-weight: 700; color: #111827; font-size: 15px;">Coworking Café</p>
+                <p class="footer-text" style="margin: 0 0 8px 0; font-weight: 700; color: #111827; font-size: 15px;">CoworKing Café by Anticafé</p>
                 <p class="footer-text" style="margin: 0 0 4px 0; color: #6b7280;">1 rue de la Division Leclerc, 67000 Strasbourg</p>
                 <p class="footer-text" style="margin: 0; color: #6b7280;">L-V: 09h-20h | S-D & JF: 10h-20h</p>
               </td>

@@ -4,13 +4,13 @@ import ProjectCard from "../projects/projectCard";
 
 const ProjectsHistory = () => {
   return (
-    <section className="all__project py__90">
+    <section className="py__130">
       <div className="container">
         <h2 className="t__54">
           L’équipe : des personnalités, un même lieu à faire vivre
         </h2>
         <p className="text-black mt__20">
-          Derrière Coworking Café by Anticafé, il n’y a pas qu’un concept : il y
+          Derrière CoworKing Café by Anticafé, il n’y a pas qu’un concept : il y
           a une équipe. Une petite tribu qui font battre le cœur du lieu au
           quotidien ☕✨
         </p>

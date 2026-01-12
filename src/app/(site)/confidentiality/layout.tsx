@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Politique de Confidentialité | Cow-or-King Café - Strasbourg",
+  title:
+    "Politique de Confidentialité | CoworKing Café by Anticafé - Strasbourg",
   description:
     "Politique de confidentialité et protection des données personnelles conforme RGPD. Découvrez vos droits et comment nous protégeons vos données.",
   keywords:

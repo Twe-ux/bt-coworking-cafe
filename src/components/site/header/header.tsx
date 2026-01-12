@@ -33,10 +33,13 @@ const Header = () => {
               <Link href="/" className="header__bottom_logo">
                 <img src="/images/logo-black.svg" alt="img" className="" />
               </Link>
-              <h1 className="hidden">Cow-or-King Café</h1>
+              <h1 className="hidden">CoworKing Café</h1>
             </div>
 
-            <Navbar activeNavbar={activeNavbar} onClose={() => setActiveNavebar(false)} />
+            <Navbar
+              activeNavbar={activeNavbar}
+              onClose={() => setActiveNavebar(false)}
+            />
 
             <div className="d-flex align-items-center gap-3">
               {session && (

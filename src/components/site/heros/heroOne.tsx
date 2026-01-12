@@ -18,9 +18,10 @@ const HeroOne = () => {
                 <SlideUp delay={2}>
                   <p>
                     Tu l'as trouvé ! Bienvenue chez{" "}
-                    <strong>Cow-or-King Café</strong> où tu ne paies que le
-                    temps passé sur place. À ta disposition, un énorme choix de
-                    boissons à volonté, des snacks et plein d'autres services.
+                    <strong>CoworKing Café by Anticafé</strong> où tu ne paies
+                    que le temps passé sur place. À ta disposition, un énorme
+                    choix de boissons à volonté, des snacks et plein d'autres
+                    services.
                   </p>
                 </SlideUp>
               </div>

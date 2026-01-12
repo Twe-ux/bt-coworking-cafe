@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/mongodb';
-import { Reservation } from '@/models/reservation';
-import BookingSettings from '@/models/bookingSettings';
-import { logger } from '@/lib/logger';
-import { Resend } from 'resend';
+import { logger } from "@/lib/logger";
+import { connectDB } from "@/lib/mongodb";
+import BookingSettings from "@/models/bookingSettings";
+import { Reservation } from "@/models/reservation";
+import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 
 /**
  * GET /api/cron/daily-report
@@ -27,15 +27,15 @@ import { Resend } from 'resend';
 export async function GET(request: NextRequest) {
   try {
     // Verify cron secret for security
-    const authHeader = request.headers.get('authorization');
+    const authHeader = request.headers.get("authorization");
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      logger.warn('Unauthorized cron attempt', {
-        component: 'Cron /daily-report',
+      logger.warn("Unauthorized cron attempt", {
+        component: "Cron /daily-report",
         data: {
-          ip: request.headers.get('x-forwarded-for'),
+          ip: request.headers.get("x-forwarded-for"),
         },
       });
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     await connectDB();
@@ -43,10 +43,10 @@ export async function GET(request: NextRequest) {
     // Get booking settings for notification email
     const settings = await BookingSettings.findOne();
     const notificationEmail =
-      settings?.notificationEmail || 'strasbourg@coworkingcafe.fr';
+      settings?.notificationEmail || "strasbourg@coworkingcafe.fr";
 
-    logger.info('Starting daily-report cron', {
-      component: 'Cron /daily-report',
+    logger.info("Starting daily-report cron", {
+      component: "Cron /daily-report",
       data: {
         recipient: notificationEmail,
       },
@@ -63,20 +63,20 @@ export async function GET(request: NextRequest) {
 
     const unvalidatedYesterday = await Reservation.find({
       date: { $gte: yesterday, $lte: yesterdayEnd },
-      status: 'confirmed',
+      status: "confirmed",
       attendanceStatus: { $exists: false },
     })
-      .populate('user', 'email givenName')
-      .populate('space', 'name type')
+      .populate("user", "email givenName")
+      .populate("space", "name type")
       .sort({ startTime: 1 });
 
     // 2. Pending reservations (waiting for admin confirmation)
     const pendingReservations = await Reservation.find({
-      status: 'pending',
+      status: "pending",
       date: { $gte: today },
     })
-      .populate('user', 'email givenName')
-      .populate('space', 'name type')
+      .populate("user", "email givenName")
+      .populate("space", "name type")
       .sort({ date: 1, startTime: 1 })
       .limit(20);
 
@@ -86,10 +86,10 @@ export async function GET(request: NextRequest) {
 
     const upcomingReservations = await Reservation.find({
       date: { $gte: today, $lte: nextWeek },
-      status: 'confirmed',
+      status: "confirmed",
     })
-      .populate('user', 'email givenName')
-      .populate('space', 'name type')
+      .populate("user", "email givenName")
+      .populate("space", "name type")
       .sort({ date: 1, startTime: 1 })
       .limit(50);
 
@@ -101,16 +101,16 @@ export async function GET(request: NextRequest) {
 
     const depositPendingReservations = await Reservation.find({
       date: { $gte: sixDaysFromNow, $lte: sixDaysEnd },
-      status: 'confirmed',
-      captureMethod: 'deferred',
+      status: "confirmed",
+      captureMethod: "deferred",
       stripePaymentIntentId: { $exists: false },
     })
-      .populate('user', 'email givenName')
-      .populate('space', 'name type')
+      .populate("user", "email givenName")
+      .populate("space", "name type")
       .sort({ startTime: 1 });
 
-    logger.info('Daily report data collected', {
-      component: 'Cron /daily-report',
+    logger.info("Daily report data collected", {
+      component: "Cron /daily-report",
       data: {
         unvalidatedYesterday: unvalidatedYesterday.length,
         pending: pendingReservations.length,
@@ -131,14 +131,16 @@ export async function GET(request: NextRequest) {
     // Send email using Resend
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: 'Coworking Café <noreply@coworkingcafe.fr>',
+      from: "CoworKing Café by Anticafé <noreply@coworkingcafe.fr>",
       to: notificationEmail,
-      subject: `📊 Rapport quotidien - ${new Date().toLocaleDateString('fr-FR')}`,
+      subject: `📊 Rapport quotidien - ${new Date().toLocaleDateString(
+        "fr-FR"
+      )}`,
       html: emailHtml,
     });
 
-    logger.info('Daily report email sent', {
-      component: 'Cron /daily-report',
+    logger.info("Daily report email sent", {
+      component: "Cron /daily-report",
       data: {
         recipient: notificationEmail,
       },
@@ -146,7 +148,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Daily report sent successfully',
+      message: "Daily report sent successfully",
       data: {
         recipient: notificationEmail,
         stats: {
@@ -158,17 +160,17 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    logger.error('Daily-report cron failed', {
-      component: 'Cron /daily-report',
+    logger.error("Daily-report cron failed", {
+      component: "Cron /daily-report",
       data: {
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       },
     });
 
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
@@ -191,13 +193,13 @@ function generateReportEmail(data: {
   } = data;
 
   const formatDate = (date: Date) =>
-    new Date(date).toLocaleDateString('fr-FR', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
+    new Date(date).toLocaleDateString("fr-FR", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
     });
 
-  const formatTime = (time?: string) => time || 'N/A';
+  const formatTime = (time?: string) => time || "N/A";
 
   return `
 <!DOCTYPE html>
@@ -229,8 +231,8 @@ function generateReportEmail(data: {
     <div class="header">
       <h1 style="margin: 0;">📊 Rapport Quotidien des Réservations</h1>
       <p style="margin: 10px 0 0 0; opacity: 0.9;">${reportDate.toLocaleDateString(
-        'fr-FR',
-        { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+        "fr-FR",
+        { weekday: "long", year: "numeric", month: "long", day: "numeric" }
       )}</p>
     </div>
 
@@ -239,7 +241,9 @@ function generateReportEmail(data: {
         ? `
     <div class="section warning">
       <h2>⚠️ Réservations J-1 Non Validées</h2>
-      <p><span class="count">${unvalidatedYesterday.length}</span> réservation(s) d'hier n'ont pas encore été validées (présence/absence).</p>
+      <p><span class="count">${
+        unvalidatedYesterday.length
+      }</span> réservation(s) d'hier n'ont pas encore été validées (présence/absence).</p>
       <table>
         <thead>
           <tr>
@@ -256,30 +260,26 @@ function generateReportEmail(data: {
               (booking) => `
             <tr>
               <td>${
-                booking.contactName ||
-                (booking.user as any)?.givenName ||
-                'N/A'
+                booking.contactName || (booking.user as any)?.givenName || "N/A"
               }<br><small>${
-                booking.contactEmail || (booking.user as any)?.email || ''
+                booking.contactEmail || (booking.user as any)?.email || ""
               }</small></td>
-              <td>${
-                (booking.space as any)?.name || booking.spaceType
-              }</td>
+              <td>${(booking.space as any)?.name || booking.spaceType}</td>
               <td>${formatTime(booking.startTime)} - ${formatTime(
                 booking.endTime
               )}</td>
               <td>${booking.totalPrice.toFixed(2)}€</td>
-              <td>${booking.confirmationNumber || 'N/A'}</td>
+              <td>${booking.confirmationNumber || "N/A"}</td>
             </tr>
           `
             )
-            .join('')}
+            .join("")}
         </tbody>
       </table>
       <p style="margin-top: 15px;"><strong>Action requise :</strong> Ces réservations seront automatiquement marquées comme "absent" demain matin à 10h si non validées.</p>
     </div>
     `
-        : ''
+        : ""
     }
 
     ${
@@ -287,7 +287,9 @@ function generateReportEmail(data: {
         ? `
     <div class="section urgent">
       <h2>🕐 Réservations en Attente de Confirmation</h2>
-      <p><span class="count">${pendingReservations.length}</span> réservation(s) en attente de votre confirmation.</p>
+      <p><span class="count">${
+        pendingReservations.length
+      }</span> réservation(s) en attente de votre confirmation.</p>
       <table>
         <thead>
           <tr>
@@ -304,15 +306,11 @@ function generateReportEmail(data: {
               (booking) => `
             <tr>
               <td>${
-                booking.contactName ||
-                (booking.user as any)?.givenName ||
-                'N/A'
+                booking.contactName || (booking.user as any)?.givenName || "N/A"
               }<br><small>${
-                booking.contactEmail || (booking.user as any)?.email || ''
+                booking.contactEmail || (booking.user as any)?.email || ""
               }</small></td>
-              <td>${
-                (booking.space as any)?.name || booking.spaceType
-              }</td>
+              <td>${(booking.space as any)?.name || booking.spaceType}</td>
               <td>${formatDate(booking.date)}</td>
               <td>${formatTime(booking.startTime)} - ${formatTime(
                 booking.endTime
@@ -321,12 +319,12 @@ function generateReportEmail(data: {
             </tr>
           `
             )
-            .join('')}
+            .join("")}
         </tbody>
       </table>
     </div>
     `
-        : ''
+        : ""
     }
 
     ${
@@ -334,7 +332,9 @@ function generateReportEmail(data: {
         ? `
     <div class="section info">
       <h2>💳 Empreintes Bancaires à Créer Demain (J-6)</h2>
-      <p><span class="count">${depositPendingReservations.length}</span> réservation(s) nécessitent la création d'une empreinte bancaire demain.</p>
+      <p><span class="count">${
+        depositPendingReservations.length
+      }</span> réservation(s) nécessitent la création d'une empreinte bancaire demain.</p>
       <table>
         <thead>
           <tr>
@@ -351,15 +351,11 @@ function generateReportEmail(data: {
               (booking) => `
             <tr>
               <td>${
-                booking.contactName ||
-                (booking.user as any)?.givenName ||
-                'N/A'
+                booking.contactName || (booking.user as any)?.givenName || "N/A"
               }<br><small>${
-                booking.contactEmail || (booking.user as any)?.email || ''
+                booking.contactEmail || (booking.user as any)?.email || ""
               }</small></td>
-              <td>${
-                (booking.space as any)?.name || booking.spaceType
-              }</td>
+              <td>${(booking.space as any)?.name || booking.spaceType}</td>
               <td>${formatDate(booking.date)}</td>
               <td>${formatTime(booking.startTime)} - ${formatTime(
                 booking.endTime
@@ -368,18 +364,20 @@ function generateReportEmail(data: {
             </tr>
           `
             )
-            .join('')}
+            .join("")}
         </tbody>
       </table>
       <p style="margin-top: 15px;"><em>Ces empreintes seront créées automatiquement demain à 2h du matin.</em></p>
     </div>
     `
-        : ''
+        : ""
     }
 
     <div class="section">
       <h2>📅 Réservations Confirmées (7 prochains jours)</h2>
-      <p><span class="count">${upcomingReservations.length}</span> réservation(s) confirmée(s).</p>
+      <p><span class="count">${
+        upcomingReservations.length
+      }</span> réservation(s) confirmée(s).</p>
       ${
         upcomingReservations.length > 0
           ? `
@@ -401,13 +399,9 @@ function generateReportEmail(data: {
             <tr>
               <td>${formatDate(booking.date)}</td>
               <td>${
-                booking.contactName ||
-                (booking.user as any)?.givenName ||
-                'N/A'
+                booking.contactName || (booking.user as any)?.givenName || "N/A"
               }</td>
-              <td>${
-                (booking.space as any)?.name || booking.spaceType
-              }</td>
+              <td>${(booking.space as any)?.name || booking.spaceType}</td>
               <td>${formatTime(booking.startTime)} - ${formatTime(
                 booking.endTime
               )}</td>
@@ -416,7 +410,7 @@ function generateReportEmail(data: {
             </tr>
           `
             )
-            .join('')}
+            .join("")}
         </tbody>
       </table>
       `
@@ -427,7 +421,7 @@ function generateReportEmail(data: {
     <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #ddd; text-align: center; color: #666;">
       <p>Ce rapport est généré automatiquement tous les jours à 19h.</p>
       <p><a href="${
-        process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/dashboard/booking/reservations" style="color: #417972;">Voir toutes les réservations dans le dashboard →</a></p>
     </div>
   </div>
@@ -436,5 +430,5 @@ function generateReportEmail(data: {
   `;
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 minutes for Vercel Pro

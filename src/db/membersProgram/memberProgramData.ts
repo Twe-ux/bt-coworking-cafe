@@ -10,7 +10,7 @@ export interface membersProgram {
 export const membersProgramData: membersProgram[] = [
   {
     id: 1,
-    title: "Vous venez à Coworking Café",
+    title: "Vous venez à CoworKing Café by Anticafé",
     description: `Passez la porte, donnez votre nom,
 installez-vous... Que ce soit pour
 travailler, étudier, chiller ou grignoter…

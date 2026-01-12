@@ -85,7 +85,8 @@ export default function MembersProgramPage() {
 
             <p className="mantra text-center">
               On aime quand vous revenez. Alors on aime encore plus vous
-              remercier. <br /> Rejoignez le programme membre Anticafé ✨
+              remercier. <br /> Rejoignez le programme membre CoworKing Café by
+              Anticafé ✨
             </p>
 
             {/* <div className="pb__130">

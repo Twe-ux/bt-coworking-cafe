@@ -28,7 +28,8 @@ export async function GET(
     }
 
     return NextResponse.json({ message });
-  } catch (error) {    return NextResponse.json(
+  } catch (error) {
+    return NextResponse.json(
       { error: "Erreur lors de la récupération du message" },
       { status: 500 }
     );
@@ -89,7 +90,7 @@ export async function PUT(
                         <tr>
                           <td style="background: linear-gradient(135deg, #2c5f5d 0%, #3d7d7a 100%); padding: 40px 30px; text-align: center;">
                             <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">
-                              Cow-or-King Café
+                              CoworKing Café by Anticafé
                             </h1>
                             <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
                                by Anticafé
@@ -145,7 +146,7 @@ export async function PUT(
                         <tr>
                           <td style="background-color: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e0e0e0;">
                             <p style="margin: 0 0 5px 0; color: #666666; font-size: 13px;">
-                              Cow-or-King Café by Anticafé • Strasbourg
+                              CoworKing Café by Anticafé • Strasbourg
                             </p>
                             <p style="margin: 0; color: #999999; font-size: 12px;">
                               Cet email est envoyé en réponse à votre demande de contact
@@ -160,8 +161,7 @@ export async function PUT(
               </html>
             `,
           });
-        } catch (error) {
-    }
+        } catch (error) {}
       }
     }
 
@@ -179,7 +179,8 @@ export async function PUT(
     }
 
     return NextResponse.json({ message });
-  } catch (error) {    return NextResponse.json(
+  } catch (error) {
+    return NextResponse.json(
       { error: "Erreur lors de la mise à jour du message" },
       { status: 500 }
     );
@@ -205,7 +206,8 @@ export async function DELETE(
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {    return NextResponse.json(
+  } catch (error) {
+    return NextResponse.json(
       { error: "Erreur lors de la suppression du message" },
       { status: 500 }
     );

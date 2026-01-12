@@ -1,14 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import TextFormInput from "@/components/dashboard/from/TextFormInput";
-import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
-import ImageUpload from "@/components/dashboard/ImageUpload";
 import DropzoneImageUpload from "@/components/dashboard/DropzoneImageUpload";
+import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
+import TextFormInput from "@/components/dashboard/from/TextFormInput";
+import ImageUpload from "@/components/dashboard/ImageUpload";
 import MarkdownEditor from "@/components/dashboard/MarkdownEditor";
 import PreviewModal from "@/components/dashboard/PreviewModal";
+import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
+import { useNotification } from "@/hooks/useNotification";
+import {
+  useGetArticleByIdQuery,
+  useGetCategoriesQuery,
+  useUpdateArticleMutation,
+} from "@/store/api/blogApi";
+import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -16,17 +24,12 @@ import {
   CardHeader,
   CardTitle,
   Col,
-  Row,
   Form,
+  Row,
   Spinner,
-  Alert,
 } from "react-bootstrap";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { useGetArticleByIdQuery, useUpdateArticleMutation, useGetCategoriesQuery } from "@/store/api/blogApi";
-import { useNotification } from "@/hooks/useNotification";
-import IconifyIcon from "@/components/dashboard/wrappers/IconifyIcon";
-import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
 
 interface EditPostProps {
   articleId: string;
@@ -34,7 +37,11 @@ interface EditPostProps {
 
 const EditPost = ({ articleId }: EditPostProps) => {
   const router = useRouter();
-  const { data: article, isLoading: isFetching, error: fetchError } = useGetArticleByIdQuery(articleId);
+  const {
+    data: article,
+    isLoading: isFetching,
+    error: fetchError,
+  } = useGetArticleByIdQuery(articleId);
   const [updateArticle, { isLoading: isUpdating }] = useUpdateArticleMutation();
   const { data: categoriesData } = useGetCategoriesQuery({ limit: 100 });
   const { success, error: showError } = useNotification();
@@ -42,19 +49,54 @@ const EditPost = ({ articleId }: EditPostProps) => {
   const [showPreview, setShowPreview] = useState(false);
 
   const articleSchema = yup.object({
-    title: yup.string().required("Le titre est obligatoire").min(5, "Le titre doit contenir au moins 5 caractères").defined(),
-    excerpt: yup.string().max(300, "L'extrait ne peut pas dépasser 300 caractères").defined().default(""),
-    content: yup.string().required("Le contenu est obligatoire").min(50, "Le contenu doit contenir au moins 50 caractères").defined(),
-    featuredImage: yup.string().url("L'URL de l'image doit être valide").defined().default(""),
+    title: yup
+      .string()
+      .required("Le titre est obligatoire")
+      .min(5, "Le titre doit contenir au moins 5 caractères")
+      .defined(),
+    excerpt: yup
+      .string()
+      .max(300, "L'extrait ne peut pas dépasser 300 caractères")
+      .defined()
+      .default(""),
+    content: yup
+      .string()
+      .required("Le contenu est obligatoire")
+      .min(50, "Le contenu doit contenir au moins 50 caractères")
+      .defined(),
+    featuredImage: yup
+      .string()
+      .url("L'URL de l'image doit être valide")
+      .defined()
+      .default(""),
     categoryId: yup.string().defined().default(""),
     scheduledFor: yup.date().nullable().default(null),
-    seoMetaTitle: yup.string().max(60, "Le meta titre ne peut pas dépasser 60 caractères").defined().default(""),
-    seoMetaDescription: yup.string().max(160, "La meta description ne peut pas dépasser 160 caractères").defined().default(""),
+    seoMetaTitle: yup
+      .string()
+      .max(60, "Le meta titre ne peut pas dépasser 60 caractères")
+      .defined()
+      .default(""),
+    seoMetaDescription: yup
+      .string()
+      .max(160, "La meta description ne peut pas dépasser 160 caractères")
+      .defined()
+      .default(""),
     seoMetaKeywords: yup.array().of(yup.string()).defined().default([]),
-    seoOgImage: yup.string().url("L'URL de l'image OG doit être valide").defined().default(""),
+    seoOgImage: yup
+      .string()
+      .url("L'URL de l'image OG doit être valide")
+      .defined()
+      .default(""),
   });
 
-  const { handleSubmit, control, formState: { errors }, reset, watch, setValue } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+    watch,
+    setValue,
+  } = useForm({
     resolver: yupResolver(articleSchema),
     defaultValues: {
       title: "",
@@ -89,7 +131,11 @@ const EditPost = ({ articleId }: EditPostProps) => {
       showError("Veuillez d'abord saisir le titre de l'article");
       return;
     }
-    const metaTitle = generateMetaTitle(title, "Cow-or-King Café", 60);
+    const metaTitle = generateMetaTitle(
+      title,
+      "CoworKing Café by Anticafé",
+      60
+    );
     setValue("seoMetaTitle", metaTitle);
     success("Meta titre généré automatiquement");
   };
@@ -103,7 +149,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
         content: article.content || "",
         featuredImage: article.featuredImage || "",
         categoryId: article.category?._id || "",
-        scheduledFor: article.scheduledFor ? new Date(article.scheduledFor) : null,
+        scheduledFor: article.scheduledFor
+          ? new Date(article.scheduledFor)
+          : null,
         seoMetaTitle: article.metaTitle || "",
         seoMetaDescription: article.metaDescription || "",
         seoMetaKeywords: article.metaKeywords || [],
@@ -133,7 +181,10 @@ const EditPost = ({ articleId }: EditPostProps) => {
       success("Article mis à jour avec succès");
 
       // Stay on the edit page after successful update
-    } catch (err: any) {      showError(err?.data?.error || "Erreur lors de la mise à jour de l'article");
+    } catch (err: any) {
+      showError(
+        err?.data?.error || "Erreur lors de la mise à jour de l'article"
+      );
     }
   };
 
@@ -158,9 +209,13 @@ const EditPost = ({ articleId }: EditPostProps) => {
           />
           <h5>Erreur de chargement</h5>
           <p className="text-muted">
-            Impossible de charger l'article. Il n'existe peut-être pas ou vous n'avez pas les permissions nécessaires.
+            Impossible de charger l'article. Il n'existe peut-être pas ou vous
+            n'avez pas les permissions nécessaires.
           </p>
-          <Button variant="primary" onClick={() => router.push("/dashboard/post")}>
+          <Button
+            variant="primary"
+            onClick={() => router.push("/dashboard/post")}
+          >
             Retour à la liste
           </Button>
         </CardBody>
@@ -215,7 +270,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
                   placeholder="Un court résumé de l'article..."
                 />
                 {errors.excerpt && (
-                  <small className="text-danger">{errors.excerpt.message}</small>
+                  <small className="text-danger">
+                    {errors.excerpt.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -233,7 +290,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
                       placeholder="Écrivez votre article en Markdown..."
                     />
                     {errors.content && (
-                      <small className="text-danger">{errors.content.message}</small>
+                      <small className="text-danger">
+                        {errors.content.message}
+                      </small>
                     )}
                   </>
                 )}
@@ -254,7 +313,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
                 )}
               />
               {errors.featuredImage && (
-                <small className="text-danger">{errors.featuredImage.message}</small>
+                <small className="text-danger">
+                  {errors.featuredImage.message}
+                </small>
               )}
             </Col>
 
@@ -278,7 +339,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
                   )}
                 />
                 {errors.categoryId && (
-                  <small className="text-danger">{errors.categoryId.message}</small>
+                  <small className="text-danger">
+                    {errors.categoryId.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -317,8 +380,16 @@ const EditPost = ({ articleId }: EditPostProps) => {
                           type="datetime-local"
                           id="scheduledFor"
                           className="form-control"
-                          value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                          onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                          value={
+                            field.value
+                              ? new Date(field.value).toISOString().slice(0, 16)
+                              : ""
+                          }
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value ? new Date(e.target.value) : null
+                            )
+                          }
                         />
                       </>
                     )}
@@ -358,7 +429,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
                   label=""
                 />
                 {errors.seoMetaTitle && (
-                  <small className="text-danger">{errors.seoMetaTitle.message}</small>
+                  <small className="text-danger">
+                    {errors.seoMetaTitle.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -385,7 +458,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
                   placeholder="Description pour les moteurs de recherche..."
                 />
                 {errors.seoMetaDescription && (
-                  <small className="text-danger">{errors.seoMetaDescription.message}</small>
+                  <small className="text-danger">
+                    {errors.seoMetaDescription.message}
+                  </small>
                 )}
               </div>
             </Col>
@@ -404,7 +479,9 @@ const EditPost = ({ articleId }: EditPostProps) => {
                 )}
               />
               {errors.seoOgImage && (
-                <small className="text-danger">{errors.seoOgImage.message}</small>
+                <small className="text-danger">
+                  {errors.seoOgImage.message}
+                </small>
               )}
             </Col>
           </Row>
@@ -420,7 +497,8 @@ const EditPost = ({ articleId }: EditPostProps) => {
           <Row>
             <Col lg={6}>
               <p className="mb-2">
-                <strong>Auteur:</strong> {article.author?.name || article.author?.username}
+                <strong>Auteur:</strong>{" "}
+                {article.author?.name || article.author?.username}
               </p>
               <p className="mb-2">
                 <strong>Slug:</strong> {article.slug}
@@ -519,7 +597,11 @@ const EditPost = ({ articleId }: EditPostProps) => {
           content: watch("content") || "Pas de contenu",
           featuredImage: watch("featuredImage"),
           author: article?.author || { name: "Vous" },
-          category: article?.category || categoriesData?.categories.find(c => c._id === watch("categoryId")),
+          category:
+            article?.category ||
+            categoriesData?.categories.find(
+              (c) => c._id === watch("categoryId")
+            ),
         }}
       />
     </form>

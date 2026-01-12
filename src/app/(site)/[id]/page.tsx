@@ -170,11 +170,16 @@ export default async function ClientDashboard({
         {filteredUpcomingReservations.length > 0 && (
           <div className="row mb-5">
             <div className="col-12">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="section-title">Prochaines réservations</h2>
+              <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '2.5rem' }}>
+                <h2 className="section-title mb-0">Prochaines réservations</h2>
                 <Link
                   href={`/${username}/reservations`}
                   className="view-all-btn"
+                  style={{
+                    width: '170px',
+                    textAlign: 'center',
+                    marginBottom: '1.5rem'
+                  }}
                 >
                   Voir toutes
                 </Link>

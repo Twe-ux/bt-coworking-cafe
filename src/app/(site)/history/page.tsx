@@ -6,7 +6,7 @@ export default function historyPage() {
   return (
     <>
       <PageTitle title={"Notre histoire"} />
-      <article className="service__details py__110">
+      <article className="service__details py__90">
         <div className="container">
           <img
             src="/images/history/histoire-coworking-strasbourg.webp"
@@ -84,7 +84,7 @@ export default function historyPage() {
               L’activité reprend, les clients reviennent, les nouveaux affluent.
               Le lieu retrouve son essence : un café-coworking vivant, ancré
               localement, profondément humain. Et une transformation naturelle
-              s’opère : même s’ils restent “Coworking Café — by Anticafé”, ils
+              s’opère : même s’ils restent “CoworKing Café by Anticafé”, ils
               deviennent plus indépendants, plus adaptés à la vie locale, plus
               libres d’évoluer à leur rythme.
             </p>

@@ -1,29 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { generateConfirmationEmail } from '@/lib/email/templates/confirmation';
-import { Resend } from 'resend';
+import { generateConfirmationEmail } from "@/lib/email/templates/confirmation";
+import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 
 export async function GET(request: NextRequest) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     // Email de test - vous pouvez changer cette adresse
-    const testEmail = 'milone.thierry@gmail.com';
+    const testEmail = "milone.thierry@gmail.com";
 
     const emailHtml = generateConfirmationEmail({
-      name: 'Test User',
-      spaceName: 'Place - Open-space',
-      date: 'vendredi 17 janvier 2026',
-      startTime: '09:00',
-      endTime: '17:00',
+      name: "Test User",
+      spaceName: "Place - Open-space",
+      date: "vendredi 17 janvier 2026",
+      startTime: "09:00",
+      endTime: "17:00",
       numberOfPeople: 2,
-      totalPrice: 99.00,
+      totalPrice: 99.0,
       depositAmount: 4950, // En centimes (49.50€)
-      confirmationNumber: 'BT-TEST-123456',
+      confirmationNumber: "BT-TEST-123456",
     });
 
     const { data, error } = await resend.emails.send({
-      from: 'Coworking Café <noreply@coworkingcafe.fr>',
+      from: "CoworKing Café by Anticafé <noreply@coworkingcafe.fr>",
       to: [testEmail],
-      subject: '✅ TEST - Réservation confirmée',
+      subject: "✅ TEST - Réservation confirmée",
       html: emailHtml,
     });
 
@@ -39,8 +39,9 @@ export async function GET(request: NextRequest) {
       message: `Email de test envoyé à ${testEmail}`,
       data,
     });
-  } catch (error) {    return NextResponse.json(
-      { success: false, error: 'Failed to send test email' },
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: "Failed to send test email" },
       { status: 500 }
     );
   }

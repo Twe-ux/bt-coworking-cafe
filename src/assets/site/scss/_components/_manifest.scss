@@ -9,6 +9,7 @@
     font-size: 32px !important;
     font-weight: 700 !important;
     font-style: italic;
+    margin-top: 0 !important;
     color: var(--grayWhite-clr) !important;
     @include breakpoint(sm) {
       flex-direction: column;

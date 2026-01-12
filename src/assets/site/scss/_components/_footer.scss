@@ -48,13 +48,17 @@
         line-height: 45px;
       }
       @include breakpoint(sm) {
-        font-size: 32px;
-        line-height: 35px;
+        font-size: 30px;
+        line-height: 28px;
       }
     }
 
     p {
       font-size: 20px;
+      @include breakpoint(sm) {
+        font-size: 16px;
+        line-height: 1.4;
+      }
     }
 
     input {
@@ -95,7 +99,8 @@
         padding: 20px;
       }
       @include breakpoint(sm) {
-        padding: 17px;
+        padding: 14px 16px;
+        font-size: 14px;
       }
     }
 
@@ -120,7 +125,7 @@
         padding: 20px;
       }
       @include breakpoint(sm) {
-        padding: 17px;
+        padding: 14px 16px;
         margin-top: 0;
       }
     }

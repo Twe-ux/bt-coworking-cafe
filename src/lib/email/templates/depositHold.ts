@@ -107,12 +107,12 @@ export function generateDepositHoldEmail(data: DepositHoldEmailData): string {
         <li style="padding: 5px 0;">📧 Email : strasbourg@coworkingcafe.fr</li>
       </ul>
 
-      <p style="margin: 25px 0 0 0;">À bientôt dans nos locaux,<br><strong>L'équipe Coworking Café</strong></p>
+      <p style="margin: 25px 0 0 0;">À bientôt dans nos locaux,<br><strong>L'équipe CoworKing Café by Anticafé</strong></p>
     </div>
 
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 20px; text-align: center; color: #6b7280; font-size: 14px;">
-      <p style="margin: 0;"><strong>Coworking Café</strong></p>
+      <p style="margin: 0;"><strong>CoworKing Café by Anticafé</strong></p>
       <p style="margin: 5px 0 0 0;">1 rue de la Division Leclerc, 67000 Strasbourg</p>
       <p style="margin: 5px 0 0 0;">L-V: 09h-20h | S-D & JF: 10h-20h</p>
     </div>

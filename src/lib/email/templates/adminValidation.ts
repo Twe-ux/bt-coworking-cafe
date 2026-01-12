@@ -151,13 +151,13 @@ export function generateValidatedEmail(data: ValidatedEmailData): string {
 
       <p style="margin: 32px 0 0 0; font-size: 16px; line-height: 1.8;">
         À très bientôt,<br>
-        <strong style="color: #059669; font-size: 17px;">L'équipe Coworking Café</strong>
+        <strong style="color: #059669; font-size: 17px;">L'équipe CoworKing Café by Anticafé</strong>
       </p>
     </div>
 
     <!-- Footer -->
     <div class="footer" style="background: #f9fafb; padding: 24px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb;">
-      <p style="margin: 0 0 8px 0; font-weight: 700; color: #111827; font-size: 15px;">Coworking Café</p>
+      <p style="margin: 0 0 8px 0; font-weight: 700; color: #111827; font-size: 15px;">CoworKing Café by Anticafé</p>
       <p style="margin: 0 0 4px 0; color: #6b7280;">1 rue de la Division Leclerc, 67000 Strasbourg</p>
       <p style="margin: 0; color: #6b7280;">L-V: 09h-20h | S-D & JF: 10h-20h</p>
     </div>

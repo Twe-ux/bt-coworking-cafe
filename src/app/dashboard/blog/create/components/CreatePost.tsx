@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import TextFormInput from "@/components/dashboard/from/TextFormInput";
-import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
-import ImageUpload from "@/components/dashboard/ImageUpload";
 import DropzoneImageUpload from "@/components/dashboard/DropzoneImageUpload";
+import TextAreaFormInput from "@/components/dashboard/from/TextAreaFormInput";
+import TextFormInput from "@/components/dashboard/from/TextFormInput";
+import ImageUpload from "@/components/dashboard/ImageUpload";
 import MarkdownEditor from "@/components/dashboard/MarkdownEditor";
 import PreviewModal from "@/components/dashboard/PreviewModal";
+import { useNotification } from "@/hooks/useNotification";
+import {
+  useCreateArticleMutation,
+  useGetCategoriesQuery,
+} from "@/store/api/blogApi";
+import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   Button,
   Card,
@@ -16,18 +22,12 @@ import {
   CardHeader,
   CardTitle,
   Col,
-  Row,
   Form,
+  Row,
   Spinner,
 } from "react-bootstrap";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-import {
-  useCreateArticleMutation,
-  useGetCategoriesQuery,
-} from "@/store/api/blogApi";
-import { useNotification } from "@/hooks/useNotification";
-import { generateMetaDescription, generateMetaTitle } from "@/utils/markdown";
 
 const CreatePost = () => {
   const router = useRouter();
@@ -119,7 +119,11 @@ const CreatePost = () => {
       showError("Veuillez d'abord saisir le titre de l'article");
       return;
     }
-    const metaTitle = generateMetaTitle(title, "Cow-or-King Café", 60);
+    const metaTitle = generateMetaTitle(
+      title,
+      "CoworKing Café by Anticafé",
+      60
+    );
     setValue("seoMetaTitle", metaTitle);
     success("Meta titre généré automatiquement");
   };
@@ -145,7 +149,8 @@ const CreatePost = () => {
 
       // Redirect to the edit page or post list
       router.push(`/dashboard/blog/edit/${result._id}`);
-    } catch (err: any) {      showError(err?.data?.error || "Erreur lors de la création de l'article");
+    } catch (err: any) {
+      showError(err?.data?.error || "Erreur lors de la création de l'article");
     }
   };
 

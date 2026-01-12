@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useLayoutContext } from "@/context/useLayoutContext";
+import Image from "next/image";
 import logoDark from "/public/images/logo-black.svg";
 import logoLight from "/public/images/logo_white.svg";
 
@@ -11,7 +11,10 @@ const LogoBox = () => {
 
   return (
     <a href={"/"}>
-      <div className="logo-box" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div
+        className="logo-box"
+        style={{ display: "flex", alignItems: "center", gap: "12px" }}
+      >
         <div className="logo-img" style={{ flexShrink: 0 }}>
           <div className="logo-dark">
             <Image
@@ -47,14 +50,17 @@ const LogoBox = () => {
           </div>
         </div>
         {!isCondensed && (
-          <span className="logo-text" style={{
-            fontWeight: 600,
-            fontSize: '18px',
-            whiteSpace: 'nowrap',
-            color: 'var(--ct-menu-item-color)',
-            transition: 'opacity 0.3s',
-          }}>
-            Cow-or-King Café
+          <span
+            className="logo-text"
+            style={{
+              fontWeight: 600,
+              fontSize: "18px",
+              whiteSpace: "nowrap",
+              color: "var(--ct-menu-item-color)",
+              transition: "opacity 0.3s",
+            }}
+          >
+            CoworKing Café by Anticafé
           </span>
         )}
       </div>

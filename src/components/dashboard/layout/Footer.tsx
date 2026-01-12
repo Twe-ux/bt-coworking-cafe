@@ -1,8 +1,7 @@
-import React from "react";
-import IconifyIcon from "../wrappers/IconifyIcon";
-import { Col, Container, Row } from "react-bootstrap";
-import Link from "next/link";
 import { currentYear } from "@/context/constants";
+import Link from "next/link";
+import { Col, Container, Row } from "react-bootstrap";
+import IconifyIcon from "../wrappers/IconifyIcon";
 
 const Footer = () => {
   return (
@@ -10,7 +9,7 @@ const Footer = () => {
       <Container fluid>
         <Row>
           <Col xs={12} className="text-center">
-            {currentYear} © Cow-or-King Café. Crafted by{" "}
+            {currentYear} © CoworKing Café by Anticafé. Crafted by{" "}
             <IconifyIcon
               icon="solar:hearts-bold-duotone"
               className="fs-18 align-middle text-danger"

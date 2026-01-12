@@ -96,7 +96,7 @@ export default function MentionsLegalesPage() {
                 </h2>
                 <div className="rounded-3 p-4 bg-light">
                   <h3 className="h5 fw-semibold mb-3">
-                    ILY SARL - Cow or King Café
+                    ILY SARL - CoworKing Café by Anticafé
                   </h3>
                   <div className="row g-3">
                     <div className="col-md-6">
@@ -303,10 +303,10 @@ export default function MentionsLegalesPage() {
                   4.3 Marques et logos
                 </h3>
                 <p className="text-dark mb-3" style={{ lineHeight: "1.8" }}>
-                  Les marques &quot;Cow or King Café&quot; et &quot;Cow or
-                  King&quot; ainsi que les logos associés sont des marques
-                  déposées. Toute utilisation non autorisée constitue une
-                  contrefaçon passible de sanctions pénales.
+                  Les marques &quot;CoworKing Café by Anticafé&quot; et
+                  &quot;Cow or King&quot; ainsi que les logos associés sont des
+                  marques déposées. Toute utilisation non autorisée constitue
+                  une contrefaçon passible de sanctions pénales.
                 </p>
               </section>
 
@@ -381,8 +381,8 @@ export default function MentionsLegalesPage() {
                     />
                   </li>
                   <li className="mb-2">
-                    <strong>Courrier :</strong> DPO - Cow or King Café, 1 rue de
-                    la Division Leclerc, 67000 Strasbourg
+                    <strong>Courrier :</strong> DPO - CoworKing Café by
+                    Anticafé, 1 rue de la Division Leclerc, 67000 Strasbourg
                   </li>
                 </ul>
               </section>
@@ -697,7 +697,7 @@ export default function MentionsLegalesPage() {
                   Document mis à jour le {lastUpdate}
                 </p>
                 <p className="mb-0 text-muted">
-                  Version 1.0 - Mentions Légales - Cow or King Café
+                  Version 1.0 - Mentions Légales - CoworKing Café by Anticafé
                 </p>
               </div>
             </div>

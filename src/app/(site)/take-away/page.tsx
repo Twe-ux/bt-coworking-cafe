@@ -12,11 +12,11 @@ import SlideUp from "@/utils/animations/slideUp";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Take Away | Cow-or-King Café",
+  title: "Take Away | CoworKing Café by Anticafé",
   description: `Coffee shop à Strasbourg : boissons à emporter, cafés glacés et frappés, matcha latte, citronnades, smoothies, encas sucrés, pizzas faites maison et petite épicerie. Tout pour une pause gourmande à savourer où vous voulez.`,
   openGraph: {
-    title: "Take Away - Cow-or-King Café",
-    description: "Découvrez Cow-or-King Café by Anticafé à Strasbourg.",
+    title: "Take Away - CoworKing Café by Anticafé",
+    description: "Découvrez CoworKing Café by Anticafé à Strasbourg.",
     type: "website",
   },
 };
@@ -26,7 +26,7 @@ const TakeAway = () => {
     <>
       <PageTitle title={"Take Away"} />
       <article className="concept py__130">
-        <div className="container pb__130">
+        <div className="container pb__130 pb-md-5 mb-md-5">
           {/* PAGE 2 PDF: Image comptoir (boissons à emporter) */}
           <img
             src="/images/takeAway/coworking-cafe-strasbourg-take-away-boissons-a-emporter.webp"

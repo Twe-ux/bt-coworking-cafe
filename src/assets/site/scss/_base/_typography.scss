@@ -156,11 +156,11 @@ p {
   }
 
   @include breakpoint(md) {
-    padding-bottom: 100px;
+    padding-bottom: 130px;
   }
 
   @include breakpoint(sm) {
-    padding-bottom: 90px;
+    padding-bottom: 130px;
   }
 }
 .pb__180 {
@@ -236,6 +236,10 @@ p {
   @include breakpoint(lg) {
     width: 150px;
     height: 150px;
+  }
+  @include breakpoint(md) {
+    width: 140px;
+    height: 130px;
   }
 
   i {

@@ -412,18 +412,8 @@ export default function BookingDetailsPage() {
                     )}
                     {!session && (
                       <div className="">
-                        <div className="d-flex justify-content-center gap-5 align-items-center w-100">
-                          <div className="d-flex align-items-center gap-3">
-                            {/* <div
-                            className="stat-icon"
-                            style={{
-                              width: "50px",
-                              height: "50px",
-                              fontSize: "1.5rem",
-                            }}
-                          >
-                            <i className="bi bi-person-circle"></i>
-                          </div> */}
+                        <div className="d-flex justify-content-center gap-2 gap-md-5 align-items-center w-100">
+                          <div className="d-none d-md-flex align-items-center gap-3">
                             <span
                               style={{
                                 fontSize: "1rem",
@@ -442,9 +432,10 @@ export default function BookingDetailsPage() {
                               color: "var(--secondary-clr)",
                               fontWeight: "600",
                               border: "none",
-                              padding: "0.5rem 1.25rem",
+                              padding: "0.4rem 0.8rem",
                               borderRadius: "10px",
                               transition: "all 0.3s ease",
+                              fontSize: "0.85rem",
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background =
@@ -484,7 +475,7 @@ export default function BookingDetailsPage() {
                       </div>
                     )}
                   </div>
-                  <div style={{ width: "80px" }}></div>
+                  <div className="d-none d-md-block" style={{ width: "80px" }}></div>
                 </div>
 
                 {/* Contact Information */}
@@ -1053,9 +1044,8 @@ export default function BookingDetailsPage() {
 
                       {/* Header Row */}
                       <div
-                        className="price-row"
+                        className="price-row d-none d-md-block"
                         style={{
-                          // borderBottom: "2px solid #e0e0e0",
                           paddingBottom: "0.75rem",
                           marginBottom: "0.5rem",
                         }}
@@ -1118,10 +1108,10 @@ export default function BookingDetailsPage() {
                         }}
                       >
                         <div className="d-flex justify-content-between align-items-center w-100">
-                          <span>Tarif </span>
-                          <div className="d-flex gap-4 align-items-center">
+                          <span style={{ fontSize: "0.85rem" }}>Tarif </span>
+                          <div className="d-flex gap-2 gap-md-4 align-items-center">
                             <span
-                              className="text-muted"
+                              className="text-muted d-none d-md-inline"
                               style={{
                                 fontSize: "0.875rem",
                                 minWidth: "80px",
@@ -1134,7 +1124,7 @@ export default function BookingDetailsPage() {
                                 : "pers."}
                             </span>
                             <span
-                              className="text-muted"
+                              className="text-muted d-none d-md-inline"
                               style={{
                                 fontSize: "0.875rem",
                                 minWidth: "100px",
@@ -1158,7 +1148,7 @@ export default function BookingDetailsPage() {
                             </span>
                             <span
                               className="fw-semibold"
-                              style={{ minWidth: "80px", textAlign: "right" }}
+                              style={{ minWidth: "60px", textAlign: "right", fontSize: "0.875rem" }}
                             >
                               {(() => {
                                 const vatRate =
@@ -1208,15 +1198,15 @@ export default function BookingDetailsPage() {
                               }}
                             >
                               <div className="d-flex justify-content-between align-items-center w-100">
-                                <span>
+                                <span style={{ fontSize: "0.85rem" }}>
                                   {service.name}{" "}
                                   {service.priceUnit === "per-person"
                                     ? "(par pers.)"
                                     : ""}
                                 </span>
-                                <div className="d-flex gap-4 align-items-center">
+                                <div className="d-flex gap-2 gap-md-4 align-items-center">
                                   <span
-                                    className="text-muted"
+                                    className="text-muted d-none d-md-inline"
                                     style={{
                                       fontSize: "0.875rem",
                                       minWidth: "80px",
@@ -1226,7 +1216,7 @@ export default function BookingDetailsPage() {
                                     {quantity}
                                   </span>
                                   <span
-                                    className="text-muted"
+                                    className="text-muted d-none d-md-inline"
                                     style={{
                                       fontSize: "0.875rem",
                                       minWidth: "100px",
@@ -1238,8 +1228,9 @@ export default function BookingDetailsPage() {
                                   <span
                                     className="fw-semibold"
                                     style={{
-                                      minWidth: "80px",
+                                      minWidth: "60px",
                                       textAlign: "right",
+                                      fontSize: "0.875rem"
                                     }}
                                   >
                                     {totalServicePrice.toFixed(2)}€

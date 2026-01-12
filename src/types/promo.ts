@@ -4,7 +4,7 @@ export interface PromoCode {
   code: string;
   token: string;
   description: string;
-  discount_type: 'percentage' | 'fixed' | 'free_item';
+  discount_type: "percentage" | "fixed" | "free_item";
   discount_value: number;
   valid_from: string;
   valid_until: string;
@@ -18,7 +18,7 @@ export interface PromoHistory {
   code: string;
   token: string;
   description: string;
-  discount_type: 'percentage' | 'fixed' | 'free_item';
+  discount_type: "percentage" | "fixed" | "free_item";
   discount_value: number;
   valid_from: string;
   valid_until: string;
@@ -37,11 +37,11 @@ export interface ScanStats {
   total_scans: number;
   total_reveals: number;
   total_copies: number;
-  conversion_rate_reveal: number;  // scans → reveals (%)
-  conversion_rate_copy: number;    // reveals → copies (%)
+  conversion_rate_reveal: number; // scans → reveals (%)
+  conversion_rate_copy: number; // reveals → copies (%)
   scans_by_day: { [date: string]: number };
   scans_by_hour: { [hour: string]: number };
-  average_time_to_reveal: number;  // en secondes
+  average_time_to_reveal: number; // en secondes
 }
 
 export interface MarketingContent {
@@ -53,7 +53,7 @@ export interface MarketingContent {
 
 export interface ScanEvent {
   timestamp: string;
-  type: 'scan' | 'reveal' | 'copy';
+  type: "scan" | "reveal" | "copy";
   session_id: string;
 }
 
@@ -68,7 +68,7 @@ export interface PromoConfig {
 
 // Contenu marketing par défaut
 export const DEFAULT_MARKETING: MarketingContent = {
-  title: "🎉 Bienvenue chez Cow-or-King !",
+  title: "🎉 Bienvenue chez CoworKing!",
   message: `
     <p class="lead">Vous avez scanné notre QR code exclusif !</p>
 
@@ -83,7 +83,7 @@ export const DEFAULT_MARKETING: MarketingContent = {
       Cliquez ci-dessous pour découvrir votre code promo personnalisé
     </p>
   `,
-  cta_text: "🎁 Découvrir mon code promo"
+  cta_text: "🎁 Découvrir mon code promo",
 };
 
 // Configuration par défaut
@@ -99,14 +99,14 @@ export const DEFAULT_PROMO_CONFIG: PromoConfig = {
     max_uses: 100,
     current_uses: 0,
     is_active: true,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   },
   history: [],
   stats: {
     total_views: 0,
     total_copies: 0,
     views_today: 0,
-    copies_today: 0
+    copies_today: 0,
   },
   scan_stats: {
     total_scans: 0,
@@ -116,8 +116,8 @@ export const DEFAULT_PROMO_CONFIG: PromoConfig = {
     conversion_rate_copy: 0,
     scans_by_day: {},
     scans_by_hour: {},
-    average_time_to_reveal: 0
+    average_time_to_reveal: 0,
   },
   marketing: DEFAULT_MARKETING,
-  events: []
+  events: [],
 };

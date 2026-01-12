@@ -9,7 +9,7 @@ const GoogleMap = () => {
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-        title="Cow or King Café - 1 rue de la Division Leclerc, 67000 Strasbourg"
+        title="CoworKing Café by Anticafé - 1 rue de la Division Leclerc, 67000 Strasbourg"
       ></iframe>
     </div>
   );

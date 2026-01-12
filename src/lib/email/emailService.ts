@@ -5,24 +5,23 @@
  * RESEND_API_KEY=re_...
  *
  * Optional - Configure different senders for different email types:
- * RESEND_FROM_BOOKING=Réservations - Coworking Café <reservations@coworkingcafe.fr>
- * RESEND_FROM_CONTACT=Contact - Coworking Café <contact@coworkingcafe.fr>
- * RESEND_FROM_DEFAULT=Coworking Café <noreply@coworkingcafe.fr>
+ * RESEND_FROM_BOOKING=Réservations - CoworKing Café by Anticafé <reservations@coworkingcafe.fr>
+ * RESEND_FROM_CONTACT=Contact - CoworKing Café by Anticafé <contact@coworkingcafe.fr>
+ * RESEND_FROM_DEFAULT=CoworKing Café by Anticafé <noreply@coworkingcafe.fr>
  */
 
 import { Resend } from "resend";
 import {
-  generateConfirmationEmail,
-  generateDepositHoldEmail,
-  generateDepositCapturedEmail,
-  generateDepositReleasedEmail,
-  generateCancellationEmail,
-  generateValidatedEmail,
   generateBookingInitialEmail,
+  generateCancellationEmail,
+  generateCardSavedEmail,
+  generateDepositCapturedEmail,
+  generateDepositHoldEmail,
+  generateDepositReleasedEmail,
   generateReminderEmail,
   generateReservationCancelledEmail,
-  generateCardSavedEmail,
   generateReservationRejectedEmail,
+  generateValidatedEmail,
 } from "./templates";
 
 interface EmailOptions {
@@ -36,26 +35,32 @@ interface EmailOptions {
 /**
  * Email sender types
  */
-export type EmailSenderType = 'booking' | 'contact' | 'default';
+export type EmailSenderType = "booking" | "contact" | "default";
 
 /**
  * Get email sender address based on type
  */
-const getEmailSender = (type: EmailSenderType = 'default'): string => {
+const getEmailSender = (type: EmailSenderType = "default"): string => {
   switch (type) {
-    case 'booking':
-      return process.env.RESEND_FROM_BOOKING
-        || process.env.RESEND_FROM_EMAIL
-        || "Réservations - Coworking Café <reservations@coworkingcafe.fr>";
-    case 'contact':
-      return process.env.RESEND_FROM_CONTACT
-        || process.env.RESEND_FROM_EMAIL
-        || "Contact - Coworking Café <contact@coworkingcafe.fr>";
-    case 'default':
+    case "booking":
+      return (
+        process.env.RESEND_FROM_BOOKING ||
+        process.env.RESEND_FROM_EMAIL ||
+        "Réservations - CoworKing Café by Anticafé <reservations@coworkingcafe.fr>"
+      );
+    case "contact":
+      return (
+        process.env.RESEND_FROM_CONTACT ||
+        process.env.RESEND_FROM_EMAIL ||
+        "Contact - CoworKing Café by Anticafé <contact@coworkingcafe.fr>"
+      );
+    case "default":
     default:
-      return process.env.RESEND_FROM_DEFAULT
-        || process.env.RESEND_FROM_EMAIL
-        || "Coworking Café <noreply@coworkingcafe.fr>";
+      return (
+        process.env.RESEND_FROM_DEFAULT ||
+        process.env.RESEND_FROM_EMAIL ||
+        "CoworKing Café by Anticafé <noreply@coworkingcafe.fr>"
+      );
   }
 };
 
@@ -65,7 +70,7 @@ const getResendClient = () => {
 
 export async function sendEmail(
   options: EmailOptions,
-  senderType: EmailSenderType = 'default'
+  senderType: EmailSenderType = "default"
 ): Promise<boolean> {
   try {
     const resend = getResendClient();
@@ -104,7 +109,7 @@ export async function sendBookingConfirmation(
     numberOfPeople?: number;
   }
 ): Promise<boolean> {
-  const subject = "Confirmation de réservation - Coworking Café";
+  const subject = "Confirmation de réservation - CoworKing Café by Anticafé";
 
   const html = generateBookingInitialEmail({
     name: bookingDetails.name,
@@ -158,17 +163,20 @@ Pour toute question, contactez-nous :
 Téléphone : 09 87 33 45 19
 Email : strasbourg@coworkingcafe.fr
 
-Coworking Café
+CoworKing Café by Anticafé
 1 rue de la Division Leclerc, 67000 Strasbourg
 L-V: 09h-20h | S-D & JF: 10h-20h
   `;
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-    text,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+      text,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 export async function sendReservationConfirmed(
@@ -186,7 +194,7 @@ export async function sendReservationConfirmed(
     invoiceOption?: boolean;
   }
 ): Promise<boolean> {
-  const subject = "✅ Réservation confirmée - Coworking Café";
+  const subject = "✅ Réservation confirmée - CoworKing Café by Anticafé";
 
   const html = generateValidatedEmail({
     name: reservationDetails.name,
@@ -230,17 +238,20 @@ Pour toute question :
 Téléphone : 09 87 33 45 19
 Email : strasbourg@coworkingcafe.fr
 
-Coworking Café
+CoworKing Café by Anticafé
 1 rue de la Division Leclerc, 67000 Strasbourg
 L-V: 09h-20h | S-D & JF: 10h-20h
   `;
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-    text,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+      text,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 export async function sendBookingReminder(
@@ -252,7 +263,8 @@ export async function sendBookingReminder(
     time: string;
   }
 ): Promise<boolean> {
-  const subject = "Rappel : Votre réservation demain - Coworking Café";
+  const subject =
+    "Rappel : Votre réservation demain - CoworKing Café by Anticafé";
 
   const html = generateReminderEmail({
     name: bookingDetails.name,
@@ -261,11 +273,14 @@ export async function sendBookingReminder(
     time: bookingDetails.time,
   });
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 export async function sendReservationCancelled(
@@ -281,7 +296,7 @@ export async function sendReservationCancelled(
     confirmationNumber?: string;
   }
 ): Promise<boolean> {
-  const subject = "❌ Réservation annulée - Coworking Café";
+  const subject = "❌ Réservation annulée - CoworKing Café by Anticafé";
 
   const html = generateReservationCancelledEmail({
     name: reservationDetails.name,
@@ -323,17 +338,20 @@ Pour toute question :
 Téléphone : 09 87 33 45 19
 Email : strasbourg@coworkingcafe.fr
 
-Coworking Café
+CoworKing Café by Anticafé
 1 rue de la Division Leclerc, 67000 Strasbourg
 L-V: 09h-20h | S-D & JF: 10h-20h
   `;
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-    text,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+      text,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 export async function sendDepositHoldConfirmation(
@@ -348,7 +366,7 @@ export async function sendDepositHoldConfirmation(
     totalPrice: number;
   }
 ): Promise<boolean> {
-  const subject = "Empreinte bancaire effectuée - Coworking Café";
+  const subject = "Empreinte bancaire effectuée - CoworKing Café by Anticafé";
 
   const html = generateDepositHoldEmail({
     name: reservationDetails.name,
@@ -360,11 +378,14 @@ export async function sendDepositHoldConfirmation(
     totalPrice: reservationDetails.totalPrice,
   });
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 export async function sendDepositCaptured(
@@ -376,7 +397,7 @@ export async function sendDepositCaptured(
     depositAmount: number;
   }
 ): Promise<boolean> {
-  const subject = "Prélèvement effectué (no-show) - Coworking Café";
+  const subject = "Prélèvement effectué (no-show) - CoworKing Café by Anticafé";
 
   const html = generateDepositCapturedEmail({
     name: reservationDetails.name,
@@ -385,11 +406,14 @@ export async function sendDepositCaptured(
     depositAmount: reservationDetails.depositAmount,
   });
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 export async function sendDepositReleased(
@@ -401,7 +425,7 @@ export async function sendDepositReleased(
     depositAmount: number;
   }
 ): Promise<boolean> {
-  const subject = "Empreinte bancaire levée - Coworking Café";
+  const subject = "Empreinte bancaire levée - CoworKing Café by Anticafé";
 
   const html = generateDepositReleasedEmail({
     name: details.name,
@@ -410,11 +434,14 @@ export async function sendDepositReleased(
     depositAmount: details.depositAmount,
   });
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 export async function sendCardSavedConfirmation(
@@ -428,7 +455,8 @@ export async function sendCardSavedConfirmation(
     totalPrice: number;
   }
 ): Promise<boolean> {
-  const subject = "Carte enregistrée - Paiement dans 7 jours - Coworking Café";
+  const subject =
+    "Carte enregistrée - Paiement dans 7 jours - CoworKing Café by Anticafé";
 
   const html = generateCardSavedEmail({
     name: reservationDetails.name,
@@ -439,11 +467,14 @@ export async function sendCardSavedConfirmation(
     totalPrice: reservationDetails.totalPrice,
   });
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 /**
@@ -462,7 +493,7 @@ export async function sendCancellationConfirmation(
     confirmationNumber?: string;
   }
 ): Promise<boolean> {
-  const subject = "Confirmation d'annulation - Coworking Café";
+  const subject = "Confirmation d'annulation - CoworKing Café by Anticafé";
 
   const html = generateCancellationEmail({
     name: cancellationDetails.name,
@@ -475,11 +506,14 @@ export async function sendCancellationConfirmation(
     refundAmount: cancellationDetails.refundAmount,
   });
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 /**
@@ -499,7 +533,8 @@ export async function sendReservationRejected(
     reason?: string;
   }
 ): Promise<boolean> {
-  const subject = "❌ Demande de réservation refusée - Coworking Café";
+  const subject =
+    "❌ Demande de réservation refusée - CoworKing Café by Anticafé";
 
   const html = generateReservationRejectedEmail({
     name: reservationDetails.name,
@@ -513,11 +548,14 @@ export async function sendReservationRejected(
     reason: reservationDetails.reason,
   });
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-  }, 'booking'); // Use booking sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+    },
+    "booking"
+  ); // Use booking sender
 }
 
 /**
@@ -548,12 +586,18 @@ export async function sendContactFormEmail(
 
     <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
       <p style="margin: 0 0 12px 0;"><strong>De:</strong> ${details.name}</p>
-      ${details.replyTo ? `<p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${details.replyTo}</p>` : ''}
+      ${
+        details.replyTo
+          ? `<p style="margin: 0 0 12px 0;"><strong>Email:</strong> ${details.replyTo}</p>`
+          : ""
+      }
       <p style="margin: 0;"><strong>Sujet:</strong> ${details.subject}</p>
     </div>
 
     <div style="background: white; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-      <p style="margin: 0; white-space: pre-wrap; color: #1f2937; line-height: 1.6;">${details.message}</p>
+      <p style="margin: 0; white-space: pre-wrap; color: #1f2937; line-height: 1.6;">${
+        details.message
+      }</p>
     </div>
   </div>
 </body>
@@ -564,17 +608,20 @@ export async function sendContactFormEmail(
 Nouveau message de contact
 
 De: ${details.name}
-${details.replyTo ? `Email: ${details.replyTo}` : ''}
+${details.replyTo ? `Email: ${details.replyTo}` : ""}
 Sujet: ${details.subject}
 
 Message:
 ${details.message}
   `;
 
-  return sendEmail({
-    to: email,
-    subject,
-    html,
-    text,
-  }, 'contact'); // Use contact sender
+  return sendEmail(
+    {
+      to: email,
+      subject,
+      html,
+      text,
+    },
+    "contact"
+  ); // Use contact sender
 }

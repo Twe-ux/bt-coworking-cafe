@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 This is a dual-purpose Next.js 14 application combining:
-- **Public site**: A coworking café website (Cow-or-King Café by Anticafé in Strasbourg)
+
+- **Public site**: A coworking café website (CoworKing Café by Anticafé in Strasbourg)
 - **Admin dashboard**: A real estate management admin template (Lahomes)
 
 The project uses the App Router with TypeScript and SCSS for styling.
@@ -13,6 +14,7 @@ The project uses the App Router with TypeScript and SCSS for styling.
 ## Commands
 
 ### Development
+
 ```bash
 npm run dev          # Start development server (http://localhost:3000)
 npm run build        # Build for production
@@ -27,6 +29,7 @@ npm run lint         # Run ESLint
 The application has two distinct layouts with separate routing:
 
 1. **Public Site** (`src/app/(site)/`)
+
    - Marketing pages for the coworking café
    - Uses Bootstrap-based components
    - Layout: `src/app/(site)/layout.tsx` with Header and Footer
@@ -50,6 +53,7 @@ The application has two distinct layouts with separate routing:
 ### State Management
 
 Located in `src/context/`:
+
 - `useLayoutContext.tsx`: Theme customization, topbar/menu settings, offcanvas states
   - Persists settings in localStorage under `__REBACK_NEXT_CONFIG__`
   - Supports theme modes (light/dark), menu sizing, topbar themes
@@ -87,6 +91,7 @@ Static data stored in `src/assets/data/` for components, charts, and menu items.
 ### Utilities
 
 `src/utils/`:
+
 - `layout.ts`: DOM attribute toggling for theme/layout changes
 - `change-casing.ts`: String casing transformations
 - `date.ts`: Date utilities

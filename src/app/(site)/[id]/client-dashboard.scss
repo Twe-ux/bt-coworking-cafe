@@ -43,6 +43,11 @@
   padding-bottom: 0.75rem;
   border-bottom: 3px solid var(--btn-clr);
   display: inline-block;
+  max-width: 65%;
+
+  @media (max-width: 767px) {
+    max-width: 55%;
+  }
 }
 
 .action-card {

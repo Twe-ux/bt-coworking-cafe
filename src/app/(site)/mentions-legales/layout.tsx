@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mentions Légales | Cow-or-King Café - Coworking Strasbourg",
+  title: "Mentions Légales | CoworKing Café by Anticafé - Coworking Strasbourg",
   description:
-    "Mentions légales du Cow or King Café - Espace de coworking café à Strasbourg. Informations sur l'éditeur, l'hébergeur et les conditions d'utilisation.",
+    "Mentions légales du CoworKing Café by Anticafé - Espace de CoworKing Café by Anticafé à Strasbourg. Informations sur l'éditeur, l'hébergeur et les conditions d'utilisation.",
   robots: "index, follow",
 };
 
